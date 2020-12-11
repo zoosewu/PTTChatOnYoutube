@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PTTTest
 // @namespace    https://github.com/zoosewu/PTTChatOnYoutube
-// @version      0.1
+// @version      1.0.0
 // @description  PTT操作
 // @author       Zoosewu
 // @match        https://term.ptt.cc/*
@@ -55,7 +55,7 @@ const msg = {
           this.screen.push(txt);
         }
         this.screenstate = 1;
-        if (showPTTscreen) console.log("screenHaveText", reg, result);
+        if (showalllog) console.log("screenHaveText", reg, result);
         return result;
       }
       else {
@@ -63,11 +63,11 @@ const msg = {
           const txt = this.screen[i];
           result = reg.exec(txt);
           if (result != null) {
-            if (showPTTscreen) console.log("screenHaveText", reg, result);
+            if (showalllog) console.log("screenHaveText", reg, result);
             return result;
           }
         }
-        if (showPTTscreen) console.log("screenHaveText", reg, result);
+        if (showalllog) console.log("screenHaveText", reg, result);
         return null;
       }
     },
@@ -169,7 +169,7 @@ const msg = {
       if (showalllog) console.log("check command.");
       command();
     }
-    if (showPTTscreen) console.log(PTT.screen);
+    if (showPTTscreen) console.log("This is PTT screen", PTT.screen);
     let nextcom = PTT.commands.getfirst();
     if (showcommand && typeof nextcom !== 'undefined') console.log("next command : reg:" + nextcom.reg + "input:" + nextcom.input, nextcom.callback);
     else console.log("next command : none.");
@@ -193,7 +193,6 @@ const msg = {
         serverfull = false;
         OnUpdate();
       }
-
     }
   });
   //hook end
@@ -298,11 +297,12 @@ const msg = {
       else {
         if (showalllog) console.log("同看板 同文章");
         PTTPost.pushes = [];
+        insertText("q");
+        PTT.commands.add(/文章選讀/, "\n");
         if (PTTPost.endline > 22) {
           PTT.commands.add(/目前顯示: 第/, PTTPost.endline + ".\n");
         }
         PTT.commands.add(/目前顯示: 第/, "", _getpush);
-        insertText("bf");
       }
     }
     else if (!PTT.connect) {

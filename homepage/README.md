@@ -1,17 +1,17 @@
 # PTTChatOnYoutube
 在Youtube上面顯示PTT推文
-
+![](https://i.imgur.com/l3GfItu.png "預覽圖")
 ## 如何開始使用
 
-推薦使用violentmonkey，無論chrome、firefox皆可使用，Tampermonkey及Greasymonkey不保證能正常運作。
+推薦使用violentmonkey這是在chrome、firefox皆可使用的第三方插件掛載程式。使用Tampermonkey及Greasymonkey不保證能正常運作。
 
-腳本下載點請[點我](https://greasyfork.org/zh-TW)。
+腳本下載點請[點我](https://greasyfork.org/zh-TW/scripts/418469-youtubechatonptt)。
 
 如果離開網頁時有個視窗一閃而過，那是term.ptt.cc在登入後關閉視窗的警告動作，是正常現象。
 
-如果出現奇怪的現象，可以進入腳本找到```const devmode = false;```改成```const devmode = true;```會顯示更完整的資訊，包含PTT畫面。
+如果你想查看詳細的腳本介紹請[點我](https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage)。
 
-如果你也想參與專案或是想查看我的程式碼請[點我](https://greasyfork.org/zh-TW)。
+如果你想查看完整程式碼或是想要自己下載腳本測試修改請[點我](https://github.com/zoosewu/PTTChatOnYoutube/tree/master)。
 
 ## 腳本功能
 全部都在前端計算，用你的瀏覽器撈資料再顯示出來。
@@ -24,20 +24,36 @@
 * 在Youtube實況顯示PTT推文
 * 即時更新文章最新推文。
 
+## 其他注意事項
+**請盡量避免其他violentmonkey腳本在Youtube上面運作，以避免衝突。**
 
-
-
-## 特別注意
-請盡量避免其他violentmonkey腳本在Youtube上面運作，如果爆炸了我不知道怎麼修。
+**term.ptt.cc使用者注意須知**
 
 如果你是透過瀏覽器使用PTT，並且有安裝PTT的輔助腳本，請在腳本最前面加上以下幾行程式碼。
 ```
 let isTopframe = (window.top == window.self);
 if (!isTopframe) throw new Error("script stopped:Not Top Frame");
 ```
+新增完之後應該長這樣：
 ![在PTT腳本附加額外程式碼的正確位置](https://i.imgur.com/DHwFxSY.png "腳本間加程式碼示意圖")
 
-目前只支援有聊天室的實況或紀錄，未來考慮加入沒有顯示聊天室的影片
+**目前只支援有聊天室的實況或實況紀錄，暫時不支援沒有顯示聊天室的影片。**
+
+**如果出現奇怪的現象或是你想了解腳本實際運作的情況**
+
+可以進入腳本找到```const devmode = false;```改成```const devmode = true;```，會顯示更完整的資訊，更多除錯的功能，包含背景執行的PTT畫面。
+
+**我的瀏覽器說我的帳號被盜了**
+
+因為腳本本身是把你的帳號密碼傳給背景執行的PTT去登入，讀取帳號密碼欄位傳出去的行為有時候會被判定為盜帳號，
+
+剛開始開發的時候瀏覽器也一直說我被盜，但是後面就沒有說了，**我完全不知道為什麼**。
+
+本插件並且沒有架設任何伺服器去撈取資料，僅是單純的在你的前端開一個PTT幫你登入。
+
+並且所有程式碼都沒有做任何的壓縮或混淆，在greasyfork、github以及你的瀏覽器都可以查看完整的程式碼以供任何人檢視，
+
+如果對此插件還有疑慮的話請勿使用。
 
 ## 腳本預覽圖
 

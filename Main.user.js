@@ -2,12 +2,14 @@
 // @name         YoutubeChatOnPTT
 // @name:zh-TW   Youtube聊天使顯示PTT推文
 // @namespace    https://github.com/zoosewu/PTTChatOnYoutube
-// @version      0.1
-// @description  連結PTT推文到Youtube聊天室
+// @version      1.0.0
+// @description  connect ptt pushes to youtube chatroom
+// @description:zh-tw 連結PTT推文到Youtube聊天室
 // @author       Zoosewu
 // @match        https://www.youtube.com/watch?v=*
 // @match        https://term.ptt.cc/*
-// @grant        GM_xmlhttpRequest
+// @grant        GM_xmlhttpRequest 
+// @grant        GM_info
 // @grant        unsafeWindow
 // @run-at       document-start
 // @require      https://code.jquery.com/jquery-3.5.1.slim.min.js
@@ -16,9 +18,7 @@
 // @require      https://cdn.jsdelivr.net/npm/vue
 // @require      file://E:\Project\PTTChatOnYoutube\Main.user.js
 // @connect      www.ptt.cc
-// @homepageURL 
-// @updateURL
-// @downloadURL
+// @homepageURL  https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage
 // @license      MIT
 // ==/UserScript==
 'use strict';
@@ -89,7 +89,6 @@ else if (/term\.ptt\.cc/.exec(window.location.href) !== null) {
   msg.targetorigin = "https://www.youtube.com";
   msg.targetWindow = top;
   msg["test"] = data => { console.log("test child onmessage", data); };
-  msg.PostMessage("test", "hello Im child");
   //-----
   console.log("Script started at " + window.location.href);
   runPTTScript();
@@ -100,6 +99,8 @@ else if (/term\.ptt\.cc/.exec(window.location.href) !== null) {
 function runYoutubeScript() {
   const testPTTurl = "https://www.ptt.cc/bbs/C_Chat/M.1606557604.A.904.html";
 
+  let player;
+  let isinitPTT = false;
   let ConnectAlertDiv;
   let AutoScrolling = true;
   let isstreaming;
@@ -107,6 +108,7 @@ function runYoutubeScript() {
   let streamtimeinput;
   //let urlPushData = {};
   let PTTpostdata = {};
+  let gotomainchat = false;
   let pushdata = {
     AID: "",
     board: "",
@@ -147,7 +149,7 @@ function runYoutubeScript() {
 
   function InitChatApp(defaultChatApp) {
     //console.log(defaultChatApp);
-    const PTTAppCollapse = $(`<div id="PTTChat" class="collapse w-100 rounded-right rounded-bottom" style="z-index: 300; position: absolute;"></div>`);
+    const PTTAppCollapse = $(`<div id="PTTChat" class="collapse w-100 rounded-right rounded-bottom" style="z-index: 301; position: absolute;"></div>`);
     const PTTApp = $(`<div id="PTTChat-app" class="pttbg border rounded w-100 d-flex flex-column"></div>`);
     const PTTChatnavbar = $(`<ul id="PTTChat-navbar" class="nav nav-tabs justify-content-center" role="tablist"><li class="nav-item"><a class="nav-link ptttext bg-transparent" id="nav-item-Chat" data-toggle="tab" href="#PTTChat-contents-Chat" role="tab" aria-controls="PTTChat-contents-Chat" aria-selected="false">Chat</a></li><li class="nav-item"><a class="nav-link ptttext bg-transparent active" id="nav-item-Connect" data-toggle="tab" href="#PTTChat-contents-Connect" role="tab" aria-controls="PTTChat-contents-Connect" aria-selected="true">Connect</a></li><li class="nav-item"><a class="nav-link ptttext bg-transparent" id="nav-item-Setting" data-toggle="tab" href="#PTTChat-contents-Setting" role="tab" aria-controls="PTTChat-contents-Setting" aria-selected="false">Setting</a></li><li class="nav-item"><a class="nav-link ptttext bg-transparent" id="nav-item-PTT" data-toggle="tab" href="#PTTChat-contents-PTT" role="tab" aria-controls="PTTChat-contents-PTT" aria-selected="false">PTT畫面</a></li><li class="nav-item"><button class="nav-link ptttext bg-transparent" id="nav-item-TimeSet" type="button" data-toggle="collapse" data-target="#PTTChat-Time" aria-controls="PTTChat-Time" aria-expanded="false">時間</button></li></ul>
     `);
@@ -159,8 +161,6 @@ function runYoutubeScript() {
     PTTAppCollapse.append(PTTApp);
     setTimeout(() => {
       const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
-      console.log(YTbgcolor);
-      console.log(YTbgcolor === "rgb(24, 24, 24)");
       let ptp, pid, ptm, pmsg, ptxt;
       if (YTbgcolor === "rgb(24, 24, 24)") {
         ptp = "#fff"; pid = "#ff6"; ptm = "#bbb"; pmsg = "#990"; ptxt = "#f8f9fa";
@@ -258,8 +258,7 @@ function runYoutubeScript() {
       </div>
       <div class="col-6">
         <label for="PTTpw">PTT密碼</label>
-        <input id="PTTpw" type="text" class="form-control" placeholder="PTT密碼" style="-webkit-text-security: disc;"
-          autocomplete="off">
+        <input id="PTTpw" type="password" class="form-control" placeholder="PTT密碼" autocomplete="off">
       </div>
     </div>
     <button id="PTTlogin" type="button" class="btn btn-outline-secondary">Login</button>
@@ -276,6 +275,7 @@ function runYoutubeScript() {
     const fakedata1 = '{"board":"Test","AID":"1VpKTOfx","title":"","posttime":"2020-12-06T21:04:22.000Z","pushes":[{"type":"→ ","id":"ZooseWu","content":"hey","date":"2020-12-07T00:31:00.000Z"}],"startline":"127","endline":"149","percent":"100"}';
 
     const fakebtn = $(`<button id="fakebtn" class="btn btn-outline-secondary" type="button">獲得假推文</button>`);
+    const updatebtn = $(`<a id="updatebtn" class="btn btn-outline-secondary d-none" href="https://greasyfork.org/zh-TW/scripts/418469-youtubechatonptt" target="_blank" rel="noopener noreferrer" role="button">檢測到新版本</a>`);
 
     PTTChat_Connect.append(login);
     const pptid = $(`#PTTid`, PTTChatContents);
@@ -315,14 +315,17 @@ function runYoutubeScript() {
         AlertMsg(false, "文章AID格式錯誤，請重新輸入。");
       }
       else {
-        if (pushdata.AID === result[1] && pushdata.board === result[2])
+        gotomainchat = true;
+        if (pushdata.AID === result[1] && pushdata.board === result[2]) {
           msg.PostMessage("getpost", { AID: pushdata.AID, board: pushdata.board, startline: pushdata.lastendline });
+        }
         else {
           msg.PostMessage("getpost", { AID: result[1], board: result[2], startline: 0 });
         }
       }
     });
 
+    PTTChat_Connect.append(updatebtn);
     if (devmode) {
       PTTChat_Connect.append(fakebtn);
       $(`#fakebtn`)[0].addEventListener("click", getfakedata);
@@ -335,20 +338,28 @@ function runYoutubeScript() {
         if (simulateisstreaming) setTimeout(getfakedata, 5000, null, fakedata1);
       }
     }
+
     /*------------------------------------Setting------------------------------------*/
 
     /*------------------------------------PTT畫面------------------------------------*/
-    const PTTChat_PTT = $(`#PTTChat-contents-PTT-main`, PTTChatContents);
-    //const PTTCHAT_PTTTab = $(`#nav-item-PTT`, PTTChatnavbar);
-    const PTTFrame = $(`<iframe id="PTTframe" src="//term.ptt.cc/" style="zoom: 1.5">你的瀏覽器不支援 iframe</iframe>`);
-    $(window).on('beforeunload', function () {
-      PTTFrame.remove();
-      return;
+    MainBtn[0].addEventListener("click", () => {
+      if (!isinitPTT) {
+        isinitPTT = true;
+        const PTTChat_PTT = $(`#PTTChat-contents-PTT-main`, PTTChatContents);
+        //const PTTCHAT_PTTTab = $(`#nav-item-PTT`, PTTChatnavbar);
+        const PTTFrame = $(`<iframe id="PTTframe" src="//term.ptt.cc/" style="zoom: 1.5">你的瀏覽器不支援 iframe</iframe>`);
+        $(window).on('beforeunload', function () {
+          PTTFrame.remove();
+          return;
+        });
+        PTTChat_PTT.append(PTTFrame);
+        if (disablepttframe) PTTFrame.remove();
+        msg.targetWindow = PTTFrame[0].contentWindow;
+        //PTTCHAT_PTTTab.css({ "display": "none" });
+        checkScriptEvent();
+      }
     });
-    PTTChat_PTT.append(PTTFrame);
-    if (disablepttframe) PTTFrame.remove();
-    msg.targetWindow = PTTFrame[0].contentWindow;
-    //PTTCHAT_PTTTab.css({ "display": "none" });
+    /*--------------------------------------END--------------------------------------*/
   }
   function AlertMsg(type, msg) {
     if (showalertmsg) console.log("Alert,type: " + type + ", msg: " + msg);
@@ -365,82 +376,89 @@ function runYoutubeScript() {
   let PTTChat_Chat;
   let scriptscrolltime = Date.now();
   function ScrollToTime(forceScroll) {
+    //console.log("isstreaming state", isstreaming);
     if (isstreaming === undefined) {
       //console.log("try isstreaming", $('.ytp-live-badge.ytp-button[aria-label="直接跳至現場活動直播頻道。"]'), $('.ytp-live-badge.ytp-button[disabled=true]'));
-      if ($('.ytp-live-badge.ytp-button[aria-label="直接跳至現場活動直播頻道。"]').length > 0) {
-        console.log("isstreaming = true");
+      if ($('.ytp-live-badge.ytp-button')[0].getAttribute('disabled') === "") {
+        console.log("This video is streaming.");
         isstreaming = true;
       }
       else if ($('.ytp-live-badge.ytp-button[disabled=true]').length > 0) {
-        console.log("isstreaming = false");
+        console.log("This video is not streaming.");
         isstreaming = false;
       }
     }
     ForceScrollToTime(false);
   }
   let scrolloffset = 0;
+  function _scroll(target) {
+    if (scrolloffset === 0) scrolloffset = (PTTChat_Chat[0].clientHeight - target[0].clientHeight) / 2;
+    let offset = target[0].offsetTop - scrolloffset;
+    if (offset > PTTChat_Chat[0].clientHeight - PTTChat_Chat[0].scrollTop + 15)
+      offset = PTTChat_Chat_Main[0].clientHeight - PTTChat_Chat[0].clientHeight + 15;
+    else if (offset < 0)
+      offset = 0;
+    /*console.log("PTTChat_Chat[0].scrollTop" + PTTChat_Chat[0].scrollTop);
+    console.log("PTTChat_Chat[0].clientHeight" + PTTChat_Chat[0].clientHeight);
+    console.log("PTTChat_Chat_Main[0].clientHeight" + PTTChat_Chat_Main[0].clientHeight);
+    console.log("target[0].clientHeight" + target[0].clientHeight);
+    console.log("offset" + offset);
+    console.log("scrolloffset" + scrolloffset);*/
+    if (PTTChat_Chat[0].scrollTop - offset > 15 || PTTChat_Chat[0].scrollTop - offset < -15) {
+      scriptscrolltime = Date.now() + 3000;
+      if (PTTChat_Chat[0].scrollTop - offset > 1000) { PTTChat_Chat[0].scrollTo({ top: offset + 1000, }); }
+      else if (offset - PTTChat_Chat[0].scrollTop > 1000) { PTTChat_Chat[0].scrollTo({ top: offset - 1000, }); }
+      if (showalllog) console.log("go to push: " + pushdata.nowpush);
+      setTimeout(() => {
+        PTTChat_Chat[0].scrollTo({
+          top: offset,
+          behavior: "smooth"
+        });
+      }, 10);
+    }
+  }
   function ForceScrollToTime(forceScroll) {
     forceScroll = (typeof forceScroll !== 'undefined') ? forceScroll : true;
     if (!forceScroll && !AutoScrolling) return;
-    const playedtime = player.currentTime;
-    let nowtime = new Date(streamtime.getTime());
-    nowtime.setSeconds(nowtime.getSeconds() + playedtime);
-    const prenowpush = pushdata.nowpush;
-    /*console.log(nowtime + "-<-" + pushdata.posttime);
-    console.log(nowtime.valueOf() + "-<-" + pushdata.posttime.valueOf());
-    console.log(nowtime.valueOf() < pushdata.posttime.valueOf());
-    console.log(nowtime + "->-" + pushdata.lastpushtime);
-    console.log(nowtime.valueOf() + "->-" + pushdata.lastpushtime.valueOf());
-    console.log(nowtime.valueOf() > pushdata.lastpushtime.valueOf());*/
-
-    if (nowtime.valueOf() < pushdata.posttime.valueOf()) {
-      console.log("before post:" + nowtime + "<" + pushdata.posttime);
-      pushdata.nowpush = 0;
-    }
-    else if (nowtime.valueOf() > pushdata.lastpushtime.valueOf()) {
-      console.log("after post:" + nowtime + ">" + pushdata.lastpushtime);
-      pushdata.nowpush = pushdata.pushcount - 1;
+    if (simulateisstreaming || isstreaming) {
+      pushdata.nowpush = pushdata.pushes.length - 1;
     }
     else {
-      let newnewpush = pushdata.nowpush;
-      while (pushdata.pushes[newnewpush].date.valueOf() > nowtime.valueOf() && newnewpush > 0) {
-        //console.log(pushdata.pushes[newnewpush].date + "->-" + nowtime);
-        newnewpush--;
+      const playedtime = player.currentTime;
+      let nowtime = new Date(streamtime.getTime());
+      nowtime.setSeconds(nowtime.getSeconds() + playedtime);
+      const prenowpush = pushdata.nowpush;
+      /*console.log(nowtime + "-<-" + pushdata.posttime);
+      console.log(nowtime.valueOf() + "-<-" + pushdata.posttime.valueOf());
+      console.log(nowtime.valueOf() < pushdata.posttime.valueOf());
+      console.log(nowtime + "->-" + pushdata.lastpushtime);
+      console.log(nowtime.valueOf() + "->-" + pushdata.lastpushtime.valueOf());
+      console.log(nowtime.valueOf() > pushdata.lastpushtime.valueOf());*/
+
+      if (nowtime.valueOf() < pushdata.posttime.valueOf()) {
+        if (showalllog) console.log("before post:" + nowtime + "<" + pushdata.posttime);
+        pushdata.nowpush = 0;
       }
-      while (pushdata.pushes[newnewpush].date.valueOf() < nowtime.valueOf() && newnewpush < pushdata.pushes.length) {
-        //console.log(pushdata.pushes[newnewpush].date + "-<-" + nowtime);
-        newnewpush++;
+      else if (nowtime.valueOf() > pushdata.lastpushtime.valueOf()) {
+        if (showalllog) console.log("after post:" + nowtime + ">" + pushdata.lastpushtime);
+        pushdata.nowpush = pushdata.pushcount - 1;
       }
-      pushdata.nowpush = newnewpush;
+      else {
+        let newnewpush = pushdata.nowpush;
+        while (pushdata.pushes[newnewpush].date.valueOf() > nowtime.valueOf() && newnewpush > 1) {
+          //console.log(pushdata.pushes[newnewpush].date + "->-" + nowtime);
+          newnewpush--;
+        }
+        while (pushdata.pushes[newnewpush].date.valueOf() < nowtime.valueOf() && newnewpush < pushdata.pushes.length - 1) {
+          //console.log(pushdata.pushes[newnewpush].date + "-<-" + nowtime);
+          newnewpush++;
+        }
+        pushdata.nowpush = newnewpush;
+      }
     }
     if (pushdata.pushes[pushdata.nowpush]) {
-      const target = pushdata.pushes[pushdata.nowpush].div;
-      if (scrolloffset === 0) scrolloffset = (PTTChat_Chat[0].clientHeight - target[0].clientHeight) / 2;
-      let offset = target[0].offsetTop - scrolloffset;
-      if (offset > PTTChat_Chat[0].clientHeight - PTTChat_Chat[0].scrollTop + 15)
-        offset = PTTChat_Chat_Main[0].clientHeight - PTTChat_Chat[0].clientHeight + 15;
-      else if (offset < 0)
-        offset = 0;
-      /*console.log("PTTChat_Chat[0].scrollTop" + PTTChat_Chat[0].scrollTop);
-      console.log("PTTChat_Chat[0].clientHeight" + PTTChat_Chat[0].clientHeight);
-      console.log("PTTChat_Chat_Main[0].clientHeight" + PTTChat_Chat_Main[0].clientHeight);
-      console.log("target[0].clientHeight" + target[0].clientHeight);
-      console.log("offset" + offset);
-      console.log("scrolloffset" + scrolloffset);*/
-      if (PTTChat_Chat[0].scrollTop - offset > 15 || PTTChat_Chat[0].scrollTop - offset < -15) {
-        scriptscrolltime = Date.now() + 1100;
-        if (PTTChat_Chat[0].scrollTop - offset > 1000) { PTTChat_Chat[0].scrollTo({ top: offset + 1000, }); }
-        else if (offset - PTTChat_Chat[0].scrollTop > 1000) { PTTChat_Chat[0].scrollTo({ top: offset - 1000, }); }
-        if (showalllog) console.log("go to push: " + pushdata.nowpush);
-        setTimeout(() => {
-          PTTChat_Chat[0].scrollTo({
-            top: offset,
-            behavior: "smooth"
-          });
-        }, 10);
-      }
+      _scroll(pushdata.pushes[pushdata.nowpush].div);
     }
-    return;
   }
   function PushGenerator(ID, pushtype, pushid, pushmsg, pushtimeH, pushtimem) {
     const ptype = `<h5 class="ptype mr-2 mb-0">` + pushtype + ` </h5>`;
@@ -458,6 +476,10 @@ function runYoutubeScript() {
     return $(mainpush);
   }
   msg["postdata"] = data => {
+    if (gotomainchat) {
+      gotomainchat = false;
+      $(`#nav-item-Chat`)[0].click(); ///
+    }
     ParsePostData(data);
     /*console.log(JSON.stringify(data));*/
     if (isstreaming || simulateisstreaming) {
@@ -524,6 +546,22 @@ function runYoutubeScript() {
     streamtime.setHours(+result[1]);
     streamtime.setMinutes(+result[2]);
     if (showalllog) console.log("UpdateStreamTime()");
+  }
+  function checkScriptEvent() {
+    const oReq = new XMLHttpRequest();
+    oReq.addEventListener("load", checkScriptVersion);
+    oReq.open("GET", "https://greasyfork.org/zh-TW/scripts/418469-youtubechatonptt.json");
+    oReq.send();
+  }
+  function checkScriptVersion() {
+    const obj = JSON.parse(this.responseText);
+    const webver = obj.version;
+    const wv = /(\d+)\.(\d+)\.(\d+)/.exec(webver);
+    const myver = GM_info.script.version;
+    const mv = /(\d+)\.(\d+)\.(\d+)/.exec(myver);
+    console.log("version check", webver, wv, myver, mv);
+    if (wv[1] > mv[1] || wv[2] > mv[2] || wv[3] > mv[3])
+      $(`#updatebtn`).removeClass('d-none');
   }
   /*
   //page push parse
@@ -644,7 +682,7 @@ function runPTTScript() {
           this.screen.push(txt);
         }
         this.screenstate = 1;
-        if (showPTTscreen) console.log("screenHaveText", reg, result);
+        if (showalllog) console.log("screenHaveText", reg, result);
         return result;
       }
       else {
@@ -652,11 +690,11 @@ function runPTTScript() {
           const txt = this.screen[i];
           result = reg.exec(txt);
           if (result != null) {
-            if (showPTTscreen) console.log("screenHaveText", reg, result);
+            if (showalllog) console.log("screenHaveText", reg, result);
             return result;
           }
         }
-        if (showPTTscreen) console.log("screenHaveText", reg, result);
+        if (showalllog) console.log("screenHaveText", reg, result);
         return null;
       }
     },
@@ -758,7 +796,7 @@ function runPTTScript() {
       if (showalllog) console.log("check command.");
       command();
     }
-    if (showPTTscreen) console.log(PTT.screen);
+    if (showPTTscreen) console.log("This is PTT screen", PTT.screen);
     let nextcom = PTT.commands.getfirst();
     if (showcommand && typeof nextcom !== 'undefined') console.log("next command : reg:" + nextcom.reg + "input:" + nextcom.input, nextcom.callback);
     else console.log("next command : none.");
@@ -782,7 +820,6 @@ function runPTTScript() {
         serverfull = false;
         OnUpdate();
       }
-
     }
   });
   //hook end
@@ -887,11 +924,12 @@ function runPTTScript() {
       else {
         if (showalllog) console.log("同看板 同文章");
         PTTPost.pushes = [];
+        insertText("q");
+        PTT.commands.add(/文章選讀/, "\n");
         if (PTTPost.endline > 22) {
           PTT.commands.add(/目前顯示: 第/, PTTPost.endline + ".\n");
         }
         PTT.commands.add(/目前顯示: 第/, "", _getpush);
-        insertText("bf");
       }
     }
     else if (!PTT.connect) {
