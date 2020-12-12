@@ -1,7 +1,7 @@
 ---
 name: Feature request
 about: 提供一個新的想法/點子/UI改進/UX改進
-title: 新想法 新點子 建議 UI改進 UX改進
+title: "[建議]"
 labels: ''
 assignees: ''
 
