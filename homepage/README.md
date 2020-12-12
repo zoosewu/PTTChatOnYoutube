@@ -7,6 +7,13 @@
 
 腳本下載點請[點我](https://greasyfork.org/zh-TW/scripts/418469-youtubechatonptt)。
 
+下載後打開實況聊天室左上角會有一個P的按鈕，點開就能打開介面
+
+輸入PTT帳號與密碼後登入，登入後輸入包含看板名稱的完整文章代碼
+(文章完整代碼獲得方法:在文章標題或文章內部鍵入大寫Q即可顯示複製)
+
+如果是實況紀錄的話輸入實況開始時間可以自動連結影片時間跟推聞時間
+
 如果離開網頁時有個視窗一閃而過，那是term.ptt.cc在登入後關閉視窗的警告動作，是正常現象。
 
 如果你想查看詳細的腳本介紹請[點我](https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage)。
@@ -29,13 +36,18 @@
 
 **term.ptt.cc使用者注意須知**
 
-如果你是透過瀏覽器使用PTT，並且有安裝PTT的輔助腳本，請在腳本最前面加上以下幾行程式碼。
+如果你是透過瀏覽器使用PTT，並且有安裝其他PTT的輔助腳本例如自動登入/自動跳過畫面的話，請在腳本最前面加上以下幾行程式碼。
+這是讓PTT不是主視窗而是背景執行時腳本就自動失效。
 ```
 let isTopframe = (window.top == window.self);
 if (!isTopframe) throw new Error("script stopped:Not Top Frame");
 ```
 新增完之後應該長這樣：
 ![在PTT腳本附加額外程式碼的正確位置](https://i.imgur.com/DHwFxSY.png "腳本間加程式碼示意圖")
+
+**本程式僅會在載入全新的youtube影片頁面的情況下會運作**
+
+如果是從youtube首頁點進影片因為沒有重新載入頁面所以不會啟動。
 
 **目前只支援有聊天室的實況或實況紀錄，暫時不支援沒有顯示聊天室的影片。**
 
@@ -54,6 +66,8 @@ if (!isTopframe) throw new Error("script stopped:Not Top Frame");
 並且所有程式碼都沒有做任何的壓縮或混淆，在greasyfork、github以及你的瀏覽器都可以查看完整的程式碼以供任何人檢視，
 
 如果對此插件還有疑慮的話請勿使用。
+
+
 
 ## 腳本預覽圖
 

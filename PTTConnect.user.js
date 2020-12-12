@@ -32,6 +32,7 @@ const msg = {
     connect: true,//自動 連線狀態
     login: false,//自動
     controlstate: 0,
+    lastviewupdate: 0,
     lock: function () {
       PTT.controlstate = 1;
     },
@@ -99,10 +100,10 @@ const msg = {
           if (PTT.controlstate === 1) {
             PTT.unlock();
             msg.PostMessage("alert", { type: false, msg: "系統過載, 請稍後再來..." });
+            PTT.unlock();
           }
         }, args: []
       }
-
     ]
   }
   PTT.wind = window;
@@ -113,7 +114,7 @@ const msg = {
     posttime: "",
     pushes: [],
     startline: 0,
-    endline: 0,
+    endline: 3,
     percent: 0,
   }
   let serverfull = false;
@@ -123,13 +124,13 @@ const msg = {
       if (!t) t = PTT.wind.document.querySelector('#t')
       const e = new CustomEvent('paste')
       //debug用
-      //console.log("insertText", str);
+      //console.log(`insertText : \"` + str + `\"`);
       e.clipboardData = { getData: () => str }
       t.dispatchEvent(e)
     }
   })()
   function ComLog(cmd) {
-    if (showcommand) console.log("execute command:", cmd);
+    if (showcommand) console.log("execute command:", [cmd]);
   }
 
   function chechAutoCommand() {
@@ -137,7 +138,7 @@ const msg = {
     for (let autoi = 0; autoi < commands.length; autoi++) {
       const cmd = commands[autoi];
       const result = PTT.screenHaveText(cmd.reg);
-      if (showcommand) console.log("auto command", cmd, result);
+      //if (showcommand) console.log("auto command", cmd, result);
       if (result != null) {
         ComLog(cmd);
         insertText(cmd.input);
@@ -169,10 +170,10 @@ const msg = {
       if (showalllog) console.log("check command.");
       command();
     }
-    if (showPTTscreen) console.log("This is PTT screen", PTT.screen);
+    if (showPTTscreen) console.log("PTT screen shot:", PTT.screen);
     let nextcom = PTT.commands.getfirst();
-    if (showcommand && typeof nextcom !== 'undefined') console.log("next command : reg:" + nextcom.reg + "input:" + nextcom.input, nextcom.callback);
-    else console.log("next command : none.");
+    if (showcommand && typeof nextcom !== 'undefined') console.log("next command : reg:" + nextcom.reg + "input:" + nextcom.input, [nextcom.callback]);
+    else if (showcommand) console.log("next command : none.");
     if (showalllog) console.log("OnUpdate end");
   }
   //hook start
@@ -190,12 +191,35 @@ const msg = {
         PTT.pagestate = newstate;
       }
       else if (t === 'view update') {
+        PTT.lastviewupdate = Date.now();
         serverfull = false;
         OnUpdate();
       }
     }
   });
   //hook end
+  function reconnect() {
+    const disbtn = $(`.btn.btn-danger[type=button]`);
+    if (disbtn.length > 0) {
+      disbtn[0].click();
+      PTT.unlock();
+      serverfull = false;
+      setTimeout(reconnect(), 100);
+    }
+  }
+  function checkscreenupdate() {
+    if (PTT.controlstate === 0) return;
+    const now = Date.now();
+    if (now > PTT.lastviewupdate + 10000) {
+      msg.PostMessage("alert", { type: false, msg: "PTT無回應，請稍後再試，或重新整理頁面。" });
+      PTT.unlock();
+    }
+    else {
+      msg.PostMessage("alert", { type: false, msg: "指令執行中，請稍後。" });
+      setTimeout(checkscreenupdate, 3500);
+    }
+  }
+  //-----------------tasks----------------------
   function gotoBoard(boardname) {
     const input = boardname + "\n";
     PTT.commands.add(/輸入看板名稱\(按空白鍵自動搜尋\)\:/, input, () => {
@@ -209,18 +233,17 @@ const msg = {
       PTTPost.AID = postcode;
     });
     PTT.commands.add(/.*/, "", () => {
-      if (PTT.screenHaveText(/文章選讀/)) {
+      let nopost = PTT.screenHaveText(/文章選讀/);
+      let posttitle = PTT.screenHaveText(/ 標題 +(.+)/);
+      if (nopost) {
         msg.PostMessage("alert", { type: false, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
+        PTT.unlock();
       }
-      else if (PTT.screenHaveText(/作者/)) {
-        if (PTTPost.endline > 1) {
-          const gotoline = "1\b" + PTTPost.endline + ".\n";
-          insertText(gotoline);
-          PTT.commands.add(/目前顯示: 第/, "", _getpush);
-        }
-        else {
-          _getpush();
-        }
+      else if (posttitle) {
+        var reg = /\s+$/g;
+        let title = posttitle[1].replace(reg, "");
+        PTTPost.title = title;
+        _getpush();
       }
     });
   }
@@ -234,15 +257,33 @@ const msg = {
     //console.log(result);
   }
   function _getpush() {
+    const posttitle = PTT.screenHaveText(/ 標題 +(.+)/);
+    if (posttitle) {
+      const reg = /\s+$/g;
+      const title = posttitle[1].replace(reg, "");
+      if (PTTPost.title !== title) {
+        gotoPost(PTTPost.AID);
+        insertText("q");
+        return;
+      }
+    }
     const lineresult = PTT.screenHaveText(/目前顯示: 第 (\d+)~(\d+) 行/);
     const startline = lineresult[1];
     const endline = lineresult[2];
-
+    const targetline = PTTPost.endline - startline + 1;
     if (PTTPost.posttime === "") {
       let result = PTT.screenHaveText(/時間  (\S{3} \S{3} ...\d{2}:\d{2}:\d{2} \d{4})/);
       PTTPost.posttime = new Date(result[1]);
     }
-    for (let i = PTTPost.endline - startline + 1; i < PTT.screen.length; i++) {
+    //console.log("targetline =" + targetline);
+    if (targetline < 1 || targetline > 23) {
+      //console.log("lastendline: " + PTTPost.endline + ", startline: " + startline + ", endline: " + endline);
+      const gotoline = PTTPost.endline + ".\n";
+      insertText(gotoline);
+      PTT.commands.add(/目前顯示: 第/, "", _getpush);
+      return;
+    }
+    for (let i = targetline; i < PTT.screen.length; i++) {
       const line = PTT.screen[i];
       const result = /^(→ |推 |噓 )(.+): (.*)(\d\d)\/(\d\d) (\d\d):(\d\d)/.exec(line);
       if (result != null) {
@@ -268,11 +309,12 @@ const msg = {
         console.log(PTTPost);
     }
   }
+  //------------------------tasks--------------------------------
   function GetPostPush(pAID, bname, startline, forceget = false) {
     if ((PTT.connect && PTT.login) || forceget) {
       let searchboard = bname !== PTTPost.board;
       let searchpost = pAID !== PTTPost.AID;
-      startline = startline | 1;
+      startline = startline | 3;
       msg.PostMessage("alert", { type: true, msg: "文章讀取中。" });
       if (searchpost) PTTPost = {
         board: "",
@@ -299,17 +341,16 @@ const msg = {
         PTTPost.pushes = [];
         insertText("q");
         PTT.commands.add(/文章選讀/, "\n");
-        if (PTTPost.endline > 22) {
-          PTT.commands.add(/目前顯示: 第/, PTTPost.endline + ".\n");
-        }
         PTT.commands.add(/目前顯示: 第/, "", _getpush);
       }
     }
     else if (!PTT.connect) {
       msg.PostMessage("alert", { type: false, msg: "PTT已斷線，請重新登入。" });
+      PTT.unlock();
     }
     else if (!PTT.login) {
       msg.PostMessage("alert", { type: false, msg: "PTT尚未登入，請先登入。" });
+      PTT.unlock();
     }
   }
   function login(id, pw) {
@@ -332,6 +373,10 @@ const msg = {
         else if (PTT.screenHaveText(/登入中，請稍候\.\.\./)) {
           PTT.commands.add(/.*/, "", logincheck);
         }
+        else {
+          msg.PostMessage("alert", { type: false, msg: "發生了未知錯誤。" });
+          console.log(PTT.screen);
+        }
       }
 
       let result = PTT.screenHaveText(/請輸入代號，或以 guest 參觀，或以 new 註冊/);
@@ -350,22 +395,22 @@ const msg = {
     }
   }
   function PTTLockCheck(callback, ...args) {
-    let disbtn = $(`.btn.btn-danger[type=button]`);
-    if (disbtn.length > 0) {
-      disbtn[0].click();
-      PTT.unlock();
-      serverfull = false;
-      console.log("CLICK");
-    }
+    const disbtn = $(`.btn.btn-danger[type=button]`);
+    if (disbtn.length > 0) setTimeout(reconnect(), 100);
     if (PTT.controlstate === 1) {
       msg.PostMessage("alert", { type: false, msg: "指令執行中，請稍後再試。" });
+      return;
     }
     else if (serverfull) {
       msg.PostMessage("alert", { type: false, msg: "系統過載, 請稍後再來..." });
+      PTT.unlock();
     }
-    else {
+
+    if (!serverfull) {
+      PTT.lastviewupdate = Date.now();
       PTT.lock();
       callback(...args);
+      setTimeout(checkscreenupdate, 3500);
     }
   }
   //end
