@@ -103,7 +103,16 @@ const msg = {
             PTT.unlock();
           }
         }, args: []
-      }
+      },
+      { reg: /大富翁 排行榜|發表次數排行榜/, input: 'q' },
+      { reg: /本日十大熱門話題/, input: 'q' },
+      { reg: /本週五十大熱門話題/, input: 'q' },
+      { reg: /每小時上站人次統計/, input: 'q' },
+      { reg: /本站歷史 \.\.\.\.\.\.\./, input: 'q' },
+      { reg: /看 板  目錄數   檔案數     byte數   總 分     板   主/, input: 'q' },
+      { reg: /看 板  目錄數   檔案數     byte數   總 分     板   主/, input: 'q' },
+      { reg: /名次──────範本───────────次數/, input: 'q' },
+
     ]
   }
   PTT.wind = window;
@@ -362,7 +371,7 @@ const msg = {
           msg.PostMessage("alert", { type: false, msg: "登入失敗，帳號或密碼有誤。" });
           PTT.unlock();
         }
-        else if (PTT.screenHaveText(/上方為使用者心情點播留言區/)) {
+        else if (PTT.screenHaveText(/上方為使用者心情點播留言區|【 精華公佈欄 】/)) {
           msg.PostMessage("alert", { type: true, msg: "登入成功。" });
           PTT.login = true;
           PTT.unlock();
