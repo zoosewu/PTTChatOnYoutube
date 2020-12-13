@@ -2,7 +2,7 @@
 // @name         YoutubeChatOnPTT
 // @name:zh-TW   Youtube聊天室顯示PTT推文
 // @namespace    https://github.com/zoosewu/PTTChatOnYoutube
-// @version      1.0.20
+// @version      1.0.21
 // @description  connect ptt pushes to youtube chatroom
 // @description:zh-tw 連結PTT推文到Youtube聊天室
 // @author       Zoosewu
@@ -1153,7 +1153,7 @@ function runPTTScript() {
           msg.PostMessage("alert", { type: false, msg: "登入失敗，帳號或密碼有誤。" });
           PTT.unlock();
         }
-        else if (PTT.screenHaveText(/上方為使用者心情點播留言區/)) {
+        else if (PTT.screenHaveText(/上方為使用者心情點播留言區|【 精華公佈欄 】/)) {
           msg.PostMessage("alert", { type: true, msg: "登入成功。" });
           PTT.login = true;
           PTT.unlock();

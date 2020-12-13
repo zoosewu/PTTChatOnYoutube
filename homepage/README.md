@@ -6,7 +6,7 @@
 
 實況的話會定時載入新推文，並自動滾動到最下面。
 
-![](https://i.imgur.com/l3GfItu.png "預覽圖")
+![](https://i.imgur.com/nrwYuXX.png "預覽圖")
 
 ## 如何開始使用
 
@@ -118,7 +118,7 @@ if (!isTopframe) throw "[Script Stopped: This script should run in top frame onl
 ## 腳本預覽圖
 
 ![](https://i.imgur.com/xxYMYZ4.png "關閉預覽圖")
-![](https://i.imgur.com/sM6GtWz.png "預覽圖1")
+![](https://i.imgur.com/HCJksZr.png "預覽圖1")
 ![](https://i.imgur.com/UwDHu7i.png "預覽圖2")
 ![](https://i.imgur.com/Xn87juc.png "預覽圖3")
 
