@@ -1076,7 +1076,9 @@ function runPTTScript() {
     const lineresult = PTT.screenHaveText(/目前顯示: 第 (\d+)~(\d+) 行/);
     const startline = lineresult[1];
     const endline = lineresult[2];
-    const targetline = PTTPost.endline - startline + 1;
+    let targetline = PTTPost.endline - startline + 1;
+    if (startline < 5) targetline += 1;
+    //console.log("(targetline,PTTPost.endline,startline)", targetline, PTTPost.endline, startline);
     if (PTTPost.posttime === "") {
       let result = PTT.screenHaveText(/時間  (\S{3} \S{3} ...\d{2}:\d{2}:\d{2} \d{4})/);
       PTTPost.posttime = new Date(result[1]);
@@ -1091,6 +1093,7 @@ function runPTTScript() {
     }
     for (let i = targetline; i < PTT.screen.length; i++) {
       const line = PTT.screen[i];
+      //console.log(i + "," + line);
       const result = /^(→ |推 |噓 )(.+): (.*)(\d\d)\/(\d\d) (\d\d):(\d\d)/.exec(line);
       if (result != null) {
         let content = result[3];
