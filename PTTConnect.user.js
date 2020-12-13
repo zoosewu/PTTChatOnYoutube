@@ -14,7 +14,7 @@
 // ==/UserScript==
 
 let isTopframe = (window.top == window.self);
-if (!isTopframe) throw new Error("script stopped:Not Top Frame");
+if (!isTopframe) throw "[script stopped: This script should run in top frame only.]";
 
 'use strict'
 const msg = {
@@ -200,11 +200,12 @@ const msg = {
   //hook end
   function reconnect() {
     const disbtn = $(`.btn.btn-danger[type=button]`);
-    if (disbtn.length > 0) {
+    if (disbtn && disbtn.length > 0) {
+      msg.PostMessage("alert", { type: false, msg: "PTT已斷線，重新嘗試連線。" });
+      PTT.login = false;
       disbtn[0].click();
-      PTT.unlock();
       serverfull = false;
-      setTimeout(reconnect(), 100);
+      setTimeout(reconnect(), 2000);
     }
   }
   function checkscreenupdate() {
@@ -215,7 +216,7 @@ const msg = {
       PTT.unlock();
     }
     else {
-      msg.PostMessage("alert", { type: false, msg: "指令執行中，請稍後。" });
+      msg.PostMessage("alert", { type: true, msg: "指令執行中......" });
       setTimeout(checkscreenupdate, 3500);
     }
   }
@@ -297,7 +298,7 @@ const msg = {
     PTTPost.percent = percentresult[1];
     PTTPost.startline = startline;
     PTTPost.endline = endline;
-    if (PTT.screenHaveText(/(100%)/) == null) {
+    if (PTT.screenHaveText(/頁 \(100%\)/) == null) {
       PTT.commands.add(/目前顯示: 第/, "", _getpush);
       insertText(' ');
     }
@@ -354,6 +355,7 @@ const msg = {
     }
   }
   function login(id, pw) {
+    msg.PostMessage("alert", { type: true, msg: "登入中" });
     if (!PTT.login) {
       const logincheck = () => {
         if (PTT.screenHaveText(/密碼不對或無此帳號。請檢查大小寫及有無輸入錯誤。|請重新輸入/)) {
@@ -370,7 +372,7 @@ const msg = {
             insertText("x");
           })();*/
         }
-        else if (PTT.screenHaveText(/登入中，請稍候\.\.\./)) {
+        else if (PTT.screenHaveText(/登入中，請稍候\.\.\.|正在更新與同步線上使用者及好友名單，系統負荷量大時會需時較久.../)) {
           PTT.commands.add(/.*/, "", logincheck);
         }
         else {
@@ -381,7 +383,6 @@ const msg = {
 
       let result = PTT.screenHaveText(/請輸入代號，或以 guest 參觀，或以 new 註冊/);
       if (result) {
-        msg.PostMessage("alert", { type: true, msg: "登入中。" });
         insertText(id + "\n" + pw + "\n");
         PTT.commands.add(/.*/, "", logincheck);
       }
@@ -396,7 +397,7 @@ const msg = {
   }
   function PTTLockCheck(callback, ...args) {
     const disbtn = $(`.btn.btn-danger[type=button]`);
-    if (disbtn.length > 0) setTimeout(reconnect(), 100);
+    if (disbtn.length > 0) reconnect();
     if (PTT.controlstate === 1) {
       msg.PostMessage("alert", { type: false, msg: "指令執行中，請稍後再試。" });
       return;

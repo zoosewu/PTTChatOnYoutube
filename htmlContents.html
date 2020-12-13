@@ -1,37 +1,48 @@
 <div id="PTTChat-contents" class="tab-content container d-flex flex-column ptttext">
-  <div id="PTTChat-Time" class="w-100 ptttext collapse position-absolute">
-    <div id="PTTChat-Time-Setting">
-      <form class="form-inline d-flex justify-content-between w-100">
-        <button id="minus-time" class="btn btn-outline-secondary" type="button">-1分鐘</button>
-        <div class="form-group mb-2">
-          <label for="appt-time">實況VOD開台時間　:　</label>
-          <input id="stream-time" type="time" name="stream-time" value="18:00">
-        </div>
-        <button id="add-time" class="btn btn-outline-secondary" type="button">+1分鐘</button>
-      </form>
+  <!-------- 聊天室 -------->
+  <div class="tab-pane mh-100 fade" id="PTTChat-contents-Chat" role="tabpanel" aria-labelledby="nav-item-Chat">
+    <!-------- 開台時間 -------->
+    <div id="PTTChat-Time" class="ptttext pttbg p-2 position-absolute w-75 d-none" style="z-index:400;">
+      <div id="PTTChat-Time-Setting">
+        <form class="form-inline d-flex justify-content-between w-100">
+          <label for="dis" class="mr-1">實況重播時間微調:</label>
+          <button id="minus-time" class="btn ptttext border btn-outline-secondary" type="button">-1分鐘</button>
+          <button id="add-time" class="btn ptttext border btn-outline-secondary" type="button">+1分鐘</button>
+        </form>
+      </div>
+    </div>
+    <!-------- 聊天室 -------->
+    <div class="flex-grow-1 overflow-auto mh-100 row" id="PTTChat-contents-Chat-main"
+      style="overscroll-behavior: contain;">
+      <ul id="PTTChat-contents-Chat-pushes" class="col mb-0"> </ul>
+      <div id="PTTChat-contents-Chat-btn" class="position-absolute d-none"
+        style="z-index:400; bottom:5%; left: 50%; -ms-transform: translateX(-50%); transform: translateX(-50%);">
+        <button id="AutoScroll" class="btn btn-primary" type="button">自動滾動</button>
+      </div>
     </div>
   </div>
-  <div class="tab-pane flex-grow-1 overflow-auto row fade" id="PTTChat-contents-Chat" role="tabpanel"
-    aria-labelledby="nav-item-Chat" style="overscroll-behavior: contain;">
-    <ul id="PTTChat-contents-Chat-main" class="col mb-0"> </ul>
-    <div id="PTTChat-contents-Chat-btn" class="collapse position-absolute"
-      style="z-index:400; bottom:5%; left: 50%; -ms-transform: translateX(-50%); transform: translateX(-50%);">
-      <button id="AutoScroll" class="btn btn-primary" type="button" data-toggle="collapse"
-        data-target="#PTTChat-contents-Chat-btn" aria-controls="PTTChat-contents-Chat-btn"
-        aria-expanded="false">自動滾動</button>
-    </div>
-  </div>
+  <!-------- 連線設定 -------->
   <div class="tab-pane h-100 row fade show active" id="PTTChat-contents-Connect" role="tabpanel"
     aria-labelledby="nav-item-Connect">
     <div id="PTTChat-contents-Connect-main" class="col overflow-auto h-100 mb-0 p-4" data-spy="scroll" data-offset="0">
     </div>
     <div id="PTTChat-contents-Connect-alert" class="position-relative container" style="top:-100%; z-index:400;"> </div>
   </div>
-  <div class="tab-pane h-100 row fade" id="PTTChat-contents-Setting" role="tabpanel" aria-labelledby="nav-item-Setting">
-    <ul id="PTTChat-contents-Setting-main" class="col overflow-auto h-100" data-spy="scroll" data-offset="0"> </ul>
+  <!-------- 其他 -------->
+  <div class="tab-pane h-100 card bg-transparent overflow-auto row fade" id="PTTChat-contents-other" role="tabpanel"
+    aria-labelledby="nav-item-other">
+    <div id="PTTChat-contents-other-main" class="card-body"> </div>
   </div>
+  <!-------- PTT畫面 -------->
   <div class="tab-pane h-100 row fade" id="PTTChat-contents-PTT" role="tabpanel" aria-labelledby="nav-item-PTT">
-    <ul id="PTTChat-contents-PTT-main" class="col h-100 d-flex justify-content-center pr-0 pl-0" data-spy="scroll"
-      data-offset="0"> </ul>
+    <div id="PTTChat-contents-PTT-main" class="h-100 d-flex justify-content-center px-0"> </div>
+  </div>
+  <!-------- Log -------->
+  <div class="tab-pane mh-100 fade" id="PTTChat-contents-log" role="tabpanel" aria-labelledby="nav-item-log"
+    style="overscroll-behavior: contain;">
+    <div class=" flex-grow-1 overflow-auto mh-100 row" id="PTTChat-contents-log-main"
+      style="overscroll-behavior: contain;">
+      <!--<ul id="PTTChat-contents-log-table" class="col mb-0"> </ul>-->
+    </div>
   </div>
 </div>
