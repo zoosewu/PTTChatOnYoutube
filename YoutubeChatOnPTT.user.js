@@ -19,7 +19,6 @@
 // @require      https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js
 // @require      https://cdn.jsdelivr.net/npm/vue
-// @require      file://E:\Project\PTTChatOnYoutube\Main.user.js
 // @connect      www.ptt.cc
 // @homepageURL  https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage
 // @license      MIT
