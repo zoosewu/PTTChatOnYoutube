@@ -2,7 +2,7 @@
 // @name         YoutubeChatOnPTT
 // @name:zh-TW   Youtube聊天室顯示PTT推文
 // @namespace    https://github.com/zoosewu/PTTChatOnYoutube
-// @version      1.0.25
+// @version      1.0.26
 // @description  connect ptt pushes to youtube chatroom
 // @description:zh-tw 連結PTT推文到Youtube聊天室
 // @author       Zoosewu
