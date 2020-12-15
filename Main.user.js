@@ -26,7 +26,7 @@
 // ==/UserScript==
 'use strict';
 //user log
-const reportmode = false;
+const reportmode = true;
 //all log
 const showalllog = false;
 //dev log
@@ -36,7 +36,7 @@ const showPostMessage = (false || reportmode || showalllog);
 const showonMessage = (false || reportmode || showalllog);
 const showalertmsg = false || showalllog;
 //dev use 
-let devmode = false;
+let devmode = true;
 const defaultopen = false;
 const disablepttframe = false;
 const simulateisstreaming = false;
@@ -72,16 +72,16 @@ else if (window.attachEvent) {
 
 
 let isTopframe = (window.top == window.self);
-if (/www\.youtube\.com\/watch\?v=/.exec(window.location.href) !== null) {
+if (/www\.youtube\.com/.exec(window.location.href) !== null) {
   //check script work in right frame
   if (!isTopframe) throw new Error("Script Stopped when Youtube is not top frame");
   //init postmessage
   msg.targetorigin = "https://term.ptt.cc";
   msg.ownorigin = "https://www.youtube.com";
-  msg["test"] = data => { console.log("test parent onmessage", data); };
+  //msg["test"] = data => { console.log("test parent onmessage", data); };
   //-----
   console.log("Script started at " + window.location.href);
-  runYoutubeScript();
+  InitYoutubeScript();
   console.log("Youtube Script initialize finish.");
   //-----
 }
@@ -92,29 +92,137 @@ else if (/term\.ptt\.cc/.exec(window.location.href) !== null) {
   msg.ownorigin = "https://term.ptt.cc";
   msg.targetorigin = "https://www.youtube.com";
   msg.targetWindow = top;
-  msg["test"] = data => { console.log("test child onmessage", data); };
+  //msg["test"] = data => { console.log("test child onmessage", data); };
   //-----
   console.log("Script started at " + window.location.href);
   runPTTScript();
   console.log("PTT Script initialize finish.");
   //-----
 }
-//Youtube---------------------------------------------------------------------------------------------------------------------
-function runYoutubeScript() {
-  //generate crypt key everytime;
-  cryptkey = makeid(20 + Math.random() * 10);
-  GM_setValue("cryptkey", cryptkey);
-  function makeid(length) {
-    var result = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-  }
-  const testPTTurl = "https://www.ptt.cc/bbs/C_Chat/M.1606557604.A.904.html";
+else if (/hololive\.jetri\.co/.exec(window.location.href) !== null) {
+  //check script work in right frame
+  if (isTopframe) throw new Error("Script Stopped when PTT is top frame");
+  //init postmessage
+  msg.ownorigin = "https://hololive.jetri.co";
+  msg.targetorigin = "https://term.ptt.cc";
+  //msg["test"] = data => { console.log("test child onmessage", data); };
+  //-----
+  console.log("Script started at " + window.location.href);
 
+  console.log("Hololive Script initialize finish.");
+  //-----
+}
+
+function AddBootstrap(frame) {
+  const frameHead = $("head", frame);
+  const frameBody = $("body", frame);
+  frameHead.append($(`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">`));
+  frameBody.append($(`<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>`));
+  frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>`));
+  frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>`));
+}
+function AddPTTAppcss(whitetheme, colorlight, colordark) {
+  //add globalcss
+  let bdcolor, ptp, pid, ptm, pmsg, ptxt;
+  if (whitetheme) {
+    bdcolor = colordark; ptp = "#000"; pid = "#990"; ptm = "#bbb"; pmsg = "#550"; ptxt = "#343a40";
+  }
+  else {
+    bdcolor = colorlight; ptp = "#fff"; pid = "#ff6"; ptm = "#bbb"; pmsg = "#990"; ptxt = "#f8f9fa";
+  }
+  const PTTcss =
+    //PTTmaincss
+    `.ptttext { color: ` + ptxt + `; }
+    .pttbg {background-color: ` + bdcolor + `; }` +
+    //border
+    `.border{
+    border-color: ` + bdcolor + `!important;
+    border-top-color: `+ bdcolor + ` !important;
+    border-right-color: `+ bdcolor + ` !important;
+    border-bottom-color: `+ bdcolor + ` !important;
+    border-left-color: `+ bdcolor + ` !important;}` +
+    //PTTpushcss
+    `.pid { color: ` + pid + `; }
+     .ptime { color: ` + ptm + `; }
+     .pmsg { color: `+ pmsg + `; }
+     .ptype { color: ` + ptp + `}`;
+  AddStyle(PTTcss);
+}
+//Youtube---------------------------------------------------------------------------------------------------------------------
+function InitYoutubeScript() {
+  //generate crypt key everytime;
+  cryptkey = GenerateCryptKey();
+  //add bootstrap to use
+  AddBootstrap(document);
+  //PTTApp global css
+  setTimeout(() => {
+    const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
+    const colorlight = "rgb(120, 120, 120)";
+    const colordark = "rgb(24, 24, 24)"
+    const darktheme = (YTbgcolor === colordark);
+    console.log(darktheme, YTbgcolor, colorlight, colordark);
+    AddPTTAppcss(!darktheme, colorlight, colordark);
+  }, 100);
+  //避免bootstrap汙染YT
+  const PTTcss2 = `pttdiv{ 
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        text-align: left;
+        background-color: #fff;        
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        font-family: Roboto, Arial, sans-serif;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: normal;
+        color: rgb(0, 0, 0);
+        text-align: start;
+        background-color: rgba(0, 0, 0, 0);
+      }
+      #primary,#secondary{  box-sizing: content-box;}
+      html {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.18);
+      }`;
+  AddStyle(PTTcss2);
+  //run app instance loop
+  setTimeout(ChechChatInstanced, 3000);
+}
+function ChechChatInstanced() {
+  if (/www\.youtube\.com\/watch\?v=/.exec(window.location.href) === null) {
+    if (showalllog) console.log("not watch video.");
+    setTimeout(ChechChatInstanced, 2000);
+    return;
+  }
+  const ChatContainer = $(`ytd-live-chat-frame`);
+  const defaultChat = $(`iframe`, ChatContainer);
+  const PTTApp = $(`#PTTChat`, ChatContainer);
+  if (PTTApp.length > 0) {
+    if (showalllog) console.log("PTTApp already instanced.");
+    setTimeout(ChechChatInstanced, 5000);
+    return;
+  }
+  else if (defaultChat.length > 0) {
+    if (showalllog) console.log("PTTApp frame instance!");
+    ChatContainer.css({ "position": "relative" });
+    //生出插件
+    InitApp(ChatContainer);
+    setTimeout(ChechChatInstanced, 5000);
+  }
+  else {
+    if (showalllog) console.log("watching video without chatroom.");
+    setTimeout(ChechChatInstanced, 5000);
+  }
+}
+function InitApp(chatcon, whitetheme) {
+  setTimeout(repeatlog, 1000);
+  function repeatlog() {
+    console.log("PTTChat_Chat_Main", PTTChat_Chat_Main);
+    setTimeout(repeatlog, 1000);
+  }
   let player;
   let isinitPTT = false;
   let ConnectAlertDiv;
@@ -138,39 +246,44 @@ function runYoutubeScript() {
     pushcount: 0,
     nowpush: 0,
   };
-  ChechChatInstanced();
-  (function () {
-    (function AddBootstrap(frame) {
-      const frameHead = $("head", frame);
-      const frameBody = $("body", frame);
-      frameHead.append($(`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">`));
+  //log
+  let logs = {};
 
-      frameBody.append($(`<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>`));
-      frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>`));
-      frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>`));
+  //scroll
+  let AotoScroller;
+  let PTTChat_Chat_Main;
+  let PTTChat_Chat;
+  let PTTChat_Log;
+  let scriptscrolltime = Date.now();
+  let scrolltargetpos = 0;
+  let scrolllastpos = 0;
+  let scrolloffset = 0;
 
-    })(document)
-  })();
-  function ChechChatInstanced() {
-    const ChatContainer = $(`ytd-live-chat-frame`);
-    const defaultChat = $(`iframe`, ChatContainer);
-    if (defaultChat.length > 0) {
-      console.log("chat frame instanced");
-      ChatContainer.css({ "position": "relative" });
-      player = document.getElementsByTagName("video")[0];
-      if (simulateisstreaming) {
-        isstreaming = true;
-        updatelog("videotype", "實況");
-      }
-      InitChatApp(defaultChat);
+
+  function StreamCheck() {
+    const streambtncss = $('.ytp-live-badge').css("display");
+    const logstr = [`$('.ytp-live-badge').css("display")`, streambtncss];
+    if (simulateisstreaming) {
+      isstreaming = true;
+    } else if (streambtncss === "inline-block") {
+      console.log("This video is streaming.", logstr);
+      isstreaming = true;
+      //$(`#PTTConnect-Time-Setting`).addClass('d-none');
     }
-    else {
-      setTimeout(ChechChatInstanced, 1000);
+    else if (streambtncss === "none") {
+      console.log("This video is not streaming.", logstr);
+      isstreaming = false;
+      $(`#PTTConnect-Time-Setting`).removeClass('d-none');
     }
   }
 
-  function InitChatApp(defaultChatApp) {
-    //console.log(defaultChatApp);
+  InitChatApp(chatcon);
+  function InitChatApp(cn) {
+    //init property
+    player = document.getElementsByTagName("video")[0];
+    StreamCheck();
+
+
     const PTTAppCollapse = $(`<pttdiv id="PTTChat" class="pttchat rounded-right rounded-bottom w-100 collapse" style="z-index: 301; position: absolute;"></pttdiv>`);
     const PTTApp = $(`<div id="PTTChat-app" class=" pttbg border rounded w-100 d-flex flex-column"></div>`);
     const PTTChatnavbar = $(`<ul id="PTTChat-navbar" class="nav nav-tabs justify-content-center" role="tablist"><li class="nav-item"><a class="nav-link ptttext bg-transparent" id="nav-item-Chat" data-toggle="tab" href="#PTTChat-contents-Chat" role="tab" aria-controls="PTTChat-contents-Chat" aria-selected="false">聊天室</a></li><li class="nav-item"><a class="nav-link ptttext bg-transparent active" id="nav-item-Connect" data-toggle="tab" href="#PTTChat-contents-Connect" role="tab" aria-controls="PTTChat-contents-Connect" aria-selected="true">連線設定</a></li><li class="nav-item"><a class="nav-link ptttext bg-transparent" id="nav-item-other" data-toggle="tab" href="#PTTChat-contents-other" role="tab" aria-controls="PTTChat-contents-other" aria-selected="false">說明</a></li><li class="nav-item"><a class="nav-link ptttext bg-transparent" id="nav-item-PTT" data-toggle="tab" href="#PTTChat-contents-PTT" role="tab" aria-controls="PTTChat-contents-PTT" aria-selected="false">PTT畫面</a></li><li class="nav-item"><a class="nav-link ptttext bg-transparent" id="nav-item-log" data-toggle="tab" href="#PTTChat-contents-log" role="tab" aria-controls="PTTChat-contents-log" aria-selected="false">log</a></li><li class="nav-item"><button class="nav-link ptttext bg-transparent d-none" id="nav-item-TimeSet" type="button" data-toggle="collapse" data-target="#PTTChat-Time" aria-controls="PTTChat-Time" aria-expanded="false">時間</button></li></ul>
@@ -178,16 +291,18 @@ function runYoutubeScript() {
     const PTTChatContents = $(`<div id="PTTChat-contents" class="tab-content container d-flex flex-column ptttext"><!-------- 聊天室 --------><div class="tab-pane mh-100 fade" id="PTTChat-contents-Chat" role="tabpanel" aria-labelledby="nav-item-Chat"><!-------- 開台時間 --------><div id="PTTChat-Time" class="ptttext pttbg p-2 position-absolute w-75 d-none" style="z-index:400"><div id="PTTChat-Time-Setting"><form class="form-inline d-flex justify-content-between w-100"><label for="dis" class="mr-1">實況重播時間微調:</label> <button id="minus-time" class="btn ptttext border btn-outline-secondary" type="button">-1分鐘</button> <button id="add-time" class="btn ptttext border btn-outline-secondary" type="button">+1分鐘</button></form></div></div><!-------- 聊天室 --------><div class="flex-grow-1 overflow-auto mh-100 row" id="PTTChat-contents-Chat-main" style="overscroll-behavior:contain"><ul id="PTTChat-contents-Chat-pushes" class="col mb-0"></ul><div id="PTTChat-contents-Chat-btn" class="position-absolute d-none" style="z-index:400;bottom:5%;left:50%;-ms-transform:translateX(-50%);transform:translateX(-50%)"><button id="AutoScroll" class="btn btn-primary" type="button">自動滾動</button></div></div></div><!-------- 連線設定 --------><div class="tab-pane h-100 row fade show active" id="PTTChat-contents-Connect" role="tabpanel" aria-labelledby="nav-item-Connect"><div id="PTTChat-contents-Connect-main" class="col overflow-auto h-100 mb-0 p-4" data-spy="scroll" data-offset="0"></div><div id="PTTChat-contents-Connect-alert" class="position-relative container" style="top:-100%;z-index:400"></div></div><!-------- 其他 --------><div class="tab-pane h-100 card bg-transparent overflow-auto row fade" id="PTTChat-contents-other" role="tabpanel" aria-labelledby="nav-item-other"><div id="PTTChat-contents-other-main" class="card-body"></div></div><!-------- PTT畫面 --------><div class="tab-pane h-100 row fade" id="PTTChat-contents-PTT" role="tabpanel" aria-labelledby="nav-item-PTT"><div id="PTTChat-contents-PTT-main" class="h-100 d-flex justify-content-center px-0"></div></div><!-------- Log --------><div class="tab-pane mh-100 fade" id="PTTChat-contents-log" role="tabpanel" aria-labelledby="nav-item-log" style="overscroll-behavior:contain"><div class="flex-grow-1 overflow-auto mh-100 row" id="PTTChat-contents-log-main" style="overscroll-behavior:contain"><!--<ul id="PTTChat-contents-log-table" class="col mb-0"> </ul>--></div></div></div>
     `);
     const MainBtn = $(`<a id="PTTMainBtn" class="btn btn-lg border" type="button" data-toggle="collapse" data-target="#PTTChat" aria-expanded="false" aria-controls="PTTChat">P</a>`)
+    cn.append(PTTAppCollapse);
+    cn.append(MainBtn);
 
-    PTTAppCollapse.insertBefore(defaultChatApp);
     PTTAppCollapse.append(PTTApp);
-    MainBtn.insertBefore(defaultChatApp);
     MainBtn.css({ "z-index": "450", "position": "absolute" });
 
     if (defaultopen) {
       $(`#PTTMainBtn`)[0].click();
     }
-
+    PTTAppCollapse.on("remove", function () {
+      alert("PTTApp was removed");
+    })
     PTTApp.append(PTTChatnavbar);
     PTTApp.append(PTTChatContents);
 
@@ -198,76 +313,16 @@ function runYoutubeScript() {
     PTTChatContents.css({ "height": PTTAppHeight + "px" });
     player.addEventListener('timeupdate', PlayerUpdate);
 
-    //add globalcss
-    setTimeout(() => {
-      const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
-      let bdcolor, ptp, pid, ptm, pmsg, ptxt;
-      const colorlight = "rgb(120, 120, 120)";
-      const colordark = "rgb(24, 24, 24)"
-      if (YTbgcolor === colordark) {
-        updatelog("ytcolor", "深色");
-        bdcolor = colorlight;
-        ptp = "#fff"; pid = "#ff6"; ptm = "#bbb"; pmsg = "#990"; ptxt = "#f8f9fa";
-        //PTTApp.addClass("border-white");
-        MainBtn.addClass("btn-outline-light");
-      }
-      else {
-        updatelog("ytcolor", "淺色");
-        bdcolor = colordark;
-        ptp = "#000"; pid = "#990"; ptm = "#bbb"; pmsg = "#550"; ptxt = "#343a40";
-        //PTTApp.addClass("border-dark");
-        MainBtn.addClass("btn-outline-dark");
-      }
-      const PTTcss =
-        //PTTmaincss
-        `.ptttext { color: ` + ptxt + `; }
-        .pttbg {background-color: ` + YTbgcolor + `; }` +
-        //border
-        `.border{
-        border-color: ` + bdcolor + `!important;
-        border-top-color: `+ bdcolor + ` !important;
-        border-right-color: `+ bdcolor + ` !important;
-        border-bottom-color: `+ bdcolor + ` !important;
-        border-left-color: `+ bdcolor + ` !important;}` +
-        //PTTpushcss
-        `.pid { color: ` + pid + `; }
-        .ptime { color: ` + ptm + `; }
-        .pmsg { color: `+ pmsg + `; }
-        .ptype { color: ` + ptp + `}
-        pttdiv{ 
-          font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-          font-size: 1rem;
-          font-weight: 400;
-          line-height: 1.5;
-          color: #212529;
-          text-align: left;
-          background-color: #fff;        
-          -webkit-tap-highlight-color: transparent;
-        }
-        body {
-          font-family: Roboto, Arial, sans-serif;
-          font-size: 1rem;
-          font-weight: 400;
-          line-height: normal;
-          color: rgb(0, 0, 0);
-          text-align: start;
-          background-color: rgba(0, 0, 0, 0);
-        }
-        #primary,#secondary{  box-sizing: content-box;}
-        html {
-          -webkit-tap-highlight-color: rgba(0, 0, 0, 0.18);
-        }`;
-        //unused css
-        `*, ::after, ::before { box-sizing: content-box; }`;
-      const style = document.createElement('style');
-      if (style.styleSheet) {
-        style.styleSheet.cssText = PTTcss;
-      } else {
-        style.appendChild(document.createTextNode(PTTcss));
-      }
-      $('head')[0].appendChild(style);
-    }, 100);
 
+
+    if (whitetheme) {
+      updatelog("ytcolor", "淺色");
+      MainBtn.addClass("btn-outline-dark");
+    }
+    else {
+      MainBtn.addClass("btn-outline-light");
+      updatelog("ytcolor", "深色");
+    }
 
     /*------------------------------------CHAT------------------------------------*/
 
@@ -430,7 +485,7 @@ function runYoutubeScript() {
       console.log("分析假推文", f);
       const obj = JSON.parse(f, dateReviver);
       ParsePostData(obj);
-      if (simulateisstreaming) setTimeout(getfakedata, 5000, null, fakedata1push);
+      if (simulateisstreaming) setTimeout(getfakedata, 5000, null, fakedata1push);///danger
     }
 
 
@@ -467,6 +522,7 @@ function runYoutubeScript() {
     PTTChat_Log = $(`<table class="table"><tbody class="ptttext"><tr><th scope="row">PTT狀態</th><td id="log-PTTstate">--</td><td colspan="2">更多的詳細資訊請參考PTT畫面</td></tr><th class="text-center bg-secondary text-white" colspan="4">文章資訊</th><tr><th scope="row">文章標題</th><td id="log-posttitle" colspan="3">--</td></tr><tr><th scope="row">文章看板</th><td id="log-postboard">--</td><th scope="row">文章代碼</th><td id="log-postaid">--</td></tr><tr><th scope="row">推文數</th><td id="log-postpushcount">--</td><th scope="row">結尾行數</th><td id="log-postendline">--</td></tr><tr><th scope="row">發文時間</th><td id="log-posttime" colspan="3">--</td></tr><tr><th scope="row">最後推文時間</th><td id="log-postlastpushtime" colspan="3">--</td></tr><th class="text-center bg-secondary text-white" colspan="4">詳細資訊</th><tr><th scope="row">影片類型</th><td id="log-videotype">--</td><th scope="row">自動獲得推文</th><td id="log-isautogetpush">--</td></tr><tr><th scope="row">YT主題顏色</th><td id="log-ytcolor">--</td><th scope="row"></th><td></td></tr><tr><th scope="row">預估開台時間</th><td id="log-streamstarttime" colspan="3">--</td></tr><tr><th scope="row">影片當下時間</th><td id="log-streamnowtime" colspan="3">--</td></tr><th class="text-center bg-secondary text-white" colspan="4">滾動狀態</th><tr><th scope="row">目標推文樓數</th><td id="log-pushindex">--</td><th scope="row">目標捲動高度</th><td id="log-targetscroll">--</td></tr><tr><th scope="row">現在捲動高度</th><td id="log-nowscroll">--</td><th scope="row">上次捲動高度</th><td id="log-lastscroll">--</td></tr></tbody></table>
     `);
     $(`#PTTChat-contents-log-main`, PTTChatContents).append(PTTChat_Log);
+    updatelog("videotype", isstreaming ? "實況" : "紀錄檔");
     /*--------------------------------------END--------------------------------------*/
     if (devmode) {
       DevMode();
@@ -480,7 +536,6 @@ function runYoutubeScript() {
     UpdateStreamTime();
   }
   /*------------------------------------Update Log------------------------------------*/
-  let logs = {};
   function updatelog(logtype, msg) {
     if (!logs[logtype]) {
       logs[logtype] = $("#log-" + logtype, PTTChat_Log);
@@ -501,33 +556,12 @@ function runYoutubeScript() {
   }
   msg["alert"] = data => { AlertMsg(data.type, data.msg); };
   /*------------------------------------Chat Scroll------------------------------------*/
-  let AotoScroller;
-  let PTTChat_Chat_Main;
-  let PTTChat_Chat;
-  let PTTChat_Log;
-  let scriptscrolltime = Date.now();
-  let scrolltargetpos = 0;
-  let scrolllastpos = 0;
+
   function PlayerUpdate(forceScroll) {
     /*console.log((scriptscrolltime + 100) + " + " + Date.now());
     console.log((scriptscrolltime - Date.now()));
     console.log((scriptscrolltime + 100 > Date.now()));*/
-    if (isstreaming === undefined) {
-      if ($('.ytp-live-badge.ytp-button')[0].getAttribute('disabled') === "") {
-        console.log("This video is streaming.");
-        isstreaming = true;
-        //$(`#PTTConnect-Time-Setting`).addClass('d-none');
-        updatelog("videotype", "實況");
-      }
-      else if ($('.ytp-live-badge.ytp-button[disabled=true]').length > 0) {
-        console.log("This video is not streaming.");
-        isstreaming = false;
-        updatelog("videotype", "紀錄檔");
-        $(`#PTTConnect-Time-Setting`).removeClass('d-none');
-
-      }
-    }
-    else if (isstreaming && autogetpush && (Date.now() > lastgetpushtime + 2500)) {
+    if (isstreaming && autogetpush && (Date.now() > lastgetpushtime + 2500)) {
       console.log("PlayerUpdate autogetpush", autogetpush, lastgetpushtime, Date.now());
       autogetpush = false;
       lastgetpushtime = Date.now();
@@ -537,7 +571,6 @@ function runYoutubeScript() {
     updatelog("streamnowtime", t.toLocaleDateString() + " " + t.toLocaleTimeString());
     ScrollToTime(false);
   }
-  let scrolloffset = 0;
   function _scroll() {
     const target = pushdata.pushes[pushdata.nowpush].div;
     if (scrolloffset === 0) scrolloffset = (PTTChat_Chat[0].clientHeight - target[0].clientHeight) / 2;
@@ -1258,8 +1291,38 @@ function runPTTScript() {
   msg["getpost"] = data => { PTTLockCheck(GetPostPush, data.AID, data.board, data.startline); };
 }
 
+//add global style
+function AddStyle(css) {
+  const style = document.createElement('style');
+  console.log("style", style);
+  console.log("style.styleSheet", style.styleSheet);
+  if (style.styleSheet) {
+    console.log("style.styleSheet.cssText", style.styleSheet.cssText);
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(css));
+  }
+  $('head')[0].appendChild(style);
+}
 
-//function
+//cryptkey
+function GenerateCryptKey() {
+  let c = makeid(20 + Math.random() * 10);
+  GM_setValue("cryptkey", c);
+  return c;
+
+  function makeid(length) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
+}
+
+//左邊補0 右邊補0
 function paddingLeft(str, lenght) {
   str = str + "";
   if (str.length >= lenght)
@@ -1274,7 +1337,7 @@ function paddingRight(str, lenght) {
   else
     return paddingRight(str + "0", lenght);
 }
-
+//JSON轉換用
 var dateReviver = function (key, value) {
   if (typeof value === 'string') {
     const a = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/.exec(value);
