@@ -123,17 +123,17 @@ function AddBootstrap(frame) {
 }
 function AddPTTAppcss(whitetheme, colorlight, colordark) {
   //add globalcss
-  let bdcolor, ptp, pid, ptm, pmsg, ptxt;
+  let bdcolor, bgcolor, ptp, pid, ptm, pmsg, ptxt;
   if (whitetheme) {
-    bdcolor = colordark; ptp = "#000"; pid = "#990"; ptm = "#bbb"; pmsg = "#550"; ptxt = "#343a40";
+    bdcolor = colordark; bgcolor = colorlight; ptp = "#000"; pid = "#990"; ptm = "#bbb"; pmsg = "#550"; ptxt = "#343a40";
   }
   else {
-    bdcolor = colorlight; ptp = "#fff"; pid = "#ff6"; ptm = "#bbb"; pmsg = "#990"; ptxt = "#f8f9fa";
+    bdcolor = colorlight; bgcolor = colordark; ptp = "#fff"; pid = "#ff6"; ptm = "#bbb"; pmsg = "#990"; ptxt = "#f8f9fa";
   }
   const PTTcss =
     //PTTmaincss
     `.ptttext { color: ` + ptxt + `; }
-    .pttbg {background-color: ` + bdcolor + `; }` +
+    .pttbg {background-color: ` + bgcolor + `; }` +
     //border
     `.border{
     border-color: ` + bdcolor + `!important;
@@ -150,6 +150,7 @@ function AddPTTAppcss(whitetheme, colorlight, colordark) {
 }
 //Youtube---------------------------------------------------------------------------------------------------------------------
 function InitYoutubeScript() {
+  let WhiteTheme;
   //generate crypt key everytime;
   cryptkey = GenerateCryptKey();
   //add bootstrap to use
@@ -157,11 +158,10 @@ function InitYoutubeScript() {
   //PTTApp global css
   setTimeout(() => {
     const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
-    const colorlight = "rgb(120, 120, 120)";
+    const colorlight = "rgb(249, 249, 249)";
     const colordark = "rgb(24, 24, 24)"
-    const darktheme = (YTbgcolor === colordark);
-    console.log(darktheme, YTbgcolor, colorlight, colordark);
-    AddPTTAppcss(!darktheme, colorlight, colordark);
+    WhiteTheme = !(YTbgcolor === colordark);
+    AddPTTAppcss(WhiteTheme, colorlight, colordark);
   }, 100);
   //避免bootstrap汙染YT
   const PTTcss2 = `pttdiv{ 
@@ -190,39 +190,58 @@ function InitYoutubeScript() {
   AddStyle(PTTcss2);
   //run app instance loop
   setTimeout(ChechChatInstanced, 3000);
+  function ChechChatInstanced() {
+    if (/www\.youtube\.com\/watch\?v=/.exec(window.location.href) === null) {
+      if (showalllog) console.log("not watch video.");
+      setTimeout(ChechChatInstanced, 2000);
+      return;
+    }
+    const ChatContainer = $(`ytd-live-chat-frame`);
+    const defaultChat = $(`iframe`, ChatContainer);
+    const PTTApp = $(`#PTTChat`, ChatContainer);
+    if (PTTApp.length > 0) {
+      if (showalllog) console.log("PTTApp already instanced.");
+      setTimeout(ChechChatInstanced, 5000);
+      return;
+    }
+    else if (defaultChat.length > 0) {
+      if (showalllog) console.log("PTTApp frame instance!");
+      ChatContainer.css({ "position": "relative" });
+
+      //生出插件
+      let isstream = checkvideotype();
+      InitApp(ChatContainer, WhiteTheme, isstream);
+
+      setTimeout(ChechChatInstanced, 5000);
+    }
+    else {
+      if (showalllog) console.log("watching video without chatroom.");
+      setTimeout(ChechChatInstanced, 5000);
+    }
+  }
+  function checkvideotype() {
+    const streambtncss = $('.ytp-live-badge').css("display");
+    const logstr = [`$('.ytp-live-badge').css("display")`, streambtncss];
+    if (simulateisstreaming) {
+    } else if (streambtncss === "inline-block") {
+      console.log("This video is streaming.", logstr);
+      return true;
+      //$(`#PTTConnect-Time-Setting`).addClass('d-none');
+    }
+    else if (streambtncss === "none") {
+      console.log("This video is not streaming.", logstr);
+      return false;
+    }
+  }
 }
-function ChechChatInstanced() {
-  if (/www\.youtube\.com\/watch\?v=/.exec(window.location.href) === null) {
-    if (showalllog) console.log("not watch video.");
-    setTimeout(ChechChatInstanced, 2000);
-    return;
-  }
-  const ChatContainer = $(`ytd-live-chat-frame`);
-  const defaultChat = $(`iframe`, ChatContainer);
-  const PTTApp = $(`#PTTChat`, ChatContainer);
-  if (PTTApp.length > 0) {
-    if (showalllog) console.log("PTTApp already instanced.");
-    setTimeout(ChechChatInstanced, 5000);
-    return;
-  }
-  else if (defaultChat.length > 0) {
-    if (showalllog) console.log("PTTApp frame instance!");
-    ChatContainer.css({ "position": "relative" });
-    //生出插件
-    InitApp(ChatContainer);
-    setTimeout(ChechChatInstanced, 5000);
-  }
-  else {
-    if (showalllog) console.log("watching video without chatroom.");
-    setTimeout(ChechChatInstanced, 5000);
-  }
-}
-function InitApp(chatcon, whitetheme) {
-  setTimeout(repeatlog, 1000);
+
+function InitApp(chatcon, whitetheme, isstream) {
+  /*setTimeout(repeatlog, 1000);
   function repeatlog() {
     console.log("PTTChat_Chat_Main", PTTChat_Chat_Main);
+    console.log("player", player);
     setTimeout(repeatlog, 1000);
-  }
+  }*/
   let player;
   let isinitPTT = false;
   let ConnectAlertDiv;
@@ -259,30 +278,11 @@ function InitApp(chatcon, whitetheme) {
   let scrolllastpos = 0;
   let scrolloffset = 0;
 
-
-  function StreamCheck() {
-    const streambtncss = $('.ytp-live-badge').css("display");
-    const logstr = [`$('.ytp-live-badge').css("display")`, streambtncss];
-    if (simulateisstreaming) {
-      isstreaming = true;
-    } else if (streambtncss === "inline-block") {
-      console.log("This video is streaming.", logstr);
-      isstreaming = true;
-      //$(`#PTTConnect-Time-Setting`).addClass('d-none');
-    }
-    else if (streambtncss === "none") {
-      console.log("This video is not streaming.", logstr);
-      isstreaming = false;
-      $(`#PTTConnect-Time-Setting`).removeClass('d-none');
-    }
-  }
-
   InitChatApp(chatcon);
   function InitChatApp(cn) {
+    /*-----------------------------------preInitApp-----------------------------------*/
     //init property
     player = document.getElementsByTagName("video")[0];
-    StreamCheck();
-
 
     const PTTAppCollapse = $(`<pttdiv id="PTTChat" class="pttchat rounded-right rounded-bottom w-100 collapse" style="z-index: 301; position: absolute;"></pttdiv>`);
     const PTTApp = $(`<div id="PTTChat-app" class=" pttbg border rounded w-100 d-flex flex-column"></div>`);
@@ -315,14 +315,10 @@ function InitApp(chatcon, whitetheme) {
 
 
 
-    if (whitetheme) {
-      updatelog("ytcolor", "淺色");
-      MainBtn.addClass("btn-outline-dark");
-    }
-    else {
-      MainBtn.addClass("btn-outline-light");
-      updatelog("ytcolor", "深色");
-    }
+
+
+
+
 
     /*------------------------------------CHAT------------------------------------*/
 
@@ -516,14 +512,24 @@ function InitApp(chatcon, whitetheme) {
         //PTTCHAT_PTTTab.css({ "display": "none" });
       }
     });
-
     /*--------------------------------------Log--------------------------------------*/
-
-    PTTChat_Log = $(`<table class="table"><tbody class="ptttext"><tr><th scope="row">PTT狀態</th><td id="log-PTTstate">--</td><td colspan="2">更多的詳細資訊請參考PTT畫面</td></tr><th class="text-center bg-secondary text-white" colspan="4">文章資訊</th><tr><th scope="row">文章標題</th><td id="log-posttitle" colspan="3">--</td></tr><tr><th scope="row">文章看板</th><td id="log-postboard">--</td><th scope="row">文章代碼</th><td id="log-postaid">--</td></tr><tr><th scope="row">推文數</th><td id="log-postpushcount">--</td><th scope="row">結尾行數</th><td id="log-postendline">--</td></tr><tr><th scope="row">發文時間</th><td id="log-posttime" colspan="3">--</td></tr><tr><th scope="row">最後推文時間</th><td id="log-postlastpushtime" colspan="3">--</td></tr><th class="text-center bg-secondary text-white" colspan="4">詳細資訊</th><tr><th scope="row">影片類型</th><td id="log-videotype">--</td><th scope="row">自動獲得推文</th><td id="log-isautogetpush">--</td></tr><tr><th scope="row">YT主題顏色</th><td id="log-ytcolor">--</td><th scope="row"></th><td></td></tr><tr><th scope="row">預估開台時間</th><td id="log-streamstarttime" colspan="3">--</td></tr><tr><th scope="row">影片當下時間</th><td id="log-streamnowtime" colspan="3">--</td></tr><th class="text-center bg-secondary text-white" colspan="4">滾動狀態</th><tr><th scope="row">目標推文樓數</th><td id="log-pushindex">--</td><th scope="row">目標捲動高度</th><td id="log-targetscroll">--</td></tr><tr><th scope="row">現在捲動高度</th><td id="log-nowscroll">--</td><th scope="row">上次捲動高度</th><td id="log-lastscroll">--</td></tr></tbody></table>
+    PTTChat_Log = $(`<table class="table"><tbody class="ptttext"><tr><th scope="row">PTT狀態</th><td id="log-PTTstate">--</td><td colspan="2">更多的詳細資訊請參考PTT畫面</td></tr><th class="text-center bg-secondary text-white" colspan="4">文章資訊</th><tr><th scope="row">文章標題</th><td id="log-posttitle" colspan="3">--</td></tr><tr><th scope="row">文章看板</th><td id="log-postboard">--</td><th scope="row">文章代碼</th><td id="log-postaid">--</td></tr><tr><th scope="row">推文數</th><td id="log-postpushcount">--</td><th scope="row">結尾行數</th><td id="log-postendline">--</td></tr><tr><th scope="row">發文時間</th><td id="log-posttime" colspan="3">--</td></tr><tr><th scope="row">最後推文時間</th><td id="log-postlastpushtime" colspan="3">--</td></tr><th class="text-center bg-secondary text-white" colspan="4">詳細資訊</th><tr><th scope="row">影片類型</th><td id="log-videotype">--</td><th scope="row">自動獲得推文</th><td id="log-isautogetpush">--</td></tr><tr><th scope="row">主題顏色</th><td id="log-themecolor">--</td><th scope="row"></th><td></td></tr><tr><th scope="row">預估開台時間</th><td id="log-streamstarttime" colspan="3">--</td></tr><tr><th scope="row">影片當下時間</th><td id="log-streamnowtime" colspan="3">--</td></tr><th class="text-center bg-secondary text-white" colspan="4">滾動狀態</th><tr><th scope="row">目標推文樓數</th><td id="log-pushindex">--</td><th scope="row">目標捲動高度</th><td id="log-targetscroll">--</td></tr><tr><th scope="row">現在捲動高度</th><td id="log-nowscroll">--</td><th scope="row">上次捲動高度</th><td id="log-lastscroll">--</td></tr><th class="text-center bg-secondary text-white" colspan="4">近期訊息</th><tr><td id="log-alert0" colspan="4">--</td></tr><tr><td id="log-alert1" colspan="4">--</td></tr><tr><td id="log-alert2" colspan="4">--</td></tr><tr><td id="log-alert3" colspan="4">--</td></tr><tr><td id="log-alert4" colspan="4">--</td></tr><tr><td id="log-alert5" colspan="4">--</td></tr><tr><td id="log-alert6" colspan="4">--</td></tr><tr><td id="log-alert7" colspan="4">--</td></tr><tr><td id="log-alert8" colspan="4">--</td></tr><tr><td id="log-alert9" colspan="4">--</td></tr></tbody></table>
     `);
     $(`#PTTChat-contents-log-main`, PTTChatContents).append(PTTChat_Log);
-    updatelog("videotype", isstreaming ? "實況" : "紀錄檔");
-    /*--------------------------------------END--------------------------------------*/
+
+    /*----------------------------------postInitApp----------------------------------*/
+    //other init
+    if (whitetheme) {
+      updatelog("themecolor", "淺色");
+      console.log("themecolor", "淺色");
+      MainBtn.addClass("btn-outline-dark");
+    }
+    else {
+      updatelog("themecolor", "深色");
+      console.log("themecolor", "深色");
+      MainBtn.addClass("btn-outline-light");
+    }
+    StreamCheck(isstream);
     if (devmode) {
       DevMode();
     }
@@ -535,6 +541,23 @@ function InitApp(chatcon, whitetheme) {
     }
     UpdateStreamTime();
   }
+  /*---------------------------------Other Function---------------------------------*/
+  function StreamCheck(stream) {
+    if (stream) {
+      //console.log("This video is streaming.");
+      isstreaming = true;
+      updatelog("videotype", "實況");
+    }
+    else {
+      isstreaming = false;
+      $(`#PTTConnect-Time-Setting`).removeClass('d-none');
+      //console.log("This video is not streaming.");
+      updatelog("videotype", "紀錄檔");
+    }
+    return true;
+    //$(`#PTTConnect-Time-Setting`).addClass('d-none');
+  }
+
   /*------------------------------------Update Log------------------------------------*/
   function updatelog(logtype, msg) {
     if (!logs[logtype]) {
@@ -1294,10 +1317,8 @@ function runPTTScript() {
 //add global style
 function AddStyle(css) {
   const style = document.createElement('style');
-  console.log("style", style);
-  console.log("style.styleSheet", style.styleSheet);
   if (style.styleSheet) {
-    console.log("style.styleSheet.cssText", style.styleSheet.cssText);
+    ///好像都沒用到
     style.styleSheet.cssText = css;
   } else {
     style.appendChild(document.createTextNode(css));
