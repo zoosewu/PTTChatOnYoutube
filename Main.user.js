@@ -6,8 +6,10 @@
 // @description  connect ptt pushes to youtube chatroom
 // @description:zh-tw 連結PTT推文到Youtube聊天室
 // @author       Zoosewu
-// @match        https://www.youtube.com/watch?v=*
+// @match        https://www.youtube.com/*
+// @match        https://youtu.be/*
 // @match        https://term.ptt.cc/*
+// @match        https://hololive.jetri.co/*
 // @grant        GM_xmlhttpRequest 
 // @grant        GM_info
 // @grant        unsafeWindow
@@ -25,6 +27,7 @@
 // @license      MIT
 // ==/UserScript==
 'use strict';
+
 //user log
 const reportmode = true;
 //all log
@@ -46,6 +49,23 @@ const msg = {
   targetorigin: "",
   ownorigin: "",
   targetWindow: null,
+  originfilter: {
+    list: [],
+    reg: "",
+    add: function (origin) {
+      msg.originfilter.list.push(origin);
+      let r = msg.originfilter.list[0];
+      for (let index = 1; index < msg.originfilter.list.length; index++) {
+        r = r + "|" + msg.originfilter.list[index];
+      }
+      reg = r;
+      console.log(reg)
+    },
+    check: function () {
+
+    },
+  },
+
   PostMessage: function (msg, data) {
     if (this.targetWindow !== null) {
       const d = { m: msg, d: data };
@@ -69,12 +89,24 @@ if (window.addEventListener) {
 else if (window.attachEvent) {
   window.attachEvent("onmessage", msg.onMessage, false);
 }
-
-
 let isTopframe = (window.top == window.self);
-if (/www\.youtube\.com/.exec(window.location.href) !== null) {
+if (/term\.ptt\.cc/.exec(window.location.href) !== null) {
   //check script work in right frame
-  if (!isTopframe) throw new Error("Script Stopped when Youtube is not top frame");
+  if (isTopframe) throw "PTTonYT Script Stopped: PTT should not run in top frame";
+  //init postmessage
+  msg.ownorigin = "https://term.ptt.cc";
+  msg.targetorigin = /\?url=(.+)/.exec(window.location.href)[1];
+  msg.targetWindow = top;
+  //msg["test"] = data => { console.log("test child onmessage", data); };
+  //-----
+  console.log("Script started at " + window.location.href);
+  runPTTScript();
+  console.log("PTT Script initialize finish.");
+  //-----
+}
+else if (/www\.youtube\.com/.exec(window.location.href) !== null) {
+  //check script work in right frame
+  if (!isTopframe) throw "PTTonYT Script Stopped: Youtube should run in top frame";
   //init postmessage
   msg.targetorigin = "https://term.ptt.cc";
   msg.ownorigin = "https://www.youtube.com";
@@ -85,30 +117,16 @@ if (/www\.youtube\.com/.exec(window.location.href) !== null) {
   console.log("Youtube Script initialize finish.");
   //-----
 }
-else if (/term\.ptt\.cc/.exec(window.location.href) !== null) {
-  //check script work in right frame
-  if (isTopframe) throw new Error("Script Stopped when PTT is top frame");
-  //init postmessage
-  msg.ownorigin = "https://term.ptt.cc";
-  msg.targetorigin = "https://www.youtube.com";
-  msg.targetWindow = top;
-  //msg["test"] = data => { console.log("test child onmessage", data); };
-  //-----
-  console.log("Script started at " + window.location.href);
-  runPTTScript();
-  console.log("PTT Script initialize finish.");
-  //-----
-}
 else if (/hololive\.jetri\.co/.exec(window.location.href) !== null) {
   //check script work in right frame
-  if (isTopframe) throw new Error("Script Stopped when PTT is top frame");
+  if (!isTopframe) throw "PTTonYT Script Stopped: Holotools should run in top frame";
   //init postmessage
   msg.ownorigin = "https://hololive.jetri.co";
   msg.targetorigin = "https://term.ptt.cc";
   //msg["test"] = data => { console.log("test child onmessage", data); };
   //-----
   console.log("Script started at " + window.location.href);
-
+  InitHolotoolsScript();
   console.log("Hololive Script initialize finish.");
   //-----
 }
@@ -234,6 +252,107 @@ function InitYoutubeScript() {
     }
   }
 }
+//Holotools---------------------------------------------------------------------------------------------------------------------
+function InitHolotoolsScript() {
+  let WhiteTheme;
+  //generate crypt key everytime;
+  cryptkey = GenerateCryptKey();
+  //add bootstrap to use
+  AddBootstrap(document);
+  //AddPTTAppcss(whitetheme, colorlight, colordark)
+  AddPTTAppcss(true, "rgb(249, 249, 249)", "rgb(24, 24, 24)")
+  //PTTApp global css
+  setTimeout(() => {
+    const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
+    const colorlight = "rgb(249, 249, 249)";
+    const colordark = "rgb(24, 24, 24)";
+    WhiteTheme = !(YTbgcolor === colordark);
+    AddPTTAppcss(WhiteTheme, colorlight, colordark);
+  }, 100);
+
+  const PTTcss = `pttdiv{
+      font-size: 12px;
+    }
+    .form-control,.btn{ 
+      font-size: 1em;
+    }
+    .btn{ 
+      padding-top: 0.375em;
+      padding-right: 0.75em;
+      padding-bottom: 0.375em;
+      padding-left: 0.75em;
+    }
+    .p-4{ 
+      padding: 15px;
+    }`
+    ;
+  AddStyle(PTTcss);
+  //run app instance loop
+  setTimeout(ChechChatInstanced, 3000);
+  function ChechChatInstanced() {
+    const parent = $(`.container-watch`);
+    const fakeparent = $(`<div id="fakeparent" class="d-flex flex-row"></div>`);
+
+    const defaultVideoHandler = $(`<div id="holotoolsvideohandler" class="flex-grow-1"></div>`);
+    const defaultVideo = $(`.player-container.hasControls`);
+
+    const PTTChatHandler = $(`<div id="pttchatparent" class="p-0 d-flex" style="width:400px;position:relative;"></div>`);
+    parent.append(fakeparent);
+
+    fakeparent.append(defaultVideoHandler);
+    defaultVideoHandler.append(defaultVideo);
+
+    fakeparent.append(PTTChatHandler);
+    $(`.reopen-toolbar`).css({ "z-index": "302" });
+
+    InitApp(PTTChatHandler, WhiteTheme, true);
+
+
+
+
+    /*if (/www\.youtube\.com\/watch\?v=/.exec(window.location.href) === null) {
+      if (showalllog) console.log("not watch video.");
+      setTimeout(ChechChatInstanced, 2000);
+      return;
+    }
+    const ChatContainer = $(`ytd-live-chat-frame`);
+    const defaultChat = $(`iframe`, ChatContainer);
+    const PTTApp = $(`#PTTChat`, ChatContainer);
+    if (PTTApp.length > 0) {
+      if (showalllog) console.log("PTTApp already instanced.");
+      setTimeout(ChechChatInstanced, 5000);
+      return;
+    }
+    else if (defaultChat.length > 0) {
+      if (showalllog) console.log("PTTApp frame instance!");
+      ChatContainer.css({ "position": "relative" });
+
+      //生出插件
+      let isstream = checkvideotype();
+      InitApp(ChatContainer, WhiteTheme, isstream);
+
+      setTimeout(ChechChatInstanced, 5000);
+    }
+    else {
+      if (showalllog) console.log("watching video without chatroom.");
+      setTimeout(ChechChatInstanced, 5000);
+    }*/
+  }
+  function checkvideotype() {
+    const streambtncss = $('.ytp-live-badge').css("display");
+    const logstr = [`$('.ytp-live-badge').css("display")`, streambtncss];
+    if (simulateisstreaming) {
+    } else if (streambtncss === "inline-block") {
+      console.log("This video is streaming.", logstr);
+      return true;
+      //$(`#PTTConnect-Time-Setting`).addClass('d-none');
+    }
+    else if (streambtncss === "none") {
+      console.log("This video is not streaming.", logstr);
+      return false;
+    }
+  }
+}
 
 function InitApp(chatcon, whitetheme, isstream) {
   /*setTimeout(repeatlog, 1000);
@@ -311,7 +430,7 @@ function InitApp(chatcon, whitetheme, isstream) {
     ///
     let PTTAppHeight = 450;
     PTTChatContents.css({ "height": PTTAppHeight + "px" });
-    player.addEventListener('timeupdate', PlayerUpdate);
+    //player.addEventListener('timeupdate', PlayerUpdate);
 
 
 
@@ -497,13 +616,15 @@ function InitApp(chatcon, whitetheme, isstream) {
     });
     /*------------------------------------PTT畫面------------------------------------*/
     MainBtn[0].addEventListener("click", () => {
+
+
       checkScriptEvent();
 
       if (!isinitPTT && !disablepttframe) {
         isinitPTT = true;
         //PTTChat - contents - PTT
         const PTTChat_PTT = $(`#PTTChat-contents-PTT-main`, PTTChatContents);
-        const PTTFrame = $(`<iframe id="PTTframe" src="//term.ptt.cc/" class="h-100 flex-grow-1" style="zoom: 1.65; z-index: 351; -moz-transform: scale(1);">你的瀏覽器不支援 iframe</iframe>`);
+        const PTTFrame = $(`<iframe id="PTTframe" src="//term.ptt.cc/?url=` + msg.ownorigin + `" class="h-100 flex-grow-1" style="zoom: 1.65; z-index: 351; -moz-transform: scale(1);">你的瀏覽器不支援 iframe</iframe>`);
         $(window).on('beforeunload', function () {
           PTTFrame.remove();
         });
@@ -511,6 +632,8 @@ function InitApp(chatcon, whitetheme, isstream) {
         msg.targetWindow = PTTFrame[0].contentWindow;
         //PTTCHAT_PTTTab.css({ "display": "none" });
       }
+      const testtype = `.p-4`;
+      console.log(testtype, $(testtype));/////////////////////
     });
     /*--------------------------------------Log--------------------------------------*/
     PTTChat_Log = $(`<table class="table"><tbody class="ptttext"><tr><th scope="row">PTT狀態</th><td id="log-PTTstate">--</td><td colspan="2">更多的詳細資訊請參考PTT畫面</td></tr><th class="text-center bg-secondary text-white" colspan="4">文章資訊</th><tr><th scope="row">文章標題</th><td id="log-posttitle" colspan="3">--</td></tr><tr><th scope="row">文章看板</th><td id="log-postboard">--</td><th scope="row">文章代碼</th><td id="log-postaid">--</td></tr><tr><th scope="row">推文數</th><td id="log-postpushcount">--</td><th scope="row">結尾行數</th><td id="log-postendline">--</td></tr><tr><th scope="row">發文時間</th><td id="log-posttime" colspan="3">--</td></tr><tr><th scope="row">最後推文時間</th><td id="log-postlastpushtime" colspan="3">--</td></tr><th class="text-center bg-secondary text-white" colspan="4">詳細資訊</th><tr><th scope="row">影片類型</th><td id="log-videotype">--</td><th scope="row">自動獲得推文</th><td id="log-isautogetpush">--</td></tr><tr><th scope="row">主題顏色</th><td id="log-themecolor">--</td><th scope="row"></th><td></td></tr><tr><th scope="row">預估開台時間</th><td id="log-streamstarttime" colspan="3">--</td></tr><tr><th scope="row">影片當下時間</th><td id="log-streamnowtime" colspan="3">--</td></tr><th class="text-center bg-secondary text-white" colspan="4">滾動狀態</th><tr><th scope="row">目標推文樓數</th><td id="log-pushindex">--</td><th scope="row">目標捲動高度</th><td id="log-targetscroll">--</td></tr><tr><th scope="row">現在捲動高度</th><td id="log-nowscroll">--</td><th scope="row">上次捲動高度</th><td id="log-lastscroll">--</td></tr><th class="text-center bg-secondary text-white" colspan="4">近期訊息</th><tr><td id="log-alert0" colspan="4">--</td></tr><tr><td id="log-alert1" colspan="4">--</td></tr><tr><td id="log-alert2" colspan="4">--</td></tr><tr><td id="log-alert3" colspan="4">--</td></tr><tr><td id="log-alert4" colspan="4">--</td></tr><tr><td id="log-alert5" colspan="4">--</td></tr><tr><td id="log-alert6" colspan="4">--</td></tr><tr><td id="log-alert7" colspan="4">--</td></tr><tr><td id="log-alert8" colspan="4">--</td></tr><tr><td id="log-alert9" colspan="4">--</td></tr></tbody></table>
@@ -584,14 +707,21 @@ function InitApp(chatcon, whitetheme, isstream) {
     /*console.log((scriptscrolltime + 100) + " + " + Date.now());
     console.log((scriptscrolltime - Date.now()));
     console.log((scriptscrolltime + 100 > Date.now()));*/
-    if (isstreaming && autogetpush && (Date.now() > lastgetpushtime + 2500)) {
-      console.log("PlayerUpdate autogetpush", autogetpush, lastgetpushtime, Date.now());
-      autogetpush = false;
-      lastgetpushtime = Date.now();
-      msg.PostMessage("getpost", { AID: pushdata.AID, board: pushdata.board, startline: pushdata.lastendline });
+    if (isstreaming) {
+      const t = Date.now();
+      updatelog("streamnowtime", t.toLocaleDateString() + " " + t.toLocaleTimeString());
+
+      if (autogetpush && (Date.now() > lastgetpushtime + 2500)) {
+        console.log("PlayerUpdate autogetpush", autogetpush, lastgetpushtime, Date.now());
+        autogetpush = false;
+        lastgetpushtime = Date.now();
+        msg.PostMessage("getpost", { AID: pushdata.AID, board: pushdata.board, startline: pushdata.lastendline });
+      }
     }
-    const t = new Date(streamtime.getTime() + player.currentTime * 1000);
-    updatelog("streamnowtime", t.toLocaleDateString() + " " + t.toLocaleTimeString());
+    else {
+      const t = new Date(streamtime.getTime() + player.currentTime * 1000);
+      updatelog("streamnowtime", t.toLocaleDateString() + " " + t.toLocaleTimeString());
+    }
     ScrollToTime(false);
   }
   function _scroll() {
@@ -1175,7 +1305,7 @@ function runPTTScript() {
     for (let i = targetline; i < PTT.screen.length; i++) {
       const line = PTT.screen[i];
       //console.log(i + "," + line);
-      const result = /^(→ |推 |噓 )(.+): (.*)(\d\d)\/(\d\d) (\d\d):(\d\d)/.exec(line);
+      const result = /^(→ |推 |噓 )(.+?): (.*)(\d\d)\/(\d\d) (\d\d):(\d\d)/.exec(line);
       if (result != null) {
         let content = result[3];
         var reg = /\s+$/g;
@@ -1304,6 +1434,11 @@ function runPTTScript() {
     }
   }
   //end
+  setTimeout(UpdateFrame, 2500);
+  function UpdateFrame() {
+    msg.PostMessage("PlayerUpdate", null);
+    setTimeout(UpdateFrame, 2500);
+  }
   msg["login"] = data => {
     const i = CryptoJS.AES.decrypt(data.id, cryptkey).toString(CryptoJS.enc.Utf8);
     const p = CryptoJS.AES.decrypt(data.pw, cryptkey).toString(CryptoJS.enc.Utf8);
