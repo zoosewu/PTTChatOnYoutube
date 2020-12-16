@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         YoutubeChatOnPTT
+// @name         PTTOnYT
 // @name:zh-TW   Youtube聊天室顯示PTT推文
 // @namespace    https://github.com/zoosewu/PTTChatOnYoutube
-// @version      1.0.27
+// @version      1.0.29
 // @description  connect ptt pushes to youtube chatroom
 // @description:zh-tw 連結PTT推文到Youtube聊天室
 // @author       Zoosewu
@@ -140,18 +140,16 @@ function runYoutubeScript() {
     nowpush: 0,
   };
   ChechChatInstanced();
-  (function () {
-    (function AddBootstrap(frame) {
-      const frameHead = $("head", frame);
-      const frameBody = $("body", frame);
-      frameHead.append($(`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">`));
+  setTimeout(AddBootstrap, 100, document);
+  function AddBootstrap(frame) {
+    const frameHead = $("head", frame);
+    const frameBody = $("body", frame);
+    frameHead.append($(`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">`));
 
-      frameBody.append($(`<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>`));
-      frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>`));
-      frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>`));
-
-    })(document)
-  })();
+    frameBody.append($(`<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>`));
+    frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>`));
+    frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>`));
+  }
   function ChechChatInstanced() {
     const ChatContainer = $(`ytd-live-chat-frame`);
     const defaultChat = $(`iframe`, ChatContainer);
@@ -258,8 +256,8 @@ function runYoutubeScript() {
         html {
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0.18);
         }`;
-        //unused css
-        `*, ::after, ::before { box-sizing: content-box; }`;
+      //unused css
+      `*, ::after, ::before { box-sizing: content-box; }`;
       const style = document.createElement('style');
       if (style.styleSheet) {
         style.styleSheet.cssText = PTTcss;
