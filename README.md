@@ -1,6 +1,8 @@
 # PTTChatOnYoutube
 在Youtube上面顯示PTT推文
 
+如果想了解腳本介紹請[點我](https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage)。
+
 ## 如何開始開發
 
 編輯腳本:
@@ -48,6 +50,6 @@ min檔為VScode插件Minify自動生成，以避免.js太冗長
 - [ ] 將程式重構，把變數跟函式拆分得更乾淨
 - [ ] 導入bootstrap 客製化css參數
 
-目前暫時不接受任何的PR，
+目前暫時不接受任何feature的PR，只接受hotfix的PR。
 
-在未來導入userscript-builder將功能拆分之後非常歡迎貢獻code
+在未來導入userscript-builder將功能拆分之後非常歡迎貢獻code！

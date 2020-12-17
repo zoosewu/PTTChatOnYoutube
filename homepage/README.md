@@ -6,7 +6,7 @@
 
 實況的話會定時載入新推文，並自動滾動到最下面。
 
-![](https://i.imgur.com/nrwYuXX.png "預覽圖")
+![](https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/samplemain.png "預覽圖")
 
 ## 如何開始使用
 
@@ -62,7 +62,7 @@ let isTopframe = (window.top == window.self);
 if (!isTopframe) throw "[Script Stopped: This script should run in top frame only.]";
 ```
 新增完之後應該長這樣：
-![在PTT腳本附加額外程式碼的正確位置](https://i.imgur.com/DHwFxSY.png "腳本間加程式碼示意圖")
+![在PTT腳本附加額外程式碼的正確位置](https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/addscript.png "腳本間加程式碼示意圖")
 
 **有時候P的按鈕沒有冒出來給我用**
 
@@ -117,10 +117,10 @@ if (!isTopframe) throw "[Script Stopped: This script should run in top frame onl
 
 ## 腳本預覽圖
 
-![](https://i.imgur.com/xxYMYZ4.png "關閉預覽圖")
-![](https://i.imgur.com/HCJksZr.png "預覽圖1")
-![](https://i.imgur.com/UwDHu7i.png "預覽圖2")
-![](https://i.imgur.com/Xn87juc.png "預覽圖3")
+![](https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/sample1.png "關閉預覽圖")
+![](https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/sample2.png "預覽圖1")
+![](https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/sample3.png "預覽圖2")
+![](https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/sample4.png "預覽圖3")
 
 ## 聲明
 
