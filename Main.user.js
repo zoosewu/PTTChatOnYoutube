@@ -2,7 +2,7 @@
 // @name         PTTOnYT
 // @name:zh-TW   Youtube聊天室顯示PTT推文
 // @namespace    https://github.com/zoosewu/PTTChatOnYoutube
-// @version      1.0.29
+// @version      1.0.32
 // @description  connect ptt pushes to youtube chatroom
 // @description:zh-tw 連結PTT推文到Youtube聊天室
 // @author       Zoosewu
@@ -141,6 +141,7 @@ function runYoutubeScript() {
   };
   ChechChatInstanced();
   setTimeout(AddBootstrap, 100, document);
+  setTimeout(Setcss, 1000);
   function AddBootstrap(frame) {
     const frameHead = $("head", frame);
     const frameBody = $("body", frame);
@@ -149,6 +150,68 @@ function runYoutubeScript() {
     frameBody.append($(`<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>`));
     frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>`));
     frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>`));
+  }
+  function Setcss() {
+    const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
+    let bdcolor, ptp, pid, ptm, pmsg, ptxt;
+    const colorlight = "rgb(120, 120, 120)";
+    const colordark = "rgb(24, 24, 24)"
+    if (YTbgcolor === colordark) {
+      bdcolor = colorlight;
+      ptp = "#fff"; pid = "#ff6"; ptm = "#bbb"; pmsg = "#990"; ptxt = "#f8f9fa";
+      //PTTApp.addClass("border-white");
+    }
+    else {
+      bdcolor = colordark;
+      ptp = "#000"; pid = "#990"; ptm = "#bbb"; pmsg = "#550"; ptxt = "#343a40";
+      //PTTApp.addClass("border-dark");
+    }
+    const PTTcss =
+      //PTTmaincss
+      `.ptttext { color: ` + ptxt + `; }
+      .pttbg {background-color: ` + YTbgcolor + `; }` +
+      //border
+      `.border{
+      border-color: ` + bdcolor + `!important;
+      border-top-color: `+ bdcolor + ` !important;
+      border-right-color: `+ bdcolor + ` !important;
+      border-bottom-color: `+ bdcolor + ` !important;
+      border-left-color: `+ bdcolor + ` !important;}` +
+      //PTTpushcss
+      `.pid { color: ` + pid + `; }
+      .ptime { color: ` + ptm + `; }
+      .pmsg { color: `+ pmsg + `; }
+      .ptype { color: ` + ptp + `}
+      pttdiv{ 
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        text-align: left;
+        background-color: #fff;        
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        font-family: Roboto, Arial, sans-serif;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: normal;
+        color: rgb(0, 0, 0);
+        text-align: start;
+        background-color: rgba(0, 0, 0, 0);
+      }
+      #primary,#secondary{  box-sizing: content-box;}
+      html {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.18);
+      }`;
+    const style = document.createElement('style');
+    if (style.styleSheet) {
+      style.styleSheet.cssText = PTTcss;
+    } else {
+      style.appendChild(document.createTextNode(PTTcss));
+    }
+    $('head')[0].appendChild(style);
   }
   function ChechChatInstanced() {
     const ChatContainer = $(`ytd-live-chat-frame`);
@@ -200,71 +263,15 @@ function runYoutubeScript() {
     //add globalcss
     setTimeout(() => {
       const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
-      let bdcolor, ptp, pid, ptm, pmsg, ptxt;
-      const colorlight = "rgb(120, 120, 120)";
       const colordark = "rgb(24, 24, 24)"
       if (YTbgcolor === colordark) {
         updatelog("ytcolor", "深色");
-        bdcolor = colorlight;
-        ptp = "#fff"; pid = "#ff6"; ptm = "#bbb"; pmsg = "#990"; ptxt = "#f8f9fa";
-        //PTTApp.addClass("border-white");
         MainBtn.addClass("btn-outline-light");
       }
       else {
         updatelog("ytcolor", "淺色");
-        bdcolor = colordark;
-        ptp = "#000"; pid = "#990"; ptm = "#bbb"; pmsg = "#550"; ptxt = "#343a40";
-        //PTTApp.addClass("border-dark");
         MainBtn.addClass("btn-outline-dark");
       }
-      const PTTcss =
-        //PTTmaincss
-        `.ptttext { color: ` + ptxt + `; }
-        .pttbg {background-color: ` + YTbgcolor + `; }` +
-        //border
-        `.border{
-        border-color: ` + bdcolor + `!important;
-        border-top-color: `+ bdcolor + ` !important;
-        border-right-color: `+ bdcolor + ` !important;
-        border-bottom-color: `+ bdcolor + ` !important;
-        border-left-color: `+ bdcolor + ` !important;}` +
-        //PTTpushcss
-        `.pid { color: ` + pid + `; }
-        .ptime { color: ` + ptm + `; }
-        .pmsg { color: `+ pmsg + `; }
-        .ptype { color: ` + ptp + `}
-        pttdiv{ 
-          font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-          font-size: 1rem;
-          font-weight: 400;
-          line-height: 1.5;
-          color: #212529;
-          text-align: left;
-          background-color: #fff;        
-          -webkit-tap-highlight-color: transparent;
-        }
-        body {
-          font-family: Roboto, Arial, sans-serif;
-          font-size: 1rem;
-          font-weight: 400;
-          line-height: normal;
-          color: rgb(0, 0, 0);
-          text-align: start;
-          background-color: rgba(0, 0, 0, 0);
-        }
-        #primary,#secondary{  box-sizing: content-box;}
-        html {
-          -webkit-tap-highlight-color: rgba(0, 0, 0, 0.18);
-        }`;
-      //unused css
-      `*, ::after, ::before { box-sizing: content-box; }`;
-      const style = document.createElement('style');
-      if (style.styleSheet) {
-        style.styleSheet.cssText = PTTcss;
-      } else {
-        style.appendChild(document.createTextNode(PTTcss));
-      }
-      $('head')[0].appendChild(style);
     }, 100);
 
 
