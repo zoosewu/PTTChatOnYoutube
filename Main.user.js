@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         PTTOnYT
+// @name         PttChatOnYt
 // @name:zh-TW   Youtube聊天室顯示PTT推文
 // @namespace    https://github.com/zoosewu/PTTChatOnYoutube
-// @version      1.0.32
+// @version      1.0.33
 // @description  connect ptt pushes to youtube chatroom
-// @description:zh-tw 連結PTT推文到Youtube聊天室
+// @description:zh-tw 連結PTT推文到Youtube聊天室 讓你簡單追實況搭配推文
 // @author       Zoosewu
 // @match        https://www.youtube.com/watch?v=*
 // @match        https://youtu.be/*
@@ -359,12 +359,11 @@ function runYoutubeScript() {
 
     const loginbtn = $(`#PTTlogin`, PTTChat_Connect);
     const fakebtn = $(`#fakebtn`, PTTChat_Connect);
-    const pptid = $(`#PTTid`, PTTChat_Connect);
+    const pttid = $(`#PTTid`, PTTChat_Connect);
     const pttpw = $(`#PTTpw`, PTTChat_Connect);
     const postinput = $(`#post0`, PTTChat_Connect);
     const postbtn = $(`#post0btn`, PTTChat_Connect);
     const streambeforepost = $(`#streambeforepost`, PTTChat_Connect);
-
     streamtimeinput = $(`#stream-time`, PTTChatContents);
     streamtimeinput[0].addEventListener("input", function () {
       UpdateStreamTime();
@@ -376,17 +375,20 @@ function runYoutubeScript() {
       UpdateStreamTime();
     });
 
-    loginbtn[0].addEventListener("click", function () {
-      //const i = pptid[0].value;
+    loginbtn[0].addEventListener("click", () => {
+      GM_setValue("PTTID", pttid[0].value);
+      //const i = pttid[0].value;
       //const p = pttpw[0].value;
-      const i = CryptoJS.AES.encrypt(pptid[0].value, cryptkey).toString();
+      const i = CryptoJS.AES.encrypt(pttid[0].value, cryptkey).toString();
       const p = CryptoJS.AES.encrypt(pttpw[0].value, cryptkey).toString();
-      //console.log("login", pptid[0].value, pttpw[0].value, cryptkey);
+      //console.log("login", pttid[0].value, pttpw[0].value, cryptkey);
       //console.log("login", i, p);
       msg.PostMessage("login", { id: i, pw: p });
       //GetChatData(posturl, AlertMsg, postindex);
     });
-    pptid[0].addEventListener("keyup", loginenter);
+
+    pttid[0].value = GM_getValue("PTTID", "");
+    pttid[0].addEventListener("keyup", loginenter);
     pttpw[0].addEventListener("keyup", loginenter);
     function loginenter(event) {
       if (event.keyCode === 13) {
@@ -402,6 +404,7 @@ function runYoutubeScript() {
         AlertMsg(false, "文章AID格式錯誤，請重新輸入。");
       }
       else {
+        GM_setValue("LastPostUID", postinput[0].value);
         gotomainchat = true;
         if (pushdata.AID === result[1] && pushdata.board === result[2]) {
           msg.PostMessage("getpost", { AID: pushdata.AID, board: pushdata.board, startline: pushdata.lastendline });
@@ -423,6 +426,7 @@ function runYoutubeScript() {
       }
     });
 
+    postinput[0].value = GM_getValue("LastPostUID", "");
     postinput[0].addEventListener("keyup", e => {
       if (e.keyCode === 13) {
         e.preventDefault();
@@ -1273,6 +1277,7 @@ function paddingLeft(str, lenght) {
   else
     return paddingLeft("0" + str, lenght);
 }
+
 function paddingRight(str, lenght) {
   str = str + "";
   if (str.length >= lenght)
