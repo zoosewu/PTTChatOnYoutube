@@ -6,22 +6,24 @@ export function MessagePoster() {
     if (this.targetWindow !== null) {
       const d = { m: msg, d: data };
       this.targetWindow.postMessage(d, this.targetorigin);
-      if (showPostMessage) console.log(this.ownorigin + " message posted", d);
+      if (showPostMessage) console.log(this.ownorigin + " message posted to " + this.targetorigin, this);
     }
   };
   this.onMessage = function (event) {
     // Check sender origin to be trusted
-    if (event.origin !== msg.targetorigin) return;
+    if (event.origin !== this.targetorigin) return;
+    if (showonMessage) console.log(this.ownorigin + " get message from " + this.targetorigin, this);
     const data = event.data;
-    if (showonMessage) console.log(msg.ownorigin + " onMessage", data);
-    if (typeof (msg[data.m]) == "function") {
-      msg[data.m].call(null, data.d);
+    if (typeof (this[data.m]) == "function") {
+      this[data.m].call(null, data.d);
     }
   };
   if (window.addEventListener) {
-    window.addEventListener("message", this.onMessage, false);
+    console.log("addEventListener message");
+    window.addEventListener("message", event => { this.onMessage.call(this, event); }, false);
   }
   else if (window.attachEvent) {
-    window.attachEvent("onmessage", this.onMessage, false);
+    console.log("addEventListener onmessage");
+    window.attachEvent("onmessage", event => { this.onMessage.call(this, event); }, false);
   }
 }

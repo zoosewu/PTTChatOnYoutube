@@ -1,20 +1,26 @@
 
-import { InitApp } from '../app/index.js';
-export function InitHolotoolsScript() {
+import { InitApp } from '../app/appindex.js';
+import { BootStrap } from '../BootStrap.js';
+import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver } from '../library.js';
+import { AddCss } from '../AddCss.js';
+'use strict';
+
+export function InitHT(messageposter) {
+  const msg = messageposter;
   let WhiteTheme;
   //generate crypt key everytime;
   cryptkey = GenerateCryptKey();
   //add bootstrap to use
-  AddBootstrap(document);
+  BootStrap(document);
   //AddPTTAppcss(whitetheme, colorlight, colordark)
-  AddPTTAppcss(true, "rgb(249, 249, 249)", "rgb(24, 24, 24)")
+  AddStyle(true, "rgb(249, 249, 249)", "rgb(24, 24, 24)")
   //PTTApp global css
   setTimeout(() => {
     const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
     const colorlight = "rgb(249, 249, 249)";
     const colordark = "rgb(24, 24, 24)";
     WhiteTheme = !(YTbgcolor === colordark);
-    AddPTTAppcss(WhiteTheme, colorlight, colordark);
+    AddCss(WhiteTheme, colorlight, colordark);
   }, 100);
 
   const PTTcss = `pttdiv{

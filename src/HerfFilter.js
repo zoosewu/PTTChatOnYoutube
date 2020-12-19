@@ -1,3 +1,8 @@
+import { InitYT } from './youtube/ytindex.js';
+import { InitHT } from './holotools/htindex.js';
+import { InitPTT } from './ptt/pttindex.js';
+'use strict';
+
 export function HerfFilter(msg) {
   const isTopframe = (window.top == window.self);
   if (/term\.ptt\.cc/.exec(window.location.href) !== null) {
@@ -8,7 +13,7 @@ export function HerfFilter(msg) {
     msg.targetWindow = top;
     //-----
     console.log("Script started at " + window.location.href);
-    runPTTScript();
+    InitPTT(msg);
     console.log("PTT Script initialize finish.");
     //-----
   }
@@ -19,7 +24,7 @@ export function HerfFilter(msg) {
     msg.ownorigin = "https://www.youtube.com";
     //-----
     console.log("Script started at " + window.location.href);
-    InitYoutubeScript();
+    setTimeout(InitYT, 10, msg);
     console.log("Youtube Script initialize finish.");
     //-----
   }
@@ -30,7 +35,7 @@ export function HerfFilter(msg) {
     msg.targetorigin = "https://term.ptt.cc";
     //-----
     console.log("Script started at " + window.location.href);
-    InitHolotoolsScript();
+    setTimeout(InitHT, 10, msg);
     console.log("Hololive Script initialize finish.");
     //-----
   }

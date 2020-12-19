@@ -15,7 +15,7 @@
 // @grant              GM_setValue
 // @license            MIT
 // @name:zh-TW         Youtube聊天室顯示PTT推文
-// @description:zh-tw  連結PTT推文到Youtube聊天室
+// @description:zh-tw  連結PTT推文到Youtube聊天室  讓你簡單追實況搭配推文
 // @run-at             document-start
 // @require            https://code.jquery.com/jquery-3.5.1.slim.min.js
 // @require            https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js
@@ -27,6 +27,7 @@
 // ==/UserScript==
 
 // src/globlevariable.js
+'use strict';
 //user log
 const reportmode = true;
 //all log
@@ -54,250 +55,32 @@ function MessagePoster() {
     if (this.targetWindow !== null) {
       const d = { m: msg, d: data };
       this.targetWindow.postMessage(d, this.targetorigin);
-      if (showPostMessage) console.log(this.ownorigin + " message posted", d);
+      if (showPostMessage) console.log(this.ownorigin + " message posted to " + this.targetorigin, this);
     }
   };
   this.onMessage = function (event) {
     // Check sender origin to be trusted
-    if (event.origin !== msg.targetorigin) return;
+    if (event.origin !== this.targetorigin) return;
+    if (showonMessage) console.log(this.ownorigin + " get message from " + this.targetorigin, this);
     const data = event.data;
-    if (showonMessage) console.log(msg.ownorigin + " onMessage", data);
-    if (typeof (msg[data.m]) == "function") {
-      msg[data.m].call(null, data.d);
+    if (typeof (this[data.m]) == "function") {
+      this[data.m].call(null, data.d);
     }
   };
   if (window.addEventListener) {
-    window.addEventListener("message", this.onMessage, false);
+    console.log("addEventListener message");
+    window.addEventListener("message", event => { this.onMessage.call(this, event); }, false);
   }
   else if (window.attachEvent) {
-    window.attachEvent("onmessage", this.onMessage, false);
+    console.log("addEventListener onmessage");
+    window.attachEvent("onmessage", event => { this.onMessage.call(this, event); }, false);
   }
 }
 
-// src/HerfFilter.js
-function HerfFilter(msg) {
-  const isTopframe = (window.top == window.self);
-  if (/term\.ptt\.cc/.exec(window.location.href) !== null) {
-    if (isTopframe) throw "PTTonYT Script Stopped: PTT should not run in top frame";//check script work in right frame
-    //init msg
-    msg.ownorigin = "https://term.ptt.cc";
-    msg.targetorigin = /\?url=(.+)/.exec(window.location.href)[1];
-    msg.targetWindow = top;
-    //-----
-    console.log("Script started at " + window.location.href);
-    runPTTScript();
-    console.log("PTT Script initialize finish.");
-    //-----
-  }
-  else if (/www\.youtube\.com/.exec(window.location.href) !== null) {
-    if (!isTopframe) throw "PTTonYT Script Stopped: Youtube should run in top frame";//check script work in right frame
-    //init postmessage
-    msg.targetorigin = "https://term.ptt.cc";
-    msg.ownorigin = "https://www.youtube.com";
-    //-----
-    console.log("Script started at " + window.location.href);
-    InitYoutubeScript();
-    console.log("Youtube Script initialize finish.");
-    //-----
-  }
-  else if (/hololive\.jetri\.co/.exec(window.location.href) !== null) {
-    if (!isTopframe) throw "PTTonYT Script Stopped: Holotools should run in top frame";//check script work in right frame
-    //init postmessage
-    msg.ownorigin = "https://hololive.jetri.co";
-    msg.targetorigin = "https://term.ptt.cc";
-    //-----
-    console.log("Script started at " + window.location.href);
-    InitHolotoolsScript();
-    console.log("Hololive Script initialize finish.");
-    //-----
-  }
-}
-
-// src/BootStrap.js
-function AddBootstrap(frame) {
-  const frameHead = $("head", frame);
-  const frameBody = $("body", frame);
-  frameHead.append($(`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">`));
-  frameBody.append($(`<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>`));
-  frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>`));
-  frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>`));
-}
-
-// src/AddCss.js
-function AddCss(whitetheme, colorlight, colordark) {
-  //add globalcss
-  let bdcolor, bgcolor, ptp, pid, ptm, pmsg, ptxt;
-  if (whitetheme) {
-    bdcolor = colordark; bgcolor = colorlight; ptp = "#000"; pid = "#990"; ptm = "#bbb"; pmsg = "#550"; ptxt = "#343a40";
-  }
-  else {
-    bdcolor = colorlight; bgcolor = colordark; ptp = "#fff"; pid = "#ff6"; ptm = "#bbb"; pmsg = "#990"; ptxt = "#f8f9fa";
-  }
-  const PTTcss =
-    //PTTmaincss
-    `.ptttext { color: ` + ptxt + `; }
-    .pttbg {background-color: ` + bgcolor + `; }` +
-    //border
-    `.border{
-    border-color: ` + bdcolor + `!important;
-    border-top-color: `+ bdcolor + ` !important;
-    border-right-color: `+ bdcolor + ` !important;
-    border-bottom-color: `+ bdcolor + ` !important;
-    border-left-color: `+ bdcolor + ` !important;}` +
-    //PTTpushcss
-    `.pid { color: ` + pid + `; }
-     .ptime { color: ` + ptm + `; }
-     .pmsg { color: `+ pmsg + `; }
-     .ptype { color: ` + ptp + `}`;
-  AddStyle(PTTcss);
-}
-
-// src/youtube/index.js
-function InitYoutubeScript() {
-  let WhiteTheme;
-  //generate crypt key everytime;
-  cryptkey = GenerateCryptKey();
-  //add bootstrap to use
-  AddBootstrap(document);
-  //PTTApp global css
-  setTimeout(() => {
-    const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
-    const colorlight = "rgb(249, 249, 249)";
-    const colordark = "rgb(24, 24, 24)"
-    WhiteTheme = !(YTbgcolor === colordark);
-    AddPTTAppcss(WhiteTheme, colorlight, colordark);
-  }, 100);
-  //避免bootstrap汙染YT
-  const PTTcss2 = `pttdiv{ 
-        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-        font-size: 1rem;
-        font-weight: 400;
-        line-height: 1.5;
-        color: #212529;
-        text-align: left;
-        background-color: #fff;        
-        -webkit-tap-highlight-color: transparent;
-      }
-      body {
-        font-family: Roboto, Arial, sans-serif;
-        font-size: 1rem;
-        font-weight: 400;
-        line-height: normal;
-        color: rgb(0, 0, 0);
-        text-align: start;
-        background-color: rgba(0, 0, 0, 0);
-      }
-      #primary,#secondary{  box-sizing: content-box;}
-      html {
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.18);
-      }`;
-  AddStyle(PTTcss2);
-  //run app instance loop
-  setTimeout(ChechChatInstanced, 3000);
-  function ChechChatInstanced() {
-    if (/www\.youtube\.com\/watch\?v=/.exec(window.location.href) === null) {
-      if (showalllog) console.log("not watch video.");
-      setTimeout(ChechChatInstanced, 2000);
-      return;
-    }
-    const ChatContainer = $(`ytd-live-chat-frame`);
-    const defaultChat = $(`iframe`, ChatContainer);
-    const PTTApp = $(`#PTTChat`, ChatContainer);
-    if (PTTApp.length > 0) {
-      if (showalllog) console.log("PTTApp already instanced.");
-      setTimeout(ChechChatInstanced, 5000);
-      return;
-    }
-    else if (defaultChat.length > 0) {
-      if (showalllog) console.log("PTTApp frame instance!");
-      ChatContainer.css({ "position": "relative" });
-
-      //生出插件
-      let isstream = checkvideotype();
-      InitApp(ChatContainer, WhiteTheme, isstream);
-
-      setTimeout(ChechChatInstanced, 5000);
-    }
-    else {
-      if (showalllog) console.log("watching video without chatroom.");
-      setTimeout(ChechChatInstanced, 5000);
-    }
-  }
-  function checkvideotype() {
-    const streambtncss = $('.ytp-live-badge').css("display");
-    const logstr = [`$('.ytp-live-badge').css("display")`, streambtncss];
-    if (simulateisstreaming) {
-    } else if (streambtncss === "inline-block") {
-      console.log("This video is streaming.", logstr);
-      return true;
-      //$(`#PTTConnect-Time-Setting`).addClass('d-none');
-    }
-    else if (streambtncss === "none") {
-      console.log("This video is not streaming.", logstr);
-      return false;
-    }
-  }
-}
-
-// src/holotools/index.js
-function InitHolotoolsScript() {
-  let WhiteTheme;
-  //generate crypt key everytime;
-  cryptkey = GenerateCryptKey();
-  //add bootstrap to use
-  AddBootstrap(document);
-  //AddPTTAppcss(whitetheme, colorlight, colordark)
-  AddPTTAppcss(true, "rgb(249, 249, 249)", "rgb(24, 24, 24)")
-  //PTTApp global css
-  setTimeout(() => {
-    const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
-    const colorlight = "rgb(249, 249, 249)";
-    const colordark = "rgb(24, 24, 24)";
-    WhiteTheme = !(YTbgcolor === colordark);
-    AddPTTAppcss(WhiteTheme, colorlight, colordark);
-  }, 100);
-
-  const PTTcss = `pttdiv{
-      font-size: 12px;
-    }
-    .form-control,.btn{ 
-      font-size: 1em;
-    }
-    .btn{ 
-      padding-top: 0.375em;
-      padding-right: 0.75em;
-      padding-bottom: 0.375em;
-      padding-left: 0.75em;
-    }
-    .p-4{ 
-      padding: 15px;
-    }`
-    ;
-  AddStyle(PTTcss);
-  //run app instance loop
-  setTimeout(ChechChatInstanced, 3000);
-  function ChechChatInstanced() {
-    const parent = $(`.container-watch`);
-    const fakeparent = $(`<div id="fakeparent" class="d-flex flex-row"></div>`);
-
-    const defaultVideoHandler = $(`<div id="holotoolsvideohandler" class="flex-grow-1"></div>`);
-    const defaultVideo = $(`.player-container.hasControls`);
-
-    const PTTChatHandler = $(`<div id="pttchatparent" class="p-0 d-flex" style="width:400px;position:relative;"></div>`);
-    parent.append(fakeparent);
-
-    fakeparent.append(defaultVideoHandler);
-    defaultVideoHandler.append(defaultVideo);
-
-    fakeparent.append(PTTChatHandler);
-    $(`.reopen-toolbar`).css({ "z-index": "302" });
-
-    InitApp(PTTChatHandler, WhiteTheme, true);
-  }
-}
-
-// src/app/index.js
-function InitApp(chatcon, whitetheme, isstream) {
+// src/app/appindex.js
+'use strict';
+function InitApp(chatcon, whitetheme, isstream, messageposter) {
+  const msg = messageposter;
   /*setTimeout(repeatlog, 1000);
   function repeatlog() {
     console.log("PTTChat_Chat_Main", PTTChat_Chat_Main);
@@ -415,9 +198,8 @@ function InitApp(chatcon, whitetheme, isstream) {
       updatelog("targetscroll", scrolltargetpos);
       updatelog("nowscroll", scrollnowpos);
       updatelog("lastscroll", scrolllastpos);
-      scrolllastpos = scrollnowpos;
       if (reportmode) console.log(scrolltype + ", (targetpos, lastpos, nowpos): (" + scrolltargetpos + ", " + scrolllastpos + ", " + scrollnowpos + "), scroll time step:" + t + " ms.");
-
+      scrolllastpos = scrollnowpos;
     });
     const autoscrollbtn = $(`#AutoScroll`, PTTChatContents);
     autoscrollbtn[0].addEventListener("click", function (event) {
@@ -456,7 +238,7 @@ function InitApp(chatcon, whitetheme, isstream) {
     /*------------------------------------Connect------------------------------------*/
     const PTTChat_Connect = $(`#PTTChat-contents-Connect-main`, PTTChatContents);
     ConnectAlertDiv = $(`#PTTChat-contents-Connect-alert`, PTTChatContents);
-    const PTTChat_ConnectContent = $(`<!-------- 連線 --------><!-- stream time input field--><div id="PTTConnect-Time-Setting" class="form-row mb-2 d-none"><div class="form-group col-7"><label for="appt-time">實況重播開台時間:</label> <input id="stream-time" type="time" name="stream-time"></div><div class="form-check col-4 pl-4"><input type="checkbox" class="form-check-input" id="streambeforepost"> <label class="form-check-label ml-2" for="streambeforepost">發文前已開台</label></div></div><!-- login input field--><div class="form-row mb-2"><div class="col-5"><label for="PTTid">PTT ID</label> <input id="PTTid" type="text" class="form-control" placeholder="PTT ID" autocomplete="off"></div><div class="col-5"><label for="PTTpw">PTT密碼</label> <input id="PTTpw" type="password" class="form-control" placeholder="PTT密碼" autocomplete="off"></div><div class="col-2"><label for="PTTlogin" class="col-2">　</label> <button id="PTTlogin" type="button" class="btn ptttext border btn-outline-secondary">登入</button></div></div><!-- Post AID input field --><div class="my-3 form-row"><label for="post0" class="col-3 col-form-label">輸入文章AID</label> <input id="post0" class="form-control col mr-3" type="text" placeholder="#1VobIvqC (C_Chat)" autocomplete="off"> <button id="post0btn" class="btn ptttext border btn-outline-secondary" type="button">讀取推文</button></div><!-- test push button --> <button id="fakebtn" class="btn ptttext border btn-outline-secondary m-2 d-none" type="button">讀取測試用假推文</button><!-- New version button --> <a id="updatebtn" class="btn ptttext border btn-outline-secondary m-2 d-none" href="https://greasyfork.org/zh-TW/scripts/418469-youtubechatonptt" target="_blank" rel="noopener noreferrer" role="button">檢測到新版本</a>
+    const PTTChat_ConnectContent = $(`<!-------- 連線 --------><!-- stream time input field--><div id="PTTConnect-Time-Setting" class="form-row mb-2 d-none"><div class="form-group col-7"><label for="appt-time">實況重播開台時間:</label> <input id="stream-time" type="time" name="stream-time"></div><div class="form-check col-4 pl-4"><input type="checkbox" class="form-check-input" id="streambeforepost"> <label class="form-check-label ml-2" for="streambeforepost">發文前已開台</label></div></div><!-- login input field--><div class="form-row mb-2"><div class="col-5"><label for="PTTid">PTT ID</label> <input id="PTTid" type="text" class="form-control" placeholder="PTT ID" autocomplete="off"></div><div class="col-5"><label for="PTTpw">PTT密碼</label> <input id="PTTpw" type="password" class="form-control" placeholder="PTT密碼" autocomplete="off"></div><div class="col-2"><label for="PTTlogin" class="col-2">　</label> <button id="PTTlogin" type="button" class="btn ptttext border btn-outline-secondary">登入</button></div></div><!-- Post AID input field --><div class="my-3 form-row"><label for="post0" class="col-3 col-form-label">輸入文章AID</label> <input id="post0" class="form-control col mr-3" type="text" placeholder="#1VobIvqC (C_Chat)" autocomplete="off"> <button id="post0btn" class="btn ptttext border btn-outline-secondary" type="button">讀取推文</button></div><div class="my-3 form-row"><label for="setH" class="col-3 col-form-label">設定插件長度</label> <input id="setHeight" class="form-control col mr-3" type="text" placeholder="600" autocomplete="off"> <button id="setHeightbtn" class="btn ptttext border btn-outline-secondary" type="button">確認</button></div><!-- test push button --> <button id="fakebtn" class="btn ptttext border btn-outline-secondary m-2 d-none" type="button">讀取測試用假推文</button><!-- New version button --> <a id="updatebtn" class="btn ptttext border btn-outline-secondary m-2 d-none" href="https://greasyfork.org/zh-TW/scripts/418469-youtubechatonptt" target="_blank" rel="noopener noreferrer" role="button">檢測到新版本</a>
     `);
 
     const fakedata = '{"board":"Test","AID":"1VpKTOfx","title":"","posttime":"2020-12-06T21:04:22.000Z","pushes":[{"type":"→ ","id":"ZooseWu","content":"推文1","date":"2020-12-06T21:04:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文2","date":"2020-12-06T21:05:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文3","date":"2020-12-06T21:05:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"","date":"2020-12-06T21:05:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文5","date":"2020-12-06T21:05:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文678","date":"2020-12-06T21:05:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文100","date":"2020-12-06T21:06:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文101","date":"2020-12-06T21:06:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文102Y","date":"2020-12-06T21:10:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"123","date":"2020-12-06T21:11:00.000Z"},{"type":"推 ","id":"hu7592","content":"☂","date":"2020-12-06T22:24:00.000Z"},{"type":"→ ","id":"ss15669659","content":"☂","date":"2020-12-06T23:56:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"hey","date":"2020-12-07T00:31:00.000Z"}],"startline":"127","endline":"149","percent":"100"}';
@@ -466,10 +248,12 @@ function InitApp(chatcon, whitetheme, isstream) {
 
     const loginbtn = $(`#PTTlogin`, PTTChat_Connect);
     const fakebtn = $(`#fakebtn`, PTTChat_Connect);
-    const pptid = $(`#PTTid`, PTTChat_Connect);
+    const pttid = $(`#PTTid`, PTTChat_Connect);
     const pttpw = $(`#PTTpw`, PTTChat_Connect);
     const postinput = $(`#post0`, PTTChat_Connect);
     const postbtn = $(`#post0btn`, PTTChat_Connect);
+    const seth = $(`#setHeight`, PTTChat_Connect);
+    const sethbtn = $(`#setHeightbtn`, PTTChat_Connect);
     const streambeforepost = $(`#streambeforepost`, PTTChat_Connect);
 
     streamtimeinput = $(`#stream-time`, PTTChatContents);
@@ -478,29 +262,43 @@ function InitApp(chatcon, whitetheme, isstream) {
       PlayerUpdate();
     }, false);
 
+    sethbtn[0].addEventListener("click", function () {
+      let h = seth[0].value;
+      console.log("H = " + h);
+      if (+h < 180) h = 180;
+      else if (+h > 800) h = 800;
+      GM_setValue("PluginHeight", h);
+      seth[0].value = h;
+      PTTChatContents.css({ "height": h + "px" });
+    });
+    seth[0].value = GM_getValue("PluginHeight", 450);
+    PTTChatContents.css({ "height": seth[0].value + "px" });
+    seth[0].addEventListener("keyup", event => {
+      if (event.keyCode === 13 || event.which == 13) {
+        event.preventDefault();
+        sethbtn[0].click();
+      }
+    });
+
     streambeforepost[0].addEventListener("click", () => {
       isstreambeforepost = streambeforepost[0].checked;
       UpdateStreamTime();
     });
 
     loginbtn[0].addEventListener("click", function () {
-      //const i = pptid[0].value;
-      //const p = pttpw[0].value;
-      const i = CryptoJS.AES.encrypt(pptid[0].value, cryptkey).toString();
+      GM_setValue("PTTID", pttid[0].value);
+      const i = CryptoJS.AES.encrypt(pttid[0].value, cryptkey).toString();
       const p = CryptoJS.AES.encrypt(pttpw[0].value, cryptkey).toString();
-      //console.log("login", pptid[0].value, pttpw[0].value, cryptkey);
-      //console.log("login", i, p);
       msg.PostMessage("login", { id: i, pw: p });
-      //GetChatData(posturl, AlertMsg, postindex);
     });
-    pptid[0].addEventListener("keyup", loginenter);
-    pttpw[0].addEventListener("keyup", loginenter);
-    function loginenter(event) {
-      if (event.keyCode === 13) {
+    pttid[0].value = GM_getValue("PTTID", "");
+    pttpw[0].addEventListener("keyup", event => {
+      if (event.keyCode === 13 || event.which == 13) {
         event.preventDefault();
         loginbtn[0].click();
       }
-    }
+    });
+
 
     postbtn[0].addEventListener("click", function () {
       const postAID = postinput[0].value;
@@ -509,6 +307,7 @@ function InitApp(chatcon, whitetheme, isstream) {
         AlertMsg(false, "文章AID格式錯誤，請重新輸入。");
       }
       else {
+        GM_setValue("LastPostUID", postinput[0].value);
         gotomainchat = true;
         if (pushdata.AID === result[1] && pushdata.board === result[2]) {
           msg.PostMessage("getpost", { AID: pushdata.AID, board: pushdata.board, startline: pushdata.lastendline });
@@ -530,6 +329,7 @@ function InitApp(chatcon, whitetheme, isstream) {
       }
     });
 
+    postinput[0].value = GM_getValue("LastPostUID", "");
     postinput[0].addEventListener("keyup", e => {
       if (e.keyCode === 13) {
         e.preventDefault();
@@ -669,7 +469,7 @@ function InitApp(chatcon, whitetheme, isstream) {
   }
   function _scroll() {
     const target = pushdata.pushes[pushdata.nowpush].div;
-    if (scrolloffset === 0) scrolloffset = (PTTChat_Chat[0].clientHeight - target[0].clientHeight) / 2;
+    scrolloffset = (PTTChat_Chat[0].clientHeight - target[0].clientHeight) / 2;
     let offset = target[0].offsetTop - scrolloffset;
 
     const lastscreen = PTTChat_Chat_Main[0].clientHeight - PTTChat_Chat[0].clientHeight + 10
@@ -789,7 +589,10 @@ function InitApp(chatcon, whitetheme, isstream) {
   }
   function ParsePostData(data) {
     PTTpostdata = $.extend(true, {}, data);
-    if (PTTpostdata.AID === pushdata.AID && PTTpostdata.board === pushdata.board) { }
+    if (PTTpostdata.AID === pushdata.AID && PTTpostdata.board === pushdata.board) {
+      pushdata.lastendline = PTTpostdata.endline;
+      console.log("pushdata.lastendline , PTTpostdata.endline: " + pushdata.lastendline + ", " + PTTpostdata.endline);
+    }
     else {
       pushdata = {
         AID: PTTpostdata.AID,
@@ -811,7 +614,6 @@ function InitApp(chatcon, whitetheme, isstream) {
       updatelog("postendline", pushdata.lastendline);
 
     }
-    console.log(pushdata);
     const pdata = PTTpostdata.pushes;
     let sametime = PTTpostdata.posttime;
     let sametimeIndex = pushdata.pushcount;
@@ -837,7 +639,6 @@ function InitApp(chatcon, whitetheme, isstream) {
       pushdata.pushes.push(newpush);
     }
     if (pdata.length > 0) pushdata.lastpushtime = pdata[pdata.length - 1].date;
-    console.log("pushdata", pushdata);
     updatelog("postpushcount", pushdata.pushcount);
     const t = pushdata.lastpushtime;
     updatelog("postlastpushtime", t.toLocaleDateString() + " " + t.toLocaleTimeString());
@@ -973,427 +774,19 @@ function InitApp(chatcon, whitetheme, isstream) {
 */
 }
 
-// src/ptt/index.js
-function runPTTScript() {
-  //get crypt key;
-  cryptkey = GM_getValue("cryptkey", Math.random());
-  //start script
-  'use strict'
-  let PTT = {
-    connect: true,//自動 連線狀態
-    login: false,//自動
-    controlstate: 0,
-    lastviewupdate: 0,
-    lock: function () {
-      PTT.controlstate = 1;
-    },
-    unlock: function () {
-      PTT.controlstate = 0;
-      PTT.commands.list = [];
-    },
-    //0 free,1 lock 手動更新 每次操作都要打開 用完關閉
-    pagestate: 0,//自動 ptt的訊息 暫時沒什麼用
-    screen: [],//自動 畫面資料
-    screenstate: 0,//0 clear, 1 full 自動 畫面是否已更新
-    wind: null,//自動
-    screenHaveText: function (reg) {
-      let result = null;
-      //debug用
-      if (this.screenstate === 0) {
-        const sElement = $("[type='bbsrow']", this.wind.document);
-        for (let i = 0; i < sElement.length; i++) {
-          const txt = sElement[i].textContent;
-          if (result == null) result = reg.exec(txt);
-          this.screen.push(txt);
-        }
-        this.screenstate = 1;
-        if (showalllog) console.log("screenHaveText", reg, result);
-        return result;
-      }
-      else {
-        for (let i = 0; i < this.screen.length; i++) {
-          const txt = this.screen[i];
-          result = reg.exec(txt);
-          if (result != null) {
-            if (showalllog) console.log("screenHaveText", reg, result);
-            return result;
-          }
-        }
-        if (showalllog) console.log("screenHaveText", reg, result);
-        return null;
-      }
-    },
-    screenclear: function () {
-      this.screenstate = 0;
-      this.screen = [];
-    },
-    commands: {
-      list: [],
-      add: function (reg, input, callback, ...args) {
-        const com = { reg, input, callback, args };
-        if (showcommand) console.log("Add command ", com);
-        this.list.push(com);
-      },
-      getfirst: function () {
-        return this.list[0];
-      },
-      removefirst: function () {
-        this.list.shift();
-      }
-    },
-    autocom: [
-      { reg: /您想刪除其他重複登入的連線嗎|您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n' },
-      { reg: /您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n' },
-      { reg: /請按任意鍵繼續/, input: '\n' },
-      {
-        reg: /系統過載, 請稍後再來\.\.\./, input: '', callback: () => {
-          serverfull = true;
-          if (PTT.controlstate === 1) {
-            PTT.unlock();
-            msg.PostMessage("alert", { type: false, msg: "系統過載, 請稍後再來..." });
-            PTT.unlock();
-          }
-        }, args: []
-      },
-      { reg: /大富翁 排行榜|發表次數排行榜/, input: 'q' },
-      { reg: /本日十大熱門話題/, input: 'q' },
-      { reg: /本週五十大熱門話題/, input: 'q' },
-      { reg: /每小時上站人次統計/, input: 'q' },
-      { reg: /本站歷史 \.\.\.\.\.\.\./, input: 'q' },
-      { reg: /看 板  目錄數   檔案數     byte數   總 分     板   主/, input: 'q' },
-      { reg: /看 板  目錄數   檔案數     byte數   總 分     板   主/, input: 'q' },
-      { reg: /名次──────範本───────────次數/, input: 'q' },
-
-    ]
-  }
-  PTT.wind = window;
-  let PTTPost = {
-    board: "",
-    AID: "",
-    title: "",
-    posttime: "",
-    pushes: [],
-    startline: 0,
-    endline: 3,
-    percent: 0,
-  }
-  let serverfull = false;
-  const insertText = (() => {
-    let t = PTT.wind.document.querySelector('#t')
-    return str => {
-      if (!t) t = PTT.wind.document.querySelector('#t')
-      const e = new CustomEvent('paste')
-      //debug用
-      //console.log(`insertText : \"` + str + `\"`);
-      e.clipboardData = { getData: () => str }
-      t.dispatchEvent(e)
-    }
-  })()
-  function ComLog(cmd) {
-    if (showcommand) console.log("execute command:", [cmd]);
-  }
-
-  function chechAutoCommand() {
-    let commands = PTT.autocom;
-    for (let autoi = 0; autoi < commands.length; autoi++) {
-      const cmd = commands[autoi];
-      const result = PTT.screenHaveText(cmd.reg);
-      //if (showcommand) console.log("auto command", cmd, result);
-      if (result != null) {
-        ComLog(cmd);
-        insertText(cmd.input);
-        if (typeof cmd.callback !== "undefined") {
-          cmd.callback(...cmd.args);
-        }
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function command() {
-    const cmd = PTT.commands.getfirst();
-    if (typeof cmd !== 'undefined' && PTT.screenHaveText(cmd.reg) != null) {
-      PTT.commands.removefirst();
-      ComLog(cmd);
-      insertText(cmd.input);
-      if (typeof cmd.callback == "function") {
-        cmd.callback(...cmd.args);
-      }
-    }
-  }
-  function OnUpdate() {
-    if (showalllog) console.log("OnUpdate start");
-    PTT.screenclear();
-    if (showalllog) console.log("check autocommand.");
-    if (!chechAutoCommand()) {
-      if (showalllog) console.log("check command.");
-      command();
-    }
-    if (showPTTscreen) console.log("PTT screen shot:", PTT.screen);
-    let nextcom = PTT.commands.getfirst();
-    if (showcommand && typeof nextcom !== 'undefined') console.log("next command : reg:" + nextcom.reg + "input:" + nextcom.input, [nextcom.callback]);
-    else if (showcommand) console.log("next command : none.");
-    if (showalllog) console.log("OnUpdate end");
-  }
-  //hook start
-  function hook(obj, key, cb) {
-    const fn = obj[key].bind(obj)
-    obj[key] = function (...args) {
-      fn.apply(this, args)
-      cb.apply(this, args)
-    }
-  }
-  hook(unsafeWindow.console, 'log', t => {
-    if (typeof t === 'string') {
-      if (t.indexOf('page state:') >= 0) {
-        const newstate = /->(\d)/.exec(t)[1];
-        PTT.pagestate = newstate;
-      }
-      else if (t === 'view update') {
-        PTT.lastviewupdate = Date.now();
-        serverfull = false;
-        OnUpdate();
-      }
-    }
-  });
-  //hook end
-  function reconnect() {
-    const disbtn = $(`.btn.btn-danger[type=button]`);
-    if (disbtn && disbtn.length > 0) {
-      msg.PostMessage("alert", { type: false, msg: "PTT已斷線，重新嘗試連線。" });
-      PTT.login = false;
-      disbtn[0].click();
-      serverfull = false;
-      setTimeout(reconnect(), 2000);
-    }
-  }
-  function checkscreenupdate() {
-    if (PTT.controlstate === 0) return;
-    const now = Date.now();
-    if (now > PTT.lastviewupdate + 10000) {
-      msg.PostMessage("alert", { type: false, msg: "PTT無回應，請稍後再試，或重新整理頁面。" });
-      PTT.unlock();
-    }
-    else {
-      msg.PostMessage("alert", { type: true, msg: "指令執行中......" });
-      setTimeout(checkscreenupdate, 3500);
-    }
-  }
-  //-----------------tasks----------------------
-  function gotoBoard(boardname) {
-    const input = boardname + "\n";
-    PTT.commands.add(/輸入看板名稱\(按空白鍵自動搜尋\)\:/, input, () => {
-      PTTPost.board = boardname;
-    });
-    insertText("s");
-  }
-  function gotoPost(postcode) {
-    const gotopost = "#" + postcode + "\n\n";
-    PTT.commands.add(/文章選讀/, gotopost, () => {
-      PTTPost.AID = postcode;
-    });
-    PTT.commands.add(/.*/, "", () => {
-      let nopost = PTT.screenHaveText(/文章選讀/);
-      let posttitle = PTT.screenHaveText(/ 標題 +(.+)/);
-      if (nopost) {
-        msg.PostMessage("alert", { type: false, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
-        PTT.unlock();
-      }
-      else if (posttitle) {
-        var reg = /\s+$/g;
-        let title = posttitle[1].replace(reg, "");
-        PTTPost.title = title;
-        _getpush();
-      }
-    });
-  }
-  function savepush(content, result) {
-    const pushdata = {};
-    pushdata.type = result[1];
-    pushdata.id = result[2];
-    pushdata.content = content;
-    pushdata.date = new Date(PTTPost.posttime.getFullYear(), result[4] - 1, result[5], result[6], result[7]);
-    PTTPost.pushes.push(pushdata);
-    //console.log(result);
-  }
-  function _getpush() {
-    const posttitle = PTT.screenHaveText(/ 標題 +(.+)/);
-    if (posttitle) {
-      const reg = /\s+$/g;
-      const title = posttitle[1].replace(reg, "");
-      if (PTTPost.title !== title) {
-        gotoPost(PTTPost.AID);
-        insertText("q");
-        return;
-      }
-    }
-    const lineresult = PTT.screenHaveText(/目前顯示: 第 (\d+)~(\d+) 行/);
-    const startline = lineresult[1];
-    const endline = lineresult[2];
-    let targetline = PTTPost.endline - startline + 1;
-    if (startline < 5) targetline += 1;
-    //console.log("(targetline,PTTPost.endline,startline)", targetline, PTTPost.endline, startline);
-    if (PTTPost.posttime === "") {
-      let result = PTT.screenHaveText(/時間  (\S{3} \S{3} ...\d{2}:\d{2}:\d{2} \d{4})/);
-      PTTPost.posttime = new Date(result[1]);
-    }
-    //console.log("targetline =" + targetline);
-    if (targetline < 1 || targetline > 23) {
-      //console.log("lastendline: " + PTTPost.endline + ", startline: " + startline + ", endline: " + endline);
-      const gotoline = PTTPost.endline + ".\n";
-      insertText(gotoline);
-      PTT.commands.add(/目前顯示: 第/, "", _getpush);
-      return;
-    }
-    for (let i = targetline; i < PTT.screen.length; i++) {
-      const line = PTT.screen[i];
-      //console.log(i + "," + line);
-      const result = /^(→ |推 |噓 )(.+?): (.*)(\d\d)\/(\d\d) (\d\d):(\d\d)/.exec(line);
-      if (result != null) {
-        let content = result[3];
-        var reg = /\s+$/g;
-        content = content.replace(reg, "");
-        savepush(content, result);
-      }
-    }
-    let percentresult = PTT.screenHaveText(/瀏覽 第 .+ 頁 \( *(\d+)%\)/);
-    PTTPost.percent = percentresult[1];
-    PTTPost.startline = startline;
-    PTTPost.endline = endline;
-    if (PTT.screenHaveText(/頁 \(100%\)/) == null) {
-      PTT.commands.add(/目前顯示: 第/, "", _getpush);
-      insertText(' ');
-    }
-    else {
-      PTT.unlock();
-      msg.PostMessage("alert", { type: true, msg: "文章讀取完成。" });
-      msg.PostMessage("postdata", PTTPost);
-      if (showalllog)
-        console.log(PTTPost);
-    }
-  }
-  //------------------------tasks--------------------------------
-  function GetPostPush(pAID, bname, startline, forceget = false) {
-    if ((PTT.connect && PTT.login) || forceget) {
-      let searchboard = bname !== PTTPost.board;
-      let searchpost = pAID !== PTTPost.AID;
-      startline = startline | 3;
-      msg.PostMessage("alert", { type: true, msg: "文章讀取中。" });
-      if (searchpost) PTTPost = {
-        board: "",
-        AID: "",
-        title: "",
-        posttime: "",
-        pushes: [],
-        startline: 0,
-        endline: startline,
-        percent: 0,
-      }
-      PTT.endline = startline;
-      if (searchboard) {
-        if (showalllog) console.log("新看板 新文章");
-        gotoBoard(bname);
-        gotoPost(pAID);
-      }
-      else if (searchpost) {
-        if (showalllog) console.log("同看板 新文章");
-        gotoPost(pAID);
-      }
-      else {
-        if (showalllog) console.log("同看板 同文章");
-        PTTPost.pushes = [];
-        insertText("q");
-        PTT.commands.add(/文章選讀/, "\n");
-        PTT.commands.add(/目前顯示: 第/, "", _getpush);
-      }
-    }
-    else if (!PTT.connect) {
-      msg.PostMessage("alert", { type: false, msg: "PTT已斷線，請重新登入。" });
-      PTT.unlock();
-    }
-    else if (!PTT.login) {
-      msg.PostMessage("alert", { type: false, msg: "PTT尚未登入，請先登入。" });
-      PTT.unlock();
-    }
-  }
-  function login(id, pw) {
-    msg.PostMessage("alert", { type: true, msg: "登入中" });
-    if (!PTT.login) {
-      const logincheck = () => {
-        if (PTT.screenHaveText(/密碼不對或無此帳號。請檢查大小寫及有無輸入錯誤。|請重新輸入/)) {
-          msg.PostMessage("alert", { type: false, msg: "登入失敗，帳號或密碼有誤。" });
-          PTT.unlock();
-        }
-        else if (PTT.screenHaveText(/上方為使用者心情點播留言區|【 精華公佈欄 】/)) {
-          msg.PostMessage("alert", { type: true, msg: "登入成功。" });
-          PTT.login = true;
-          PTT.unlock();
-          //testcode
-          /*(() => {
-            PTTLockCheck(GetPostPush, `#1VobIvqM (C_Chat)`);
-            insertText("x");
-          })();*/
-        }
-        else if (PTT.screenHaveText(/登入中，請稍候\.\.\.|正在更新與同步線上使用者及好友名單，系統負荷量大時會需時較久.../)) {
-          PTT.commands.add(/.*/, "", logincheck);
-        }
-        else {
-          msg.PostMessage("alert", { type: false, msg: "發生了未知錯誤。" });
-          console.log(PTT.screen);
-        }
-      }
-
-      let result = PTT.screenHaveText(/請輸入代號，或以 guest 參觀，或以 new 註冊/);
-      if (result) {
-        insertText(id + "\n" + pw + "\n");
-        PTT.commands.add(/.*/, "", logincheck);
-      }
-      else {
-        PTT.commands.add(/.*/, "", login, id, pw);
-      }
-    }
-    else {
-      msg.PostMessage("alert", { type: false, msg: "已經登入，請勿重複登入。" });
-      PTT.unlock();
-    }
-  }
-  function PTTLockCheck(callback, ...args) {
-    const disbtn = $(`.btn.btn-danger[type=button]`);
-    if (disbtn.length > 0) reconnect();
-    if (PTT.controlstate === 1) {
-      msg.PostMessage("alert", { type: false, msg: "指令執行中，請稍後再試。" });
-      return;
-    }
-    else if (serverfull) {
-      msg.PostMessage("alert", { type: false, msg: "系統過載, 請稍後再來..." });
-      PTT.unlock();
-    }
-
-    if (!serverfull) {
-      PTT.lastviewupdate = Date.now();
-      PTT.lock();
-      callback(...args);
-      setTimeout(checkscreenupdate, 3500);
-    }
-  }
-  //end
-  setTimeout(UpdateFrame, 2500);
-  function UpdateFrame() {
-    msg.PostMessage("PlayerUpdate", null);
-    setTimeout(UpdateFrame, 2500);
-  }
-  msg["login"] = data => {
-    const i = CryptoJS.AES.decrypt(data.id, cryptkey).toString(CryptoJS.enc.Utf8);
-    const p = CryptoJS.AES.decrypt(data.pw, cryptkey).toString(CryptoJS.enc.Utf8);
-    //console.log(data );
-    //console.log([i, p],cryptkey);
-    PTTLockCheck(login, i, p);
-  };
-  msg["getpost"] = data => { PTTLockCheck(GetPostPush, data.AID, data.board, data.startline); };
+// src/BootStrap.js
+'use strict';
+function BootStrap(frame) {
+  const frameHead = $("head", frame);
+  const frameBody = $("body", frame);
+  frameHead.append($(`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">`));
+  frameBody.append($(`<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>`));
+  frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>`));
+  frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>`));
 }
 
 // src/library.js
+'use strict';
 //add global style
 function AddStyle(css) {
   const style = document.createElement('style');
@@ -1439,7 +832,7 @@ function paddingRight(str, lenght) {
     return paddingRight(str + "0", lenght);
 }
 //JSON轉換用
-var dateReviver = function (key, value) {
+function dateReviver(key, value) {
   if (typeof value === 'string') {
     const a = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/.exec(value);
     if (a) {
@@ -1449,5 +842,718 @@ var dateReviver = function (key, value) {
   return value;
 };
 
+// src/AddCss.js
+'use strict';
+
+function AddCss(whitetheme, colorlight, colordark) {
+  //add globalcss
+  let bdcolor, bgcolor, ptp, pid, ptm, pmsg, ptxt;
+  if (whitetheme) {
+    bdcolor = colordark; bgcolor = colorlight; ptp = "#000"; pid = "#990"; ptm = "#bbb"; pmsg = "#550"; ptxt = "#343a40";
+  }
+  else {
+    bdcolor = colorlight; bgcolor = colordark; ptp = "#fff"; pid = "#ff6"; ptm = "#bbb"; pmsg = "#990"; ptxt = "#f8f9fa";
+  }
+  const PTTcss =
+    //PTTmaincss
+    `.ptttext { color: ` + ptxt + `; }
+    .pttbg {background-color: ` + bgcolor + `; }` +
+    //border
+    `.border{
+    border-color: ` + bdcolor + `!important;
+    border-top-color: `+ bdcolor + ` !important;
+    border-right-color: `+ bdcolor + ` !important;
+    border-bottom-color: `+ bdcolor + ` !important;
+    border-left-color: `+ bdcolor + ` !important;}` +
+    //PTTpushcss
+    `.pid { color: ` + pid + `; }
+     .ptime { color: ` + ptm + `; }
+     .pmsg { color: `+ pmsg + `; }
+     .ptype { color: ` + ptp + `}`;
+  AddStyle(PTTcss);
+}
+
+// src/youtube/ytindex.js
+'use strict';
+
+function InitYT(messageposter) {
+  const msg = messageposter;
+  let WhiteTheme;
+  //generate crypt key everytime;
+  cryptkey = GenerateCryptKey();
+  //add bootstrap to use
+  BootStrap(document);
+  //PTTApp global css
+  setTimeout(() => {
+    const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
+    const colorlight = "rgb(249, 249, 249)";
+    const colordark = "rgb(24, 24, 24)"
+    WhiteTheme = !(YTbgcolor === colordark);
+    AddCss(WhiteTheme, colorlight, colordark);
+  }, 100);
+  //避免bootstrap汙染YT
+  const PTTcss2 = `pttdiv{ 
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        text-align: left;
+        background-color: #fff;        
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        font-family: Roboto, Arial, sans-serif;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: normal;
+        color: rgb(0, 0, 0);
+        text-align: start;
+        background-color: rgba(0, 0, 0, 0);
+      }
+      #primary,#secondary{  box-sizing: content-box;}
+      html {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.18);
+      }`;
+  AddStyle(PTTcss2);
+  //run app instance loop
+  setTimeout(ChechChatInstanced, 3000);
+  function ChechChatInstanced() {
+    if (/www\.youtube\.com\/watch\?v=/.exec(window.location.href) === null) {
+      if (showalllog) console.log("not watch video.");
+      setTimeout(ChechChatInstanced, 2000);
+      return;
+    }
+    const ChatContainer = $(`ytd-live-chat-frame`);
+    const defaultChat = $(`iframe`, ChatContainer);
+    const PTTApp = $(`#PTTChat`, ChatContainer);
+    if (PTTApp.length > 0) {
+      if (showalllog) console.log("PTTApp already instanced.");
+      setTimeout(ChechChatInstanced, 5000);
+      return;
+    }
+    else if (defaultChat.length > 0) {
+      if (showalllog) console.log("PTTApp frame instance!");
+      ChatContainer.css({ "position": "relative" });
+
+      //生出插件
+      let isstream = checkvideotype();
+      InitApp(ChatContainer, WhiteTheme, isstream, msg);
+
+      setTimeout(ChechChatInstanced, 5000);
+    }
+    else {
+      if (showalllog) console.log("watching video without chatroom.");
+      setTimeout(ChechChatInstanced, 5000);
+    }
+  }
+  function checkvideotype() {
+    const streambtncss = $('.ytp-live-badge').css("display");
+    const logstr = [`$('.ytp-live-badge').css("display")`, streambtncss];
+    if (simulateisstreaming) {
+    } else if (streambtncss === "inline-block") {
+      console.log("This video is streaming.", logstr);
+      return true;
+      //$(`#PTTConnect-Time-Setting`).addClass('d-none');
+    }
+    else if (streambtncss === "none") {
+      console.log("This video is not streaming.", logstr);
+      return false;
+    }
+  }
+}
+
+// src/holotools/htindex.js
+'use strict';
+
+function InitHT(messageposter) {
+  const msg = messageposter;
+  let WhiteTheme;
+  //generate crypt key everytime;
+  cryptkey = GenerateCryptKey();
+  //add bootstrap to use
+  BootStrap(document);
+  //AddPTTAppcss(whitetheme, colorlight, colordark)
+  AddStyle(true, "rgb(249, 249, 249)", "rgb(24, 24, 24)")
+  //PTTApp global css
+  setTimeout(() => {
+    const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
+    const colorlight = "rgb(249, 249, 249)";
+    const colordark = "rgb(24, 24, 24)";
+    WhiteTheme = !(YTbgcolor === colordark);
+    AddCss(WhiteTheme, colorlight, colordark);
+  }, 100);
+
+  const PTTcss = `pttdiv{
+      font-size: 12px;
+    }
+    .form-control,.btn{ 
+      font-size: 1em;
+    }
+    .btn{ 
+      padding-top: 0.375em;
+      padding-right: 0.75em;
+      padding-bottom: 0.375em;
+      padding-left: 0.75em;
+    }
+    .p-4{ 
+      padding: 15px;
+    }`
+    ;
+  AddStyle(PTTcss);
+  //run app instance loop
+  setTimeout(ChechChatInstanced, 3000);
+  function ChechChatInstanced() {
+    const parent = $(`.container-watch`);
+    const fakeparent = $(`<div id="fakeparent" class="d-flex flex-row"></div>`);
+
+    const defaultVideoHandler = $(`<div id="holotoolsvideohandler" class="flex-grow-1"></div>`);
+    const defaultVideo = $(`.player-container.hasControls`);
+
+    const PTTChatHandler = $(`<div id="pttchatparent" class="p-0 d-flex" style="width:400px;position:relative;"></div>`);
+    parent.append(fakeparent);
+
+    fakeparent.append(defaultVideoHandler);
+    defaultVideoHandler.append(defaultVideo);
+
+    fakeparent.append(PTTChatHandler);
+    $(`.reopen-toolbar`).css({ "z-index": "302" });
+
+    InitApp(PTTChatHandler, WhiteTheme, true);
+  }
+}
+
+// src/ptt/pttindex.js
+'use strict';
+
+function InitPTT(messageposter) {
+  const msg = messageposter;
+  //get crypt key;
+  cryptkey = GM_getValue("cryptkey", Math.random());
+  //start script
+  'use strict'
+  let PTT = {
+    connect: true,//自動 連線狀態
+    login: false,//自動
+    controlstate: 0,
+    lastviewupdate: 0,
+    lock: function () {
+      PTT.controlstate = 1;
+    },
+    unlock: function () {
+      PTT.controlstate = 0;
+      PTT.commands.list = [];
+    },
+    //0 free,1 lock 手動更新 每次操作都要打開 用完關閉
+    pagestate: 0,//PTT頁面狀態 0未登入畫面 1主畫面 2看板畫面 3文章畫面第一頁 4文章畫面其他頁
+    screen: [],//自動 畫面資料
+    screenstate: 0,//0 clear, 1 full 自動 畫面是否已更新
+    wind: null,//自動
+    screenHaveText: function (reg) {
+      let result = null;
+      //debug用
+      if (this.screenstate === 0) {
+        const sElement = $("[type='bbsrow']", this.wind.document);
+        for (let i = 0; i < sElement.length; i++) {
+          const txt = sElement[i].textContent;
+          if (result == null) result = new RegExp(reg).exec(txt);
+          this.screen.push(txt);
+        }
+        this.screenstate = 1;
+        if (showalllog) console.log("screenHaveText", reg, result);
+        return result;
+      }
+      else {
+        for (let i = 0; i < this.screen.length; i++) {
+          const txt = this.screen[i];
+          result = new RegExp(reg).exec(txt);
+          if (result != null) {
+            if (showalllog) console.log("screenHaveText", reg, result);
+            return result;
+          }
+        }
+        if (showalllog) console.log("screenHaveText", reg, result);
+        return null;
+      }
+    },
+    screenclear: function () {
+      this.screenstate = 0;
+      this.screen = [];
+    },
+    commands: {
+      list: [],
+      add: function (reg, input, callback, ...args) {
+        const com = { reg, input, callback, args };
+        if (showcommand) console.log("Add command ", com);
+        this.list.push(com);
+      },
+      getfirst: function () {
+        return this.list[0];
+      },
+      removefirst: function () {
+        this.list.shift();
+      }
+    },
+    pagestatefilter: [
+      { reg: /請輸入代號，或以 guest 參觀，或以 new 註冊/, state: 0 },
+      { reg: /上方為使用者心情點播留言區|【 精華公佈欄 】/, state: 1 },
+      { reg: /^\[←\]離開 \[→\]閱讀/, state: 2 },
+      { reg: /目前顯示\: 第 01/, state: 3 },
+      { reg: /目前顯示\: 第/, state: 4 },
+    ],
+    autocom: [
+      { reg: /您想刪除其他重複登入的連線嗎|您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n' },
+      { reg: /您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n' },
+      { reg: /請按任意鍵繼續/, input: '\n' },
+      {
+        reg: /系統過載, 請稍後再來\.\.\./, input: '', callback: () => {
+          serverfull = true;
+          if (PTT.controlstate === 1) {
+            PTT.unlock();
+            msg.PostMessage("alert", { type: false, msg: "系統過載, 請稍後再來..." });
+            PTT.unlock();
+          }
+        }, args: []
+      },
+      { reg: /大富翁 排行榜|發表次數排行榜/, input: 'q' },
+      { reg: /本日十大熱門話題/, input: 'q' },
+      { reg: /本週五十大熱門話題/, input: 'q' },
+      { reg: /每小時上站人次統計/, input: 'q' },
+      { reg: /本站歷史 \.\.\.\.\.\.\./, input: 'q' },
+      { reg: /看 板  目錄數   檔案數     byte數   總 分     板   主/, input: 'q' },
+      { reg: /名次──────範本───────────次數/, input: 'q' },
+
+    ]
+  }
+  PTT.wind = window;
+  let PTTPost = {
+    board: "",
+    AID: "",
+    title: "",
+    posttime: "",
+    pushes: [],
+    startline: 0,
+    endline: 3,
+    percent: 0,
+    samepost: false,
+    isgotopost: false
+
+  }
+  let serverfull = false;
+  const insertText = (() => {
+    let t = PTT.wind.document.querySelector('#t')
+    return str => {
+      if (!t) t = PTT.wind.document.querySelector('#t')
+      const e = new CustomEvent('paste')
+      //debug用
+      //console.log(`insertText : \"` + str + `\"`);
+      e.clipboardData = { getData: () => str }
+      t.dispatchEvent(e)
+    }
+  })()
+  function ComLog(cmd) {
+    if (showcommand) console.log("execute command:", [cmd]);
+  }
+  function updatePagestate() {
+    for (let i = 0; i < PTT.pagestatefilter.length; i++) {
+      const filter = PTT.pagestatefilter[i];
+      const result = PTT.screenHaveText(filter.reg);
+      if (result != null) {
+        PTT.pagestate = filter.state;
+        console.log("page state = " + PTT.pagestate);
+        return;
+      }
+    }
+  }
+  function chechAutoCommand() {
+    let commands = PTT.autocom;
+    for (let autoi = 0; autoi < commands.length; autoi++) {
+      const cmd = commands[autoi];
+      const result = PTT.screenHaveText(cmd.reg);
+      //if (showcommand) console.log("auto command", cmd, result);
+      if (result != null) {
+        ComLog(cmd);
+        insertText(cmd.input);
+        if (typeof cmd.callback !== "undefined") {
+          cmd.callback(...cmd.args);
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function command() {
+    const cmd = PTT.commands.getfirst();
+    if (typeof cmd !== 'undefined' && PTT.screenHaveText(cmd.reg) != null) {
+      PTT.commands.removefirst();
+      ComLog(cmd);
+      insertText(cmd.input);
+      if (typeof cmd.callback == "function") {
+        cmd.callback(...cmd.args);
+      }
+    }
+  }
+  function OnUpdate() {
+    if (showalllog) console.log("OnUpdate start");
+    PTT.screenclear();
+    if (showalllog) console.log("set pagestate.");
+    updatePagestate();
+    if (showalllog) console.log("check autocommand.");
+    if (!chechAutoCommand()) {
+      if (showalllog) console.log("check command.");
+      command();
+    }
+    if (showPTTscreen) console.log("PTT screen shot:", PTT.screen);
+    let nextcom = PTT.commands.getfirst();
+    if (showcommand && typeof nextcom !== 'undefined') console.log("next command : reg:" + nextcom.reg + "input:" + nextcom.input, [nextcom.callback]);
+    else if (showcommand) console.log("next command : none.");
+    if (showalllog) console.log("OnUpdate end");
+  }
+  //hook start
+  function hook(obj, key, cb) {
+    const fn = obj[key].bind(obj)
+    obj[key] = function (...args) {
+      fn.apply(this, args)
+      cb.apply(this, args)
+    }
+  }
+  hook(unsafeWindow.console, 'log', t => {
+    if (typeof t === 'string') {
+      if (t.indexOf('page state:') >= 0) {
+        /*const newstate = /->(\d)/.exec(t)[1];*/
+      }
+      else if (t === 'view update') {
+        PTT.lastviewupdate = Date.now();
+        serverfull = false;
+        OnUpdate();
+      }
+    }
+  });
+  //hook end
+  function reconnect() {
+    const disbtn = $(`.btn.btn-danger[type=button]`);
+    if (disbtn && disbtn.length > 0) {
+      msg.PostMessage("alert", { type: false, msg: "PTT已斷線，重新嘗試連線。" });
+      PTT.login = false;
+      disbtn[0].click();
+      serverfull = false;
+      PTT.screenstate = -1;
+      PTT.unlock;
+      setTimeout(reconnect(), 1000);
+    }
+  }
+  function checkscreenupdate() {
+    if (PTT.controlstate === 0) return;
+    const now = Date.now();
+    if (now > PTT.lastviewupdate + 10000) {
+      msg.PostMessage("alert", { type: false, msg: "PTT無回應，請稍後再試，或重新整理頁面。" });
+      PTT.unlock();
+    }
+    else {
+      msg.PostMessage("alert", { type: true, msg: "指令執行中......" });
+      setTimeout(checkscreenupdate, 3500);
+    }
+  }
+
+  // -----------------------task getpost --------------------
+  function gotoBoard() { insertText("s" + PTTPost.board + "\n"); }
+  function boardcheck() {
+    const res = { pass: false, callback: gotoBoard }
+    let reg = "";
+    if (PTT.pagestate === 4) {
+      res.pass = true;
+      return res;
+    }
+    else if (PTT.pagestate === 1) return res;
+    else if (PTT.pagestate === 2) reg = "看板《" + PTTPost.board + "》";
+    else if (PTT.pagestate === 3) reg = "看板  " + PTTPost.board + " *";
+    const currect = PTT.screenHaveText(reg);
+    if (currect) res.pass = true;
+    return res;
+  }
+
+  function gotoPost() { insertText("NN#" + PTTPost.AID + "\n\n"); PTTPost.isgotopost = true; }
+  function PostCheck() {
+    const res = { pass: true, callback: gotoPost }
+    if (PTT.pagestate === 2) res.pass = false;
+    else if (PTT.pagestate === 1) console.log("PostCheck error, PTT.pagestate == 1.");
+    return res;
+  }
+
+  function backtoboard() { insertText("q"); }
+  function PotsTitleCheck() {
+    const res = { pass: true, callback: backtoboard }
+    if (PTT.pagestate === 3) {
+      const reg = / 標題 +(.+)/;
+      const posttitle = PTT.screenHaveText(reg);
+      if (posttitle) {
+        PTTPost.isgotopost = false;
+        var spacereg = /\s+$/g;
+        const title = posttitle[1].replace(spacereg, "");
+        if (PTTPost.samepost) {
+          if (title === PTTPost.title) {
+          }
+          else { res.pass = false; }
+        }
+        else {
+          PTTPost.title = title;
+          let result = PTT.screenHaveText(/時間  (\S{3} \S{3} ...\d{2}:\d{2}:\d{2} \d{4})/);
+          PTTPost.posttime = new Date(result[1]);
+        }
+      }
+      else { res.pass = false; console.log("PotsTitleCheck error, Reg Parse Error."); }
+    }
+    else if (PTT.pagestate === 1) console.log("PotsTitleCheck error, PTT.pagestate == 1.");
+    else if (PTT.pagestate === 2) console.log("PotsTitleCheck error, PTT.pagestate == 2.");
+    return res;
+  }
+
+  function gotoline() { insertText(PTTPost.endline + ".\n"); }
+  function PostLineCheck() {
+    const res = { pass: true, callback: gotoline }
+    if (PTT.pagestate === 4 || PTT.pagestate === 3) {
+      const lineresult = PTT.screenHaveText(/目前顯示: 第 (\d+)~(\d+) 行/);
+      const startline = lineresult[1];
+      let targetline = PTTPost.endline - startline + 1;
+      if (startline < 5) targetline += 1;
+      if ((targetline < 1 || targetline > 23) && PTT.screenHaveText(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~\d+ 行/) === null) res.pass = false;
+      else getpush();
+    }
+    else if (PTT.pagestate === 1) console.log("PistLineCheck error, PTT.pagestate == 1.");
+    else if (PTT.pagestate === 2) console.log("PistLineCheck error, PTT.pagestate == 2.");
+    return res;
+  }
+
+  function savepush(content, result) {
+    const pushdata = {};
+    pushdata.type = result[1];
+    pushdata.id = result[2];
+    pushdata.content = content;
+    pushdata.date = new Date(PTTPost.posttime.getFullYear(), result[4] - 1, result[5], result[6], result[7]);
+    PTTPost.pushes.push(pushdata);
+    //console.log(result);
+  }
+  function getpush() {
+    const lineresult = PTT.screenHaveText(/目前顯示: 第 (\d+)~(\d+) 行/);
+    const startline = lineresult[1];
+    const endline = lineresult[2];
+    let targetline = PTTPost.endline - startline + 1;
+    if (startline < 5) targetline += 1;
+    //console.log("GetPush from " + targetline + "to " + (PTT.screen.length - 1));
+    //console.log("(pttstartline, pttendline, startline, endline, targetline): (" + PTTPost.startline + ", " + PTTPost.endline + ", " + startline + ", " + endline + ", " + targetline + ")");
+    for (let i = targetline; i < PTT.screen.length; i++) {
+      const line = PTT.screen[i];
+      //console.log(i + "," + line);
+      const result = /^(→ |推 |噓 )(.+?): (.*)(\d\d)\/(\d\d) (\d\d):(\d\d)/.exec(line);
+      if (result != null) {
+        let content = result[3];
+        var reg = /\s+$/g;
+        content = content.replace(reg, "");
+        savepush(content, result);
+      }
+    }
+    let percentresult = PTT.screenHaveText(/瀏覽 第 .+ 頁 \( *(\d+)%\)/);
+    PTTPost.percent = percentresult[1];
+    PTTPost.startline = startline;
+    PTTPost.endline = endline;
+
+  }
+
+  function gotonextpage() { insertText(' '); }
+  function PostPercentCheck() {
+    const res = { pass: false, callback: gotonextpage }
+    if ((PTT.pagestate === 3 || PTT.pagestate === 4) && PTT.screenHaveText(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~\d+ 行/) !== null) {
+      res.pass = true;
+    }
+    else if (PTT.pagestate === 1) console.log("PostPercentCheck error, PTT.pagestate == 1.");
+    else if (PTT.pagestate === 2) console.log("PostPercentCheck error, PTT.pagestate == 2.");
+    return res;
+  }
+  //------------------------tasks--------------------------------
+  const task = {};
+  task.GetPost = [boardcheck, PostCheck, PotsTitleCheck, PostLineCheck, PostPercentCheck];
+  function GetPushTask() {
+    if (PTTPost.isgotopost && PTT.pagestate === 2) {
+      msg.PostMessage("alert", { type: false, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
+      PTT.unlock();
+    }
+    //console.log("(startline, endline): ( " + PTTPost.startline + ", " + PTTPost.endline + ")");
+    for (let i = 0; i < task.GetPost.length; i++) {
+      const element = task.GetPost[i];
+      const result = element();
+      //console.log("Run task", { element, result });
+      if (result.pass === false) {
+        result.callback();
+        PTT.commands.add(/.*/, "", GetPushTask);
+        return;
+      }
+    }
+    //end
+    PTT.unlock();
+    msg.PostMessage("alert", { type: true, msg: "文章讀取完成。" });
+    msg.PostMessage("postdata", PTTPost);
+    if (showalllog) console.log(PTTPost);
+  }
+  function GetPostPush(pAID, bname, startline, forceget = false) {
+    if (PTT.pagestate > 0 || forceget) {
+      startline = startline || 3;
+      msg.PostMessage("alert", { type: true, msg: "文章讀取中。" });
+      const samepost = (bname === PTTPost.board) && (pAID === PTTPost.AID);
+      if (samepost) {
+        PTTPost.pushes = [];
+        PTTPost.samepost = true;
+        PTTPost.endline = startline;
+        PTTPost.isgotopost = false;
+        //console.log("Get Same Post Push from PTTPost.endline, startline: " + PTTPost.endline + ", " + startline);
+      }
+      else {
+        PTTPost = {
+          board: bname,
+          AID: pAID,
+          title: "",
+          posttime: "",
+          pushes: [],
+          startline: 0,
+          endline: startline,
+          percent: 0,
+          samepost: false,
+          isgotopost: false
+        }
+      }
+      if (PTT.pagestate === 1) insertText("m");
+      else insertText("q");
+      PTT.commands.add(/.*/, "", GetPushTask);
+    }
+    else if (PTT.screenstate === -1) {
+      msg.PostMessage("alert", { type: false, msg: "PTT已斷線，請重新登入。" });
+      PTT.unlock();
+    }
+    else if (PTT.screenstate === 0) {
+      msg.PostMessage("alert", { type: false, msg: "PTT尚未登入，請先登入。" });
+      PTT.unlock();
+    }
+  }
+  function login(id, pw) {
+    msg.PostMessage("alert", { type: true, msg: "登入中" });
+    if (!PTT.login) {
+      const logincheck = () => {
+        if (PTT.screenHaveText(/密碼不對或無此帳號。請檢查大小寫及有無輸入錯誤。|請重新輸入/)) {
+          msg.PostMessage("alert", { type: false, msg: "登入失敗，帳號或密碼有誤。" });
+          PTT.unlock();
+        }
+        else if (PTT.screenHaveText(/上方為使用者心情點播留言區|【 精華公佈欄 】/)) {
+          msg.PostMessage("alert", { type: true, msg: "登入成功。" });
+          PTT.login = true;
+          PTT.unlock();
+          //testcode
+          /*(() => {
+            PTTLockCheck(GetPostPush, `#1VobIvqM (C_Chat)`);
+            insertText("x");
+          })();*/
+        }
+        else if (PTT.screenHaveText(/登入中，請稍候\.\.\.|正在更新與同步線上使用者及好友名單，系統負荷量大時會需時較久|密碼正確！ 開始登入系統/)) {
+          PTT.commands.add(/.*/, "", logincheck);
+        }
+        else {
+          msg.PostMessage("alert", { type: false, msg: "發生了未知錯誤。" });
+          console.log(PTT.screen);
+        }
+      }
+
+      let result = PTT.screenHaveText(/請輸入代號，或以 guest 參觀，或以 new 註冊/);
+      if (result) {
+        insertText(id + "\n" + pw + "\n");
+        PTT.commands.add(/.*/, "", logincheck);
+      }
+      else {
+        PTT.commands.add(/.*/, "", login, id, pw);
+      }
+    }
+    else {
+      msg.PostMessage("alert", { type: false, msg: "已經登入，請勿重複登入。" });
+      PTT.unlock();
+    }
+  }
+  function PTTLockCheck(callback, ...args) {
+    const disbtn = $(`.btn.btn-danger[type=button]`);
+    if (disbtn.length > 0) reconnect();
+    else if (PTT.controlstate === 1) {
+      msg.PostMessage("alert", { type: false, msg: "指令執行中，請稍後再試。" });
+      return;
+    }
+    else if (serverfull) {
+      msg.PostMessage("alert", { type: false, msg: "系統過載, 請稍後再來..." });
+      PTT.unlock();
+    } else if (!serverfull) {
+      PTT.lastviewupdate = Date.now();
+      PTT.lock();
+      callback(...args);
+      setTimeout(checkscreenupdate, 3500);
+    }
+  }
+  //end
+  setTimeout(UpdateFrame, 2500);
+  function UpdateFrame() {
+    msg.PostMessage("PlayerUpdate", null);
+    setTimeout(UpdateFrame, 2500);
+  }
+  msg["login"] = data => {
+    const i = CryptoJS.AES.decrypt(data.id, cryptkey).toString(CryptoJS.enc.Utf8);
+    const p = CryptoJS.AES.decrypt(data.pw, cryptkey).toString(CryptoJS.enc.Utf8);
+    //console.log(data );
+    //console.log([i, p],cryptkey);
+    PTTLockCheck(login, i, p);
+  };
+  msg["getpost"] = data => { PTTLockCheck(GetPostPush, data.AID, data.board, data.startline); };
+}
+
+// src/HerfFilter.js
+'use strict';
+
+function HerfFilter(msg) {
+  const isTopframe = (window.top == window.self);
+  if (/term\.ptt\.cc/.exec(window.location.href) !== null) {
+    if (isTopframe) throw "PTTonYT Script Stopped: PTT should not run in top frame";//check script work in right frame
+    //init msg
+    msg.ownorigin = "https://term.ptt.cc";
+    msg.targetorigin = /\?url=(.+)/.exec(window.location.href)[1];
+    msg.targetWindow = top;
+    //-----
+    console.log("Script started at " + window.location.href);
+    InitPTT(msg);
+    console.log("PTT Script initialize finish.");
+    //-----
+  }
+  else if (/www\.youtube\.com/.exec(window.location.href) !== null) {
+    if (!isTopframe) throw "PTTonYT Script Stopped: Youtube should run in top frame";//check script work in right frame
+    //init postmessage
+    msg.targetorigin = "https://term.ptt.cc";
+    msg.ownorigin = "https://www.youtube.com";
+    //-----
+    console.log("Script started at " + window.location.href);
+    setTimeout(InitYT, 10, msg);
+    console.log("Youtube Script initialize finish.");
+    //-----
+  }
+  else if (/hololive\.jetri\.co/.exec(window.location.href) !== null) {
+    if (!isTopframe) throw "PTTonYT Script Stopped: Holotools should run in top frame";//check script work in right frame
+    //init postmessage
+    msg.ownorigin = "https://hololive.jetri.co";
+    msg.targetorigin = "https://term.ptt.cc";
+    //-----
+    console.log("Script started at " + window.location.href);
+    setTimeout(InitHT, 10, msg);
+    console.log("Hololive Script initialize finish.");
+    //-----
+  }
+}
+
 // src/index.js
-yt.help();
+'use strict';
+(function () {
+  let msg = new MessagePoster;
+
+  HerfFilter(msg);
+
+})()

@@ -1,8 +1,11 @@
-import { InitApp } from '../app/index.js';
+import { InitApp } from '../app/appindex.js';
 import { BootStrap } from '../BootStrap.js';
-import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver } from '../library.js'
+import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver } from '../library.js';
+import { AddCss } from '../AddCss.js';
+'use strict';
 
-export function InitYoutubeScript() {
+export function InitYT(messageposter) {
+  const msg = messageposter;
   let WhiteTheme;
   //generate crypt key everytime;
   cryptkey = GenerateCryptKey();
@@ -63,7 +66,7 @@ export function InitYoutubeScript() {
 
       //生出插件
       let isstream = checkvideotype();
-      InitApp(ChatContainer, WhiteTheme, isstream);
+      InitApp(ChatContainer, WhiteTheme, isstream, msg);
 
       setTimeout(ChechChatInstanced, 5000);
     }

@@ -22,7 +22,7 @@
     "meta": {
       "name:zh-TW": "Youtube聊天室顯示PTT推文",
       "namespace": "https://github.com/zoosewu",
-      "description:zh-tw": "連結PTT推文到Youtube聊天室",
+      "description:zh-tw": "連結PTT推文到Youtube聊天室  讓你簡單追實況搭配推文",
       "match": [
         "https://www.youtube.com/*",
         "https://youtu.be/*",

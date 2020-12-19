@@ -1,4 +1,5 @@
 import { library } from './library.js';
+'use strict';
 
 export function AddCss(whitetheme, colorlight, colordark) {
   //add globalcss

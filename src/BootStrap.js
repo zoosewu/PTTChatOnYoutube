@@ -1,3 +1,4 @@
+'use strict';
 export function BootStrap(frame) {
   const frameHead = $("head", frame);
   const frameBody = $("body", frame);

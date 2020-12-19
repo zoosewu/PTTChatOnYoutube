@@ -1,4 +1,6 @@
-export function InitApp(chatcon, whitetheme, isstream) {
+'use strict';
+export function InitApp(chatcon, whitetheme, isstream, messageposter) {
+  const msg = messageposter;
   /*setTimeout(repeatlog, 1000);
   function repeatlog() {
     console.log("PTTChat_Chat_Main", PTTChat_Chat_Main);
@@ -116,9 +118,8 @@ export function InitApp(chatcon, whitetheme, isstream) {
       updatelog("targetscroll", scrolltargetpos);
       updatelog("nowscroll", scrollnowpos);
       updatelog("lastscroll", scrolllastpos);
-      scrolllastpos = scrollnowpos;
       if (reportmode) console.log(scrolltype + ", (targetpos, lastpos, nowpos): (" + scrolltargetpos + ", " + scrolllastpos + ", " + scrollnowpos + "), scroll time step:" + t + " ms.");
-
+      scrolllastpos = scrollnowpos;
     });
     const autoscrollbtn = $(`#AutoScroll`, PTTChatContents);
     autoscrollbtn[0].addEventListener("click", function (event) {
@@ -157,7 +158,7 @@ export function InitApp(chatcon, whitetheme, isstream) {
     /*------------------------------------Connect------------------------------------*/
     const PTTChat_Connect = $(`#PTTChat-contents-Connect-main`, PTTChatContents);
     ConnectAlertDiv = $(`#PTTChat-contents-Connect-alert`, PTTChatContents);
-    const PTTChat_ConnectContent = $(`<!-------- 連線 --------><!-- stream time input field--><div id="PTTConnect-Time-Setting" class="form-row mb-2 d-none"><div class="form-group col-7"><label for="appt-time">實況重播開台時間:</label> <input id="stream-time" type="time" name="stream-time"></div><div class="form-check col-4 pl-4"><input type="checkbox" class="form-check-input" id="streambeforepost"> <label class="form-check-label ml-2" for="streambeforepost">發文前已開台</label></div></div><!-- login input field--><div class="form-row mb-2"><div class="col-5"><label for="PTTid">PTT ID</label> <input id="PTTid" type="text" class="form-control" placeholder="PTT ID" autocomplete="off"></div><div class="col-5"><label for="PTTpw">PTT密碼</label> <input id="PTTpw" type="password" class="form-control" placeholder="PTT密碼" autocomplete="off"></div><div class="col-2"><label for="PTTlogin" class="col-2">　</label> <button id="PTTlogin" type="button" class="btn ptttext border btn-outline-secondary">登入</button></div></div><!-- Post AID input field --><div class="my-3 form-row"><label for="post0" class="col-3 col-form-label">輸入文章AID</label> <input id="post0" class="form-control col mr-3" type="text" placeholder="#1VobIvqC (C_Chat)" autocomplete="off"> <button id="post0btn" class="btn ptttext border btn-outline-secondary" type="button">讀取推文</button></div><!-- test push button --> <button id="fakebtn" class="btn ptttext border btn-outline-secondary m-2 d-none" type="button">讀取測試用假推文</button><!-- New version button --> <a id="updatebtn" class="btn ptttext border btn-outline-secondary m-2 d-none" href="https://greasyfork.org/zh-TW/scripts/418469-youtubechatonptt" target="_blank" rel="noopener noreferrer" role="button">檢測到新版本</a>
+    const PTTChat_ConnectContent = $(`<!-------- 連線 --------><!-- stream time input field--><div id="PTTConnect-Time-Setting" class="form-row mb-2 d-none"><div class="form-group col-7"><label for="appt-time">實況重播開台時間:</label> <input id="stream-time" type="time" name="stream-time"></div><div class="form-check col-4 pl-4"><input type="checkbox" class="form-check-input" id="streambeforepost"> <label class="form-check-label ml-2" for="streambeforepost">發文前已開台</label></div></div><!-- login input field--><div class="form-row mb-2"><div class="col-5"><label for="PTTid">PTT ID</label> <input id="PTTid" type="text" class="form-control" placeholder="PTT ID" autocomplete="off"></div><div class="col-5"><label for="PTTpw">PTT密碼</label> <input id="PTTpw" type="password" class="form-control" placeholder="PTT密碼" autocomplete="off"></div><div class="col-2"><label for="PTTlogin" class="col-2">　</label> <button id="PTTlogin" type="button" class="btn ptttext border btn-outline-secondary">登入</button></div></div><!-- Post AID input field --><div class="my-3 form-row"><label for="post0" class="col-3 col-form-label">輸入文章AID</label> <input id="post0" class="form-control col mr-3" type="text" placeholder="#1VobIvqC (C_Chat)" autocomplete="off"> <button id="post0btn" class="btn ptttext border btn-outline-secondary" type="button">讀取推文</button></div><div class="my-3 form-row"><label for="setH" class="col-3 col-form-label">設定插件長度</label> <input id="setHeight" class="form-control col mr-3" type="text" placeholder="600" autocomplete="off"> <button id="setHeightbtn" class="btn ptttext border btn-outline-secondary" type="button">確認</button></div><!-- test push button --> <button id="fakebtn" class="btn ptttext border btn-outline-secondary m-2 d-none" type="button">讀取測試用假推文</button><!-- New version button --> <a id="updatebtn" class="btn ptttext border btn-outline-secondary m-2 d-none" href="https://greasyfork.org/zh-TW/scripts/418469-youtubechatonptt" target="_blank" rel="noopener noreferrer" role="button">檢測到新版本</a>
     `);
 
     const fakedata = '{"board":"Test","AID":"1VpKTOfx","title":"","posttime":"2020-12-06T21:04:22.000Z","pushes":[{"type":"→ ","id":"ZooseWu","content":"推文1","date":"2020-12-06T21:04:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文2","date":"2020-12-06T21:05:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文3","date":"2020-12-06T21:05:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"","date":"2020-12-06T21:05:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文5","date":"2020-12-06T21:05:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文678","date":"2020-12-06T21:05:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文100","date":"2020-12-06T21:06:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文101","date":"2020-12-06T21:06:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文102Y","date":"2020-12-06T21:10:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"123","date":"2020-12-06T21:11:00.000Z"},{"type":"推 ","id":"hu7592","content":"☂","date":"2020-12-06T22:24:00.000Z"},{"type":"→ ","id":"ss15669659","content":"☂","date":"2020-12-06T23:56:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"hey","date":"2020-12-07T00:31:00.000Z"}],"startline":"127","endline":"149","percent":"100"}';
@@ -167,10 +168,12 @@ export function InitApp(chatcon, whitetheme, isstream) {
 
     const loginbtn = $(`#PTTlogin`, PTTChat_Connect);
     const fakebtn = $(`#fakebtn`, PTTChat_Connect);
-    const pptid = $(`#PTTid`, PTTChat_Connect);
+    const pttid = $(`#PTTid`, PTTChat_Connect);
     const pttpw = $(`#PTTpw`, PTTChat_Connect);
     const postinput = $(`#post0`, PTTChat_Connect);
     const postbtn = $(`#post0btn`, PTTChat_Connect);
+    const seth = $(`#setHeight`, PTTChat_Connect);
+    const sethbtn = $(`#setHeightbtn`, PTTChat_Connect);
     const streambeforepost = $(`#streambeforepost`, PTTChat_Connect);
 
     streamtimeinput = $(`#stream-time`, PTTChatContents);
@@ -179,29 +182,43 @@ export function InitApp(chatcon, whitetheme, isstream) {
       PlayerUpdate();
     }, false);
 
+    sethbtn[0].addEventListener("click", function () {
+      let h = seth[0].value;
+      console.log("H = " + h);
+      if (+h < 180) h = 180;
+      else if (+h > 800) h = 800;
+      GM_setValue("PluginHeight", h);
+      seth[0].value = h;
+      PTTChatContents.css({ "height": h + "px" });
+    });
+    seth[0].value = GM_getValue("PluginHeight", 450);
+    PTTChatContents.css({ "height": seth[0].value + "px" });
+    seth[0].addEventListener("keyup", event => {
+      if (event.keyCode === 13 || event.which == 13) {
+        event.preventDefault();
+        sethbtn[0].click();
+      }
+    });
+
     streambeforepost[0].addEventListener("click", () => {
       isstreambeforepost = streambeforepost[0].checked;
       UpdateStreamTime();
     });
 
     loginbtn[0].addEventListener("click", function () {
-      //const i = pptid[0].value;
-      //const p = pttpw[0].value;
-      const i = CryptoJS.AES.encrypt(pptid[0].value, cryptkey).toString();
+      GM_setValue("PTTID", pttid[0].value);
+      const i = CryptoJS.AES.encrypt(pttid[0].value, cryptkey).toString();
       const p = CryptoJS.AES.encrypt(pttpw[0].value, cryptkey).toString();
-      //console.log("login", pptid[0].value, pttpw[0].value, cryptkey);
-      //console.log("login", i, p);
       msg.PostMessage("login", { id: i, pw: p });
-      //GetChatData(posturl, AlertMsg, postindex);
     });
-    pptid[0].addEventListener("keyup", loginenter);
-    pttpw[0].addEventListener("keyup", loginenter);
-    function loginenter(event) {
-      if (event.keyCode === 13) {
+    pttid[0].value = GM_getValue("PTTID", "");
+    pttpw[0].addEventListener("keyup", event => {
+      if (event.keyCode === 13 || event.which == 13) {
         event.preventDefault();
         loginbtn[0].click();
       }
-    }
+    });
+
 
     postbtn[0].addEventListener("click", function () {
       const postAID = postinput[0].value;
@@ -210,6 +227,7 @@ export function InitApp(chatcon, whitetheme, isstream) {
         AlertMsg(false, "文章AID格式錯誤，請重新輸入。");
       }
       else {
+        GM_setValue("LastPostUID", postinput[0].value);
         gotomainchat = true;
         if (pushdata.AID === result[1] && pushdata.board === result[2]) {
           msg.PostMessage("getpost", { AID: pushdata.AID, board: pushdata.board, startline: pushdata.lastendline });
@@ -231,6 +249,7 @@ export function InitApp(chatcon, whitetheme, isstream) {
       }
     });
 
+    postinput[0].value = GM_getValue("LastPostUID", "");
     postinput[0].addEventListener("keyup", e => {
       if (e.keyCode === 13) {
         e.preventDefault();
@@ -370,7 +389,7 @@ export function InitApp(chatcon, whitetheme, isstream) {
   }
   function _scroll() {
     const target = pushdata.pushes[pushdata.nowpush].div;
-    if (scrolloffset === 0) scrolloffset = (PTTChat_Chat[0].clientHeight - target[0].clientHeight) / 2;
+    scrolloffset = (PTTChat_Chat[0].clientHeight - target[0].clientHeight) / 2;
     let offset = target[0].offsetTop - scrolloffset;
 
     const lastscreen = PTTChat_Chat_Main[0].clientHeight - PTTChat_Chat[0].clientHeight + 10
@@ -490,7 +509,10 @@ export function InitApp(chatcon, whitetheme, isstream) {
   }
   function ParsePostData(data) {
     PTTpostdata = $.extend(true, {}, data);
-    if (PTTpostdata.AID === pushdata.AID && PTTpostdata.board === pushdata.board) { }
+    if (PTTpostdata.AID === pushdata.AID && PTTpostdata.board === pushdata.board) {
+      pushdata.lastendline = PTTpostdata.endline;
+      console.log("pushdata.lastendline , PTTpostdata.endline: " + pushdata.lastendline + ", " + PTTpostdata.endline);
+    }
     else {
       pushdata = {
         AID: PTTpostdata.AID,
@@ -512,7 +534,6 @@ export function InitApp(chatcon, whitetheme, isstream) {
       updatelog("postendline", pushdata.lastendline);
 
     }
-    console.log(pushdata);
     const pdata = PTTpostdata.pushes;
     let sametime = PTTpostdata.posttime;
     let sametimeIndex = pushdata.pushcount;
@@ -538,7 +559,6 @@ export function InitApp(chatcon, whitetheme, isstream) {
       pushdata.pushes.push(newpush);
     }
     if (pdata.length > 0) pushdata.lastpushtime = pdata[pdata.length - 1].date;
-    console.log("pushdata", pushdata);
     updatelog("postpushcount", pushdata.pushcount);
     const t = pushdata.lastpushtime;
     updatelog("postlastpushtime", t.toLocaleDateString() + " " + t.toLocaleTimeString());
