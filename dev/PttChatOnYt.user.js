@@ -1,32 +1,32 @@
 // ==UserScript==
-// @name         PttChatOnYt
-// @name:zh-TW   Youtube聊天室顯示PTT推文
-// @namespace    https://github.com/zoosewu/PTTChatOnYoutube
-// @version      1.0.26
-// @description  connect ptt pushes to youtube chatroom
-// @description:zh-tw 連結PTT推文到Youtube聊天室
-// @author       Zoosewu
-// @match        https://www.youtube.com/*
-// @match        https://youtu.be/*
-// @match        https://term.ptt.cc/*
-// @match        https://hololive.jetri.co/*
-// @grant        GM_xmlhttpRequest 
-// @grant        GM_info
-// @grant        unsafeWindow
-// @grant        GM_getValue
-// @grant        GM_setValue
-// @run-at       document-start
-// @require      https://code.jquery.com/jquery-3.5.1.slim.min.js
-// @require      https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js
-// @require      https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js
-// @require      https://cdn.jsdelivr.net/npm/vue
-// @require      file://E:\Project\PTTChatOnYoutube\Main.user.js
-// @homepageURL  https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage
-// @license      MIT
+// @name               pttchatonyoutube
+// @namespace          https://github.com/zoosewu
+// @version            2.0.0
+// @description        Connect ptt pushes to youtube chatroom
+// @author             Zoosewu
+// @match              https://www.youtube.com/*
+// @match              https://youtu.be/*
+// @match              https://term.ptt.cc/*
+// @match              https://hololive.jetri.co/*
+// @grant              GM_xmlhttpRequest 
+// @grant              GM_info
+// @grant              unsafeWindow
+// @grant              GM_getValue
+// @grant              GM_setValue
+// @license            MIT
+// @name:zh-TW         Youtube聊天室顯示PTT推文
+// @description:zh-tw  連結PTT推文到Youtube聊天室
+// @run-at             document-start
+// @require            https://code.jquery.com/jquery-3.5.1.slim.min.js
+// @require            https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js
+// @require            https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js
+// @require            https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js
+// @require            https://cdn.jsdelivr.net/npm/vue
+// @homepageURL        https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage
+// @downloadURL        https://greasyfork.org/scripts/418469-pttchatonyt/code/PttChatOnYt.user.js
 // ==/UserScript==
-'use strict';
 
+// src/globlevariable.js
 //user log
 const reportmode = true;
 //all log
@@ -44,18 +44,20 @@ const disablepttframe = false;
 const simulateisstreaming = false;
 // add listener to get msg
 let cryptkey;
-const msg = {
-  targetorigin: "",
-  ownorigin: "",
-  targetWindow: null,
-  PostMessage: function (msg, data) {
+
+// src/MessagePoster.js
+function MessagePoster() {
+  this.targetorigin = "";
+  this.ownorigin = "";
+  this.targetWindow = null;
+  this.PostMessage = function (msg, data) {
     if (this.targetWindow !== null) {
       const d = { m: msg, d: data };
       this.targetWindow.postMessage(d, this.targetorigin);
       if (showPostMessage) console.log(this.ownorigin + " message posted", d);
     }
-  },
-  onMessage: function (event) {
+  };
+  this.onMessage = function (event) {
     // Check sender origin to be trusted
     if (event.origin !== msg.targetorigin) return;
     const data = event.data;
@@ -63,57 +65,55 @@ const msg = {
     if (typeof (msg[data.m]) == "function") {
       msg[data.m].call(null, data.d);
     }
-  },
-}
-if (window.addEventListener) {
-  window.addEventListener("message", msg.onMessage, false);
-}
-else if (window.attachEvent) {
-  window.attachEvent("onmessage", msg.onMessage, false);
-}
-
-let isTopframe = (window.top == window.self);
-if (/term\.ptt\.cc/.exec(window.location.href) !== null) {
-  //check script work in right frame
-  if (isTopframe) throw "PTTonYT Script Stopped: PTT should not run in top frame";
-  //init postmessage
-  msg.ownorigin = "https://term.ptt.cc";
-  msg.targetorigin = /\?url=(.+)/.exec(window.location.href)[1];
-  msg.targetWindow = top;
-  //msg["test"] = data => { console.log("test child onmessage", data); };
-  //-----
-  console.log("Script started at " + window.location.href);
-  runPTTScript();
-  console.log("PTT Script initialize finish.");
-  //-----
-}
-else if (/www\.youtube\.com/.exec(window.location.href) !== null) {
-  //check script work in right frame
-  if (!isTopframe) throw "PTTonYT Script Stopped: Youtube should run in top frame";
-  //init postmessage
-  msg.targetorigin = "https://term.ptt.cc";
-  msg.ownorigin = "https://www.youtube.com";
-  //msg["test"] = data => { console.log("test parent onmessage", data); };
-  //-----
-  console.log("Script started at " + window.location.href);
-  InitYoutubeScript();
-  console.log("Youtube Script initialize finish.");
-  //-----
-}
-else if (/hololive\.jetri\.co/.exec(window.location.href) !== null) {
-  //check script work in right frame
-  if (!isTopframe) throw "PTTonYT Script Stopped: Holotools should run in top frame";
-  //init postmessage
-  msg.ownorigin = "https://hololive.jetri.co";
-  msg.targetorigin = "https://term.ptt.cc";
-  //msg["test"] = data => { console.log("test child onmessage", data); };
-  //-----
-  console.log("Script started at " + window.location.href);
-  InitHolotoolsScript();
-  console.log("Hololive Script initialize finish.");
-  //-----
+  };
+  if (window.addEventListener) {
+    window.addEventListener("message", this.onMessage, false);
+  }
+  else if (window.attachEvent) {
+    window.attachEvent("onmessage", this.onMessage, false);
+  }
 }
 
+// src/HerfFilter.js
+function HerfFilter(msg) {
+  const isTopframe = (window.top == window.self);
+  if (/term\.ptt\.cc/.exec(window.location.href) !== null) {
+    if (isTopframe) throw "PTTonYT Script Stopped: PTT should not run in top frame";//check script work in right frame
+    //init msg
+    msg.ownorigin = "https://term.ptt.cc";
+    msg.targetorigin = /\?url=(.+)/.exec(window.location.href)[1];
+    msg.targetWindow = top;
+    //-----
+    console.log("Script started at " + window.location.href);
+    runPTTScript();
+    console.log("PTT Script initialize finish.");
+    //-----
+  }
+  else if (/www\.youtube\.com/.exec(window.location.href) !== null) {
+    if (!isTopframe) throw "PTTonYT Script Stopped: Youtube should run in top frame";//check script work in right frame
+    //init postmessage
+    msg.targetorigin = "https://term.ptt.cc";
+    msg.ownorigin = "https://www.youtube.com";
+    //-----
+    console.log("Script started at " + window.location.href);
+    InitYoutubeScript();
+    console.log("Youtube Script initialize finish.");
+    //-----
+  }
+  else if (/hololive\.jetri\.co/.exec(window.location.href) !== null) {
+    if (!isTopframe) throw "PTTonYT Script Stopped: Holotools should run in top frame";//check script work in right frame
+    //init postmessage
+    msg.ownorigin = "https://hololive.jetri.co";
+    msg.targetorigin = "https://term.ptt.cc";
+    //-----
+    console.log("Script started at " + window.location.href);
+    InitHolotoolsScript();
+    console.log("Hololive Script initialize finish.");
+    //-----
+  }
+}
+
+// src/BootStrap.js
 function AddBootstrap(frame) {
   const frameHead = $("head", frame);
   const frameBody = $("body", frame);
@@ -122,7 +122,9 @@ function AddBootstrap(frame) {
   frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>`));
   frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>`));
 }
-function AddPTTAppcss(whitetheme, colorlight, colordark) {
+
+// src/AddCss.js
+function AddCss(whitetheme, colorlight, colordark) {
   //add globalcss
   let bdcolor, bgcolor, ptp, pid, ptm, pmsg, ptxt;
   if (whitetheme) {
@@ -149,7 +151,8 @@ function AddPTTAppcss(whitetheme, colorlight, colordark) {
      .ptype { color: ` + ptp + `}`;
   AddStyle(PTTcss);
 }
-//Youtube---------------------------------------------------------------------------------------------------------------------
+
+// src/youtube/index.js
 function InitYoutubeScript() {
   let WhiteTheme;
   //generate crypt key everytime;
@@ -235,7 +238,8 @@ function InitYoutubeScript() {
     }
   }
 }
-//Holotools---------------------------------------------------------------------------------------------------------------------
+
+// src/holotools/index.js
 function InitHolotoolsScript() {
   let WhiteTheme;
   //generate crypt key everytime;
@@ -289,54 +293,10 @@ function InitHolotoolsScript() {
     $(`.reopen-toolbar`).css({ "z-index": "302" });
 
     InitApp(PTTChatHandler, WhiteTheme, true);
-
-
-
-
-    /*if (/www\.youtube\.com\/watch\?v=/.exec(window.location.href) === null) {
-      if (showalllog) console.log("not watch video.");
-      setTimeout(ChechChatInstanced, 2000);
-      return;
-    }
-    const ChatContainer = $(`ytd-live-chat-frame`);
-    const defaultChat = $(`iframe`, ChatContainer);
-    const PTTApp = $(`#PTTChat`, ChatContainer);
-    if (PTTApp.length > 0) {
-      if (showalllog) console.log("PTTApp already instanced.");
-      setTimeout(ChechChatInstanced, 5000);
-      return;
-    }
-    else if (defaultChat.length > 0) {
-      if (showalllog) console.log("PTTApp frame instance!");
-      ChatContainer.css({ "position": "relative" });
-
-      //生出插件
-      let isstream = checkvideotype();
-      InitApp(ChatContainer, WhiteTheme, isstream);
-
-      setTimeout(ChechChatInstanced, 5000);
-    }
-    else {
-      if (showalllog) console.log("watching video without chatroom.");
-      setTimeout(ChechChatInstanced, 5000);
-    }*/
-  }
-  function checkvideotype() {
-    const streambtncss = $('.ytp-live-badge').css("display");
-    const logstr = [`$('.ytp-live-badge').css("display")`, streambtncss];
-    if (simulateisstreaming) {
-    } else if (streambtncss === "inline-block") {
-      console.log("This video is streaming.", logstr);
-      return true;
-      //$(`#PTTConnect-Time-Setting`).addClass('d-none');
-    }
-    else if (streambtncss === "none") {
-      console.log("This video is not streaming.", logstr);
-      return false;
-    }
   }
 }
 
+// src/app/index.js
 function InitApp(chatcon, whitetheme, isstream) {
   /*setTimeout(repeatlog, 1000);
   function repeatlog() {
@@ -1012,7 +972,8 @@ function InitApp(chatcon, whitetheme, isstream) {
   }
 */
 }
-//PTT---------------------------------------------------------------------------------------------------------------------
+
+// src/ptt/index.js
 function runPTTScript() {
   //get crypt key;
   cryptkey = GM_getValue("cryptkey", Math.random());
@@ -1432,6 +1393,7 @@ function runPTTScript() {
   msg["getpost"] = data => { PTTLockCheck(GetPostPush, data.AID, data.board, data.startline); };
 }
 
+// src/library.js
 //add global style
 function AddStyle(css) {
   const style = document.createElement('style');
@@ -1486,3 +1448,6 @@ var dateReviver = function (key, value) {
   }
   return value;
 };
+
+// src/index.js
+yt.help();
