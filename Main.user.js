@@ -1218,7 +1218,7 @@ function runPTTScript() {
       msg.PostMessage("alert", { type: false, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
       PTT.unlock();
     }
-    console.log("(startline, endline): ( " + PTTPost.startline + ", " + PTTPost.endline);
+    //console.log("(startline, endline): ( " + PTTPost.startline + ", " + PTTPost.endline + ")");
     for (let i = 0; i < task.GetPost.length; i++) {
       const element = task.GetPost[i];
       const result = element();
