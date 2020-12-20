@@ -944,7 +944,7 @@ function runPTTScript() {
     autocom: [
       { reg: /您想刪除其他重複登入的連線嗎|您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n' },
       { reg: /您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n' },
-      { reg: /請按任意鍵繼續/, input: '\n' },
+      { reg: /按任意鍵繼續/, input: '\n' },
       {
         reg: /系統過載, 請稍後再來\.\.\./, input: '', callback: () => {
           serverfull = true;
