@@ -10,27 +10,30 @@
 
 ## 如何開始使用
 
-推薦使用violentmonkey腳本載入器，這是在chrome、firefox皆可使用的腳本載入程式。使用Tampermonkey及Greasymonkey不保證能正常運作。
+1. [點我](https://violentmonkey.github.io/get-it/)下載violentmonkey
+推薦使用violentmonkey腳本載入器，這是在chrome、firefox皆可使用的腳本載入程式。
+使用Tampermonkey及Greasymonkey不保證能正常運作。
 
-腳本下載點請[點我](https://greasyfork.org/zh-TW/scripts/418469-youtubechatonptt)。
+2. [點我](https://greasyfork.org/zh-TW/scripts/418469-youtubechatonptt)下載插件
 
-1.下載腳本後打開實況或實況紀錄，聊天室左上角會有一個P的按鈕，點開就能打開介面。
+3. Youtube實況或實況紀錄的聊天室左上角會有一個P的按鈕，點了就能打開介面
 
-2.實況紀錄:請先設定開台時間，腳本會自動預設為發文之後才開台，所以實況18:00開台而討論串在18:04發文的話請另外勾選發文前已開台。
-實況:請直接跳過此步驟。
+4. **實況請直接跳過此步驟**
+觀看實況紀錄前請先設定開台時間，腳本會自動預設為發文之後才開台，
+實況紀錄的開台在討論串發文之前的話請勾選發文前已開台。
 
-3.輸入PTT帳號與密碼後登入
-目前尚未廣泛測試，請大家第一次用的時候輸入錯的帳號密碼測試一下google會不會跳你的帳號被盜用，
-如果有的話請回報給我。
+5. 輸入PTT帳號與密碼後登入
 
-4.輸入包含看板名稱的完整文章代碼。
+6. 輸入包含看板名稱的完整文章代碼
 (文章完整代碼獲得方法:在文章標題或文章內部鍵入大寫Q即可顯示複製)
 
-4.文章讀取完成後會自動轉跳到聊天室介面，並且
+7. 文章讀取完成後會自動轉跳到聊天室介面
 實況紀錄:會自動計算並捲動到影片時間當下的推文。
 實況:會自動每2.5秒重新載入一次推文，並直接捲動到最新推文。
 
-如果離開網頁時有個視窗一閃而過，那是term.ptt.cc在登入後關閉視窗的警告動作，是正常現象。
+8. 享受你的聊天室: )
+
+如果離開網頁時有個視窗一閃而過，那是背景執行的term.ptt.cc關閉視窗的警告動作，是正常現象。
 
 想查看詳細的腳本介紹請[點我](https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage)。
 
@@ -41,7 +44,7 @@
 如果你沒有github帳號，也可以依照[問題回報範例](https://github.com/zoosewu/PTTChatOnYoutube/blob/master/.github/ISSUE_TEMPLATE/bug-report.md)及[建議範例](https://github.com/zoosewu/PTTChatOnYoutube/blob/master/.github/ISSUE_TEMPLATE/feature-request.md)在PTT內私信給我(Zoosewu)。
 
 ## 腳本功能
-全部都在前端計算，用你的瀏覽器撈資料再顯示出來。
+全部都在你的瀏覽器處理，用你的瀏覽器撈資料再顯示出來。
 
 紀錄重播功能
 * 在Youtube實況紀錄顯示PTT推文。
@@ -121,6 +124,7 @@ if (!isTopframe) throw "[Script Stopped: This script should run in top frame onl
 ![](https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/sample2.png "預覽圖1")
 ![](https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/sample3.png "預覽圖2")
 ![](https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/sample4.png "預覽圖3")
+![](https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/sample5.png "預覽圖4")
 
 ## 聲明
 
