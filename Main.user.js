@@ -2,7 +2,7 @@
 // @name         PttChatOnYt
 // @name:zh-TW   Youtube聊天室顯示PTT推文
 // @namespace    https://github.com/zoosewu/PTTChatOnYoutube
-// @version      1.0.35
+// @version      1.0.37
 // @description  connect ptt pushes to youtube chatroom
 // @description:zh-tw 連結PTT推文到Youtube聊天室 讓你簡單追實況搭配推文
 // @author       Zoosewu
@@ -962,7 +962,7 @@ function runPTTScript() {
       { reg: /本站歷史 \.\.\.\.\.\.\./, input: 'q' },
       { reg: /看 板  目錄數   檔案數     byte數   總 分     板   主/, input: 'q' },
       { reg: /名次──────範本───────────次數/, input: 'q' },
-
+      { reg: /鴻雁往返  \(R\/y\)回信 \(x\)站內轉寄 \(d\/D\)刪信 \(\^P\)寄發新信/, input: 'q' }
     ]
   }
   PTT.wind = window;
