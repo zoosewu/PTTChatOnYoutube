@@ -236,7 +236,7 @@ function runYoutubeScript() {
     const PTTApp = $(`<div id="PTTChat-app" class=" pttbg border rounded w-100 d-flex flex-column"></div>`);
     const PTTChatnavbar = $(`<ul id="PTTChat-navbar" class="nav nav-tabs justify-content-center" role="tablist"><li class="nav-item"><a class="nav-link ptttext bg-transparent" id="nav-item-Chat" data-toggle="tab" href="#PTTChat-contents-Chat" role="tab" aria-controls="PTTChat-contents-Chat" aria-selected="false">聊天室</a></li><li class="nav-item"><a class="nav-link ptttext bg-transparent active" id="nav-item-Connect" data-toggle="tab" href="#PTTChat-contents-Connect" role="tab" aria-controls="PTTChat-contents-Connect" aria-selected="true">連線設定</a></li><li class="nav-item"><a class="nav-link ptttext bg-transparent" id="nav-item-other" data-toggle="tab" href="#PTTChat-contents-other" role="tab" aria-controls="PTTChat-contents-other" aria-selected="false">說明</a></li><li class="nav-item"><a class="nav-link ptttext bg-transparent" id="nav-item-PTT" data-toggle="tab" href="#PTTChat-contents-PTT" role="tab" aria-controls="PTTChat-contents-PTT" aria-selected="false">PTT畫面</a></li><li class="nav-item"><a class="nav-link ptttext bg-transparent" id="nav-item-log" data-toggle="tab" href="#PTTChat-contents-log" role="tab" aria-controls="PTTChat-contents-log" aria-selected="false">log</a></li><li class="nav-item"><button class="nav-link ptttext bg-transparent d-none" id="nav-item-TimeSet" type="button" data-toggle="collapse" data-target="#PTTChat-Time" aria-controls="PTTChat-Time" aria-expanded="false">時間</button></li></ul>
     `);
-    const PTTChatContents = $(`<div id="PTTChat-contents" class="tab-content container d-flex flex-column ptttext"><!-------- 聊天室 --------><div class="tab-pane mh-100 fade" id="PTTChat-contents-Chat" role="tabpanel" aria-labelledby="nav-item-Chat"><!-------- 開台時間 --------><div id="PTTChat-Time" class="ptttext pttbg p-2 position-absolute w-75 d-none" style="z-index:400"><div id="PTTChat-Time-Setting"><form class="form-inline d-flex justify-content-between w-100"><label for="dis" class="mr-1">實況重播時間微調:</label> <button id="minus-time" class="btn ptttext border btn-outline-secondary" type="button">-1分鐘</button> <button id="add-time" class="btn ptttext border btn-outline-secondary" type="button">+1分鐘</button></form></div></div><!-------- 聊天室 --------><div class="flex-grow-1 overflow-auto mh-100 row" id="PTTChat-contents-Chat-main" style="overscroll-behavior:contain"><ul id="PTTChat-contents-Chat-pushes" class="col mb-0"></ul><div id="PTTChat-contents-Chat-btn" class="position-absolute d-none" style="z-index:400;bottom:5%;left:50%;-ms-transform:translateX(-50%);transform:translateX(-50%)"><button id="AutoScroll" class="btn btn-primary" type="button">自動滾動</button></div></div></div><!-------- 連線設定 --------><div class="tab-pane h-100 row fade show active" id="PTTChat-contents-Connect" role="tabpanel" aria-labelledby="nav-item-Connect"><div id="PTTChat-contents-Connect-main" class="col overflow-auto h-100 mb-0 p-4" data-spy="scroll" data-offset="0"></div><div id="PTTChat-contents-Connect-alert" class="position-relative container" style="top:-100%;z-index:400"></div></div><!-------- 其他 --------><div class="tab-pane h-100 card bg-transparent overflow-auto row fade" id="PTTChat-contents-other" role="tabpanel" aria-labelledby="nav-item-other"><div id="PTTChat-contents-other-main" class="card-body"></div></div><!-------- PTT畫面 --------><div class="tab-pane h-100 row fade" id="PTTChat-contents-PTT" role="tabpanel" aria-labelledby="nav-item-PTT"><div id="PTTChat-contents-PTT-main" class="h-100 d-flex justify-content-center px-0"></div></div><!-------- Log --------><div class="tab-pane mh-100 fade" id="PTTChat-contents-log" role="tabpanel" aria-labelledby="nav-item-log" style="overscroll-behavior:contain"><div class="flex-grow-1 overflow-auto mh-100 row" id="PTTChat-contents-log-main" style="overscroll-behavior:contain"><!--<ul id="PTTChat-contents-log-table" class="col mb-0"> </ul>--></div></div></div>
+    const PTTChatContents = $(`<div id="PTTChat-contents" class="tab-content container d-flex flex-column ptttext"><!-------- 聊天室 --------><div class="tab-pane mh-100 position-relative fade" id="PTTChat-contents-Chat" role="tabpanel" aria-labelledby="nav-item-Chat"><!-------- 開台時間 --------><div id="PTTChat-Time" class="ptttext pttbg p-2 position-absolute w-100 d-none" style="z-index:400"><div id="PTTChat-Time-Setting"><form class="form-inline"><label for="dis" class="w-100">實況重播時間微調</label><div class="d-flex justify-content-between w-100"><button id="minus-min" class="btn ptttext border btn-outline-secondary" type="button">-1分鐘</button> <button id="minus-sec" class="btn ptttext border btn-outline-secondary" type="button">-15秒</button> <button id="add-sec" class="btn ptttext border btn-outline-secondary" type="button">+15秒</button> <button id="add-min" class="btn ptttext border btn-outline-secondary" type="button">+1分鐘</button></div></form></div></div><!-------- 聊天室 --------><div class="flex-grow-1 overflow-auto mh-100 row" id="PTTChat-contents-Chat-main" style="overscroll-behavior:contain"><ul id="PTTChat-contents-Chat-pushes" class="col mb-0"></ul><div id="PTTChat-contents-Chat-btn" class="position-absolute d-none" style="z-index:400;bottom:5%;left:50%;-ms-transform:translateX(-50%);transform:translateX(-50%)"><button id="AutoScroll" class="btn btn-primary" type="button">自動滾動</button></div></div></div><!-------- 連線設定 --------><div class="tab-pane h-100 row fade show active" id="PTTChat-contents-Connect" role="tabpanel" aria-labelledby="nav-item-Connect"><div id="PTTChat-contents-Connect-main" class="col overflow-auto h-100 mb-0 p-4" data-spy="scroll" data-offset="0"></div><div id="PTTChat-contents-Connect-alert" class="position-relative container" style="top:-100%;z-index:400"></div></div><!-------- 其他 --------><div class="tab-pane h-100 card bg-transparent overflow-auto row fade" id="PTTChat-contents-other" role="tabpanel" aria-labelledby="nav-item-other"><div id="PTTChat-contents-other-main" class="card-body"></div></div><!-------- PTT畫面 --------><div class="tab-pane h-100 row fade" id="PTTChat-contents-PTT" role="tabpanel" aria-labelledby="nav-item-PTT"><div id="PTTChat-contents-PTT-main" class="h-100 d-flex justify-content-center px-0"></div></div><!-------- Log --------><div class="tab-pane mh-100 fade" id="PTTChat-contents-log" role="tabpanel" aria-labelledby="nav-item-log" style="overscroll-behavior:contain"><div class="flex-grow-1 overflow-auto mh-100 row" id="PTTChat-contents-log-main" style="overscroll-behavior:contain"><!--<ul id="PTTChat-contents-log-table" class="col mb-0"> </ul>--></div></div></div>
     `);
     const MainBtn = $(`<a id="PTTMainBtn" class="btn btn-lg border" type="button" data-toggle="collapse" data-target="#PTTChat" aria-expanded="false" aria-controls="PTTChat">P</a>`)
 
@@ -280,8 +280,10 @@ function runYoutubeScript() {
     const PTTChat_Chat_btn = $(`#PTTChat-contents-Chat-btn`, PTTChatContents);
 
     const streamtimecollapse = $(`#PTTChat-Time`, PTTChatContents);
-    const lbtn = $(`#minus-time`, streamtimecollapse);
-    const rbtn = $(`#add-time`, streamtimecollapse);
+    const lmbtn = $(`#minus-min`, streamtimecollapse);
+    const lsbtn = $(`#minus-sec`, streamtimecollapse);
+    const rsbtn = $(`#add-sec`, streamtimecollapse);
+    const rmbtn = $(`#add-min`, streamtimecollapse);
 
 
     PTTChat_Chat[0].addEventListener("scroll", function () {
@@ -321,32 +323,21 @@ function runYoutubeScript() {
       streamtimecollapse.addClass('d-none');
     });
 
-    lbtn[0].addEventListener('click', () => {
-      const result = /(\d\d)\:(\d\d)/.exec(streamtimeinput[0].value);
-      var tmpdate = new Date();
-      tmpdate.setHours(+result[1]);
-      tmpdate.setMinutes(+result[2] - 1);
-      const newtime = paddingLeft(tmpdate.getHours(), 2) + ":" + paddingLeft(tmpdate.getMinutes(), 2);
-      console.log(newtime);
+    function UpdateTimeByBtn(microseconds) {
+      var tmpdate = new Date(streamtime.getTime() + microseconds);
+      const newtime = paddingLeft(tmpdate.getHours(), 2) + ":" + paddingLeft(tmpdate.getMinutes(), 2) + ":" + paddingLeft(tmpdate.getSeconds(), 2);
       streamtimeinput[0].value = newtime;
       autoscrollbtn[0].click();
       UpdateStreamTime();
-    });
-    rbtn[0].addEventListener('click', () => {
-      const result = /(\d\d)\:(\d\d)/.exec(streamtimeinput[0].value);
-      var tmpdate = new Date();
-      tmpdate.setHours(+result[1]);
-      tmpdate.setMinutes(+result[2] + 1);
-      const newtime = paddingLeft(tmpdate.getHours(), 2) + ":" + paddingLeft(tmpdate.getMinutes(), 2);
-      console.log(newtime);
-      streamtimeinput[0].value = newtime;
-      autoscrollbtn[0].click();
-      UpdateStreamTime();
-    });
+    }
+    lmbtn[0].addEventListener('click', () => { UpdateTimeByBtn(-60000); });
+    rmbtn[0].addEventListener('click', () => { UpdateTimeByBtn(60000); });
+    lsbtn[0].addEventListener('click', () => { UpdateTimeByBtn(-15000); });
+    rsbtn[0].addEventListener('click', () => { UpdateTimeByBtn(15000); });
     /*------------------------------------Connect------------------------------------*/
     const PTTChat_Connect = $(`#PTTChat-contents-Connect-main`, PTTChatContents);
     ConnectAlertDiv = $(`#PTTChat-contents-Connect-alert`, PTTChatContents);
-    const PTTChat_ConnectContent = $(`<!-------- 連線 --------><!-- stream time input field--><div id="PTTConnect-Time-Setting" class="form-row mb-2 d-none"><div class="form-group col-7"><label for="appt-time">實況重播開台時間:</label> <input id="stream-time" type="time" name="stream-time"></div><div class="form-check col-4 pl-4"><input type="checkbox" class="form-check-input" id="streambeforepost"> <label class="form-check-label ml-2" for="streambeforepost">發文前已開台</label></div></div><!-- login input field--><div class="form-row mb-2"><div class="col-5"><label for="PTTid">PTT ID</label> <input id="PTTid" type="text" class="form-control" placeholder="PTT ID" autocomplete="off"></div><div class="col-5"><label for="PTTpw">PTT密碼</label> <input id="PTTpw" type="password" class="form-control" placeholder="PTT密碼" autocomplete="off"></div><div class="col-2"><label for="PTTlogin" class="col-2">　</label> <button id="PTTlogin" type="button" class="btn ptttext border btn-outline-secondary">登入</button></div></div><!-- Post AID input field --><div class="my-3 form-row"><label for="post0" class="col-3 col-form-label">輸入文章AID</label> <input id="post0" class="form-control col mr-3" type="text" placeholder="#1VobIvqC (C_Chat)" autocomplete="off"> <button id="post0btn" class="btn ptttext border btn-outline-secondary" type="button">讀取推文</button></div><div class="my-3 form-row"><label for="setH" class="col-3 col-form-label">設定插件長度</label> <input id="setHeight" class="form-control col mr-3" type="text" placeholder="600" autocomplete="off"> <button id="setHeightbtn" class="btn ptttext border btn-outline-secondary" type="button">確認</button></div><!-- test push button --> <button id="fakebtn" class="btn ptttext border btn-outline-secondary m-2 d-none" type="button">讀取測試用假推文</button><!-- New version button --> <a id="updatebtn" class="btn ptttext border btn-outline-secondary m-2 d-none" href="https://greasyfork.org/zh-TW/scripts/418469-youtubechatonptt" target="_blank" rel="noopener noreferrer" role="button">檢測到新版本</a>
+    const PTTChat_ConnectContent = $(`<!-------- 連線 --------><!-- stream time input field--><div id="PTTConnect-Time-Setting" class="form-row mb-2 d-none"><div class="form-group col-8"><label for="appt-time">實況重播開台時間:</label> <input id="stream-time" type="time" name="stream-time" step="2"></div><div class="form-check col-4 pl-4"><input type="checkbox" class="form-check-input" id="streambeforepost"> <label class="form-check-label ml-2" for="streambeforepost">發文前已開台</label></div></div><!-- login input field--><div class="form-row mb-2"><div class="col-5"><label for="PTTid">PTT ID</label> <input id="PTTid" type="text" class="form-control" placeholder="PTT ID" autocomplete="off"></div><div class="col-5"><label for="PTTpw">PTT密碼</label> <input id="PTTpw" type="password" class="form-control" placeholder="PTT密碼" autocomplete="off"></div><div class="col-2"><label for="PTTlogin" class="col-2">　</label> <button id="PTTlogin" type="button" class="btn ptttext border btn-outline-secondary">登入</button></div></div><!-- Post AID input field --><div class="my-3 form-row"><label for="post0" class="col-3 col-form-label">輸入文章AID</label> <input id="post0" class="form-control col mr-3" type="text" placeholder="#1VobIvqC (C_Chat)" autocomplete="off"> <button id="post0btn" class="btn ptttext border btn-outline-secondary" type="button">讀取推文</button></div><!-- Plugin Height input field --><div class="my-3 form-row"><label for="setH" class="col-3 col-form-label">設定插件長度</label> <input id="setHeight" class="form-control col mr-3" type="text" placeholder="600" autocomplete="off"> <button id="setHeightbtn" class="btn ptttext border btn-outline-secondary" type="button">確認</button></div><!-- test push button --> <button id="fakebtn" class="btn ptttext border btn-outline-secondary m-2 d-none" type="button">讀取測試用假推文</button><!-- New version button --> <a id="updatebtn" class="btn ptttext border btn-outline-secondary m-2 d-none" href="https://greasyfork.org/zh-TW/scripts/418469-youtubechatonptt" target="_blank" rel="noopener noreferrer" role="button">檢測到新版本</a>
     `);
 
     const fakedata = '{"board":"Test","AID":"1VpKTOfx","title":"","posttime":"2020-12-06T21:04:22.000Z","pushes":[{"type":"→ ","id":"ZooseWu","content":"推文1","date":"2020-12-06T21:04:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文2","date":"2020-12-06T21:05:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文3","date":"2020-12-06T21:05:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"","date":"2020-12-06T21:05:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文5","date":"2020-12-06T21:05:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文678","date":"2020-12-06T21:05:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文100","date":"2020-12-06T21:06:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文101","date":"2020-12-06T21:06:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"推文102Y","date":"2020-12-06T21:10:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"123","date":"2020-12-06T21:11:00.000Z"},{"type":"推 ","id":"hu7592","content":"☂","date":"2020-12-06T22:24:00.000Z"},{"type":"→ ","id":"ss15669659","content":"☂","date":"2020-12-06T23:56:00.000Z"},{"type":"→ ","id":"ZooseWu","content":"hey","date":"2020-12-07T00:31:00.000Z"}],"startline":"127","endline":"149","percent":"100"}';
@@ -746,10 +737,16 @@ function runYoutubeScript() {
   /*--------------------------------------Update Stream Time--------------------------------------*/
   function UpdateStreamTime() {
     let result = /(\d\d)\:(\d\d)/.exec(streamtimeinput[0].value);
-    if (!result) result = ["0", "18", "00"];
+    let resultSecond = /\d\d\:\d\d\:(\d\d)/.exec(streamtimeinput[0].value);
+    console.log("streamtimeinput[0].value", streamtimeinput[0].value);
+    console.log("result", result);
+    console.log("resultSecond", resultSecond);
+    if (!result) result = ["", "18", "00"];
     streamtime = new Date(pushdata.posttime.getTime());
     streamtime.setHours(+result[1]);
     streamtime.setMinutes(+result[2]);
+    if (resultSecond) streamtime.setSeconds(+resultSecond[1]);
+    else streamtime.setSeconds(0);
     if (streamtime.valueOf() < pushdata.posttime.valueOf()) {
       streamtime.setHours(streamtime.getHours() + 24);
       if (isstreambeforepost) {
