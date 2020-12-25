@@ -1,0 +1,105 @@
+$border-radius: 2.5px;
+$border-radius-lg: 2.5px;
+$border-radius-sm: 2.5px;
+
+$theme-colors: (
+  "pttlight": #f9f9f9,
+  "pttdark": #181818,
+);
+$push-type: #000;
+$push-id: #ff6;
+$push-time: #bbb;
+$push-message: #990;
+$push-text: #f8f9fa;
+
+$rem1: 10px;
+
+$font-size-base: 12px;
+
+$nav-link-padding-y: $rem1 * 0.5;
+$nav-link-padding-x: $rem1;
+$alert-padding-y: $rem1 * 0.75;
+$alert-padding-x: $rem1 * 1.25;
+$input-btn-padding-y: $rem1 * 0.375;
+$input-btn-padding-x: $rem1 * 0.75;
+$custom-select-indicator-padding: $rem1;
+$input-padding-y: $input-btn-padding-y;
+$input-padding-x: $input-btn-padding-x;
+$custom-select-padding-x: $input-padding-x;
+$custom-select-padding-y: $input-padding-y;
+
+$custom-select-feedback-icon-padding-right: add(
+  $rem1 * 0.75,
+  (2 * $custom-select-padding-y * 0.75) + $custom-select-padding-x + $custom-select-indicator-padding
+);
+
+// Custom.scss
+// Option B: Include parts of Bootstrap
+
+// Required
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+@import "node_modules/bootstrap/scss/mixins";
+
+// Optional
+// @import "node_modules/bootstrap/scss/mixins";
+@import "node_modules/bootstrap/scss/root";
+//@import "node_modules/bootstrap/scss/reboot";
+// @import "node_modules/bootstrap/scss/type";
+// @import "node_modules/bootstrap/scss/images";
+@import "node_modules/bootstrap/scss/code";
+@import "node_modules/bootstrap/scss/grid";
+@import "node_modules/bootstrap/scss/tables";
+@import "node_modules/bootstrap/scss/forms";
+@import "node_modules/bootstrap/scss/buttons";
+@import "node_modules/bootstrap/scss/transitions";
+// @import "node_modules/bootstrap/scss/dropdown";
+@import "node_modules/bootstrap/scss/button-group";
+// @import "node_modules/bootstrap/scss/input-group";
+// @import "node_modules/bootstrap/scss/custom-forms";
+@import "node_modules/bootstrap/scss/nav";
+@import "node_modules/bootstrap/scss/navbar";
+// @import "node_modules/bootstrap/scss/card";
+// @import "node_modules/bootstrap/scss/breadcrumb";
+// @import "node_modules/bootstrap/scss/pagination";
+// @import "node_modules/bootstrap/scss/badge";
+// @import "node_modules/bootstrap/scss/jumbotron";
+@import "node_modules/bootstrap/scss/alert";
+// @import "node_modules/bootstrap/scss/progress";
+// @import "node_modules/bootstrap/scss/media";
+// @import "node_modules/bootstrap/scss/list-group";
+// @import "node_modules/bootstrap/scss/close";
+// @import "node_modules/bootstrap/scss/toasts";
+// @import "node_modules/bootstrap/scss/modal";
+// @import "node_modules/bootstrap/scss/tooltip";
+// @import "node_modules/bootstrap/scss/popover";
+// @import "node_modules/bootstrap/scss/carousel";
+// @import "node_modules/bootstrap/scss/spinners";
+@import "node_modules/bootstrap/scss/utilities";
+@import "node_modules/bootstrap/scss/print";
+
+@import "reboot";
+
+@each $color, $value in $theme-colors {
+  .ptt-border.#{$color} {
+    border-color: color-yiq($value) !important;
+  }
+  .ptt-bg.#{$color} {
+    border-color: $value !important;
+  }
+  .ptt-text.#{$color} {
+    border-color: color-yiq($value) !important;
+  }
+  .ptt-pid.#{$color} {
+    color: pid;
+  }
+  .ptt-ptime.#{$color} {
+    color: ptm;
+  }
+  .ptt-pmsg.#{$color} {
+    color: pmsg;
+  }
+  .ptt-ptype.#{$color} {
+    color: ptp;
+  }
+}

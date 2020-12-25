@@ -1,5 +1,4 @@
 import { library } from './library.js';
-'use strict';
 
 export function AddCss(whitetheme, colorlight, colordark) {
   //add globalcss
@@ -26,5 +25,5 @@ export function AddCss(whitetheme, colorlight, colordark) {
      .ptime { color: ` + ptm + `; }
      .pmsg { color: `+ pmsg + `; }
      .ptype { color: ` + ptp + `}`;
-  AddStyle(PTTcss);
+  //AddStyle(PTTcss);
 }

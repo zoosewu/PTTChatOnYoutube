@@ -1,17 +1,13 @@
-'use strict';
-export function InitApp(chatcon, whitetheme, isstream, messageposter) {
+import PTTMain from './PTTMain.js';
+import PTTMainBtn from './PTTMainBtn.js';
+import store from './store/store.js';
+export function InitApp(chatcon, whitetheme, isstreaming, messageposter) {
   const msg = messageposter;
-  /*setTimeout(repeatlog, 1000);
-  function repeatlog() {
-    console.log("PTTChat_Chat_Main", PTTChat_Chat_Main);
-    console.log("player", player);
-    setTimeout(repeatlog, 1000);
-  }*/
+
   let player;
   let isinitPTT = false;
   let ConnectAlertDiv;
   let AutoScrolling = true;
-  let isstreaming;
   let streamtime = new Date();
   let streamtimeinput;
   //let urlPushData = {};
@@ -47,25 +43,43 @@ export function InitApp(chatcon, whitetheme, isstream, messageposter) {
   function InitChatApp(cn) {
     /*-----------------------------------preInitApp-----------------------------------*/
     //init property
-    player = document.getElementsByTagName("video")[0];
+    if (!isstreaming) player = document.getElementsByTagName("video")[0];
+    let ele = document.createElement('div');
+    ele.id = "PTTChat";
+    /*.className = "pttchat rounded-right position-absolute rounded-bottom w-100 collapse";
+    ele.setAttribute("style", "z-index: 301;");*/
+    if (cn) cn[0].appendChild(ele);
+    Vue.prototype.$bus = new Vue();
+    let PTT = new Vue({
+      el: '#PTTChat',
+      template: `<div id="PTTChat" class="position-absolute w-100""><PTTMainBtn></PTTMainBtn><PTTMain></PTTMain></div>`,
+      store,
+      components: {
+        'PTTMainBtn': PTTMainBtn,
+        'PTTMain': PTTMain
+      }
+    });
+    return;
 
-    const PTTAppCollapse = $(`<pttdiv id="PTTChat" class="pttchat rounded-right rounded-bottom w-100 collapse" style="z-index: 301; position: absolute;"></pttdiv>`);
+
+    //const PTTMain = $(`<pttdiv id="PTTChat" class="pttchat rounded-right position-absolute rounded-bottom w-100 collapse" style="z-index: 301;"></pttdiv>`);
     const PTTApp = $(`<div id="PTTChat-app" class=" pttbg border rounded w-100 d-flex flex-column"></div>`);
     const PTTChatnavbar = $(`<ul id="PTTChat-navbar" class="nav nav-tabs justify-content-center" role="tablist"><li class="nav-item"><a class="nav-link ptttext bg-transparent" id="nav-item-Chat" data-toggle="tab" href="#PTTChat-contents-Chat" role="tab" aria-controls="PTTChat-contents-Chat" aria-selected="false">聊天室</a></li><li class="nav-item"><a class="nav-link ptttext bg-transparent active" id="nav-item-Connect" data-toggle="tab" href="#PTTChat-contents-Connect" role="tab" aria-controls="PTTChat-contents-Connect" aria-selected="true">連線設定</a></li><li class="nav-item"><a class="nav-link ptttext bg-transparent" id="nav-item-other" data-toggle="tab" href="#PTTChat-contents-other" role="tab" aria-controls="PTTChat-contents-other" aria-selected="false">說明</a></li><li class="nav-item"><a class="nav-link ptttext bg-transparent" id="nav-item-PTT" data-toggle="tab" href="#PTTChat-contents-PTT" role="tab" aria-controls="PTTChat-contents-PTT" aria-selected="false">PTT畫面</a></li><li class="nav-item"><a class="nav-link ptttext bg-transparent" id="nav-item-log" data-toggle="tab" href="#PTTChat-contents-log" role="tab" aria-controls="PTTChat-contents-log" aria-selected="false">log</a></li><li class="nav-item"><button class="nav-link ptttext bg-transparent d-none" id="nav-item-TimeSet" type="button" data-toggle="collapse" data-target="#PTTChat-Time" aria-controls="PTTChat-Time" aria-expanded="false">時間</button></li></ul>
     `);
     const PTTChatContents = $(`<div id="PTTChat-contents" class="tab-content container d-flex flex-column ptttext"><!-------- 聊天室 --------><div class="tab-pane mh-100 fade" id="PTTChat-contents-Chat" role="tabpanel" aria-labelledby="nav-item-Chat"><!-------- 開台時間 --------><div id="PTTChat-Time" class="ptttext pttbg p-2 position-absolute w-75 d-none" style="z-index:400"><div id="PTTChat-Time-Setting"><form class="form-inline d-flex justify-content-between w-100"><label for="dis" class="mr-1">實況重播時間微調:</label> <button id="minus-time" class="btn ptttext border btn-outline-secondary" type="button">-1分鐘</button> <button id="add-time" class="btn ptttext border btn-outline-secondary" type="button">+1分鐘</button></form></div></div><!-------- 聊天室 --------><div class="flex-grow-1 overflow-auto mh-100 row" id="PTTChat-contents-Chat-main" style="overscroll-behavior:contain"><ul id="PTTChat-contents-Chat-pushes" class="col mb-0"></ul><div id="PTTChat-contents-Chat-btn" class="position-absolute d-none" style="z-index:400;bottom:5%;left:50%;-ms-transform:translateX(-50%);transform:translateX(-50%)"><button id="AutoScroll" class="btn btn-primary" type="button">自動滾動</button></div></div></div><!-------- 連線設定 --------><div class="tab-pane h-100 row fade show active" id="PTTChat-contents-Connect" role="tabpanel" aria-labelledby="nav-item-Connect"><div id="PTTChat-contents-Connect-main" class="col overflow-auto h-100 mb-0 p-4" data-spy="scroll" data-offset="0"></div><div id="PTTChat-contents-Connect-alert" class="position-relative container" style="top:-100%;z-index:400"></div></div><!-------- 其他 --------><div class="tab-pane h-100 card bg-transparent overflow-auto row fade" id="PTTChat-contents-other" role="tabpanel" aria-labelledby="nav-item-other"><div id="PTTChat-contents-other-main" class="card-body"></div></div><!-------- PTT畫面 --------><div class="tab-pane h-100 row fade" id="PTTChat-contents-PTT" role="tabpanel" aria-labelledby="nav-item-PTT"><div id="PTTChat-contents-PTT-main" class="h-100 d-flex justify-content-center px-0"></div></div><!-------- Log --------><div class="tab-pane mh-100 fade" id="PTTChat-contents-log" role="tabpanel" aria-labelledby="nav-item-log" style="overscroll-behavior:contain"><div class="flex-grow-1 overflow-auto mh-100 row" id="PTTChat-contents-log-main" style="overscroll-behavior:contain"><!--<ul id="PTTChat-contents-log-table" class="col mb-0"> </ul>--></div></div></div>
     `);
-    const MainBtn = $(`<a id="PTTMainBtn" class="btn btn-lg border" type="button" data-toggle="collapse" data-target="#PTTChat" aria-expanded="false" aria-controls="PTTChat">P</a>`)
-    cn.append(PTTAppCollapse);
-    cn.append(MainBtn);
+    //const MainBtn = $(`<a id="PTTMainBtn" class="btn btn-lg border" type="button" data-toggle="collapse" data-target="#PTTChat" aria-expanded="false" aria-controls="PTTChat">P</a>`)
 
-    PTTAppCollapse.append(PTTApp);
-    MainBtn.css({ "z-index": "450", "position": "absolute" });
+
+    //cn.append(PTTMain);
+    //cn.append(MainBtn);
+
+    PTTMain.append(PTTApp);
 
     if (defaultopen) {
       $(`#PTTMainBtn`)[0].click();
     }
-    PTTAppCollapse.on("remove", function () {
+    PTTMain.on("remove", function () {
       alert("PTTApp was removed");
     })
     PTTApp.append(PTTChatnavbar);
@@ -287,7 +301,9 @@ export function InitApp(chatcon, whitetheme, isstream, messageposter) {
         isinitPTT = true;
         //PTTChat - contents - PTT
         const PTTChat_PTT = $(`#PTTChat-contents-PTT-main`, PTTChatContents);
-        const PTTFrame = $(`<iframe id="PTTframe" src="//term.ptt.cc/?url=` + msg.ownorigin + `" class="h-100 flex-grow-1" style="zoom: 1.65; z-index: 351; -moz-transform: scale(1);">你的瀏覽器不支援 iframe</iframe>`);
+        console.log("msg ", msg);
+        console.log("msg.ownerorigin ", msg.ownerorigin);
+        const PTTFrame = $(`<iframe id="PTTframe" src="//term.ptt.cc/?url=` + msg.ownerorigin + `" class="h-100 flex-grow-1" style="zoom: 1.65; z-index: 351; -moz-transform: scale(1);">你的瀏覽器不支援 iframe</iframe>`);
         $(window).on('beforeunload', function () {
           PTTFrame.remove();
         });
@@ -315,7 +331,7 @@ export function InitApp(chatcon, whitetheme, isstream, messageposter) {
       console.log("themecolor", "深色");
       MainBtn.addClass("btn-outline-light");
     }
-    StreamCheck(isstream);
+    StreamCheck(isstreaming);
     if (devmode) {
       DevMode();
     }
@@ -365,11 +381,8 @@ export function InitApp(chatcon, whitetheme, isstream, messageposter) {
   }
   msg["alert"] = data => { AlertMsg(data.type, data.msg); };
   /*------------------------------------Chat Scroll------------------------------------*/
-
+  msg["PlayerUpdate"] = () => { PlayerUpdate(); };
   function PlayerUpdate(forceScroll) {
-    /*console.log((scriptscrolltime + 100) + " + " + Date.now());
-    console.log((scriptscrolltime - Date.now()));
-    console.log((scriptscrolltime + 100 > Date.now()));*/
     if (isstreaming) {
       const t = Date.now();
       updatelog("streamnowtime", t.toLocaleDateString() + " " + t.toLocaleTimeString());
@@ -491,6 +504,7 @@ export function InitApp(chatcon, whitetheme, isstream, messageposter) {
     const mainpush = `<li id="` + ID + `"class="media mb-4"><div class="media-body mw-100">` + firstline + secondline + `</div></li>`;
     return $(mainpush);
   }
+
 
 
   msg["postdata"] = data => {

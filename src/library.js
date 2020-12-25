@@ -1,5 +1,4 @@
 
-'use strict';
 //add global style
 export function AddStyle(css) {
   const style = document.createElement('style');
