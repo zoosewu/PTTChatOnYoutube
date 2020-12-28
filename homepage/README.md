@@ -6,7 +6,7 @@
 
 實況的話會定時載入新推文，並自動滾動到最下面。
 
-![](https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/samplemain.png "預覽圖")
+![](https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/samplemain.gif "預覽圖")
 
 ## 如何開始使用
 
