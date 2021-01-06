@@ -1,9 +1,24 @@
 export let PTTAppNav = {
+  computed: {
+    isGotoChat: function () {
+      const go = this.gotoChat;
+      console.log("isGotoChat", go);
+      if (go) {
+        this.$store.dispatch('gotoChat', false);
+        this.$refs.chatbtn.click();
+        console.log("gotoChat");
+      }
+      return go;
+    },
+    ...Vuex.mapGetters([
+      'gotoChat',
+    ])
+  },
   mounted() {
-    this.$store.dispatch('chatBtn', this.$refs.chatbtn);
+    //this.$store.dispatch('chatBtn', this.$refs.chatbtn);
   },
   template: `<ul id="PTTChat-navbar" class="nav nav-tabs justify-content-center" role="tablist">
-  <li class="nav-item">
+  <li class="nav-item" :go="isGotoChat">
     <a class="nav-link ptt-text bg-transparent" id="nav-item-Chat" data-toggle="tab" href="#PTTChat-contents-Chat"
       role="tab" aria-controls="PTTChat-contents-Chat" aria-selected="false" ref="chatbtn">聊天室</a>
   </li>

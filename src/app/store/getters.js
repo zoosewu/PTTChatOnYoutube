@@ -5,8 +5,7 @@ export const getters = {
   log: state => { return state.log },
   post: state => { return state.post },
   newChatList: state => { return state.chatlist },
-  firstChatTime: state => { return state.firstChatTime },
-  lastChatTime: state => { return state.lastChatTime },
   videoCurrentTime: state => { return state.VCurrentTime; },
-  pageChange: state => { return state.pageChange; },
+  gotoChat: state => { return state.gotoChat; },
+
 }

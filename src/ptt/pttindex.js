@@ -32,7 +32,7 @@ export function InitPTT(messageposter) {
           this.screen.push(txt);
         }
         this.screenstate = 1;
-        if (showalllog) console.log("screenHaveText", reg, result);
+        if (showalllog) console.log("==screenHaveText", reg, result);
         return result;
       }
       else {
@@ -40,11 +40,11 @@ export function InitPTT(messageposter) {
           const txt = this.screen[i];
           result = new RegExp(reg).exec(txt);
           if (result != null) {
-            if (showalllog) console.log("screenHaveText", reg, result);
+            if (showalllog) console.log("==screenHaveText", reg, result);
             return result;
           }
         }
-        if (showalllog) console.log("screenHaveText", reg, result);
+        if (showalllog) console.log("==screenHaveText", reg, result);
         return null;
       }
     },
@@ -56,7 +56,7 @@ export function InitPTT(messageposter) {
       list: [],
       add: function (reg, input, callback, ...args) {
         const com = { reg, input, callback, args };
-        if (showcommand) console.log("Add command ", com);
+        if (showcommand) console.log("==Add command ", com);
         this.list.push(com);
       },
       getfirst: function () {
@@ -124,7 +124,7 @@ export function InitPTT(messageposter) {
     }
   })()
   function ComLog(cmd) {
-    if (showcommand) console.log("execute command:", [cmd]);
+    if (showcommand) console.log("==execute command:", [cmd]);
   }
   function updatePagestate() {
     for (let i = 0; i < PTT.pagestatefilter.length; i++) {
@@ -132,7 +132,7 @@ export function InitPTT(messageposter) {
       const result = PTT.screenHaveText(filter.reg);
       if (result != null) {
         PTT.pagestate = filter.state;
-        console.log("page state = " + PTT.pagestate);
+        console.log("==page state = " + PTT.pagestate);
         return;
       }
     }
@@ -142,7 +142,7 @@ export function InitPTT(messageposter) {
     for (let autoi = 0; autoi < commands.length; autoi++) {
       const cmd = commands[autoi];
       const result = PTT.screenHaveText(cmd.reg);
-      //if (showcommand) console.log("auto command", cmd, result);
+      //if (showcommand) console.log("==auto command", cmd, result);
       if (result != null) {
         ComLog(cmd);
         insertText(cmd.input);
@@ -167,20 +167,20 @@ export function InitPTT(messageposter) {
     }
   }
   function OnUpdate() {
-    if (showalllog) console.log("OnUpdate start");
+    if (showalllog) console.log("==OnUpdate start");
     PTT.screenclear();
-    if (showalllog) console.log("set pagestate.");
+    if (showalllog) console.log("==set pagestate.");
     updatePagestate();
-    if (showalllog) console.log("check autocommand.");
+    if (showalllog) console.log("==check autocommand.");
     if (!chechAutoCommand()) {
-      if (showalllog) console.log("check command.");
+      if (showalllog) console.log("==check command.");
       command();
     }
-    if (showPTTscreen) console.log("PTT screen shot:", PTT.screen);
+    if (showPTTscreen) console.log("==PTT screen shot:", PTT.screen);
     let nextcom = PTT.commands.getfirst();
-    if (showcommand && typeof nextcom !== 'undefined') console.log("next command : reg:" + nextcom.reg + "input:" + nextcom.input, [nextcom.callback]);
-    else if (showcommand) console.log("next command : none.");
-    if (showalllog) console.log("OnUpdate end");
+    if (showcommand && typeof nextcom !== 'undefined') console.log("==next command : reg:" + nextcom.reg + "input:" + nextcom.input, [nextcom.callback]);
+    else if (showcommand) console.log("==next command : none.");
+    if (showalllog) console.log("==OnUpdate end");
   }
   //hook start
   function hook(obj, key, cb) {
@@ -229,7 +229,7 @@ export function InitPTT(messageposter) {
     }
   }
 
-  // -----------------------task getpost --------------------
+  // -----------------------task getpostbyline --------------------
   function gotoBoard() { insertText("s" + PTTPost.board + "\n"); }
   function boardcheck() {
     const res = { pass: false, callback: gotoBoard }
@@ -250,7 +250,7 @@ export function InitPTT(messageposter) {
   function PostCheck() {
     const res = { pass: true, callback: gotoPost }
     if (PTT.pagestate === 2) res.pass = false;
-    else if (PTT.pagestate === 1) console.log("PostCheck error, PTT.pagestate == 1.");
+    else if (PTT.pagestate === 1) console.log("==PostCheck error, PTT.pagestate == 1.");
     return res;
   }
 
@@ -275,10 +275,10 @@ export function InitPTT(messageposter) {
           PTTPost.posttime = new Date(result[1]);
         }
       }
-      else { res.pass = false; console.log("PotsTitleCheck error, Reg Parse Error."); }
+      else { res.pass = false; console.log("==PotsTitleCheck error, Reg Parse Error."); }
     }
-    else if (PTT.pagestate === 1) console.log("PotsTitleCheck error, PTT.pagestate == 1.");
-    else if (PTT.pagestate === 2) console.log("PotsTitleCheck error, PTT.pagestate == 2.");
+    else if (PTT.pagestate === 1) console.log("==PotsTitleCheck error, PTT.pagestate == 1.");
+    else if (PTT.pagestate === 2) console.log("==PotsTitleCheck error, PTT.pagestate == 2.");
     return res;
   }
 
@@ -293,8 +293,8 @@ export function InitPTT(messageposter) {
       if ((targetline < 1 || targetline > 23) && PTT.screenHaveText(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~\d+ 行/) === null) res.pass = false;
       else getpush();
     }
-    else if (PTT.pagestate === 1) console.log("PistLineCheck error, PTT.pagestate == 1.");
-    else if (PTT.pagestate === 2) console.log("PistLineCheck error, PTT.pagestate == 2.");
+    else if (PTT.pagestate === 1) console.log("==PistLineCheck error, PTT.pagestate == 1.");
+    else if (PTT.pagestate === 2) console.log("==PistLineCheck error, PTT.pagestate == 2.");
     return res;
   }
 
@@ -313,8 +313,8 @@ export function InitPTT(messageposter) {
     const endline = lineresult[2];
     let targetline = PTTPost.endline - startline + 1;
     if (startline < 5) targetline += 1;
-    //console.log("GetPush from " + targetline + "to " + (PTT.screen.length - 1));
-    //console.log("(pttstartline, pttendline, startline, endline, targetline): (" + PTTPost.startline + ", " + PTTPost.endline + ", " + startline + ", " + endline + ", " + targetline + ")");
+    //console.log("==GetPush from " + targetline + "to " + (PTT.screen.length - 1));
+    //console.log("==(pttstartline, pttendline, startline, endline, targetline): (" + PTTPost.startline + ", " + PTTPost.endline + ", " + startline + ", " + endline + ", " + targetline + ")");
     for (let i = targetline; i < PTT.screen.length; i++) {
       const line = PTT.screen[i];
       //console.log(i + "," + line);
@@ -339,23 +339,62 @@ export function InitPTT(messageposter) {
     if ((PTT.pagestate === 3 || PTT.pagestate === 4) && PTT.screenHaveText(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~\d+ 行/) !== null) {
       res.pass = true;
     }
-    else if (PTT.pagestate === 1) console.log("PostPercentCheck error, PTT.pagestate == 1.");
-    else if (PTT.pagestate === 2) console.log("PostPercentCheck error, PTT.pagestate == 2.");
+    else if (PTT.pagestate === 1) console.log("==PostPercentCheck error, PTT.pagestate == 1.");
+    else if (PTT.pagestate === 2) console.log("==PostPercentCheck error, PTT.pagestate == 2.");
+    return res;
+  }
+  // -----------------------task getpostbyrecent --------------------
+  function gotoend() { insertText('G'); }
+  function GetRecentLine() {
+    const res = { pass: false, callback: gotoend }
+    if (PTT.pagestate === 4) {
+      const line = PTT.screenHaveText(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~(\d+) 行/);
+      if (line) {
+        let targetline = +line[1] - PTTPost.endline - 1;
+        if (targetline < 3) targetline = 3;
+        //console.log("==GetRecentLine, TotalLine, GotoLline", line[1], targetline);
+        PTTPost.endline = targetline;
+        insertText(PTTPost.endline + ".\n");
+        res.pass = true;
+      }
+    }
+    else if (PTT.pagestate === 1) console.log("==GetPushTask error, PTT.pagestate == 1.");
+    else if (PTT.pagestate === 2) console.log("==GetPushTask error, PTT.pagestate == 2.");
+    else if (PTT.pagestate === 3) { }
     return res;
   }
   //------------------------tasks--------------------------------
   const task = {};
-  task.GetPost = [boardcheck, PostCheck, PotsTitleCheck, PostLineCheck, PostPercentCheck];
+  task.GetPostByLine = [boardcheck, PostCheck, PotsTitleCheck, PostLineCheck, PostPercentCheck];
+  task.GetPostRecentLine = [boardcheck, PostCheck, PotsTitleCheck, GetRecentLine];
+  function GetRecentLineTask() {
+    if (PTTPost.isgotopost && PTT.pagestate === 2) {
+      msg.PostMessage("alert", { type: 0, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
+      PTT.unlock();
+    }
+    //console.log("==(startline, endline): ( " + PTTPost.startline + ", " + PTTPost.endline + ")");
+    for (let i = 0; i < task.GetPostRecentLine.length; i++) {
+      const element = task.GetPostRecentLine[i];
+      const result = element();
+      //console.log("==Run task", { element, result });
+      if (result.pass === false) {
+        result.callback();
+        PTT.commands.add(/.*/, "", GetRecentLineTask);
+        return;
+      }
+    }
+    PTT.commands.add(/.*/, "", GetPushTask);
+  }
   function GetPushTask() {
     if (PTTPost.isgotopost && PTT.pagestate === 2) {
       msg.PostMessage("alert", { type: 0, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
       PTT.unlock();
     }
-    //console.log("(startline, endline): ( " + PTTPost.startline + ", " + PTTPost.endline + ")");
-    for (let i = 0; i < task.GetPost.length; i++) {
-      const element = task.GetPost[i];
+    //console.log("==(startline, endline): ( " + PTTPost.startline + ", " + PTTPost.endline + ")");
+    for (let i = 0; i < task.GetPostByLine.length; i++) {
+      const element = task.GetPostByLine[i];
       const result = element();
-      //console.log("Run task", { element, result });
+      //console.log("==Run task", { element, result });
       if (result.pass === false) {
         result.callback();
         PTT.commands.add(/.*/, "", GetPushTask);
@@ -368,8 +407,9 @@ export function InitPTT(messageposter) {
     msg.PostMessage("newPush", PTTPost);
     if (showalllog) console.log(PTTPost);
   }
-  function GetPushByLine(pAID, bname, startline, forceget = false) {
-    if (PTT.pagestate > 0 || forceget) {
+  //------------------------Main Command--------------------------------
+  function GetPush(pAID, bname, startline, task) {
+    if (PTT.pagestate > 0) {
       startline = startline || 3;
       msg.PostMessage("alert", { type: 2, msg: "文章讀取中。" });
       const samepost = (bname === PTTPost.board) && (pAID === PTTPost.AID);
@@ -378,7 +418,7 @@ export function InitPTT(messageposter) {
         PTTPost.samepost = true;
         PTTPost.endline = startline;
         PTTPost.isgotopost = false;
-        //console.log("Get Same Post Push from PTTPost.endline, startline: " + PTTPost.endline + ", " + startline);
+        //console.log("==Get Same Post Push from PTTPost.endline, startline: " + PTTPost.endline + ", " + startline);
       }
       else {
         PTTPost = {
@@ -391,12 +431,12 @@ export function InitPTT(messageposter) {
           endline: startline,
           percent: 0,
           samepost: false,
-          isgotopost: false
+          isgotopost: false,
         }
       }
       if (PTT.pagestate === 1) insertText("m");
       else insertText("q\n");
-      PTT.commands.add(/.*/, "", GetPushTask);
+      PTT.commands.add(/.*/, "", task);
     }
     else if (PTT.screenstate === -1) {
       msg.PostMessage("alert", { type: 0, msg: "PTT已斷線，請重新登入。" });
@@ -407,6 +447,7 @@ export function InitPTT(messageposter) {
       PTT.unlock();
     }
   }
+
   function Login(id, pw) {
     msg.PostMessage("alert", { type: 2, msg: "登入中" });
     if (!PTT.login) {
@@ -448,6 +489,7 @@ export function InitPTT(messageposter) {
       PTT.unlock();
     }
   }
+  //------------------------Lock Check--------------------------------
   function PTTLockCheck(callback, ...args) {
     if (Reconnect()) {
 
@@ -469,7 +511,7 @@ export function InitPTT(messageposter) {
   //end
   const ReconnectInterval = window.setInterval((() => {
     Reconnect();
-  }), 500);
+  }), 1500);
 
   msg["login"] = data => {
     const i = CryptoJS.AES.decrypt(data.id, cryptkey).toString(CryptoJS.enc.Utf8);
@@ -478,6 +520,6 @@ export function InitPTT(messageposter) {
     //console.log([i, p],cryptkey);
     PTTLockCheck(Login, i, p);
   };
-  msg["getPushByLine"] = data => { PTTLockCheck(GetPushByLine, data.AID, data.board, data.startline); };
-  msg["getPushByRecent"] = data => { PTTLockCheck(GetRecentLine, data.AID, data.board, data.line); };
+  msg["getPushByLine"] = data => { PTTLockCheck(GetPush, data.AID, data.board, data.startline, GetPushTask); };
+  msg["getPushByRecent"] = data => { PTTLockCheck(GetPush, data.AID, data.board, data.recent, GetRecentLineTask); };
 }

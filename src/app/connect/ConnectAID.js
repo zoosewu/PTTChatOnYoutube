@@ -4,7 +4,7 @@ export let ConnectAID = {
       aid: GM_getValue("PostAID", ""),
     }
   },
-  inject: ['msg'],
+  inject: ['msg', 'isStream'],
   methods: {
     getPush: function () {
       const result = /#(.+) \((.+)\)/.exec(this.aid);
@@ -14,10 +14,13 @@ export let ConnectAID = {
       else {
         GM_setValue("PostAID", this.aid);
         gotomainchat = true;//// 
-        if (this.post.AID === result[1] && this.post.board === result[2]) {
+        if (this.post.AID === result[1] && this.post.board === result[2]) {//相同文章取最新推文
           this.msg.PostMessage("getPushByLine", { AID: result[1], board: result[2], startline: this.post.lastendline });
         }
-        else {
+        else if (this.isStream) {//實況取得最近的推文
+          this.msg.PostMessage("getPushByRecent", { AID: result[1], board: result[2], recent: 200 });
+        }
+        else {//實況紀錄取得所有推文
           this.msg.PostMessage("getPushByLine", { AID: result[1], board: result[2], startline: 0 });
         }
         this.$store.dispatch('pageChange', true);

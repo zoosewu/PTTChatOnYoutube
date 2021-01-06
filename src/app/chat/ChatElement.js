@@ -16,8 +16,8 @@ Vue.component('chat-item', {
     bgc: function () {
       const isUnchat = this.ChatCurrent >= this.index ? "0" : "0.25";
       const color = "rgba(128, 128, 128, " + isUnchat + ")";
-      console.log("Chat:", this.index, "isischat", isUnchat);
-      return { backgroundColor: color, transition: "0.5s" };
+      //console.log("Chat:", this.index, "isischat", isUnchat);
+      return { backgroundColor: color, transition: "2s" };
     }
   },
   watch: {

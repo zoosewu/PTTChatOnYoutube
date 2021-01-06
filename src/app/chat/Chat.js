@@ -6,10 +6,10 @@ export let Chat = {
   inject: ['msg', 'isStream'],
   data: function () {
     return {
-      chatList: testchat,
-      lastChat: this.newChatList,
+      chatList: [],
+      lastChat: {},
       activeChat: 0,
-      activeRange: 1000,
+      activeRange: 200,
       activeChatStart: 0,
       activeChatEnd: 0,
       updateChat: null,
@@ -20,18 +20,19 @@ export let Chat = {
   },
   methods: {
     scrollToChat: function () {
-      this.getCurrentChat();
+      //console.log("scrollToChatF", new Date().getTime());
       if (this.isAutoScroll) {
         const scrollPos = this.getScrollPos();
         const p = this.$refs.chatmain.scrollTop - scrollPos;
         if (p > 20 || p < -20) {
+          //console.log("scrollToChatS", new Date().getTime(), this.isAutoScroll, scrollPos);
           this.$refs.chatmain.scrollTo({
             top: scrollPos,
             behavior: "smooth"
           });
-          //VueScrollTo.scrollTo('#chat-' + this.activeChat, 500, this.scrolloption());
         }
       }
+      this.getCurrentChat();
     },
     getScrollPos: function () {
       const clientHeight = this.$refs.chatmain ? this.$refs.chatmain.clientHeight : 0;
@@ -40,35 +41,33 @@ export let Chat = {
       const chatHeight = chat.clientHeight;
 
       const scrolloffset = (clientHeight - chatHeight) / 2;
-      const scrollPos = chat.offsetTop - scrolloffset;
+      const scrollmin = 0;
+      const scrollmax = this.$refs.chats.clientHeight - clientHeight;
+      let scrollPos = chat.offsetTop - scrolloffset;
+      if (scrollPos < scrollmin) scrollPos = scrollmin;
+      else if (scrollPos > scrollmax) scrollPos = scrollmax;
       //console.log("getScrollPos, activeChat, clientHeight, chatHeight, scrolloffset, chat.offsetTop, scrollPos, scrollTop", this.activeChat, clientHeight, chatHeight, scrolloffset, chat.offsetTop, scrollPos, this.$refs.chatmain.scrollTop);
       return scrollPos;
-    },
-    scrolloption: function () {
-      const clientHeight = this.$refs.chatmain ? this.$refs.chatmain.clientHeight : 0;
-      const chatHeight = this.$children[this.activeChat + 1] ? this.$children[this.activeChat + 1].$el.clientHeight : 0;
-      this.scrollop.offset = -1 * (clientHeight - chatHeight) / 2;
-      return this.scrollop;
     },
     getCurrentChat: function () {
       if (this.isStream) {
         this.activeChat = this.chatList.length - 1;
       }
       else {
-        /*if (this.activeChat && this.chatList) {
-          console.log("activeChat", this.activeChat, "current time: " + this.videoCurrentTime.toString());
-          if (this.chatList[this.activeChat - 1]) {
-            console.log("this.chatList[this.activeChat-1].time", this.chatList[this.activeChat - 1].time.toString());
-          }
-          if (this.chatList[this.activeChat]) {
-            console.log("this.chatList[this.activeChat+0].time", this.chatList[this.activeChat].time.toString());
-            console.log("this.chatList[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()", this.chatList[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf());
-          }
-          if (this.chatList[this.activeChat + 1]) {
-            console.log("this.chatList[this.activeChat+1].time", this.chatList[this.activeChat + 1].time.toString());
-            console.log("this.chatList[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf()", this.chatList[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf());
-          }
-        }*/
+        // if (this.activeChat && this.chatList) {
+        //   console.log("activeChat", this.activeChat, "current time: " + this.videoCurrentTime.toString());
+        //   if (this.chatList[this.activeChat - 1]) {
+        //     console.log("this.chatList[this.activeChat-1].time", this.chatList[this.activeChat - 1].time.toString());
+        //   }
+        //   if (this.chatList[this.activeChat]) {
+        //     console.log("this.chatList[this.activeChat+0].time", this.chatList[this.activeChat].time.toString());
+        //     console.log("this.chatList[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()", this.chatList[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf());
+        //   }
+        //   if (this.chatList[this.activeChat + 1]) {
+        //     console.log("this.chatList[this.activeChat+1].time", this.chatList[this.activeChat + 1].time.toString());
+        //     console.log("this.chatList[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf()", this.chatList[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf());
+        //   }
+        // }
         while (this.chatList[this.activeChat] && this.chatList[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()) {
           this.activeChat--;
         }
@@ -120,7 +119,7 @@ export let Chat = {
     //定時抓新聊天
     this.updateChat = window.setInterval(() => {
       if (this.isStream && Date.now() > this.nextUpdateTime) {
-        //console.log("updateChat", this.isStream, Date.now(), this.nextUpdateTime);
+        console.log("updateChat", this.isStream, Date.now(), this.nextUpdateTime);
         //this.$store.dispatch('updateVideoPlayedTime', this.player.currentTime);
         this.nextUpdateTime = Date.now() + 2.5 * 1000;
       }
@@ -161,7 +160,7 @@ export let Chat = {
 let testchat = {
   l: [],
   get list() {
-    for (let i = this.l.length; i < 3; i++) {
+    for (let i = this.l.length; i < 20; i++) {
       const el = {
         type: "推 ",
         id: "Zoosewu ",

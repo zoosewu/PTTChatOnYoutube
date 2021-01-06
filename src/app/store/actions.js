@@ -44,19 +44,17 @@ export const actions = {
       { type: "postendline", data: newpost.lastendline }]);
     }
     if (newpost.pushcount == 0 && postdata.pushes.length > 0)
-      commit(types.FIRSTCHATTIME, postdata.pushes[0].date);
 
-    newpost.pushcount += postdata.pushes.length;
+      newpost.pushcount += postdata.pushes.length;
     if (postdata.pushes.length > 0) {
       commit(types.UPDATEPOST, newpost);
-      dispatch('updateVideoStartDate', {});
+      dispatch('updateVideoStartDate');
       dispatch('updateChat', postdata.pushes);
     }
     console.log("state.pageChange", state.pageChange);
     console.log("state.chatBtn", state.chatBtn);
-    if (state.pageChange && state.chatBtn) {
-      console.log("state.chatBtn.click();", state.chatBtn);
-      state.chatBtn.click();
+    if (state.pageChange) {
+      dispatch('gotoChat', true);
       dispatch('pageChange', false);
     }
   },
@@ -92,13 +90,12 @@ export const actions = {
     }
     //console.log("chatlist actions", chatlist);
     commit(types.UPDATECHAT, chatlist);
-    commit(types.LASTCHATTIME, chatlist[chatlist.length - 1].date);
   },
   updateVideoStartTime: ({ dispatch, commit, state }, time) => {
     commit(types.VIDEOSTARTTIME, time);
-    dispatch('updateVideoStartDate', {});
+    dispatch('updateVideoStartDate');
   },
-  updateVideoStartDate: ({ dispatch, commit, state }, d) => {
+  updateVideoStartDate: ({ dispatch, commit, state }) => {
     const postdate = state.post.date || new Date();
     const time = state.VStartTime;
     const date = new Date(postdate);
@@ -107,14 +104,15 @@ export const actions = {
     date.setSeconds(+time[2]);
     commit(types.UPDATELOG, { type: "videostarttime", data: date.toLocaleDateString() + " " + date.toLocaleTimeString() });
     commit(types.VIDEOSTARTDATE, date);
-    dispatch('updateVideoCurrentTime', {});
+    dispatch('updateVideoCurrentTime');
   },
   updateVideoPlayedTime: ({ dispatch, commit, state }, time) => {
+    // console.log("updateVideoPlayedTime", time);
     commit(types.VIDEOPLAYEDTIME, time);
     commit(types.UPDATELOG, { type: "videoplayedtime", data: time });
-    dispatch('updateVideoCurrentTime', {});
+    dispatch('updateVideoCurrentTime');
   },
-  updateVideoCurrentTime: ({ dispatch, commit, state }, t) => {
+  updateVideoCurrentTime: ({ dispatch, commit, state }) => {
     const vstart = state.VStartDate;
     const time = state.VPlayedTime;//[H,m,s,isVideoVeforePost]
     let currtime = new Date(vstart.valueOf());
@@ -125,14 +123,14 @@ export const actions = {
         currtime.setHours(currtime.getHours() - 24);
       }
     }
-    //console.log("vstart, time, currtime", vstart, time, currtime);
+    //console.log("updateVideoCurrentTime vstart, time, currtime", vstart, time, currtime);
     commit(types.UPDATELOG, { type: "videocurrenttime", data: currtime.toLocaleDateString() + " " + currtime.toLocaleTimeString() });
     commit(types.VIDEOCURRENTRIME, currtime);
   },
   pageChange: ({ commit, state }, Change) => {
     commit(types.PAGECHANGE, Change);
   },
-  chatBtn: ({ commit, state }, btn) => {
-    commit(types.CHATBTN, btn);
+  gotoChat: ({ commit, state }, gtChat) => {
+    commit(types.GOTOCHAT, gtChat);
   },
 }

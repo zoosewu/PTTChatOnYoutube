@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name               pttchatonyoutube
 // @namespace          https://github.com/zoosewu
-// @version            2.0.1503
+// @version            2.0.1663
 // @description        Connect ptt pushes to youtube chatroom
 // @author             Zoosewu
 // @match              https://www.youtube.com/*
@@ -104,7 +104,7 @@ function InitPTT(messageposter) {
           this.screen.push(txt);
         }
         this.screenstate = 1;
-        if (showalllog) console.log("screenHaveText", reg, result);
+        if (showalllog) console.log("==screenHaveText", reg, result);
         return result;
       }
       else {
@@ -112,11 +112,11 @@ function InitPTT(messageposter) {
           const txt = this.screen[i];
           result = new RegExp(reg).exec(txt);
           if (result != null) {
-            if (showalllog) console.log("screenHaveText", reg, result);
+            if (showalllog) console.log("==screenHaveText", reg, result);
             return result;
           }
         }
-        if (showalllog) console.log("screenHaveText", reg, result);
+        if (showalllog) console.log("==screenHaveText", reg, result);
         return null;
       }
     },
@@ -128,7 +128,7 @@ function InitPTT(messageposter) {
       list: [],
       add: function (reg, input, callback, ...args) {
         const com = { reg, input, callback, args };
-        if (showcommand) console.log("Add command ", com);
+        if (showcommand) console.log("==Add command ", com);
         this.list.push(com);
       },
       getfirst: function () {
@@ -196,7 +196,7 @@ function InitPTT(messageposter) {
     }
   })()
   function ComLog(cmd) {
-    if (showcommand) console.log("execute command:", [cmd]);
+    if (showcommand) console.log("==execute command:", [cmd]);
   }
   function updatePagestate() {
     for (let i = 0; i < PTT.pagestatefilter.length; i++) {
@@ -204,7 +204,7 @@ function InitPTT(messageposter) {
       const result = PTT.screenHaveText(filter.reg);
       if (result != null) {
         PTT.pagestate = filter.state;
-        console.log("page state = " + PTT.pagestate);
+        console.log("==page state = " + PTT.pagestate);
         return;
       }
     }
@@ -214,7 +214,7 @@ function InitPTT(messageposter) {
     for (let autoi = 0; autoi < commands.length; autoi++) {
       const cmd = commands[autoi];
       const result = PTT.screenHaveText(cmd.reg);
-      //if (showcommand) console.log("auto command", cmd, result);
+      //if (showcommand) console.log("==auto command", cmd, result);
       if (result != null) {
         ComLog(cmd);
         insertText(cmd.input);
@@ -239,20 +239,20 @@ function InitPTT(messageposter) {
     }
   }
   function OnUpdate() {
-    if (showalllog) console.log("OnUpdate start");
+    if (showalllog) console.log("==OnUpdate start");
     PTT.screenclear();
-    if (showalllog) console.log("set pagestate.");
+    if (showalllog) console.log("==set pagestate.");
     updatePagestate();
-    if (showalllog) console.log("check autocommand.");
+    if (showalllog) console.log("==check autocommand.");
     if (!chechAutoCommand()) {
-      if (showalllog) console.log("check command.");
+      if (showalllog) console.log("==check command.");
       command();
     }
-    if (showPTTscreen) console.log("PTT screen shot:", PTT.screen);
+    if (showPTTscreen) console.log("==PTT screen shot:", PTT.screen);
     let nextcom = PTT.commands.getfirst();
-    if (showcommand && typeof nextcom !== 'undefined') console.log("next command : reg:" + nextcom.reg + "input:" + nextcom.input, [nextcom.callback]);
-    else if (showcommand) console.log("next command : none.");
-    if (showalllog) console.log("OnUpdate end");
+    if (showcommand && typeof nextcom !== 'undefined') console.log("==next command : reg:" + nextcom.reg + "input:" + nextcom.input, [nextcom.callback]);
+    else if (showcommand) console.log("==next command : none.");
+    if (showalllog) console.log("==OnUpdate end");
   }
   //hook start
   function hook(obj, key, cb) {
@@ -301,7 +301,7 @@ function InitPTT(messageposter) {
     }
   }
 
-  // -----------------------task getpost --------------------
+  // -----------------------task getpostbyline --------------------
   function gotoBoard() { insertText("s" + PTTPost.board + "\n"); }
   function boardcheck() {
     const res = { pass: false, callback: gotoBoard }
@@ -322,7 +322,7 @@ function InitPTT(messageposter) {
   function PostCheck() {
     const res = { pass: true, callback: gotoPost }
     if (PTT.pagestate === 2) res.pass = false;
-    else if (PTT.pagestate === 1) console.log("PostCheck error, PTT.pagestate == 1.");
+    else if (PTT.pagestate === 1) console.log("==PostCheck error, PTT.pagestate == 1.");
     return res;
   }
 
@@ -347,10 +347,10 @@ function InitPTT(messageposter) {
           PTTPost.posttime = new Date(result[1]);
         }
       }
-      else { res.pass = false; console.log("PotsTitleCheck error, Reg Parse Error."); }
+      else { res.pass = false; console.log("==PotsTitleCheck error, Reg Parse Error."); }
     }
-    else if (PTT.pagestate === 1) console.log("PotsTitleCheck error, PTT.pagestate == 1.");
-    else if (PTT.pagestate === 2) console.log("PotsTitleCheck error, PTT.pagestate == 2.");
+    else if (PTT.pagestate === 1) console.log("==PotsTitleCheck error, PTT.pagestate == 1.");
+    else if (PTT.pagestate === 2) console.log("==PotsTitleCheck error, PTT.pagestate == 2.");
     return res;
   }
 
@@ -365,8 +365,8 @@ function InitPTT(messageposter) {
       if ((targetline < 1 || targetline > 23) && PTT.screenHaveText(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~\d+ 行/) === null) res.pass = false;
       else getpush();
     }
-    else if (PTT.pagestate === 1) console.log("PistLineCheck error, PTT.pagestate == 1.");
-    else if (PTT.pagestate === 2) console.log("PistLineCheck error, PTT.pagestate == 2.");
+    else if (PTT.pagestate === 1) console.log("==PistLineCheck error, PTT.pagestate == 1.");
+    else if (PTT.pagestate === 2) console.log("==PistLineCheck error, PTT.pagestate == 2.");
     return res;
   }
 
@@ -385,8 +385,8 @@ function InitPTT(messageposter) {
     const endline = lineresult[2];
     let targetline = PTTPost.endline - startline + 1;
     if (startline < 5) targetline += 1;
-    //console.log("GetPush from " + targetline + "to " + (PTT.screen.length - 1));
-    //console.log("(pttstartline, pttendline, startline, endline, targetline): (" + PTTPost.startline + ", " + PTTPost.endline + ", " + startline + ", " + endline + ", " + targetline + ")");
+    //console.log("==GetPush from " + targetline + "to " + (PTT.screen.length - 1));
+    //console.log("==(pttstartline, pttendline, startline, endline, targetline): (" + PTTPost.startline + ", " + PTTPost.endline + ", " + startline + ", " + endline + ", " + targetline + ")");
     for (let i = targetline; i < PTT.screen.length; i++) {
       const line = PTT.screen[i];
       //console.log(i + "," + line);
@@ -411,23 +411,62 @@ function InitPTT(messageposter) {
     if ((PTT.pagestate === 3 || PTT.pagestate === 4) && PTT.screenHaveText(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~\d+ 行/) !== null) {
       res.pass = true;
     }
-    else if (PTT.pagestate === 1) console.log("PostPercentCheck error, PTT.pagestate == 1.");
-    else if (PTT.pagestate === 2) console.log("PostPercentCheck error, PTT.pagestate == 2.");
+    else if (PTT.pagestate === 1) console.log("==PostPercentCheck error, PTT.pagestate == 1.");
+    else if (PTT.pagestate === 2) console.log("==PostPercentCheck error, PTT.pagestate == 2.");
+    return res;
+  }
+  // -----------------------task getpostbyrecent --------------------
+  function gotoend() { insertText('G'); }
+  function GetRecentLine() {
+    const res = { pass: false, callback: gotoend }
+    if (PTT.pagestate === 4) {
+      const line = PTT.screenHaveText(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~(\d+) 行/);
+      if (line) {
+        let targetline = +line[1] - PTTPost.endline - 1;
+        if (targetline < 3) targetline = 3;
+        //console.log("==GetRecentLine, TotalLine, GotoLline", line[1], targetline);
+        PTTPost.endline = targetline;
+        insertText(PTTPost.endline + ".\n");
+        res.pass = true;
+      }
+    }
+    else if (PTT.pagestate === 1) console.log("==GetPushTask error, PTT.pagestate == 1.");
+    else if (PTT.pagestate === 2) console.log("==GetPushTask error, PTT.pagestate == 2.");
+    else if (PTT.pagestate === 3) { }
     return res;
   }
   //------------------------tasks--------------------------------
   const task = {};
-  task.GetPost = [boardcheck, PostCheck, PotsTitleCheck, PostLineCheck, PostPercentCheck];
+  task.GetPostByLine = [boardcheck, PostCheck, PotsTitleCheck, PostLineCheck, PostPercentCheck];
+  task.GetPostRecentLine = [boardcheck, PostCheck, PotsTitleCheck, GetRecentLine];
+  function GetRecentLineTask() {
+    if (PTTPost.isgotopost && PTT.pagestate === 2) {
+      msg.PostMessage("alert", { type: 0, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
+      PTT.unlock();
+    }
+    //console.log("==(startline, endline): ( " + PTTPost.startline + ", " + PTTPost.endline + ")");
+    for (let i = 0; i < task.GetPostRecentLine.length; i++) {
+      const element = task.GetPostRecentLine[i];
+      const result = element();
+      //console.log("==Run task", { element, result });
+      if (result.pass === false) {
+        result.callback();
+        PTT.commands.add(/.*/, "", GetRecentLineTask);
+        return;
+      }
+    }
+    PTT.commands.add(/.*/, "", GetPushTask);
+  }
   function GetPushTask() {
     if (PTTPost.isgotopost && PTT.pagestate === 2) {
       msg.PostMessage("alert", { type: 0, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
       PTT.unlock();
     }
-    //console.log("(startline, endline): ( " + PTTPost.startline + ", " + PTTPost.endline + ")");
-    for (let i = 0; i < task.GetPost.length; i++) {
-      const element = task.GetPost[i];
+    //console.log("==(startline, endline): ( " + PTTPost.startline + ", " + PTTPost.endline + ")");
+    for (let i = 0; i < task.GetPostByLine.length; i++) {
+      const element = task.GetPostByLine[i];
       const result = element();
-      //console.log("Run task", { element, result });
+      //console.log("==Run task", { element, result });
       if (result.pass === false) {
         result.callback();
         PTT.commands.add(/.*/, "", GetPushTask);
@@ -440,8 +479,9 @@ function InitPTT(messageposter) {
     msg.PostMessage("newPush", PTTPost);
     if (showalllog) console.log(PTTPost);
   }
-  function GetPushByLine(pAID, bname, startline, forceget = false) {
-    if (PTT.pagestate > 0 || forceget) {
+  //------------------------Main Command--------------------------------
+  function GetPush(pAID, bname, startline, task) {
+    if (PTT.pagestate > 0) {
       startline = startline || 3;
       msg.PostMessage("alert", { type: 2, msg: "文章讀取中。" });
       const samepost = (bname === PTTPost.board) && (pAID === PTTPost.AID);
@@ -450,7 +490,7 @@ function InitPTT(messageposter) {
         PTTPost.samepost = true;
         PTTPost.endline = startline;
         PTTPost.isgotopost = false;
-        //console.log("Get Same Post Push from PTTPost.endline, startline: " + PTTPost.endline + ", " + startline);
+        //console.log("==Get Same Post Push from PTTPost.endline, startline: " + PTTPost.endline + ", " + startline);
       }
       else {
         PTTPost = {
@@ -463,12 +503,12 @@ function InitPTT(messageposter) {
           endline: startline,
           percent: 0,
           samepost: false,
-          isgotopost: false
+          isgotopost: false,
         }
       }
       if (PTT.pagestate === 1) insertText("m");
       else insertText("q\n");
-      PTT.commands.add(/.*/, "", GetPushTask);
+      PTT.commands.add(/.*/, "", task);
     }
     else if (PTT.screenstate === -1) {
       msg.PostMessage("alert", { type: 0, msg: "PTT已斷線，請重新登入。" });
@@ -479,6 +519,7 @@ function InitPTT(messageposter) {
       PTT.unlock();
     }
   }
+
   function Login(id, pw) {
     msg.PostMessage("alert", { type: 2, msg: "登入中" });
     if (!PTT.login) {
@@ -520,6 +561,7 @@ function InitPTT(messageposter) {
       PTT.unlock();
     }
   }
+  //------------------------Lock Check--------------------------------
   function PTTLockCheck(callback, ...args) {
     if (Reconnect()) {
 
@@ -541,7 +583,7 @@ function InitPTT(messageposter) {
   //end
   const ReconnectInterval = window.setInterval((() => {
     Reconnect();
-  }), 500);
+  }), 1500);
 
   msg["login"] = data => {
     const i = CryptoJS.AES.decrypt(data.id, cryptkey).toString(CryptoJS.enc.Utf8);
@@ -550,8 +592,8 @@ function InitPTT(messageposter) {
     //console.log([i, p],cryptkey);
     PTTLockCheck(Login, i, p);
   };
-  msg["getPushByLine"] = data => { PTTLockCheck(GetPushByLine, data.AID, data.board, data.startline); };
-  msg["getPushByRecent"] = data => { PTTLockCheck(GetRecentLine, data.AID, data.board, data.line); };
+  msg["getPushByLine"] = data => { PTTLockCheck(GetPush, data.AID, data.board, data.startline, GetPushTask); };
+  msg["getPushByRecent"] = data => { PTTLockCheck(GetPush, data.AID, data.board, data.recent, GetRecentLineTask); };
 }
 
 function HerfFilter(msg, filters) {
@@ -600,11 +642,26 @@ function InsFilter(fullname, reg, ownerorigin, Initcallback) {
 }
 
 let PTTAppNav = {
+  computed: {
+    isGotoChat: function () {
+      const go = this.gotoChat;
+      console.log("isGotoChat", go);
+      if (go) {
+        this.$store.dispatch('gotoChat', false);
+        this.$refs.chatbtn.click();
+        console.log("gotoChat");
+      }
+      return go;
+    },
+    ...Vuex.mapGetters([
+      'gotoChat',
+    ])
+  },
   mounted() {
-    this.$store.dispatch('chatBtn', this.$refs.chatbtn);
+    //this.$store.dispatch('chatBtn', this.$refs.chatbtn);
   },
   template: `<ul id="PTTChat-navbar" class="nav nav-tabs justify-content-center" role="tablist">
-  <li class="nav-item">
+  <li class="nav-item" :go="isGotoChat">
     <a class="nav-link ptt-text bg-transparent" id="nav-item-Chat" data-toggle="tab" href="#PTTChat-contents-Chat"
       role="tab" aria-controls="PTTChat-contents-Chat" aria-selected="false" ref="chatbtn">聊天室</a>
   </li>
@@ -642,14 +699,12 @@ const types = {
   UPDATEPOST: "UpdatePost",
   UPDATECHAT: "Updatechatlist",
   UPDATELOG: "UpdateLog",
-  FIRSTCHATTIME: "FirstChatTime",
-  LASTCHATTIME: "LastChatTime",
   VIDEOSTARTTIME: "VIDEOSTARTTIME",
   VIDEOSTARTDATE: "VIDEOSTARTDATE",
-  VIDEOPLAYEDTIME: "VIDEOTIME",
+  VIDEOPLAYEDTIME: "VIDEOPLAYEDTIME",
   VIDEOCURRENTRIME: "VIDEOCURRENTRIME",
   PAGECHANGE: "PAGECHANGE",
-  CHATBTN: "CHATBTN",
+  GOTOCHAT: "GOTOCHAT",
 }
 
 // state
@@ -674,10 +729,10 @@ const state = {
   lastChatTime: {},
   VStartTime: ["18", "00", "00"],
   VStartDate: (() => { const t = new Date(); t.setHours(0); t.setMinutes(0); t.setSeconds(0); return t; })(),
-  VPlayedTime: [19, 0, 0, false],
+  VPlayedTime: 0,
   VCurrentTime: new Date(),
   pageChange: false,
-  chatBtn: null,
+  gotoChat: false,
 }
 // mutations
 const mutations = {
@@ -705,12 +760,6 @@ const mutations = {
   [types.UPDATELOG](state, log) {
     state.log = log;
   },
-  [types.FIRSTCHATTIME](state, firstChatTime) {
-    state.firstChatTime = firstChatTime;
-  },
-  [types.LASTCHATTIME](state, lastChatTime) {
-    state.lastChatTime = lastChatTime;
-  },
   [types.VIDEOSTARTTIME](state, videostarttime) {
     state.VStartTime = videostarttime;
   },
@@ -726,8 +775,8 @@ const mutations = {
   [types.PAGECHANGE](state, pageChange) {
     state.pageChange = pageChange;
   },
-  [types.CHATBTN](state, btn) {
-    state.chatBtn = btn;
+  [types.GOTOCHAT](state, gotoChat) {
+    state.gotoChat = gotoChat;
   },
 }
 
@@ -738,10 +787,9 @@ const getters = {
   log: state => { return state.log },
   post: state => { return state.post },
   newChatList: state => { return state.chatlist },
-  firstChatTime: state => { return state.firstChatTime },
-  lastChatTime: state => { return state.lastChatTime },
   videoCurrentTime: state => { return state.VCurrentTime; },
-  pageChange: state => { return state.pageChange; },
+  gotoChat: state => { return state.gotoChat; },
+
 }
 
 const actions = {
@@ -787,19 +835,17 @@ const actions = {
       { type: "postendline", data: newpost.lastendline }]);
     }
     if (newpost.pushcount == 0 && postdata.pushes.length > 0)
-      commit(types.FIRSTCHATTIME, postdata.pushes[0].date);
 
-    newpost.pushcount += postdata.pushes.length;
+      newpost.pushcount += postdata.pushes.length;
     if (postdata.pushes.length > 0) {
       commit(types.UPDATEPOST, newpost);
-      dispatch('updateVideoStartDate', {});
+      dispatch('updateVideoStartDate');
       dispatch('updateChat', postdata.pushes);
     }
     console.log("state.pageChange", state.pageChange);
     console.log("state.chatBtn", state.chatBtn);
-    if (state.pageChange && state.chatBtn) {
-      console.log("state.chatBtn.click();", state.chatBtn);
-      state.chatBtn.click();
+    if (state.pageChange) {
+      dispatch('gotoChat', true);
       dispatch('pageChange', false);
     }
   },
@@ -835,13 +881,12 @@ const actions = {
     }
     //console.log("chatlist actions", chatlist);
     commit(types.UPDATECHAT, chatlist);
-    commit(types.LASTCHATTIME, chatlist[chatlist.length - 1].date);
   },
   updateVideoStartTime: ({ dispatch, commit, state }, time) => {
     commit(types.VIDEOSTARTTIME, time);
-    dispatch('updateVideoStartDate', {});
+    dispatch('updateVideoStartDate');
   },
-  updateVideoStartDate: ({ dispatch, commit, state }, d) => {
+  updateVideoStartDate: ({ dispatch, commit, state }) => {
     const postdate = state.post.date || new Date();
     const time = state.VStartTime;
     const date = new Date(postdate);
@@ -850,14 +895,15 @@ const actions = {
     date.setSeconds(+time[2]);
     commit(types.UPDATELOG, { type: "videostarttime", data: date.toLocaleDateString() + " " + date.toLocaleTimeString() });
     commit(types.VIDEOSTARTDATE, date);
-    dispatch('updateVideoCurrentTime', {});
+    dispatch('updateVideoCurrentTime');
   },
   updateVideoPlayedTime: ({ dispatch, commit, state }, time) => {
+    // console.log("updateVideoPlayedTime", time);
     commit(types.VIDEOPLAYEDTIME, time);
     commit(types.UPDATELOG, { type: "videoplayedtime", data: time });
-    dispatch('updateVideoCurrentTime', {});
+    dispatch('updateVideoCurrentTime');
   },
-  updateVideoCurrentTime: ({ dispatch, commit, state }, t) => {
+  updateVideoCurrentTime: ({ dispatch, commit, state }) => {
     const vstart = state.VStartDate;
     const time = state.VPlayedTime;//[H,m,s,isVideoVeforePost]
     let currtime = new Date(vstart.valueOf());
@@ -868,15 +914,15 @@ const actions = {
         currtime.setHours(currtime.getHours() - 24);
       }
     }
-    //console.log("vstart, time, currtime", vstart, time, currtime);
+    //console.log("updateVideoCurrentTime vstart, time, currtime", vstart, time, currtime);
     commit(types.UPDATELOG, { type: "videocurrenttime", data: currtime.toLocaleDateString() + " " + currtime.toLocaleTimeString() });
     commit(types.VIDEOCURRENTRIME, currtime);
   },
   pageChange: ({ commit, state }, Change) => {
     commit(types.PAGECHANGE, Change);
   },
-  chatBtn: ({ commit, state }, btn) => {
-    commit(types.CHATBTN, btn);
+  gotoChat: ({ commit, state }, gtChat) => {
+    commit(types.GOTOCHAT, gtChat);
   },
 }
 
@@ -928,8 +974,8 @@ Vue.component('chat-item', {
     bgc: function () {
       const isUnchat = this.ChatCurrent >= this.index ? "0" : "0.25";
       const color = "rgba(128, 128, 128, " + isUnchat + ")";
-      console.log("Chat:", this.index, "isischat", isUnchat);
-      return { backgroundColor: color, transition: "0.5s" };
+      //console.log("Chat:", this.index, "isischat", isUnchat);
+      return { backgroundColor: color, transition: "2s" };
     }
   },
   watch: {
@@ -960,10 +1006,10 @@ let Chat = {
   inject: ['msg', 'isStream'],
   data: function () {
     return {
-      chatList: testchat,
-      lastChat: this.newChatList,
+      chatList: [],
+      lastChat: {},
       activeChat: 0,
-      activeRange: 1000,
+      activeRange: 200,
       activeChatStart: 0,
       activeChatEnd: 0,
       updateChat: null,
@@ -974,18 +1020,19 @@ let Chat = {
   },
   methods: {
     scrollToChat: function () {
-      this.getCurrentChat();
+      //console.log("scrollToChatF", new Date().getTime());
       if (this.isAutoScroll) {
         const scrollPos = this.getScrollPos();
         const p = this.$refs.chatmain.scrollTop - scrollPos;
         if (p > 20 || p < -20) {
+          //console.log("scrollToChatS", new Date().getTime(), this.isAutoScroll, scrollPos);
           this.$refs.chatmain.scrollTo({
             top: scrollPos,
             behavior: "smooth"
           });
-          //VueScrollTo.scrollTo('#chat-' + this.activeChat, 500, this.scrolloption());
         }
       }
+      this.getCurrentChat();
     },
     getScrollPos: function () {
       const clientHeight = this.$refs.chatmain ? this.$refs.chatmain.clientHeight : 0;
@@ -994,35 +1041,33 @@ let Chat = {
       const chatHeight = chat.clientHeight;
 
       const scrolloffset = (clientHeight - chatHeight) / 2;
-      const scrollPos = chat.offsetTop - scrolloffset;
+      const scrollmin = 0;
+      const scrollmax = this.$refs.chats.clientHeight - clientHeight;
+      let scrollPos = chat.offsetTop - scrolloffset;
+      if (scrollPos < scrollmin) scrollPos = scrollmin;
+      else if (scrollPos > scrollmax) scrollPos = scrollmax;
       //console.log("getScrollPos, activeChat, clientHeight, chatHeight, scrolloffset, chat.offsetTop, scrollPos, scrollTop", this.activeChat, clientHeight, chatHeight, scrolloffset, chat.offsetTop, scrollPos, this.$refs.chatmain.scrollTop);
       return scrollPos;
-    },
-    scrolloption: function () {
-      const clientHeight = this.$refs.chatmain ? this.$refs.chatmain.clientHeight : 0;
-      const chatHeight = this.$children[this.activeChat + 1] ? this.$children[this.activeChat + 1].$el.clientHeight : 0;
-      this.scrollop.offset = -1 * (clientHeight - chatHeight) / 2;
-      return this.scrollop;
     },
     getCurrentChat: function () {
       if (this.isStream) {
         this.activeChat = this.chatList.length - 1;
       }
       else {
-        /*if (this.activeChat && this.chatList) {
-          console.log("activeChat", this.activeChat, "current time: " + this.videoCurrentTime.toString());
-          if (this.chatList[this.activeChat - 1]) {
-            console.log("this.chatList[this.activeChat-1].time", this.chatList[this.activeChat - 1].time.toString());
-          }
-          if (this.chatList[this.activeChat]) {
-            console.log("this.chatList[this.activeChat+0].time", this.chatList[this.activeChat].time.toString());
-            console.log("this.chatList[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()", this.chatList[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf());
-          }
-          if (this.chatList[this.activeChat + 1]) {
-            console.log("this.chatList[this.activeChat+1].time", this.chatList[this.activeChat + 1].time.toString());
-            console.log("this.chatList[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf()", this.chatList[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf());
-          }
-        }*/
+        // if (this.activeChat && this.chatList) {
+        //   console.log("activeChat", this.activeChat, "current time: " + this.videoCurrentTime.toString());
+        //   if (this.chatList[this.activeChat - 1]) {
+        //     console.log("this.chatList[this.activeChat-1].time", this.chatList[this.activeChat - 1].time.toString());
+        //   }
+        //   if (this.chatList[this.activeChat]) {
+        //     console.log("this.chatList[this.activeChat+0].time", this.chatList[this.activeChat].time.toString());
+        //     console.log("this.chatList[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()", this.chatList[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf());
+        //   }
+        //   if (this.chatList[this.activeChat + 1]) {
+        //     console.log("this.chatList[this.activeChat+1].time", this.chatList[this.activeChat + 1].time.toString());
+        //     console.log("this.chatList[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf()", this.chatList[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf());
+        //   }
+        // }
         while (this.chatList[this.activeChat] && this.chatList[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()) {
           this.activeChat--;
         }
@@ -1074,7 +1119,7 @@ let Chat = {
     //定時抓新聊天
     this.updateChat = window.setInterval(() => {
       if (this.isStream && Date.now() > this.nextUpdateTime) {
-        //console.log("updateChat", this.isStream, Date.now(), this.nextUpdateTime);
+        console.log("updateChat", this.isStream, Date.now(), this.nextUpdateTime);
         //this.$store.dispatch('updateVideoPlayedTime', this.player.currentTime);
         this.nextUpdateTime = Date.now() + 2.5 * 1000;
       }
@@ -1115,7 +1160,7 @@ let Chat = {
 let testchat = {
   l: [],
   get list() {
-    for (let i = this.l.length; i < 3; i++) {
+    for (let i = this.l.length; i < 20; i++) {
       const el = {
         type: "推 ",
         id: "Zoosewu ",
@@ -1235,7 +1280,7 @@ let ConnectAID = {
       aid: GM_getValue("PostAID", ""),
     }
   },
-  inject: ['msg'],
+  inject: ['msg', 'isStream'],
   methods: {
     getPush: function () {
       const result = /#(.+) \((.+)\)/.exec(this.aid);
@@ -1245,10 +1290,13 @@ let ConnectAID = {
       else {
         GM_setValue("PostAID", this.aid);
         gotomainchat = true;//// 
-        if (this.post.AID === result[1] && this.post.board === result[2]) {
+        if (this.post.AID === result[1] && this.post.board === result[2]) {//相同文章取最新推文
           this.msg.PostMessage("getPushByLine", { AID: result[1], board: result[2], startline: this.post.lastendline });
         }
-        else {
+        else if (this.isStream) {//實況取得最近的推文
+          this.msg.PostMessage("getPushByRecent", { AID: result[1], board: result[2], recent: 200 });
+        }
+        else {//實況紀錄取得所有推文
           this.msg.PostMessage("getPushByLine", { AID: result[1], board: result[2], startline: 0 });
         }
         this.$store.dispatch('pageChange', true);

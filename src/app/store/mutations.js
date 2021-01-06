@@ -22,10 +22,10 @@ export const state = {
   lastChatTime: {},
   VStartTime: ["18", "00", "00"],
   VStartDate: (() => { const t = new Date(); t.setHours(0); t.setMinutes(0); t.setSeconds(0); return t; })(),
-  VPlayedTime: [19, 0, 0, false],
+  VPlayedTime: 0,
   VCurrentTime: new Date(),
   pageChange: false,
-  chatBtn: null,
+  gotoChat: false,
 }
 // mutations
 export const mutations = {
@@ -53,12 +53,6 @@ export const mutations = {
   [types.UPDATELOG](state, log) {
     state.log = log;
   },
-  [types.FIRSTCHATTIME](state, firstChatTime) {
-    state.firstChatTime = firstChatTime;
-  },
-  [types.LASTCHATTIME](state, lastChatTime) {
-    state.lastChatTime = lastChatTime;
-  },
   [types.VIDEOSTARTTIME](state, videostarttime) {
     state.VStartTime = videostarttime;
   },
@@ -74,7 +68,7 @@ export const mutations = {
   [types.PAGECHANGE](state, pageChange) {
     state.pageChange = pageChange;
   },
-  [types.CHATBTN](state, btn) {
-    state.chatBtn = btn;
+  [types.GOTOCHAT](state, gotoChat) {
+    state.gotoChat = gotoChat;
   },
 }
