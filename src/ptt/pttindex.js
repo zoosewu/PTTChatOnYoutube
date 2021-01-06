@@ -76,13 +76,13 @@ export function InitPTT(messageposter) {
     autocom: [
       { reg: /您想刪除其他重複登入的連線嗎|您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n' },
       { reg: /您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n' },
-      { reg: /請按任意鍵繼續/, input: '\n' },
+      { reg: /按任意鍵繼續/, input: '\n' },
       {
         reg: /系統過載, 請稍後再來\.\.\./, input: '', callback: () => {
           serverfull = true;
           if (PTT.controlstate === 1) {
             PTT.unlock();
-            msg.PostMessage("alert", { type: false, msg: "系統過載, 請稍後再來..." });
+            msg.PostMessage("alert", { type: 0, msg: "系統過載, 請稍後再來..." });
             PTT.unlock();
           }
         }, args: []
@@ -94,7 +94,7 @@ export function InitPTT(messageposter) {
       { reg: /本站歷史 \.\.\.\.\.\.\./, input: 'q' },
       { reg: /看 板  目錄數   檔案數     byte數   總 分     板   主/, input: 'q' },
       { reg: /名次──────範本───────────次數/, input: 'q' },
-
+      { reg: /鴻雁往返  \(R\/y\)回信 \(x\)站內轉寄 \(d\/D\)刪信 \(\^P\)寄發新信/, input: 'q' }
     ]
   }
   PTT.wind = window;
@@ -203,27 +203,28 @@ export function InitPTT(messageposter) {
     }
   });
   //hook end
-  function reconnect() {
+  function Reconnect() {
     const disbtn = $(`.btn.btn-danger[type=button]`);
     if (disbtn && disbtn.length > 0) {
-      msg.PostMessage("alert", { type: false, msg: "PTT已斷線，重新嘗試連線。" });
+      msg.PostMessage("alert", { type: 0, msg: "PTT已斷線，請重新登入。" });
       PTT.login = false;
       disbtn[0].click();
       serverfull = false;
       PTT.screenstate = -1;
       PTT.unlock;
-      setTimeout(reconnect(), 1000);
+      return true;
     }
+    return false;
   }
   function checkscreenupdate() {
     if (PTT.controlstate === 0) return;
     const now = Date.now();
     if (now > PTT.lastviewupdate + 10000) {
-      msg.PostMessage("alert", { type: false, msg: "PTT無回應，請稍後再試，或重新整理頁面。" });
+      msg.PostMessage("alert", { type: 0, msg: "PTT無回應，請稍後再試，或重新整理頁面。" });
       PTT.unlock();
     }
     else {
-      msg.PostMessage("alert", { type: true, msg: "指令執行中......" });
+      msg.PostMessage("alert", { type: 1, msg: "指令執行中......" });
       setTimeout(checkscreenupdate, 3500);
     }
   }
@@ -347,7 +348,7 @@ export function InitPTT(messageposter) {
   task.GetPost = [boardcheck, PostCheck, PotsTitleCheck, PostLineCheck, PostPercentCheck];
   function GetPushTask() {
     if (PTTPost.isgotopost && PTT.pagestate === 2) {
-      msg.PostMessage("alert", { type: false, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
+      msg.PostMessage("alert", { type: 0, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
       PTT.unlock();
     }
     //console.log("(startline, endline): ( " + PTTPost.startline + ", " + PTTPost.endline + ")");
@@ -363,14 +364,14 @@ export function InitPTT(messageposter) {
     }
     //end
     PTT.unlock();
-    msg.PostMessage("alert", { type: true, msg: "文章讀取完成。" });
-    msg.PostMessage("postdata", PTTPost);
+    msg.PostMessage("alert", { type: 2, msg: "文章讀取完成。" });
+    msg.PostMessage("newPush", PTTPost);
     if (showalllog) console.log(PTTPost);
   }
-  function GetPostPush(pAID, bname, startline, forceget = false) {
+  function GetPushByLine(pAID, bname, startline, forceget = false) {
     if (PTT.pagestate > 0 || forceget) {
       startline = startline || 3;
-      msg.PostMessage("alert", { type: true, msg: "文章讀取中。" });
+      msg.PostMessage("alert", { type: 2, msg: "文章讀取中。" });
       const samepost = (bname === PTTPost.board) && (pAID === PTTPost.AID);
       if (samepost) {
         PTTPost.pushes = [];
@@ -394,28 +395,28 @@ export function InitPTT(messageposter) {
         }
       }
       if (PTT.pagestate === 1) insertText("m");
-      else insertText("q");
+      else insertText("q\n");
       PTT.commands.add(/.*/, "", GetPushTask);
     }
     else if (PTT.screenstate === -1) {
-      msg.PostMessage("alert", { type: false, msg: "PTT已斷線，請重新登入。" });
+      msg.PostMessage("alert", { type: 0, msg: "PTT已斷線，請重新登入。" });
       PTT.unlock();
     }
     else if (PTT.screenstate === 0) {
-      msg.PostMessage("alert", { type: false, msg: "PTT尚未登入，請先登入。" });
+      msg.PostMessage("alert", { type: 0, msg: "PTT尚未登入，請先登入。" });
       PTT.unlock();
     }
   }
-  function login(id, pw) {
-    msg.PostMessage("alert", { type: true, msg: "登入中" });
+  function Login(id, pw) {
+    msg.PostMessage("alert", { type: 2, msg: "登入中" });
     if (!PTT.login) {
       const logincheck = () => {
         if (PTT.screenHaveText(/密碼不對或無此帳號。請檢查大小寫及有無輸入錯誤。|請重新輸入/)) {
-          msg.PostMessage("alert", { type: false, msg: "登入失敗，帳號或密碼有誤。" });
+          msg.PostMessage("alert", { type: 0, msg: "登入失敗，帳號或密碼有誤。" });
           PTT.unlock();
         }
         else if (PTT.screenHaveText(/上方為使用者心情點播留言區|【 精華公佈欄 】/)) {
-          msg.PostMessage("alert", { type: true, msg: "登入成功。" });
+          msg.PostMessage("alert", { type: 2, msg: "登入成功。" });
           PTT.login = true;
           PTT.unlock();
           //testcode
@@ -428,7 +429,7 @@ export function InitPTT(messageposter) {
           PTT.commands.add(/.*/, "", logincheck);
         }
         else {
-          msg.PostMessage("alert", { type: false, msg: "發生了未知錯誤。" });
+          msg.PostMessage("alert", { type: 0, msg: "發生了未知錯誤。" });
           console.log(PTT.screen);
         }
       }
@@ -439,23 +440,24 @@ export function InitPTT(messageposter) {
         PTT.commands.add(/.*/, "", logincheck);
       }
       else {
-        PTT.commands.add(/.*/, "", login, id, pw);
+        PTT.commands.add(/.*/, "", Login, id, pw);
       }
     }
     else {
-      msg.PostMessage("alert", { type: false, msg: "已經登入，請勿重複登入。" });
+      msg.PostMessage("alert", { type: 0, msg: "已經登入，請勿重複登入。" });
       PTT.unlock();
     }
   }
   function PTTLockCheck(callback, ...args) {
-    const disbtn = $(`.btn.btn-danger[type=button]`);
-    if (disbtn.length > 0) reconnect();
+    if (Reconnect()) {
+
+    }
     else if (PTT.controlstate === 1) {
-      msg.PostMessage("alert", { type: false, msg: "指令執行中，請稍後再試。" });
+      msg.PostMessage("alert", { type: 0, msg: "指令執行中，請稍後再試。" });
       return;
     }
     else if (serverfull) {
-      msg.PostMessage("alert", { type: false, msg: "系統過載, 請稍後再來..." });
+      msg.PostMessage("alert", { type: 0, msg: "系統過載, 請稍後再來..." });
       PTT.unlock();
     } else if (!serverfull) {
       PTT.lastviewupdate = Date.now();
@@ -465,17 +467,17 @@ export function InitPTT(messageposter) {
     }
   }
   //end
-  setTimeout(UpdateFrame, 2500);
-  function UpdateFrame() {
-    msg.PostMessage("PlayerUpdate", null);
-    setTimeout(UpdateFrame, 2500);
-  }
+  const ReconnectInterval = window.setInterval((() => {
+    Reconnect();
+  }), 500);
+
   msg["login"] = data => {
     const i = CryptoJS.AES.decrypt(data.id, cryptkey).toString(CryptoJS.enc.Utf8);
     const p = CryptoJS.AES.decrypt(data.pw, cryptkey).toString(CryptoJS.enc.Utf8);
     //console.log(data );
     //console.log([i, p],cryptkey);
-    PTTLockCheck(login, i, p);
+    PTTLockCheck(Login, i, p);
   };
-  msg["getpost"] = data => { PTTLockCheck(GetPostPush, data.AID, data.board, data.startline); };
+  msg["getPushByLine"] = data => { PTTLockCheck(GetPushByLine, data.AID, data.board, data.startline); };
+  msg["getPushByRecent"] = data => { PTTLockCheck(GetRecentLine, data.AID, data.board, data.line); };
 }

@@ -1,7 +1,6 @@
 import { InitApp } from '../app/appindex.js';
 import { BootStrap } from '../BootStrap.js';
 import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver } from '../library.js';
-import { AddCss } from '../AddCss.js';
 
 export function Initblank(messageposter) {
   const msg = messageposter;
@@ -14,7 +13,6 @@ export function Initblank(messageposter) {
   setTimeout(() => {
     const colorlight = "rgb(249, 249, 249)";
     const colordark = "rgb(24, 24, 24)"
-    AddCss(WhiteTheme, colorlight, colordark);
   }, 100);
   //run app instance loop
 

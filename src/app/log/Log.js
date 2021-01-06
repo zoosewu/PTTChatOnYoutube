@@ -1,7 +1,7 @@
 export let Log = {
-  template: `<div class=" flex-grow-1 overflow-auto mh-100 row" id="PTTChat-contents-log-main" style="overscroll-behavior: contain;">
-  <table class="table">
-    <tbody class="ptttext">
+  template: `<div class="flex-grow-1 overflow-auto mh-100 row" id="PTTChat-contents-log-main" style="overscroll-behavior: contain;">
+  <table class="table ptt-bg">
+    <tbody class="ptt-text">
       <tr>
         <th scope="row">PTT狀態</th>
         <td id="log-PTTstate">--</td>
@@ -104,5 +104,6 @@ export let Log = {
       </tr>
     </tbody>
   </table>
-</div>`,
+</div>
+`,
 }

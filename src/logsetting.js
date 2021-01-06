@@ -7,4 +7,4 @@ const showPTTscreen = (false || reportmode || showalllog);
 const showcommand = (false || reportmode || showalllog);
 const showPostMessage = (false || reportmode || showalllog);
 const showonMessage = (false || reportmode || showalllog);
-const showalertmsg = false || showalllog;
+const showalertmsg = true || showalllog;

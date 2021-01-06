@@ -13,7 +13,11 @@ const disablepttframe = false;
 const simulateisstreaming = false;
 // add listener to get msg
 let cryptkey;
-
+let appinscount = 0;
+/* 關閉vue-devtools */
+Vue.config.devtools = true;
+/* 關閉錯誤警告 */
+Vue.config.debug = true;
 (function () {
   let msg = new MessagePoster;
   let filters = [];

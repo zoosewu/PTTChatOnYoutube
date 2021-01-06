@@ -1,13 +1,10 @@
-import PTTAppNav from './PTTAppNav.js';
-import PTTAppContent from './PTTAppContent.js';
 
+import PTTAppMain from './PTTAppMain';
 export let PTTApp = {
-  template: `<div id="PTTChat-app" class=" pttbg border rounded w-100 d-flex flex-column">
-  <PTTAppNav></PTTAppNav>
-  <PTTAppContent></PTTAppContent>
-  </div>`,
+  template: `<pttdiv id="PTTMain" class="pttchat rounded-right position-absolute rounded-bottom w-100 collapse" style="z-index: 301;">
+  <PTTAppMain></PTTAppMain>
+  </pttdiv>`,
   components: {
-    'PTTAppNav': PTTAppNav,
-    'PTTAppContent': PTTAppContent
+    'PTTAppMain': PTTAppMain
   },
 }

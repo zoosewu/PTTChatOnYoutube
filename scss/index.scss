@@ -1,37 +1,35 @@
-$border-radius: 2.5px;
-$border-radius-lg: 2.5px;
-$border-radius-sm: 2.5px;
+$ptt-theme-colors: ();
+@for $colorlight from 0 through 20 {
+  $map: (pttbgc-#{$colorlight}: lighten(#000, $colorlight * 5%));
+  $ptt-theme-colors: map-merge($ptt-theme-colors, $map);
+}
+$ptt-theme-reversecolor: ();
+@for $colorlight from 0 through 10 {
+  $colorreverse: 10-$colorlight;
+  $map: (pttc-#{$colorreverse}: lighten(#000, $colorlight * 10%));
+  $ptt-theme-reversecolor: map-merge($ptt-theme-reversecolor, $map);
+}
 
-$theme-colors: (
-  "pttlight": #f9f9f9,
-  "pttdark": #181818,
-);
-$push-type: #000;
-$push-id: #ff6;
-$push-time: #bbb;
-$push-message: #990;
-$push-text: #f8f9fa;
+/*$pttlight: #f9f9f9;
+$pttdark: #181818;
+$ptt-theme-colors: (
+  "ptt-light": #f9f9f9,
+  "ptt-dark": #181818,
+);*/
+$chat-type: #fff;
+$chat-type-n: #f00;
+$chat-id: #ff6;
+$chat-time: #bbb;
+$chat-message: #990;
+$chat-text: #f8f9fa;
+
+$black: #000;
 
 $rem1: 10px;
 
 $font-size-base: 12px;
 
-$nav-link-padding-y: $rem1 * 0.5;
-$nav-link-padding-x: $rem1;
-$alert-padding-y: $rem1 * 0.75;
-$alert-padding-x: $rem1 * 1.25;
-$input-btn-padding-y: $rem1 * 0.375;
-$input-btn-padding-x: $rem1 * 0.75;
-$custom-select-indicator-padding: $rem1;
-$input-padding-y: $input-btn-padding-y;
-$input-padding-x: $input-btn-padding-x;
-$custom-select-padding-x: $input-padding-x;
-$custom-select-padding-y: $input-padding-y;
-
-$custom-select-feedback-icon-padding-right: add(
-  $rem1 * 0.75,
-  (2 * $custom-select-padding-y * 0.75) + $custom-select-padding-x + $custom-select-indicator-padding
-);
+@import "variables";
 
 // Custom.scss
 // Option B: Include parts of Bootstrap
@@ -40,12 +38,14 @@ $custom-select-feedback-icon-padding-right: add(
 @import "node_modules/bootstrap/scss/functions";
 @import "node_modules/bootstrap/scss/variables";
 @import "node_modules/bootstrap/scss/mixins";
+@import "fontsize";
 
 // Optional
 // @import "node_modules/bootstrap/scss/mixins";
 @import "node_modules/bootstrap/scss/root";
 //@import "node_modules/bootstrap/scss/reboot";
-// @import "node_modules/bootstrap/scss/type";
+@import "reboot";
+@import "node_modules/bootstrap/scss/type";
 // @import "node_modules/bootstrap/scss/images";
 @import "node_modules/bootstrap/scss/code";
 @import "node_modules/bootstrap/scss/grid";
@@ -59,14 +59,14 @@ $custom-select-feedback-icon-padding-right: add(
 // @import "node_modules/bootstrap/scss/custom-forms";
 @import "node_modules/bootstrap/scss/nav";
 @import "node_modules/bootstrap/scss/navbar";
-// @import "node_modules/bootstrap/scss/card";
+@import "node_modules/bootstrap/scss/card";
 // @import "node_modules/bootstrap/scss/breadcrumb";
 // @import "node_modules/bootstrap/scss/pagination";
 // @import "node_modules/bootstrap/scss/badge";
 // @import "node_modules/bootstrap/scss/jumbotron";
 @import "node_modules/bootstrap/scss/alert";
 // @import "node_modules/bootstrap/scss/progress";
-// @import "node_modules/bootstrap/scss/media";
+@import "node_modules/bootstrap/scss/media";
 // @import "node_modules/bootstrap/scss/list-group";
 // @import "node_modules/bootstrap/scss/close";
 // @import "node_modules/bootstrap/scss/toasts";
@@ -77,29 +77,83 @@ $custom-select-feedback-icon-padding-right: add(
 // @import "node_modules/bootstrap/scss/spinners";
 @import "node_modules/bootstrap/scss/utilities";
 @import "node_modules/bootstrap/scss/print";
+@import "vueanimation";
 
-@import "reboot";
+/*a:focus,
+button:focus,
+textarea:focus,
+textarea.form-control:focus,
+input.form-control:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+[type="text"].form-control:focus,
+[type="password"].form-control:focus,
+[type="email"].form-control:focus,
+[type="tel"].form-control:focus,
+[contenteditable].form-control:focus {
+  box-shadow: inset 0 -1px 0 #ddd !important;
+}*/
+@function darken-color($color, $bgcolor, $warning: false) {
+  $darkenpercent: 30%;
+  $clightness: lightness($color);
+  $bglightness: lightness($bgcolor);
+  @if $bglightness > 55% {
+    $bglightness: ($bglightness - 100%) * $darkenpercent/100%/100% - 0.5;
+  } @else {
+    $bglightness: $bglightness * $darkenpercent/100%/100%;
+  }
+  $darken: $clightness * $bglightness;
+  $newcolor: adjust-color($color, $lightness: $darken);
+  @if $warning {
+    @warn "#{$color $clightness} , #{$bgcolor $bglightness },#{$darken} -> #{lightness($newcolor)} ";
+  }
+  @return $newcolor;
+}
+@each $name, $color in $ptt-theme-colors {
+  @warn $name;
+  .#{$name} {
+    .ptt-bg {
+      background-color: $color;
+    }
 
-@each $color, $value in $theme-colors {
-  .ptt-border.#{$color} {
-    border-color: color-yiq($value) !important;
+    .ptt-chat-id {
+      color: darken-color($chat-id, $color, true);
+    }
+    .ptt-chat-time {
+      color: darken-color($chat-time, $color);
+    }
+    .ptt-chat-msg {
+      color: darken-color($chat-message, $color);
+    }
+
+    .ptt-chat-type {
+      color: darken-color($chat-type, $color);
+    }
+    .ptt-chat-type-n {
+      color: darken-color($chat-type-n, $color);
+    }
   }
-  .ptt-bg.#{$color} {
-    border-color: $value !important;
-  }
-  .ptt-text.#{$color} {
-    border-color: color-yiq($value) !important;
-  }
-  .ptt-pid.#{$color} {
-    color: pid;
-  }
-  .ptt-ptime.#{$color} {
-    color: ptm;
-  }
-  .ptt-pmsg.#{$color} {
-    color: pmsg;
-  }
-  .ptt-ptype.#{$color} {
-    color: ptp;
+}
+
+@each $name, $color in $ptt-theme-reversecolor {
+  .#{$name} {
+    .ptt-border {
+      border: 1px solid $color !important;
+    }
+    .ptt-text {
+      color: $color !important;
+    }
+    .ptt-btnoutline {
+      color: $color;
+      @include button-outline-variant($color);
+    }
+    .nav-link.active,
+    .nav-item.show .nav-link {
+      color: $color;
+      background-color: $nav-tabs-link-active-bg;
+      border-color: $nav-tabs-link-active-border-color;
+    }
   }
 }

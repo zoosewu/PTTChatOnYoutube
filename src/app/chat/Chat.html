@@ -1,12 +1,10 @@
-<!-------- 開台時間 -------->
-<div id="PTTChat-Time" class="ptttext pttbg p-2 position-absolute w-100 d-none" style="z-index:400;">
-  <ChatTimeSetting></ChatTimeSetting>
-</div>
-<!-------- 聊天室 -------->
-<div class="flex-grow-1 overflow-auto mh-100 row" id="PTTChat-contents-Chat-main" style="overscroll-behavior: contain;">
-  <ul id="PTTChat-contents-Chat-pushes" class="col mb-0"> </ul>
-  <div id="PTTChat-contents-Chat-btn" class="position-absolute d-none"
-    style="z-index:400; bottom:5%; left: 50%; -ms-transform: translateX(-50%); transform: translateX(-50%);">
-    <button id="AutoScroll" class="btn btn-primary" type="button">自動滾動</button>
-  </div>
+<div id="PTTChat-contents-Chat-main" ref="chatmain" class="flex-grow-1 mh-100 row"
+  style="overscroll-behavior: none;overflow-y: scroll;">
+  <ul id="PTTChat-contents-Chat-pushes" class="col mb-0 px-0" v-bind:post-aid="postAID" ref="chats">
+    <chat-item :index="index" :ChatStart="activeChatStart" :ChatEnd="activeChatEnd" :ChatCurrent="activeChat"
+      :type="item.type" :id="item.id" :time-h="item.timeH" :timem="item.timem" :msg="item.msg" :key="index"
+      v-for="(item, index) in list">
+    </chat-item>
+  </ul>
+  <chat-scroll-btn :is-auto-scroll="isAutoScroll" @autoscrollclick="EnableAutoScroll()"></chat-scroll-btn>
 </div>

@@ -28,15 +28,19 @@ min檔為VScode插件Minify自動生成，以避免.js太冗長
 ## TODO List
 #### Youtube
 - [ ] 修正自動滾動功能有時候會失敗的問題
-- [ ] 修正自動滾在第一則推文或最後一則推文有可能會怪怪的問題
+- [ ] 彈幕版本
 - [ ] 彈幕版本
 
 #### PTT
 - [ ] 推文功能
 - [ ] 任務柱列功能
 - [ ] 修正PTT有時候會爆炸沒處理到的問題
-- [ ] 修正實況模式中，自動更新推文有時候會跑到別的文章去導致失敗的問題
 
 #### Script
-- [ ] 將主腳本、Youtube腳本及PTT腳本拆成三部分然後動態連結在一起
-- [ ] 將程式重構，把變數跟函式拆分得更乾淨
+- [ ] 把舊的功能搬到新的vue物件上面
+- [ ] 透過vuex element資料傳輸 [vue教學](https://ithelp.ithome.com.tw/users/20107673/ironman/1470?page=1) [todolist範例](https://codepen.io/oddvalue/pen/dpBGpj) [todolist範例2](https://codepen.io/mkumaran/pen/vZgara?editors=1010)
+- [ ] 根據網址撈實況開始時間[HoloStats](https://github.com/PoiScript/HoloStats/tree/master) [舊版api](https://holo.poi.cat/api/v3/streams_report?ids=skSmTEnAyGk&metrics=youtube_stream_viewer&start_at=0&end_at=0) [新版api](https://holo.poi.cat/api/v3/streams_report?ids=77OTDrqhN80&metrics=youtube_stream_viewer&start_at=0&end_at=0) [req測試](https://reqbin.com/)
+- [ ] 測試[彩虹官網](https://niji-mado.web.app/home)的支援度，[彩虹的開台統計](https://2434analytics.com/rank/dailyView.html)
+
+#### CSS 
+- [ ] 確認插件在各網站的排版都正常且一樣

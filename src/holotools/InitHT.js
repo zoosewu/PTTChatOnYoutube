@@ -2,7 +2,6 @@
 import { InitApp } from '../app/appindex.js';
 import { BootStrap } from '../BootStrap.js';
 import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver } from '../library.js';
-import { AddCss } from '../AddCss.js';
 
 export function InitHT(messageposter) {
   const msg = messageposter;
@@ -19,26 +18,7 @@ export function InitHT(messageposter) {
     const colorlight = "rgb(249, 249, 249)";
     const colordark = "rgb(24, 24, 24)";
     WhiteTheme = !(YTbgcolor === colordark);
-    AddCss(WhiteTheme, colorlight, colordark);
   }, 100);
-
-  const PTTcss = `pttdiv{
-      font-size: 12px;
-    }
-    .form-control,.btn{ 
-      font-size: 1em;
-    }
-    .btn{ 
-      padding-top: 0.375em;
-      padding-right: 0.75em;
-      padding-bottom: 0.375em;
-      padding-left: 0.75em;
-    }
-    .p-4{ 
-      padding: 15px;
-    }`
-    ;
-  AddStyle(PTTcss);
   //run app instance loop
   setTimeout(ChechChatInstanced, 3000);
   function ChechChatInstanced() {
@@ -57,6 +37,6 @@ export function InitHT(messageposter) {
     fakeparent.append(PTTChatHandler);
     $(`.reopen-toolbar`).css({ "z-index": "302" });
 
-    InitApp(PTTChatHandler, WhiteTheme, true);
+    InitApp(PTTChatHandler, WhiteTheme, true, msg);
   }
 }
