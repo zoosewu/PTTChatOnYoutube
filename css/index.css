@@ -1,9 +1,6 @@
-/*$pttlight: #f9f9f9;
-$pttdark: #181818;
-$ptt-theme-colors: (
-  "ptt-light": #f9f9f9,
-  "ptt-dark": #181818,
-);*/
+.blockquote-footer::before {
+  content: ""; }
+
 :root {
   --blue: #007bff;
   --indigo: #6610f2;
@@ -34,9 +31,9 @@ $ptt-theme-colors: (
   --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
-*,
-*::before,
-*::after {
+#PTTChat *,
+#PTTChat *::before,
+#PTTChat *::after {
   box-sizing: border-box; }
 
 #PTTChat {
@@ -179,7 +176,7 @@ img {
   vertical-align: middle;
   border-style: none; }
 
-svg {
+#PTTChat svg {
   overflow: hidden;
   vertical-align: middle; }
 
@@ -398,7 +395,7 @@ mark,
   font-size: 80%;
   color: #6c757d; }
   .blockquote-footer::before {
-    content: "\2014\00A0"; }
+    content: "\\2014\\00A0"; }
 
 code {
   font-size: 87.5%;
@@ -5386,22 +5383,6 @@ a.text-dark:hover, a.text-dark:focus {
 .alert {
   transition: all 1s; }
 
-/*a:focus,
-button:focus,
-textarea:focus,
-textarea.form-control:focus,
-input.form-control:focus,
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="email"]:focus,
-input[type="number"]:focus,
-[type="text"].form-control:focus,
-[type="password"].form-control:focus,
-[type="email"].form-control:focus,
-[type="tel"].form-control:focus,
-[contenteditable].form-control:focus {
-  box-shadow: inset 0 -1px 0 #ddd !important;
-}*/
 .pttbgc-0 .ptt-bg {
   background-color: black; }
 

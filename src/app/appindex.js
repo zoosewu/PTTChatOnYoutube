@@ -11,7 +11,7 @@ export function InitApp(chatcon, whitetheme, isstreaming, messageposter) {
     ele.setAttribute("style", "z-index: 301;");
     if (cn) cn[0].appendChild(ele);
     //Vue.prototype.$bus = new Vue();
-    let color = whitetheme ? "pttbgc-20 pttc-5" : "pttbgc-2 pttc-2";
+    let color = whitetheme ? "pttbgc-19 pttc-5" : "pttbgc-2 pttc-2";
     let PTT = new Vue({
       el: '#PTTChat',
       template: `<div id="PTTChat" class="position-absolute w-100 ` + color + `" ins="` + appinscount + `"><PTTAppBtn></PTTAppBtn><PTTApp></PTTApp></div>`,
@@ -50,7 +50,7 @@ export function InitApp(chatcon, whitetheme, isstreaming, messageposter) {
           else { //console.log("Instance " + this.index + " alive.");
           }
         }), 1000);
-
+        this.rootmsg["PTTState"] = data => { this.$store.dispatch('PTTState', data); };
       },
       beforeDestroy() {
         console.log("beforeDestroy", this);

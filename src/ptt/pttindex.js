@@ -133,6 +133,7 @@ export function InitPTT(messageposter) {
       if (result != null) {
         PTT.pagestate = filter.state;
         console.log("==page state = " + PTT.pagestate);
+        msg.PostMessage("PTTState", PTT.pagestate);
         return;
       }
     }

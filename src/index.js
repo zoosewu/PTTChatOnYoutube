@@ -5,8 +5,9 @@ import { ytfilter } from './youtube/ytfilter.js';
 import { htfilter } from './holotools/htfilter.js';
 import { blankfilter } from './blank/blankfilter.js';
 //import { custom } from '../css/custom.css';
-//dev use 
 
+//import '../css/index.css';
+//dev use 
 let devmode = true;
 const defaultopen = false;
 const disablepttframe = false;
@@ -25,4 +26,4 @@ Vue.config.debug = true;
   filters.push(htfilter);
   filters.push(blankfilter);
   HerfFilter(msg, filters);
-})()
+})();

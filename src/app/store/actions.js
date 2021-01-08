@@ -9,7 +9,7 @@ export const actions = {
     context.commit(types.SETHEIGHT, height);
   },
   Alert: (context, alertobject) => {
-    console.log("actions Alert");
+    //console.log("actions Alert");
     context.commit(types.ALERT, alertobject);
   },
   updateLog: (context, log) => {
@@ -43,22 +43,21 @@ export const actions = {
       { type: "postdate", data: t.toLocaleDateString() + " " + t.toLocaleTimeString() },
       { type: "postendline", data: newpost.lastendline }]);
     }
-    if (newpost.pushcount == 0 && postdata.pushes.length > 0)
+    if (postdata.pushes.length > 0) {
+      dispatch('updateChat', postdata.pushes);
 
       newpost.pushcount += postdata.pushes.length;
-    if (postdata.pushes.length > 0) {
       commit(types.UPDATEPOST, newpost);
       dispatch('updateVideoStartDate');
-      dispatch('updateChat', postdata.pushes);
     }
-    console.log("state.pageChange", state.pageChange);
-    console.log("state.chatBtn", state.chatBtn);
+    //console.log("state.pageChange", state.pageChange);
     if (state.pageChange) {
       dispatch('gotoChat', true);
       dispatch('pageChange', false);
     }
   },
   updateChat: ({ commit, state }, pushes) => {
+    const existpush = state.post.pushcount;
     const chatlist = [];
     let sametimecount = 0;
     let sametimeIndex = 0;
@@ -85,6 +84,8 @@ export const actions = {
       chat.msg = currpush.content;
       chat.timeH = paddingLeft(chat.time.getHours(), +2);
       chat.timem = paddingLeft(chat.time.getMinutes(), +2);
+      chat.index = existpush + index;
+      chat.gray = true;
       chatlist.push(chat);
       //console.log("new Chat", chat);
     }
@@ -127,10 +128,14 @@ export const actions = {
     commit(types.UPDATELOG, { type: "videocurrenttime", data: currtime.toLocaleDateString() + " " + currtime.toLocaleTimeString() });
     commit(types.VIDEOCURRENTRIME, currtime);
   },
-  pageChange: ({ commit, state }, Change) => {
+  pageChange: ({ commit }, Change) => {
     commit(types.PAGECHANGE, Change);
   },
-  gotoChat: ({ commit, state }, gtChat) => {
+  gotoChat: ({ commit }, gtChat) => {
     commit(types.GOTOCHAT, gtChat);
+  },
+  PTTState: ({ commit }, pttstate) => {
+    //console.log("PTTState actions", pttstate);
+    commit(types.PTTSTATE, pttstate);
   },
 }

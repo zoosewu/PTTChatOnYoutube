@@ -17,9 +17,14 @@ export function Initblank(messageposter) {
   //run app instance loop
 
   //const blankcontainer = $(`<div id="container" class="position-relative" style="width:400px;height:800px;"></div>`)[0];
-  const Body = $("body", document)[0];
-  Body.innerHTML = `<div id="container" class="position-relative" style="width:400px;height:800px;"></div>`;
-  const blankcontainer = $(`#container`);
-  InitApp(blankcontainer, WhiteTheme, true, msg);
+  //`<div id="container" class="position-relative" style="width:400px;height:800px;"></div>`
+  const Body = document.getElementsByTagName("BODY")[0];
+  const container = document.createElement("div");
+  container.id = "container";
+  container.classList.add("position-relative");
+  container.setAttribute("style", "width:400px;height:800px;");
+  Body.prepend(container);
+  //const blankcontainer = document.getElementById(`container`);
+  InitApp([container], WhiteTheme, true, msg);
 
 }

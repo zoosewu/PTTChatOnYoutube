@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name               pttchatonyoutube
 // @namespace          https://github.com/zoosewu
-// @version            2.0.1663
+// @version            2.0.1955
 // @description        Connect ptt pushes to youtube chatroom
 // @author             Zoosewu
 // @match              https://www.youtube.com/*
@@ -22,15 +22,15 @@
 // @require            https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js
 // @require            https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js
 // @require            https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js
-// @require            https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js
-// @require            https://cdn.jsdelivr.net/npm/vuex@3.6.0/dist/vuex.js
+// @require            https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js
+// @require            https://cdn.jsdelivr.net/npm/vuex@3.6.0/dist/vuex.min.js
 // @require            https://cdn.jsdelivr.net/npm/vue-scrollto@2.20.0/vue-scrollto.min.js
 // @homepageURL        https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage
 // @//downloadURL      https://greasyfork.org/scripts/418469-pttchatonyt/code/PttChatOnYt.user.js
 // ==/UserScript==
 
 //user log
-const reportmode = true;
+const reportmode = false;
 //all log
 const showalllog = false;
 //dev log
@@ -205,6 +205,7 @@ function InitPTT(messageposter) {
       if (result != null) {
         PTT.pagestate = filter.state;
         console.log("==page state = " + PTT.pagestate);
+        msg.PostMessage("PTTState", PTT.pagestate);
         return;
       }
     }
@@ -705,6 +706,7 @@ const types = {
   VIDEOCURRENTRIME: "VIDEOCURRENTRIME",
   PAGECHANGE: "PAGECHANGE",
   GOTOCHAT: "GOTOCHAT",
+  PTTSTATE: "PTTSTATE",
 }
 
 // state
@@ -733,6 +735,7 @@ const state = {
   VCurrentTime: new Date(),
   pageChange: false,
   gotoChat: false,
+  PTTState: 0,
 }
 // mutations
 const mutations = {
@@ -778,6 +781,10 @@ const mutations = {
   [types.GOTOCHAT](state, gotoChat) {
     state.gotoChat = gotoChat;
   },
+  [types.PTTSTATE](state, pttstate) {
+    //console.log("PTTState mutations", pttstate);
+    state.PTTState = pttstate;
+  },
 }
 
 const getters = {
@@ -789,6 +796,7 @@ const getters = {
   newChatList: state => { return state.chatlist },
   videoCurrentTime: state => { return state.VCurrentTime; },
   gotoChat: state => { return state.gotoChat; },
+  PTTState: state => { return state.PTTState; },//PTT頁面狀態 0未登入畫面 1主畫面 2看板畫面 3文章畫面第一頁 4文章畫面其他頁
 
 }
 
@@ -800,7 +808,7 @@ const actions = {
     context.commit(types.SETHEIGHT, height);
   },
   Alert: (context, alertobject) => {
-    console.log("actions Alert");
+    //console.log("actions Alert");
     context.commit(types.ALERT, alertobject);
   },
   updateLog: (context, log) => {
@@ -834,22 +842,21 @@ const actions = {
       { type: "postdate", data: t.toLocaleDateString() + " " + t.toLocaleTimeString() },
       { type: "postendline", data: newpost.lastendline }]);
     }
-    if (newpost.pushcount == 0 && postdata.pushes.length > 0)
+    if (postdata.pushes.length > 0) {
+      dispatch('updateChat', postdata.pushes);
 
       newpost.pushcount += postdata.pushes.length;
-    if (postdata.pushes.length > 0) {
       commit(types.UPDATEPOST, newpost);
       dispatch('updateVideoStartDate');
-      dispatch('updateChat', postdata.pushes);
     }
-    console.log("state.pageChange", state.pageChange);
-    console.log("state.chatBtn", state.chatBtn);
+    //console.log("state.pageChange", state.pageChange);
     if (state.pageChange) {
       dispatch('gotoChat', true);
       dispatch('pageChange', false);
     }
   },
   updateChat: ({ commit, state }, pushes) => {
+    const existpush = state.post.pushcount;
     const chatlist = [];
     let sametimecount = 0;
     let sametimeIndex = 0;
@@ -876,6 +883,8 @@ const actions = {
       chat.msg = currpush.content;
       chat.timeH = paddingLeft(chat.time.getHours(), +2);
       chat.timem = paddingLeft(chat.time.getMinutes(), +2);
+      chat.index = existpush + index;
+      chat.gray = true;
       chatlist.push(chat);
       //console.log("new Chat", chat);
     }
@@ -918,11 +927,15 @@ const actions = {
     commit(types.UPDATELOG, { type: "videocurrenttime", data: currtime.toLocaleDateString() + " " + currtime.toLocaleTimeString() });
     commit(types.VIDEOCURRENTRIME, currtime);
   },
-  pageChange: ({ commit, state }, Change) => {
+  pageChange: ({ commit }, Change) => {
     commit(types.PAGECHANGE, Change);
   },
-  gotoChat: ({ commit, state }, gtChat) => {
+  gotoChat: ({ commit }, gtChat) => {
     commit(types.GOTOCHAT, gtChat);
+  },
+  PTTState: ({ commit }, pttstate) => {
+    //console.log("PTTState actions", pttstate);
+    commit(types.PTTSTATE, pttstate);
   },
 }
 
@@ -958,44 +971,36 @@ let ChatScrollBtn = {
 }
 
 Vue.component('chat-item', {
-  props: ['index', 'ChatStart', 'ChatEnd', 'ChatCurrent', 'type', 'id', 'timeH', 'timem', 'msg'],
+  props: ['index', 'chat', 'gray'],
   data: function () {
     return {
-      dismissCount: 2,
-      timerInterval: null,
-      chatid: "chat-" + this.index,
+      uid: this.index,
     }
   },
   computed: {
     typeclass: function () {
-      const typecolor = this.type === "噓" ? "ptt-chat-type-n" : "ptt-chat-type";
-      return typecolor + "  mr-2 mb-0";
+      const typecolor = this.chat.type === "推 " ? "ptt-chat-type" : "ptt-chat-type-n";
+      return typecolor + " mr-2 mb-0";
     },
     bgc: function () {
-      const isUnchat = this.ChatCurrent >= this.index ? "0" : "0.25";
+      // console.log("bgc", this.index, this.chat, this.chat.gray);
+      const isUnchat = this.gray ? "0.25" : "0";
       const color = "rgba(128, 128, 128, " + isUnchat + ")";
-      //console.log("Chat:", this.index, "isischat", isUnchat);
       return { backgroundColor: color, transition: "2s" };
-    }
-  },
-  watch: {
+    },
 
   },
-  methods: {
-
-  },
-  mounted() {
-    //console.log(this.index, this.type, this.id, this.timeH, this.timem, this.msg);
-  },
-  template: `<li :id="this.chatid" class="media px-4" v-if="index >= ChatStart && index <= ChatEnd" v-bind:style="bgc">
+  // mounted() { console.log("mounted", this.index, this.chat); },
+  updated: function () { console.log('updated, uid, listIndex, chatIndex, msg', this.uid, this.index, this.chat.index, this.chat.msg); },
+  template: `<li :id="chat.index" class="media px-4" v-bind:style="bgc">
   <div class="media-body mw-100">
     <div class="d-flex flex-row">
-      <h5 :class="typeclass">{{ this.type }}</h5>
-      <h5 class="ptt-chat-id mr-2 mb-0 flex-grow-1">{{this.id }}</h5>
-      <h5 class="ptt-chat-time mb-0">{{this.timeH }}:{{this.timem}}</h5>
+      <h5 :class="typeclass">{{ this.chat.type }}</h5>
+      <h5 class="ptt-chat-id mr-2 mb-0 flex-grow-1">{{this.chat.id }}</h5>
+      <h5 class="ptt-chat-time mb-0">{{this.chat.timeH }}:{{this.chat.timem}}</h5>
     </div>
     <div>
-      <h4 class="ptt-chat-msg mb-0 ml-2 mr-2" style="word-break: break-all;">{{ this.msg }}</h4>
+      <h4 class="ptt-chat-msg mb-0 ml-2 mr-2" style="word-break: break-all;">{{ this.chat.msg }}</h4>
     </div>
     <div class="mb-4"> </div>
   </div>
@@ -1006,38 +1011,49 @@ let Chat = {
   inject: ['msg', 'isStream'],
   data: function () {
     return {
+      allchats: [],
       chatList: [],
-      lastChat: {},
+      lastChat: [],
       activeChat: 0,
+      lastactiveChat: -1,
       activeRange: 200,
       activeChatStart: 0,
       activeChatEnd: 0,
-      updateChat: null,
-      updateScroll: null,
-      nextUpdateTime: Date.now(),
+      intervalChat: null,
+      intervalScroll: null,
+      nextUpdateTime: Date.now() + 365 * 24 * 60 * 60 * 1000,
       isAutoScroll: true,
     }
   },
   methods: {
     scrollToChat: function () {
-      //console.log("scrollToChatF", new Date().getTime());
+      if (this.lastactiveChat != this.activeChat) {
+        this.lastactiveChat = this.activeChat;
+        //console.log("gray task, start, end, activeChat", this.chatList[0].index, this.chatList[this.chatList.length - 1].index, this.activeChat);
+        for (let i = 0; i < this.chatList.length; i++) {
+          chat = this.chatList[i];
+          const isgray = chat.index > this.activeChat;
+          //console.log("gray check, uid, activeChat, color, lastColor", chat.index, this.activeChat, isgray, chat.gray);
+          if (isgray != chat.gray) {
+            //console.log("gray change, graychange, chatuid", chat.gray, '=>', isgray, chat.index);
+            chat.gray = isgray;
+          }
+        }
+      }
       if (this.isAutoScroll) {
         const scrollPos = this.getScrollPos();
         const p = this.$refs.chatmain.scrollTop - scrollPos;
-        if (p > 20 || p < -20) {
-          //console.log("scrollToChatS", new Date().getTime(), this.isAutoScroll, scrollPos);
-          this.$refs.chatmain.scrollTo({
-            top: scrollPos,
-            behavior: "smooth"
-          });
-        }
+        //console.log("scrollToChatS", new Date().getTime(), this.isAutoScroll, scrollPos);
+        if (p > 20 || p < -20) { this.$refs.chatmain.scrollTo({ top: scrollPos, behavior: "smooth" }); }
       }
-      this.getCurrentChat();
     },
     getScrollPos: function () {
       const clientHeight = this.$refs.chatmain ? this.$refs.chatmain.clientHeight : 0;
-      if (!this.$children[this.activeChat + 1]) return 0;
-      const chat = this.$children[this.activeChat + 1].$el;
+      const current = this.activeChat + 1 - this.activeChatStart;
+      const chatnode = this.$children.find(ele => { return ele.chat && ele.chat.index === this.activeChat; });
+      //console.log("getScrollPos, chatnode, chatnode - 1", current, [chatnode], this.$children[current - 1]);
+      if (!chatnode) return 0;
+      const chat = chatnode.$el;
       const chatHeight = chat.clientHeight;
 
       const scrolloffset = (clientHeight - chatHeight) / 2;
@@ -1046,37 +1062,67 @@ let Chat = {
       let scrollPos = chat.offsetTop - scrolloffset;
       if (scrollPos < scrollmin) scrollPos = scrollmin;
       else if (scrollPos > scrollmax) scrollPos = scrollmax;
-      //console.log("getScrollPos, activeChat, clientHeight, chatHeight, scrolloffset, chat.offsetTop, scrollPos, scrollTop", this.activeChat, clientHeight, chatHeight, scrolloffset, chat.offsetTop, scrollPos, this.$refs.chatmain.scrollTop);
       return scrollPos;
     },
+    updateChat: function () {
+      this.getCurrentChat();
+      if (this.lastactiveChat != this.activeChat) {
+        const list = this.allchats;
+        const start = this.activeChatStart > 0 ? this.activeChatStart : 0;
+        const end = this.activeChatEnd;
+        //if (this.chatList.length > 0) console.log("beforeupdate chat", this.chatList[0].msg, this.chatList[this.chatList.length - 1].msg);
+        if (this.chatList.length > 2000) {
+          for (let i = this.chatList.length - 1; i >= 0; i--) {
+            const chat = this.chatList[i];
+            //console.log("remove check", chat.index, chat.msg, chat);
+            if (chat.index < start || chat.index > end) {
+              this.chatList.splice(i, 1);
+              console.log("remove chat", chat.index, chat.msg, chat);
+            }
+          }
+        }
+        for (let i = 0; i < list.length; i++) {
+          const chat = list[i];
+          if (chat.index >= start && chat.index <= end && !this.chatList.includes(chat)) {
+            this.chatList.push(chat);
+            console.log("add chat", chat.index, chat.msg, chat);
+          }
+        }
+        //if (this.chatList.length > 0) console.log("after chat", this.chatList[0].msg, this.chatList[this.chatList.length - 1].msg);
+        this.chatList.sort(function (a, b) { return a.index - b.index; });
+        console.log("activeChat, start, end, allList, chatList", this.activeChat, start, this.activeChatEnd, list, this.chatList);
+      }
+    },
+
     getCurrentChat: function () {
+      const chats = this.cList;
       if (this.isStream) {
-        this.activeChat = this.chatList.length - 1;
+        this.activeChat = chats.length - 1;
       }
       else {
-        // if (this.activeChat && this.chatList) {
-        //   console.log("activeChat", this.activeChat, "current time: " + this.videoCurrentTime.toString());
-        //   if (this.chatList[this.activeChat - 1]) {
-        //     console.log("this.chatList[this.activeChat-1].time", this.chatList[this.activeChat - 1].time.toString());
+        // if (this.activeChat && chats) {
+        //   console.log("current time: " + this.videoCurrentTime.toString(), ", activeChat", this.activeChat);
+        //   if (chats[this.activeChat - 1]) {
+        //     console.log("activeChat-1", chats[this.activeChat - 1].time.toString());
         //   }
-        //   if (this.chatList[this.activeChat]) {
-        //     console.log("this.chatList[this.activeChat+0].time", this.chatList[this.activeChat].time.toString());
-        //     console.log("this.chatList[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()", this.chatList[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf());
+        //   if (chats[this.activeChat]) {
+        //     console.log("activeChat+0", chats[this.activeChat].time.toString(), ", activeChat > CurrentTime", chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf());
         //   }
-        //   if (this.chatList[this.activeChat + 1]) {
-        //     console.log("this.chatList[this.activeChat+1].time", this.chatList[this.activeChat + 1].time.toString());
-        //     console.log("this.chatList[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf()", this.chatList[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf());
+        //   if (chats[this.activeChat + 1]) {
+        //     console.log("activeChat+1", chats[this.activeChat + 1].time.toString(), ", activeChat < CurrentTime", chats[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf());
         //   }
         // }
-        while (this.chatList[this.activeChat] && this.chatList[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()) {
+        while (chats[this.activeChat] && chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()) {
           this.activeChat--;
         }
-        while (this.chatList[this.activeChat + 1] && this.chatList[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf()) {
+        while (chats[this.activeChat + 1] && chats[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf()) {
           this.activeChat++;
         }
       }
-      this.activeChatEnd = (this.activeChat + this.activeRange / 2) < this.chatList.length - 1 ? this.activeChat + this.activeRange / 2 : this.chatList.length - 1;
+      const visibleEnd = this.activeChat + this.activeRange / 2;
+      this.activeChatEnd = visibleEnd < chats.length - 1 ? visibleEnd : chats.length - 1;
       this.activeChatStart = this.activeChatEnd - this.activeRange;
+      console.log("getCurrentChat, chats.length-1, activeChat, start, end, isStream", chats.length - 1, this.activeChat, this.activeChatStart, this.activeChatEnd, this.isStream);
     },
     MouseWheelHandler: function (e) {
       this.isAutoScroll = false;
@@ -1084,19 +1130,20 @@ let Chat = {
     EnableAutoScroll: function () {
       this.isAutoScroll = true;
       this.scrollToChat();
-    }
+    },
   },
   computed: {
-    list: function () {
+    cList: function () {
+      console.log("cList");
       if (this.newChatList !== this.lastChat) {
-        this.chatList = this.chatList.concat(this.newChatList);
+        this.allchats = this.allchats.concat(this.newChatList);
         this.lastChat = this.newChatList;
-        const nextUpdate = this.isStream ? 2.5 * 1000 : 365 * 24 * 60 * 60 * 1000;
-        this.nextUpdateTime = Date.now() + nextUpdate;
+        console.log("add chat, newChatList", this.newChatList);
       }
-      return this.chatList;
+      return this.allchats;
     },
     postAID: function () {
+      this.allchats = [];
       this.chatList = [];
       return this.post.AID;
     },
@@ -1104,29 +1151,30 @@ let Chat = {
       'newChatList',
       'post',
       'videoCurrentTime',
+      'PTTState',
     ])
   },
   mounted() {
     //註冊文章事件
-    this.msg["newPush"] = data => { this.$store.dispatch('updatePost', data); };
+    this.msg["newPush"] = data => { this.$store.dispatch('updatePost', data); this.nextUpdateTime = Date.now() + 2.5 * 1000; };
 
     //初始化聊天列表
     this.lastChat = this.newChatList;
-    //this.chatList = [];
-    this.chatList = testchat.list;//test
+    this.allchats = testchat.list;//test
     this.activeChat = 0;
+    this.nextUpdateTime = Date.now() + 5 * 365 * 24 * 60 * 60 * 1000;
 
     //定時抓新聊天
-    this.updateChat = window.setInterval(() => {
-      if (this.isStream && Date.now() > this.nextUpdateTime) {
-        console.log("updateChat", this.isStream, Date.now(), this.nextUpdateTime);
-        //this.$store.dispatch('updateVideoPlayedTime', this.player.currentTime);
-        this.nextUpdateTime = Date.now() + 2.5 * 1000;
+    this.intervalChat = window.setInterval(() => {
+      if (this.isStream && this.PTTState > 0 && Date.now() > this.nextUpdateTime) {
+        this.nextUpdateTime = Date.now() + 5 * 365 * 24 * 60 * 60 * 1000;
+        //console.log("updateChat", this.isStream, Date.now(), this.nextUpdateTime);
+        this.msg.PostMessage("getPushByLine", { AID: this.post.AID, board: this.post.board, startline: this.post.lastendline });
       }
-    }, 500);
+    }, 340);
 
     //定時滾動
-    this.updateScroll = window.setInterval(() => { this.scrollToChat(); }, 1000);
+    this.intervalScroll = window.setInterval(() => { this.updateChat(); }, 1000);
 
     //使用者滾輪事件
     if (this.$refs.chatmain.addEventListener) {
@@ -1137,9 +1185,13 @@ let Chat = {
       this.$refs.chatmain.attachEvent("onmousewheel", this.MouseWheelHandler);
     }
   },
+  updated: function () {
+    this.scrollToChat();
+    console.log('chat updated');
+  },
   beforeDestroy() {
-    clearInterval(this.updateChat);
-    clearInterval(this.updateScroll);
+    clearInterval(this.intervalChat);
+    clearInterval(this.intervalScroll);
   },
   components: {
     "chat-scroll-btn": ChatScrollBtn,
@@ -1147,9 +1199,7 @@ let Chat = {
   template: `<div id="PTTChat-contents-Chat-main" ref="chatmain" class="flex-grow-1 mh-100 row"
   style="overscroll-behavior: none;overflow-y: scroll;">
   <ul id="PTTChat-contents-Chat-pushes" class="col mb-0 px-0" v-bind:post-aid="postAID" ref="chats">
-    <chat-item :index="index" :ChatStart="activeChatStart" :ChatEnd="activeChatEnd" :ChatCurrent="activeChat"
-      :type="item.type" :id="item.id" :time-h="item.timeH" :timem="item.timem" :msg="item.msg" :key="index"
-      v-for="(item, index) in list">
+    <chat-item :index="index" :chat="item" :gray="item.gray" :key="item.index" v-for="(item, index) in chatList">
     </chat-item>
   </ul>
   <chat-scroll-btn :is-auto-scroll="isAutoScroll" @autoscrollclick="EnableAutoScroll()"></chat-scroll-btn>
@@ -1160,7 +1210,7 @@ let Chat = {
 let testchat = {
   l: [],
   get list() {
-    for (let i = this.l.length; i < 20; i++) {
+    for (let i = this.l.length; i < 720; i++) {
       const el = {
         type: "推 ",
         id: "Zoosewu ",
@@ -1168,9 +1218,12 @@ let testchat = {
       };
       el.msg = i + " 太神啦太神啦太神啦太神啦太神啦";
       el.time.setHours(18);
-      el.time.setMinutes(i);
+      el.time.setMinutes(0);
+      el.time.setSeconds(i * 10);
       el.timeH = paddingLeft(el.time.getHours(), +2);
       el.timem = paddingLeft(el.time.getMinutes(), +2);
+      el.index = i;
+      el.gray = true;
       this.l.push(el);
     }
     return this.l;
@@ -1250,6 +1303,10 @@ let ConnectLogin = {
         this.$store.dispatch('Alert', { type: 0, msg: "帳號或密碼不得為空。" });
         return;
       }
+      else if (this.PTTState > 0) {
+        this.$store.dispatch('Alert', { type: 0, msg: "已經登入，請勿重複登入。" });
+        return;
+      }
       GM_setValue("PTTID", this.id);
       const i = CryptoJS.AES.encrypt(this.id, cryptkey).toString();
       const p = CryptoJS.AES.encrypt(this.pw, cryptkey).toString();
@@ -1287,30 +1344,32 @@ let ConnectAID = {
       if (!result || result.length <= 2) {
         this.$store.dispatch('Alert', { type: 0, msg: "文章AID格式錯誤，請重新輸入。" });
       }
+      else if (this.PTTState < 1) {
+        this.$store.dispatch('Alert', { type: 0, msg: "PTT尚未登入，請先登入。" });
+      }
       else {
         GM_setValue("PostAID", this.aid);
         gotomainchat = true;//// 
         if (this.post.AID === result[1] && this.post.board === result[2]) {//相同文章取最新推文
+          console.log("getPush same post", result[1], result[2], this.post.lastendline);
           this.msg.PostMessage("getPushByLine", { AID: result[1], board: result[2], startline: this.post.lastendline });
         }
         else if (this.isStream) {//實況取得最近的推文
+          console.log("getPush same recent", result[1], result[2], 200);
           this.msg.PostMessage("getPushByRecent", { AID: result[1], board: result[2], recent: 200 });
         }
         else {//實況紀錄取得所有推文
+          console.log("getPush same total", result[1], result[2], 0);
           this.msg.PostMessage("getPushByLine", { AID: result[1], board: result[2], startline: 0 });
         }
         this.$store.dispatch('pageChange', true);
       }
     }
   },
-  mounted() {
-    // this.msg["postdata"] = data => {
-    //   this.$store.dispatch('updatePost', data);
-    // };
-  },
   computed: {
     ...Vuex.mapGetters([
       'post',
+      'PTTState',
     ])
   },
   template: `<div class="form-row my-3">
@@ -1389,7 +1448,7 @@ let ConnectAlert = {
   methods: {
     removeAlert(item) {
       const index = this.al.indexOf(item);
-      console.log("removeAlert: this.al,item.msg,index", this.al, item.msg, index);
+      //console.log("removeAlert: this.al,item.msg,index", this.al, item.msg, index);
       this.al.splice(index, 1);
     },
   },
@@ -1462,7 +1521,7 @@ Vue.component('alert-item', {
 
 let Other = {
   template: `<div id="PTTChat-contents-other-main" class="card-body">
-  <div>
+  <h5>
     使用教學:</p>
     1.設定紀錄檔開始的時間</p>
     (實況無須設定)</p>
@@ -1470,41 +1529,39 @@ let Other = {
     3.在你自己的PTT找到想要同步的文章</p>
     4.鍵入大寫Q複製文章完整AID</p>
     5.將複製的AID貼上並讀取文章</p>
+  </h5>
+  <a id="gfbtn" class="btn ptt-btnoutline m-2 " href="https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage"
+    target="_blank" rel="noopener noreferrer" role="button">腳本介紹</a>
+  <a id="gfbtn" class="btn ptt-btnoutline m-2 " href="https://greasyfork.org/zh-TW/scripts/418469-youtubechatonptt"
+    target="_blank" rel="noopener noreferrer" role="button">greasyfork</a>
+  <a id="gfbtn" class="btn ptt-btnoutline m-2" href="https://github.com/zoosewu/PTTChatOnYoutube/tree/master"
+    target="_blank" rel="noopener noreferrer" role="button">github</a>
+  <h5>
+    &nbsp;</p> &nbsp;</p>&nbsp;</p>&nbsp;</p>&nbsp;</p>&nbsp;</p>&nbsp;</p>&nbsp;</p>&nbsp;</p>
+    聲明:</p> &nbsp;</p>
+    本插件僅做PTT與Youtube的連線</p>
+    除此之外並不會連到任何伺服器</p>
+    所以不會蒐集任何關於你的資訊</p>
     &nbsp;</p>
+    所有程式碼都沒有做任何的壓縮或混淆</p>
+    在greasyfork、github以及你的瀏覽器都可以查看完整的程式碼以供任何人檢視</p>
     &nbsp;</p>
-  </div>
-  <div>如果需要回報或有任何問題請打開除錯模式以檢視PTT畫面及Log</p>
-    目前測試版運行中 除錯模式已開啟</p>
-  </div>
-  <button id="opendevmode" class="btn ptt-btnoutline m-2" type="button">除錯模式</button>
-  <div>
-    &nbsp;</p>&nbsp;</p>&nbsp;</p>&nbsp;</p>&nbsp;</p>&nbsp;</p>&nbsp;</p>
-    聲明:</p>
+    請確保瀏覽實況或紀錄檔時</p>
+    沒有任何其他PTT的腳本同時啟用</p>
+    如果有的話請參閱完整網站說明並跟著操作</p>
     &nbsp;</p>
-    我的程式碼都公開在網路上了，如果覺得我會到帳號請不要使用。</p>
+    本插件盡可能保證插件在操作PTT時的安全性</p>
+    並盡可能避免帳號資訊在傳輸過程中被第三方所竊取</p>
     &nbsp;</p>
-    請保證瀏覽Youtube時沒有其他PTT腳本同時執行，這很重要。</p>
+    任何使用插件的人士</p>
+    須自行承擔一切風險</p>
+    本人不會負責任何因使用此插件所造成的任何形式的損失</p>
     &nbsp;</p>
-    我盡量確保你的帳號不會因為我的插件被盜了。</p>
-    &nbsp;</p>
-    但是如果你被盜了我不負責。</p>
-    &nbsp;</p>
-    如果你用了插件導致被水桶或被退註或封IP與我無關。</p>
-    &nbsp;</p>
-    完整聲明請點網站說明進入</p>
-    &nbsp;</p>
+    使用本插件所造成任何形式的帳號損害</p>
+    包含但不限於帳號遭到竊取、推文而招致水桶或帳號註銷</p>
+    本人一概不負責</p> &nbsp;</p>
     Zoosewu</p>
-    &nbsp;</p>
-  </div>
-  <a id="gfbtn" class="btn ptt-btnoutline m-2 "
-    href="https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage" target="_blank" rel="noopener noreferrer"
-    role="button">腳本介紹</a>
-  <a id="gfbtn" class="btn ptt-btnoutline m-2 "
-    href="https://greasyfork.org/zh-TW/scripts/418469-youtubechatonptt" target="_blank" rel="noopener noreferrer"
-    role="button">greasyfork</a>
-  <a id="gfbtn" class="btn ptt-btnoutline m-2"
-    href="https://github.com/zoosewu/PTTChatOnYoutube/tree/master" target="_blank" rel="noopener noreferrer"
-    role="button">github</a>
+  </h5>
 </div>`,
 }
 
@@ -1733,7 +1790,7 @@ function InitApp(chatcon, whitetheme, isstreaming, messageposter) {
     ele.setAttribute("style", "z-index: 301;");
     if (cn) cn[0].appendChild(ele);
     //Vue.prototype.$bus = new Vue();
-    let color = whitetheme ? "pttbgc-20 pttc-5" : "pttbgc-2 pttc-2";
+    let color = whitetheme ? "pttbgc-19 pttc-5" : "pttbgc-2 pttc-2";
     let PTT = new Vue({
       el: '#PTTChat',
       template: `<div id="PTTChat" class="position-absolute w-100 ` + color + `" ins="` + appinscount + `"><PTTAppBtn></PTTAppBtn><PTTApp></PTTApp></div>`,
@@ -1772,7 +1829,7 @@ function InitApp(chatcon, whitetheme, isstreaming, messageposter) {
           else { //console.log("Instance " + this.index + " alive.");
           }
         }), 1000);
-
+        this.rootmsg["PTTState"] = data => { this.$store.dispatch('PTTState', data); };
       },
       beforeDestroy() {
         console.log("beforeDestroy", this);
@@ -1788,13 +1845,8 @@ function BootStrap(frame) {
   const frameHead = $("head", frame);
   const frameBody = $("body", frame);
   console.log("BootStrap");
-  if (devmode) {
-    frameHead.append($(`<link rel="stylesheet" href="http://127.0.0.1:8889/css/index.css">`));
-    console.log("custom css");
-  } else {
-    frameHead.append($(`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">`));
-    console.log("normal css");
-  }
+  if (devmode) { frameHead.append($(`<link rel="stylesheet" href="http://127.0.0.1:8889/css/index.css">`)); }
+  else { frameHead.append($(`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">`)); }
   frameBody.append($(`<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>`));
   frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>`));
   frameBody.append($(`<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>`));
@@ -1942,7 +1994,7 @@ function InitHT(messageposter) {
     const defaultVideoHandler = $(`<div id="holotoolsvideohandler" class="flex-grow-1"></div>`);
     const defaultVideo = $(`.player-container.hasControls`);
 
-    const PTTChatHandler = $(`<div id="pttchatparent" class="p-0 d-flex" style="width:400px;position:relative;"></div>`);
+    const PTTChatHandler = $(`<div id="pttchatparent" class="p-0 d-flex" style="width:500px;position:relative;"></div>`);
     parent.append(fakeparent);
 
     fakeparent.append(defaultVideoHandler);
@@ -1972,18 +2024,24 @@ function Initblank(messageposter) {
   //run app instance loop
 
   //const blankcontainer = $(`<div id="container" class="position-relative" style="width:400px;height:800px;"></div>`)[0];
-  const Body = $("body", document)[0];
-  Body.innerHTML = `<div id="container" class="position-relative" style="width:400px;height:800px;"></div>`;
-  const blankcontainer = $(`#container`);
-  InitApp(blankcontainer, WhiteTheme, true, msg);
+  //`<div id="container" class="position-relative" style="width:400px;height:800px;"></div>`
+  const Body = document.getElementsByTagName("BODY")[0];
+  const container = document.createElement("div");
+  container.id = "container";
+  container.classList.add("position-relative");
+  container.setAttribute("style", "width:400px;height:800px;");
+  Body.prepend(container);
+  //const blankcontainer = document.getElementById(`container`);
+  InitApp([container], WhiteTheme, true, msg);
 
 }
 
 let blankfilter = InsFilter("Blank", /blank\.org/, "http://blank.org/", Initblank);
 
 //import { custom } from '../css/custom.css';
-//dev use 
 
+//import '../css/index.css';
+//dev use 
 let devmode = true;
 const defaultopen = false;
 const disablepttframe = false;
@@ -2002,4 +2060,4 @@ Vue.config.debug = true;
   filters.push(htfilter);
   filters.push(blankfilter);
   HerfFilter(msg, filters);
-})()
+})();

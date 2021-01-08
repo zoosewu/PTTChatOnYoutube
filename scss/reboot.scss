@@ -1,7 +1,7 @@
 //override _reboot
-*,
-*::before,
-*::after {
+#PTTChat *,
+#PTTChat *::before,
+#PTTChat *::after {
   box-sizing: border-box; // 1
 }
 
@@ -251,7 +251,7 @@ img {
   border-style: none; // Remove the border on images inside links in IE 10-.
 }
 
-svg {
+#PTTChat svg {
   // Workaround for the SVG overflow bug in IE10/11 is still required.
   // See https://github.com/twbs/bootstrap/issues/26878
   overflow: hidden;

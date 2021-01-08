@@ -11,30 +11,32 @@ export let ConnectAID = {
       if (!result || result.length <= 2) {
         this.$store.dispatch('Alert', { type: 0, msg: "文章AID格式錯誤，請重新輸入。" });
       }
+      else if (this.PTTState < 1) {
+        this.$store.dispatch('Alert', { type: 0, msg: "PTT尚未登入，請先登入。" });
+      }
       else {
         GM_setValue("PostAID", this.aid);
         gotomainchat = true;//// 
         if (this.post.AID === result[1] && this.post.board === result[2]) {//相同文章取最新推文
+          console.log("getPush same post", result[1], result[2], this.post.lastendline);
           this.msg.PostMessage("getPushByLine", { AID: result[1], board: result[2], startline: this.post.lastendline });
         }
         else if (this.isStream) {//實況取得最近的推文
+          console.log("getPush same recent", result[1], result[2], 200);
           this.msg.PostMessage("getPushByRecent", { AID: result[1], board: result[2], recent: 200 });
         }
         else {//實況紀錄取得所有推文
+          console.log("getPush same total", result[1], result[2], 0);
           this.msg.PostMessage("getPushByLine", { AID: result[1], board: result[2], startline: 0 });
         }
         this.$store.dispatch('pageChange', true);
       }
     }
   },
-  mounted() {
-    // this.msg["postdata"] = data => {
-    //   this.$store.dispatch('updatePost', data);
-    // };
-  },
   computed: {
     ...Vuex.mapGetters([
       'post',
+      'PTTState',
     ])
   },
   template: `<div class="form-row my-3">

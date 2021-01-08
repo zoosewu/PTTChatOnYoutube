@@ -12,6 +12,10 @@ export let ConnectLogin = {
         this.$store.dispatch('Alert', { type: 0, msg: "帳號或密碼不得為空。" });
         return;
       }
+      else if (this.PTTState > 0) {
+        this.$store.dispatch('Alert', { type: 0, msg: "已經登入，請勿重複登入。" });
+        return;
+      }
       GM_setValue("PTTID", this.id);
       const i = CryptoJS.AES.encrypt(this.id, cryptkey).toString();
       const p = CryptoJS.AES.encrypt(this.pw, cryptkey).toString();

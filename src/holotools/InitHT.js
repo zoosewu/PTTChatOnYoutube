@@ -28,7 +28,7 @@ export function InitHT(messageposter) {
     const defaultVideoHandler = $(`<div id="holotoolsvideohandler" class="flex-grow-1"></div>`);
     const defaultVideo = $(`.player-container.hasControls`);
 
-    const PTTChatHandler = $(`<div id="pttchatparent" class="p-0 d-flex" style="width:400px;position:relative;"></div>`);
+    const PTTChatHandler = $(`<div id="pttchatparent" class="p-0 d-flex" style="width:500px;position:relative;"></div>`);
     parent.append(fakeparent);
 
     fakeparent.append(defaultVideoHandler);

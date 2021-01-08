@@ -26,6 +26,7 @@ export const state = {
   VCurrentTime: new Date(),
   pageChange: false,
   gotoChat: false,
+  PTTState: 0,
 }
 // mutations
 export const mutations = {
@@ -70,5 +71,9 @@ export const mutations = {
   },
   [types.GOTOCHAT](state, gotoChat) {
     state.gotoChat = gotoChat;
+  },
+  [types.PTTSTATE](state, pttstate) {
+    //console.log("PTTState mutations", pttstate);
+    state.PTTState = pttstate;
   },
 }

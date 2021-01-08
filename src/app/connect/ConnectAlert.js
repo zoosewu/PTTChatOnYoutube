@@ -9,7 +9,7 @@ export let ConnectAlert = {
   methods: {
     removeAlert(item) {
       const index = this.al.indexOf(item);
-      console.log("removeAlert: this.al,item.msg,index", this.al, item.msg, index);
+      //console.log("removeAlert: this.al,item.msg,index", this.al, item.msg, index);
       this.al.splice(index, 1);
     },
   },
