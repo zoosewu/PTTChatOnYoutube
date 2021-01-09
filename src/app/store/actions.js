@@ -44,10 +44,9 @@ export const actions = {
       { type: "postendline", data: newpost.lastendline }]);
     }
     if (postdata.pushes.length > 0) {
-      dispatch('updateChat', postdata.pushes);
-
       newpost.pushcount += postdata.pushes.length;
       commit(types.UPDATEPOST, newpost);
+      dispatch('updateChat', postdata.pushes);
       dispatch('updateVideoStartDate');
     }
     //console.log("state.pageChange", state.pageChange);
@@ -57,7 +56,7 @@ export const actions = {
     }
   },
   updateChat: ({ commit, state }, pushes) => {
-    const existpush = state.post.pushcount;
+    const existpush = state.post.pushcount - pushes.length;
     const chatlist = [];
     let sametimecount = 0;
     let sametimeIndex = 0;

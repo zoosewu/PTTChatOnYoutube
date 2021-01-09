@@ -118,7 +118,7 @@ export function InitPTT(messageposter) {
       if (!t) t = PTT.wind.document.querySelector('#t')
       const e = new CustomEvent('paste')
       //debug用
-      //console.log(`insertText : \"` + str + `\"`);
+      if (reportmode) console.log(`insertText : \"` + str + `\"`);
       e.clipboardData = { getData: () => str }
       t.dispatchEvent(e)
     }
@@ -247,7 +247,7 @@ export function InitPTT(messageposter) {
     return res;
   }
 
-  function gotoPost() { insertText("NN#" + PTTPost.AID + "\n\n"); PTTPost.isgotopost = true; }
+  function gotoPost() { insertText("NNP#" + PTTPost.AID + "\n\n"); PTTPost.isgotopost = true; }
   function PostCheck() {
     const res = { pass: true, callback: gotoPost }
     if (PTT.pagestate === 2) res.pass = false;
@@ -266,8 +266,7 @@ export function InitPTT(messageposter) {
         var spacereg = /\s+$/g;
         const title = posttitle[1].replace(spacereg, "");
         if (PTTPost.samepost) {
-          if (title === PTTPost.title) {
-          }
+          if (title === PTTPost.title) { }
           else { res.pass = false; }
         }
         else {
@@ -348,20 +347,20 @@ export function InitPTT(messageposter) {
   function gotoend() { insertText('G'); }
   function GetRecentLine() {
     const res = { pass: false, callback: gotoend }
-    if (PTT.pagestate === 4) {
+    if (PTT.pagestate === 4 || PTT.pagestate === 3) {
       const line = PTT.screenHaveText(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~(\d+) 行/);
       if (line) {
         let targetline = +line[1] - PTTPost.endline - 1;
         if (targetline < 3) targetline = 3;
         //console.log("==GetRecentLine, TotalLine, GotoLline", line[1], targetline);
         PTTPost.endline = targetline;
-        insertText(PTTPost.endline + ".\n");
+        if (PTT.pagestate === 4) insertText(PTTPost.endline + ".\n");
+        else if (PTT.pagestate === 3) insertText("q");
         res.pass = true;
       }
     }
     else if (PTT.pagestate === 1) console.log("==GetPushTask error, PTT.pagestate == 1.");
     else if (PTT.pagestate === 2) console.log("==GetPushTask error, PTT.pagestate == 2.");
-    else if (PTT.pagestate === 3) { }
     return res;
   }
   //------------------------tasks--------------------------------
@@ -419,7 +418,7 @@ export function InitPTT(messageposter) {
         PTTPost.samepost = true;
         PTTPost.endline = startline;
         PTTPost.isgotopost = false;
-        //console.log("==Get Same Post Push from PTTPost.endline, startline: " + PTTPost.endline + ", " + startline);
+        if (reportmode) console.log("Get same post's push.", bname, PTTPost.board, pAID, PTTPost.AID);
       }
       else {
         PTTPost = {
@@ -434,8 +433,10 @@ export function InitPTT(messageposter) {
           samepost: false,
           isgotopost: false,
         }
+        if (reportmode) console.log("Get new post's push.", bname, PTTPost.board, pAID, PTTPost.AID);
       }
       if (PTT.pagestate === 1) insertText("m");
+      else if (PTT.pagestate === 3 || !PTTPost.isgotopost) insertText("q");
       else insertText("q\n");
       PTT.commands.add(/.*/, "", task);
     }
@@ -505,6 +506,7 @@ export function InitPTT(messageposter) {
     } else if (!serverfull) {
       PTT.lastviewupdate = Date.now();
       PTT.lock();
+      console.log("PTTLockCheck", ...args);
       callback(...args);
       setTimeout(checkscreenupdate, 3500);
     }
@@ -521,6 +523,6 @@ export function InitPTT(messageposter) {
     //console.log([i, p],cryptkey);
     PTTLockCheck(Login, i, p);
   };
-  msg["getPushByLine"] = data => { PTTLockCheck(GetPush, data.AID, data.board, data.startline, GetPushTask); };
-  msg["getPushByRecent"] = data => { PTTLockCheck(GetPush, data.AID, data.board, data.recent, GetRecentLineTask); };
+  msg["getPushByLine"] = data => { console.log("getPushByLine", data); PTTLockCheck(GetPush, data.AID, data.board, data.startline, GetPushTask); };
+  msg["getPushByRecent"] = data => { console.log("getPushByRecent", data); PTTLockCheck(GetPush, data.AID, data.board, data.recent, GetRecentLineTask); };
 }

@@ -6,10 +6,10 @@ export let Chat = {
   inject: ['msg', 'isStream'],
   data: function () {
     return {
-      allchats: [],
+      _allchats: [],
       chatList: [],
       lastChat: [],
-      activeChat: 0,
+      acChat: 0,
       lastactiveChat: -1,
       activeRange: 200,
       activeChatStart: 0,
@@ -29,16 +29,13 @@ export let Chat = {
           chat = this.chatList[i];
           const isgray = chat.index > this.activeChat;
           //console.log("gray check, uid, activeChat, color, lastColor", chat.index, this.activeChat, isgray, chat.gray);
-          if (isgray != chat.gray) {
-            //console.log("gray change, graychange, chatuid", chat.gray, '=>', isgray, chat.index);
-            chat.gray = isgray;
-          }
+          if (isgray != chat.gray) chat.gray = isgray;//console.log("gray change, graychange, chatuid", chat.gray, '=>', isgray, chat.index);
         }
       }
       if (this.isAutoScroll) {
         const scrollPos = this.getScrollPos();
         const p = this.$refs.chatmain.scrollTop - scrollPos;
-        //console.log("scrollToChatS", new Date().getTime(), this.isAutoScroll, scrollPos);
+        console.log("scrollToChat, scrollTop, scrollPos", this.$refs.chatmain.scrollTop, scrollPos, new Date());
         if (p > 20 || p < -20) { this.$refs.chatmain.scrollTo({ top: scrollPos, behavior: "smooth" }); }
       }
     },
@@ -66,21 +63,22 @@ export let Chat = {
         const start = this.activeChatStart > 0 ? this.activeChatStart : 0;
         const end = this.activeChatEnd;
         //if (this.chatList.length > 0) console.log("beforeupdate chat", this.chatList[0].msg, this.chatList[this.chatList.length - 1].msg);
-        if (this.chatList.length > 2000) {
-          for (let i = this.chatList.length - 1; i >= 0; i--) {
-            const chat = this.chatList[i];
-            //console.log("remove check", chat.index, chat.msg, chat);
-            if (chat.index < start || chat.index > end) {
-              this.chatList.splice(i, 1);
-              console.log("remove chat", chat.index, chat.msg, chat);
-            }
-          }
-        }
-        for (let i = 0; i < list.length; i++) {
+        // if (this.chatList.length > 2000) {
+        //   for (let i = this.chatList.length - 1; i >= 0; i--) {
+        //     const chat = this.chatList[i];
+        //     //console.log("remove check", chat.index, chat.msg, chat);
+        //     if (chat.index < start || chat.index > end) {
+        //       this.chatList.splice(i, 1);
+        //       console.log("remove chat", chat.index, chat.msg, chat);
+        //     }
+        //   }
+        // }
+        for (let i = start; i < list.length && i <= end; i++) {
           const chat = list[i];
-          if (chat.index >= start && chat.index <= end && !this.chatList.includes(chat)) {
+          //console.log("add check, i, chat.index, chat.msg, chat", i, chat.index, chat.msg, chat);
+          if (!this.chatList.includes(chat)) {
             this.chatList.push(chat);
-            console.log("add chat", chat.index, chat.msg, chat);
+            //console.log("add chat", i, chat.msg, chat);
           }
         }
         //if (this.chatList.length > 0) console.log("after chat", this.chatList[0].msg, this.chatList[this.chatList.length - 1].msg);
@@ -88,9 +86,14 @@ export let Chat = {
         console.log("activeChat, start, end, allList, chatList", this.activeChat, start, this.activeChatEnd, list, this.chatList);
       }
     },
+    removeChatFromchatList: async function () {
 
+    },
+    addChatTochatList: async function () {
+
+    },
     getCurrentChat: function () {
-      const chats = this.cList;
+      const chats = this.allchats;
       if (this.isStream) {
         this.activeChat = chats.length - 1;
       }
@@ -107,17 +110,24 @@ export let Chat = {
         //     console.log("activeChat+1", chats[this.activeChat + 1].time.toString(), ", activeChat < CurrentTime", chats[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf());
         //   }
         // }
-        while (chats[this.activeChat] && chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()) {
-          this.activeChat--;
-        }
-        while (chats[this.activeChat + 1] && chats[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf()) {
-          this.activeChat++;
+        for (move = 128; move > 0; move = move / 2) {
+          while (this.activeChat > 0 && chats[this.activeChat] && chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()) {
+            this.activeChat -= move;
+            //console.log("move activeChat to ", this.activeChat);
+          }
+          while (chats[this.activeChat + 1] && chats[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf()) {
+            this.activeChat += move;
+            //console.log("move activeChat to ", this.activeChat);
+          }
+          if (move === 1) break;
         }
       }
+
       const visibleEnd = this.activeChat + this.activeRange / 2;
       this.activeChatEnd = visibleEnd < chats.length - 1 ? visibleEnd : chats.length - 1;
       this.activeChatStart = this.activeChatEnd - this.activeRange;
-      console.log("getCurrentChat, chats.length-1, activeChat, start, end, isStream", chats.length - 1, this.activeChat, this.activeChatStart, this.activeChatEnd, this.isStream);
+      console.log("getCurrentChat, chats.length-1", chats.length - 1, ", activeChat,", this.activeChat, " start,", this.activeChatStart, " end,", this.activeChatEnd, " isStream", this.isStream);
+      setTimeout(() => this.scrollToChat(), 10);
     },
     MouseWheelHandler: function (e) {
       this.isAutoScroll = false;
@@ -128,19 +138,30 @@ export let Chat = {
     },
   },
   computed: {
-    cList: function () {
-      console.log("cList");
+    allchats: function () {
+      //console.log("allchats");
       if (this.newChatList !== this.lastChat) {
-        this.allchats = this.allchats.concat(this.newChatList);
+        this._allchats = this._allchats.concat(this.newChatList);
         this.lastChat = this.newChatList;
         console.log("add chat, newChatList", this.newChatList);
       }
-      return this.allchats;
+      return this._allchats;
     },
     postAID: function () {
-      this.allchats = [];
+      console.log("new post:", this.post.AID);
+      this._allchats = [];
       this.chatList = [];
       return this.post.AID;
+    },
+    activeChat: {
+      get() {
+        return this.acChat;
+      },
+      set(value) {
+        if (value > this.allchats.length - 1) this.acChat = this.allchats.length - 1;
+        else if (value < 0) this.acChat = 0;
+        else this.acChat = value;
+      }
     },
     ...Vuex.mapGetters([
       'newChatList',
@@ -155,7 +176,7 @@ export let Chat = {
 
     //初始化聊天列表
     this.lastChat = this.newChatList;
-    this.allchats = testchat.list;//test
+    this._allchats = testchat.list;//test
     this.activeChat = 0;
     this.nextUpdateTime = Date.now() + 5 * 365 * 24 * 60 * 60 * 1000;
 
@@ -169,7 +190,7 @@ export let Chat = {
     }, 340);
 
     //定時滾動
-    this.intervalScroll = window.setInterval(() => { this.updateChat(); }, 1000);
+    this.intervalScroll = window.setInterval(() => { this.updateChat(); }, 500);
 
     //使用者滾輪事件
     if (this.$refs.chatmain.addEventListener) {
@@ -181,8 +202,7 @@ export let Chat = {
     }
   },
   updated: function () {
-    this.scrollToChat();
-    console.log('chat updated');
+
   },
   beforeDestroy() {
     clearInterval(this.intervalChat);

@@ -44,3 +44,22 @@ min檔為VScode插件Minify自動生成，以避免.js太冗長
 
 #### CSS 
 - [ ] 確認插件在各網站的排版都正常且一樣
+
+#### 本專案授權
+
+MIT License
+Copyright (c) 2020-2021 zoosewu
+
+#### 使用的開源程式碼授權
+[term.ptt.cc 自動登入](https://openuserjs.org/scripts/maple3142/term.ptt.cc_%E8%87%AA%E5%8B%95%E7%99%BB%E5%85%A5)
+```
+author       maple3142
+namespace    https://blog.maple3142.net/
+license      MIT
+```
+[enable-vue-devtools](https://github.com/52cik/enable-vue-devtools)
+```
+author       楼教主
+MIT License
+Copyright (c) 2019 楼教主
+```
