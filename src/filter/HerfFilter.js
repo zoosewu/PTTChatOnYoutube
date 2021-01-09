@@ -6,7 +6,7 @@ export function HerfFilter(msg, filters) {
     if (isTopframe) throw throwstring("PTT");//check script work in right frame
     //init msg
     msg.ownerorigin = "https://term.ptt.cc";
-    msg.targetorigin = /\?url=(.+?)\/?$/.exec(window.location.href)[1];
+    msg.targetorigin = /\?url=(.+?)\/?$/.exec(window.location.href)[1];// \?url=(https\:\/\/|http\:\/\/)(.+)
     msg.targetWindow = top;
     //-----
     console.log("Script started at " + window.location.href);

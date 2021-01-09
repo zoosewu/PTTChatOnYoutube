@@ -75,14 +75,12 @@ export const actions = {
           }
         }
       }
-      chat.time = currpush.date;
+      chat.time = new Date(currpush.date.getTime());
       //console.log("sametimeIndex, index, sametimecount", sametimeIndex, index, sametimecount);
       if (sametimecount > 0) chat.time.setSeconds((sametimecount + index - sametimeIndex) * 60 / sametimecount);
       chat.id = currpush.id;
       chat.type = currpush.type;
       chat.msg = currpush.content;
-      chat.timeH = paddingLeft(chat.time.getHours(), +2);
-      chat.timem = paddingLeft(chat.time.getMinutes(), +2);
       chat.index = existpush + index;
       chat.gray = true;
       chatlist.push(chat);

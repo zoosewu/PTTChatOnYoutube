@@ -107,7 +107,7 @@ $font-size-base: 12px;
       color: darken-color($chat-time, $color);
     }
     .ptt-chat-msg {
-      color: darken-color($chat-message, $color);
+      color: darken-color($chat-message, $color) !important;
     }
 
     .ptt-chat-type {
@@ -138,4 +138,7 @@ $font-size-base: 12px;
       border-color: $nav-tabs-link-active-border-color;
     }
   }
+}
+.ptt-chat-msg a {
+  text-decoration: underline !important;
 }

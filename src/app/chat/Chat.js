@@ -73,14 +73,18 @@ export let Chat = {
         //     }
         //   }
         // }
+        const tmpchat = [];
         for (let i = start; i < list.length && i <= end; i++) {
           const chat = list[i];
           //console.log("add check, i, chat.index, chat.msg, chat", i, chat.index, chat.msg, chat);
-          if (!this.chatList.includes(chat)) {
-            this.chatList.push(chat);
+          if (!this.chatList.includes(chat.ins)) {
+            const ins = { time: chat.time, id: chat.id, type: chat.type, msg: chat.msg, index: chat.index, gray: chat.gray, };
+            tmpchat.push(ins);
+            chat.ins = ins;
             //console.log("add chat", i, chat.msg, chat);
           }
         }
+        this.chatList = this.chatList.concat(tmpchat);
         //if (this.chatList.length > 0) console.log("after chat", this.chatList[0].msg, this.chatList[this.chatList.length - 1].msg);
         this.chatList.sort(function (a, b) { return a.index - b.index; });
         console.log("activeChat, start, end, allList, chatList", this.activeChat, start, this.activeChatEnd, list, this.chatList);
@@ -128,6 +132,7 @@ export let Chat = {
       this.activeChatStart = this.activeChatEnd - this.activeRange;
       console.log("getCurrentChat, chats.length-1", chats.length - 1, ", activeChat,", this.activeChat, " start,", this.activeChatStart, " end,", this.activeChatEnd, " isStream", this.isStream);
       setTimeout(() => this.scrollToChat(), 10);
+      console.log(chats[this.activeChat]);
     },
     MouseWheelHandler: function (e) {
       this.isAutoScroll = false;
@@ -141,9 +146,10 @@ export let Chat = {
     allchats: function () {
       //console.log("allchats");
       if (this.newChatList !== this.lastChat) {
+
         this._allchats = this._allchats.concat(this.newChatList);
         this.lastChat = this.newChatList;
-        console.log("add chat, newChatList", this.newChatList);
+        //console.log("add chat, newChatList", this.newChatList);
       }
       return this._allchats;
     },
@@ -225,18 +231,16 @@ export let Chat = {
 let testchat = {
   l: [],
   get list() {
-    for (let i = this.l.length; i < 720; i++) {
+    for (let i = this.l.length; i < 12000; i++) {
       const el = {
         type: "推 ",
         id: "Zoosewu ",
         time: new Date(),
       };
-      el.msg = i + " 太神啦太神啦太神啦太神啦太神啦";
+      el.msg = i + " 太神啦 https://youtu.be/23y5h8kQsv8?t=4510 太神啦 https://youtu.be/23y5h8kQsv8?t=4510 太神啦";
       el.time.setHours(18);
       el.time.setMinutes(0);
-      el.time.setSeconds(i * 10);
-      el.timeH = paddingLeft(el.time.getHours(), +2);
-      el.timem = paddingLeft(el.time.getMinutes(), +2);
+      el.time.setSeconds(i * 3);
       el.index = i;
       el.gray = true;
       this.l.push(el);

@@ -41,7 +41,7 @@
     return Vue;
   };
 
-  const enableDevtools = () => {
+  function enableDevtools() {
     if (isActivated) {
       //console.log("isActivated");
       return;
@@ -51,6 +51,7 @@
 
     if (!Vue) {
       if (showlog) console.log("No Vue instance.");
+      setTimeout(enableDevtools, 2000);
       return;
     }
 
@@ -58,7 +59,7 @@
 
     Vue.config.devtools = true;
     window.__VUE_DEVTOOLS_GLOBAL_HOOK__.emit('init', Vue);
-    if (showlog) console.log("Hook devtool!");
+    if (showlog) console.log("Hook devtool!", [Vue]);
 
   };
 
