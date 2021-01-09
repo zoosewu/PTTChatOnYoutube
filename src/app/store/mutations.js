@@ -15,6 +15,7 @@ export const state = {
     lastpushtime: new Date(),
     pushcount: 0,
     nowpush: 0,
+    gettedpost: false,
   },
   chatlist: [],
   log: {},

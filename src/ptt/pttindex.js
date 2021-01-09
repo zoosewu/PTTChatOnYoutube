@@ -132,7 +132,7 @@ export function InitPTT(messageposter) {
       const result = PTT.screenHaveText(filter.reg);
       if (result != null) {
         PTT.pagestate = filter.state;
-        console.log("==page state = " + PTT.pagestate);
+        console.log("==page state = " + PTT.pagestate, result);
         msg.PostMessage("PTTState", PTT.pagestate);
         return;
       }
@@ -363,45 +363,106 @@ export function InitPTT(messageposter) {
     else if (PTT.pagestate === 2) console.log("==GetPushTask error, PTT.pagestate == 2.");
     return res;
   }
+  //
+  // -----------------------task setNewPush --------------------
+  let SetNewPushtrytime = 5;
+  function SetNewPush() {
+    const res = { pass: false, callback: () => { } }
+    SetNewPushtrytime--;
+    if (SetNewPushtrytime < 0) { res.pass = true; return res; }
+    if (PTT.pagestate === 4 || PTT.pagestate === 3) {
+      const pushcd = PTT.screenHaveText(/◆ 本文已過長, 禁止快速連續推文/);
+      if (pushcd) {
+        msg.PostMessage("alert", { type: 0, msg: "本文已過長, 禁止快速連續推文。" });
+        res.pass = true
+        return res;
+      }
+      const pushtext = PTTPost.setpush + "\n";
+      const pushcheck = PTT.screenHaveText(/(.+?): (.+?) +確定\[y\/N]:/);
+      if (pushcheck) {
+        console.log("pushcheck");
+        PTTPost.setpush = "";
+        PTTPost.pushedtext = pushcheck[2];
+        insertText("y\n");
+        res.pass = true
+        return res;
+      }
+      const pushtype = PTT.screenHaveText(/您覺得這篇文章/);
+      if (pushtype) {
+        console.log("pushtype");
+        insertText("\n" + pushtext);
+        return res;
+      }
+      const pushdirect = PTT.screenHaveText(/時間太近, 使用|作者本人, 使用/);
+      if (pushdirect) {
+        console.log("pushdirect", pushdirect);
+        insertText(pushtext);
+        return res;
+      }
+      const unpush = PTT.screenHaveText(/瀏覽 第 .+ 頁 \( *(\d+)%\)/);
+      if (unpush) {
+        console.log("unpush");
+        insertText("%");
+        return res;
+      }
+    }
+    else if (PTT.pagestate === 1) console.log("==GetPushTask error, PTT.pagestate == 1.");
+    else if (PTT.pagestate === 2) console.log("==GetPushTask error, PTT.pagestate == 2.");
+    return res;
+  }
+  //------------------------task--------------------------------
+  function RunTask(tasklist, finishBehavior) {
+    if (PTTPost.isgotopost && PTT.pagestate === 2) {
+      msg.PostMessage("alert", { type: 0, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
+      PTT.unlock();
+    }
+    for (let i = 0; i < tasklist.length; i++) {
+      const result = tasklist[i]();
+      if (result.pass === false) {
+        result.callback();
+        PTT.commands.add(/.*/, "", RunTask, tasklist, finishBehavior);
+        return;
+      }
+    }
+    finishBehavior();
+  }
   //------------------------tasks--------------------------------
+
   const task = {};
   task.GetPostByLine = [boardcheck, PostCheck, PotsTitleCheck, PostLineCheck, PostPercentCheck];
   task.GetPostRecentLine = [boardcheck, PostCheck, PotsTitleCheck, GetRecentLine];
-  function GetRecentLineTask() {
-    if (PTTPost.isgotopost && PTT.pagestate === 2) {
-      msg.PostMessage("alert", { type: 0, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
-      PTT.unlock();
+  task.SetPostNewPush = [boardcheck, PostCheck, PotsTitleCheck, SetNewPush];
+  function SetNewPushTask(pushtext) {
+    let allowedchar = 24;
+    let addedtext = "";
+    let trytime = 7;
+    while (trytime >= 0 && allowedchar > 0) {
+      const addtextreg = "(.{0," + allowedchar + "})(.*)";// (.{0,24})(.*)
+      const result = new RegExp(addtextreg).exec(pushtext);
+      addedtext += result[1];
+      const halfchar = addedtext.match(/[A-Za-z0-9_ :\/\\.?=%]/g);
+      const halfcount = halfchar ? halfchar.length : 0;
+      allowedchar = parseInt((48 - addedtext.length * 2 + halfcount) / 2);
+      pushtext = result[2];
+      console.log("SetNewPushTask Text Reg==", addedtext.length * 2, "==", halfcount, "==", halfchar);
+      console.log("SetNewPushTask Text Reg==", addedtext, "==", pushtext, "==", allowedchar, "==", result);
+      trytime--;
     }
-    //console.log("==(startline, endline): ( " + PTTPost.startline + ", " + PTTPost.endline + ")");
-    for (let i = 0; i < task.GetPostRecentLine.length; i++) {
-      const element = task.GetPostRecentLine[i];
-      const result = element();
-      //console.log("==Run task", { element, result });
-      if (result.pass === false) {
-        result.callback();
-        PTT.commands.add(/.*/, "", GetRecentLineTask);
-        return;
-      }
-    }
-    PTT.commands.add(/.*/, "", GetPushTask);
+    SetNewPushtrytime = 5;
+    PTTPost.setpush = addedtext;
+    RunTask(task.SetPostNewPush, recieveNewPush);
   }
-  function GetPushTask() {
-    if (PTTPost.isgotopost && PTT.pagestate === 2) {
-      msg.PostMessage("alert", { type: 0, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
-      PTT.unlock();
-    }
-    //console.log("==(startline, endline): ( " + PTTPost.startline + ", " + PTTPost.endline + ")");
-    for (let i = 0; i < task.GetPostByLine.length; i++) {
-      const element = task.GetPostByLine[i];
-      const result = element();
-      //console.log("==Run task", { element, result });
-      if (result.pass === false) {
-        result.callback();
-        PTT.commands.add(/.*/, "", GetPushTask);
-        return;
-      }
-    }
-    //end
+
+  function recieveNewPush() {
+    PTT.unlock();
+    msg.PostMessage("alert", { type: 2, msg: "推文成功。" });
+    msg.PostMessage("pushedText", PTTPost.pushedtext);
+    PTTPost.pushedtext = "";
+    if (showalllog) console.log(PTTPost);
+  }
+  function GetRecentLineTask() { RunTask(task.GetPostRecentLine, () => PTT.commands.add(/.*/, "", GetPushTask)); }
+  function GetPushTask() { RunTask(task.GetPostByLine, recievePushes); }
+  function recievePushes() {
     PTT.unlock();
     msg.PostMessage("alert", { type: 2, msg: "文章讀取完成。" });
     msg.PostMessage("newPush", PTTPost);
@@ -417,7 +478,7 @@ export function InitPTT(messageposter) {
         PTTPost.pushes = [];
         PTTPost.samepost = true;
         PTTPost.endline = startline;
-        PTTPost.isgotopost = false;
+        PTTPost.isgotopost = true;
         if (reportmode) console.log("Get same post's push.", bname, PTTPost.board, pAID, PTTPost.AID);
       }
       else {
@@ -525,4 +586,5 @@ export function InitPTT(messageposter) {
   };
   msg["getPushByLine"] = data => { console.log("getPushByLine", data); PTTLockCheck(GetPush, data.AID, data.board, data.startline, GetPushTask); };
   msg["getPushByRecent"] = data => { console.log("getPushByRecent", data); PTTLockCheck(GetPush, data.AID, data.board, data.recent, GetRecentLineTask); };
+  msg["setNewPush"] = data => { console.log("setNewPush", data); PTTLockCheck(SetNewPushTask, data); };
 }

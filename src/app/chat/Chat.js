@@ -1,7 +1,7 @@
 import { store } from "../store/store.js";
 import { ChatScrollBtn } from './ChatScrollBtn.js';
 import { ChatElement } from './ChatElement.js';
-
+import { chatSetNewPush } from './chatSetNewPush.js';
 export let Chat = {
   inject: ['msg', 'isStream'],
   data: function () {
@@ -216,14 +216,17 @@ export let Chat = {
   },
   components: {
     "chat-scroll-btn": ChatScrollBtn,
+    "chat-set-new-push": chatSetNewPush,
   },
-  template: `<div id="PTTChat-contents-Chat-main" ref="chatmain" class="flex-grow-1 mh-100 row"
-  style="overscroll-behavior: none;overflow-y: scroll;">
-  <ul id="PTTChat-contents-Chat-pushes" class="col mb-0 px-0" v-bind:post-aid="postAID" ref="chats">
-    <chat-item :index="index" :chat="item" :gray="item.gray" :key="item.index" v-for="(item, index) in chatList">
-    </chat-item>
-  </ul>
-  <chat-scroll-btn :is-auto-scroll="isAutoScroll" @autoscrollclick="EnableAutoScroll()"></chat-scroll-btn>
+  template: `<div id="PTTChat-contents-Chat-main" class="h-100" style="display: flex;flex-direction: column;">
+  <div ref="chatmain" class="mh-100 row" style="overscroll-behavior: none;overflow-y: scroll; flex: 1 1 auto;">
+    <ul id="PTTChat-contents-Chat-pushes" class="col mb-0 px-0" v-bind:post-aid="postAID" ref="chats">
+      <chat-item :index="index" :chat="item" :gray="item.gray" :key="item.index" v-for="(item, index) in chatList">
+      </chat-item>
+    </ul>
+    <chat-scroll-btn :is-auto-scroll="isAutoScroll" @autoscrollclick="EnableAutoScroll()"></chat-scroll-btn>
+  </div>
+  <chat-set-new-push></chat-set-new-push>
 </div>`,
 }
 

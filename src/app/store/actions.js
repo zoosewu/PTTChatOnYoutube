@@ -35,6 +35,7 @@ export const actions = {
         lastpushtime: new Date(),
         pushcount: 0,
         nowpush: 0,
+        gettedpost: true,
       };
       const t = newpost.date;
       commit(types.UPDATELOG, { type: "postaid", data: newpost.AID });
