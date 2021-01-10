@@ -7,8 +7,12 @@ export let ChatScrollBtn = {
   },
   computed: {
     className: function () {
+      let classes = ["position-absolute"];
+      if (this.isAutoScroll) { classes.push("d-none"); }
+      return classes.join(' ');
+      /*
       const disable = this.isAutoScroll ? "d-none" : "";
-      return "position-absolute " + disable;
+      return "position-absolute " + disable;*/
     }
   },
   template: `<div id="PTTChat-contents-Chat-btn" :class="className"

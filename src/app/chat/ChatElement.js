@@ -27,7 +27,7 @@ Vue.component('chat-item', {
 
   },
   // mounted() { console.log("mounted", this.index, this.chat); },
-  updated: function () { console.log('updated, uid, listIndex, chatIndex, msg', this.uid, this.index, this.chat.index, this.chat.msg); },
+  updated: function () { if (reportmode) console.log('updated, uid, listIndex, chatIndex, msg', this.uid, this.index, this.chat.index, this.chat.msg); },
   template: `<li :id="chat.index" class="media px-4" v-bind:style="bgc">
   <div class="media-body mw-100">
     <div class="d-flex flex-row">

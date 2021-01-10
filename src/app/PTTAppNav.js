@@ -2,11 +2,11 @@ export let PTTAppNav = {
   computed: {
     isGotoChat: function () {
       const go = this.gotoChat;
-      console.log("isGotoChat", go);
+      if (reportmode) console.log("isGotoChat", go);
       if (go) {
         this.$store.dispatch('gotoChat', false);
         this.$refs.chatbtn.click();
-        console.log("gotoChat");
+        if (reportmode) console.log("gotoChat");
       }
       return go;
     },

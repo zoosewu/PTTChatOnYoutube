@@ -21,13 +21,14 @@ export const state = {
   log: {},
   firstChatTime: {},
   lastChatTime: {},
-  VStartTime: ["18", "00", "00"],
+  VStartTime: ["18", "00", "00", false],
   VStartDate: (() => { const t = new Date(); t.setHours(0); t.setMinutes(0); t.setSeconds(0); return t; })(),
   VPlayedTime: 0,
   VCurrentTime: new Date(),
   pageChange: false,
   gotoChat: false,
   PTTState: 0,
+  enablesetnewpush: false,
 }
 // mutations
 export const mutations = {
@@ -76,5 +77,10 @@ export const mutations = {
   [types.PTTSTATE](state, pttstate) {
     //console.log("PTTState mutations", pttstate);
     state.PTTState = pttstate;
+  },
+  [types.ENABLESETNEWPUSH](state, isenable) {
+    //console.log("PTTState mutations", pttstate);
+    GM_setValue('enablesetnewpush', isenable);
+    state.enablesetnewpush = isenable;
   },
 }

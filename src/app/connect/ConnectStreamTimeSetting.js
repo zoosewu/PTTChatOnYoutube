@@ -1,4 +1,5 @@
 export let ConnectStreamTimeSetting = {
+  inject: ['isStream'],
   data: function () {
     return {
       VideoTime: "18:00:00",
@@ -7,7 +8,6 @@ export let ConnectStreamTimeSetting = {
   },
   methods: {
     timeChange: function () {
-      console.log(this.VideoTime);
       let videotime = [];
       let result = /(\d\d)\:(\d\d)/.exec(this.VideoTime);
       let secresult = /\d\d\:\d\d\:(\d\d)/.exec(this.VideoTime);
@@ -21,14 +21,22 @@ export let ConnectStreamTimeSetting = {
       }
       if (secresult) videotime.push(secresult[1]);
       else videotime.push("00");
-      result.push(this.isbeforpost);
+      videotime.push(this.isbeforpost);
+      console.log("timeChange", this.VideoTime, videotime);
       this.$store.dispatch('updateVideoStartTime', videotime);
     }
   },
-  mounted() {
-    this.$store.dispatch('updateVideoStartTime', ["18", "00", "00"]);
+  computed: {
+    className: function () {
+      let classes = ["form-row", "mb-2"];
+      if (this.isStream) { classes.push("d-none"); }
+      return classes.join(' ');
+    }
   },
-  template: `<div id="PTTConnect-Time-Setting" class="form-row mb-2">
+  mounted() {
+    this.$store.dispatch('updateVideoStartTime', ["18", "00", "00", false]);
+  },
+  template: `<div id="PTTConnect-Time-Setting" :class="className">
   <div class="form-group col-8">
     <label for="appt-time">實況重播開台時間:</label>
     <input id="stream-time" type="time" name="stream-time" step="2" v-model="VideoTime" @change="timeChange">

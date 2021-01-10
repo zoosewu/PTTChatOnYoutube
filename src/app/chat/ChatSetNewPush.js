@@ -16,23 +16,33 @@ export let chatSetNewPush = {
     removePushedText(text) {
       const reg = "(" + text + ")(.*)";
       const result = new RegExp(reg).exec(this.pushtext);
-      console.log("removePushedText", text, this.pushtext, result);
+      if (reportmode) console.log("removePushedText", text, this.pushtext, result);
       this.pushtext = result[2];
     }
   },
   computed: {
+    placeholder: function () {
+      if (this.enableSetNewPush) return "輸入文字以推文...";
+      else return "請到連線設定開啟測試版推文功能";
+    },
+    className: function () {
+      let classes = ["form-row", "my-2"];
+      if (!this.isStream) { classes.push("d-none"); }
+      return classes.join(' ');
+    },
     ...Vuex.mapGetters([
       'post',
       'PTTState',
+      'enableSetNewPush',
     ])
   },
   mounted() {
     this.msg["pushedText"] = data => this.removePushedText(data);
   },
-  template: `<div class="form-row my-2">
+  template: `<div :class="className">
   <div class="col">
-    <input id="setnewpush" class="form-control" type="text" placeholder="輸入文字以推文..." autocomplete="off"
-      v-model.lazy="pushtext" v-on:keyup.13="setPush">
+    <input id="setnewpush" class="form-control" type="text" style="font-size:14px" :placeholder="placeholder" autocomplete="off"
+      v-model.lazy="pushtext" v-on:keyup.13="setPush" :disabled="!enableSetNewPush">
   </div>
   <div class="col-2 px-0">
     <button id="setnewpushbtn" class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="setPush()">推文</button>

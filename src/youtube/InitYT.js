@@ -38,7 +38,6 @@ export function InitYT(messageposter) {
       //生出插件
       let isstream = checkvideotype();
       InitApp(ChatContainer, WhiteTheme, isstream, msg);
-
       setTimeout(CheckChatInstanced, 5000);
     }
     else {

@@ -116,9 +116,13 @@ export const actions = {
     const time = state.VPlayedTime;//[H,m,s,isVideoVeforePost]
     let currtime = new Date(vstart.valueOf());
     currtime.setSeconds(vstart.getSeconds() + time);
+    if (reportmode)console.log("updateVideoCurrentTime check, currtime.valueOf() < state.post.date.valueOf()", currtime.valueOf() < state.post.date.valueOf(), state.VStartTime, state.VStartTime[3], currtime.valueOf(), state.post.date.valueOf());
+
     if (currtime.valueOf() < state.post.date.valueOf()) {
+      if (reportmode)console.log("updateVideoCurrentTime + 24");
       currtime.setHours(currtime.getHours() + 24);
       if (state.VStartTime[3]) {
+        if (reportmode)console.log("updateVideoCurrentTime brfore - 24");
         currtime.setHours(currtime.getHours() - 24);
       }
     }
@@ -135,5 +139,9 @@ export const actions = {
   PTTState: ({ commit }, pttstate) => {
     //console.log("PTTState actions", pttstate);
     commit(types.PTTSTATE, pttstate);
+  },
+  enableSetNewPush: ({ commit }, isenable) => {
+    //console.log("PTTState actions", pttstate);
+    commit(types.ENABLESETNEWPUSH, isenable);
   },
 }
