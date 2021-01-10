@@ -1,0 +1,13 @@
+<li :id="chat.index" class="media px-4" v-bind:style="bgc">
+  <div class="media-body mw-100">
+    <div class="d-flex flex-row">
+      <h5 :class="typeclass">{{ this.chat.type }}</h5>
+      <h5 class="ptt-chat-id mr-2 mb-0 flex-grow-1">{{this.chat.id }}</h5>
+      <h5 class="ptt-chat-time mb-0">{{this.timeH }}:{{this.timem}}</h5>
+    </div>
+    <div>
+      <h4 class="ptt-chat-msg mb-0 ml-2 mr-2" style="word-break: break-all;" v-html="msg"></h4>
+    </div>
+    <div class="mb-4"> </div>
+  </div>
+</li>

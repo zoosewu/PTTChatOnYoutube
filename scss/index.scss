@@ -1,0 +1,144 @@
+$ptt-theme-colors: ();
+@for $colorlight from 0 through 20 {
+  $map: (pttbgc-#{$colorlight}: lighten(#000, $colorlight * 5%));
+  $ptt-theme-colors: map-merge($ptt-theme-colors, $map);
+}
+$ptt-theme-reversecolor: ();
+@for $colorlight from 0 through 10 {
+  $colorreverse: 10-$colorlight;
+  $map: (pttc-#{$colorreverse}: lighten(#000, $colorlight * 10%));
+  $ptt-theme-reversecolor: map-merge($ptt-theme-reversecolor, $map);
+}
+
+$chat-type: #fff;
+$chat-type-n: #f00;
+$chat-id: #ff6;
+$chat-time: #bbb;
+$chat-message: #990;
+$chat-text: #f8f9fa;
+
+$black: #000;
+
+$rem1: 10px;
+
+$font-size-base: 12px;
+
+@import "variables";
+.blockquote-footer::before {
+  content: "";
+}
+
+// Custom.scss
+// Option B: Include parts of Bootstrap
+
+// Required
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+@import "node_modules/bootstrap/scss/mixins";
+@import "fontsize";
+
+// Optional
+// @import "node_modules/bootstrap/scss/mixins";
+@import "node_modules/bootstrap/scss/root";
+//@import "node_modules/bootstrap/scss/reboot";
+@import "reboot";
+// @import "node_modules/bootstrap/scss/type";
+@import "type";
+// @import "node_modules/bootstrap/scss/images";
+@import "node_modules/bootstrap/scss/code";
+@import "node_modules/bootstrap/scss/grid";
+@import "node_modules/bootstrap/scss/tables";
+@import "node_modules/bootstrap/scss/forms";
+@import "node_modules/bootstrap/scss/buttons";
+@import "node_modules/bootstrap/scss/transitions";
+// @import "node_modules/bootstrap/scss/dropdown";
+@import "node_modules/bootstrap/scss/button-group";
+// @import "node_modules/bootstrap/scss/input-group";
+// @import "node_modules/bootstrap/scss/custom-forms";
+@import "node_modules/bootstrap/scss/nav";
+@import "node_modules/bootstrap/scss/navbar";
+@import "node_modules/bootstrap/scss/card";
+// @import "node_modules/bootstrap/scss/breadcrumb";
+// @import "node_modules/bootstrap/scss/pagination";
+// @import "node_modules/bootstrap/scss/badge";
+// @import "node_modules/bootstrap/scss/jumbotron";
+@import "node_modules/bootstrap/scss/alert";
+// @import "node_modules/bootstrap/scss/progress";
+@import "node_modules/bootstrap/scss/media";
+// @import "node_modules/bootstrap/scss/list-group";
+// @import "node_modules/bootstrap/scss/close";
+// @import "node_modules/bootstrap/scss/toasts";
+// @import "node_modules/bootstrap/scss/modal";
+// @import "node_modules/bootstrap/scss/tooltip";
+// @import "node_modules/bootstrap/scss/popover";
+// @import "node_modules/bootstrap/scss/carousel";
+// @import "node_modules/bootstrap/scss/spinners";
+@import "node_modules/bootstrap/scss/utilities";
+@import "node_modules/bootstrap/scss/print";
+@import "vueanimation";
+
+@function darken-color($color, $bgcolor, $warning: false) {
+  $darkenpercent: 30%;
+  $clightness: lightness($color);
+  $bglightness: lightness($bgcolor);
+  @if $bglightness > 55% {
+    $bglightness: ($bglightness - 100%) * $darkenpercent/100%/100% - 0.5;
+  } @else {
+    $bglightness: $bglightness * $darkenpercent/100%/100%;
+  }
+  $darken: $clightness * $bglightness;
+  $newcolor: adjust-color($color, $lightness: $darken);
+  @if $warning {
+    //@warn "#{$color $clightness} , #{$bgcolor $bglightness },#{$darken} -> #{lightness($newcolor)} ";
+  }
+  @return $newcolor;
+}
+@each $name, $color in $ptt-theme-colors {
+  //@warn $name;
+  .#{$name} {
+    .ptt-bg {
+      background-color: $color;
+    }
+
+    .ptt-chat-id {
+      color: darken-color($chat-id, $color, true);
+    }
+    .ptt-chat-time {
+      color: darken-color($chat-time, $color);
+    }
+    .ptt-chat-msg {
+      color: darken-color($chat-message, $color) !important;
+    }
+
+    .ptt-chat-type {
+      color: darken-color($chat-type, $color);
+    }
+    .ptt-chat-type-n {
+      color: darken-color($chat-type-n, $color);
+    }
+  }
+}
+
+@each $name, $color in $ptt-theme-reversecolor {
+  .#{$name} {
+    .ptt-border {
+      border: 1px solid $color !important;
+    }
+    .ptt-text {
+      color: $color !important;
+    }
+    .ptt-btnoutline {
+      color: $color;
+      @include button-outline-variant($color);
+    }
+    .nav-link.active,
+    .nav-item.show .nav-link {
+      color: $color;
+      background-color: $nav-tabs-link-active-bg;
+      border-color: $nav-tabs-link-active-border-color;
+    }
+  }
+}
+.ptt-chat-msg a {
+  text-decoration: underline !important;
+}

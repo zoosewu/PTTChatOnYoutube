@@ -1,8 +1,6 @@
 # PTTChatOnYoutube
 在Youtube上面顯示PTT推文
 
-如果想了解腳本介紹請[點我](https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage)。
-
 ## 如何開始開發
 
 編輯腳本:
@@ -28,28 +26,40 @@ min檔為VScode插件Minify自動生成，以避免.js太冗長
 因為我本身是寫Unity、C#，前後端都不太了解也不常碰js。如果有任何建議或指教請歡迎提供討論。
 
 ## TODO List
-#### Holotools
-- [ ] 新增對Holotools的支援
-
 #### Youtube
 - [ ] 修正自動滾動功能有時候會失敗的問題
-- [ ] 修正自動滾在第一則推文或最後一則推文有可能會怪怪的問題
+- [ ] 彈幕版本
 - [ ] 彈幕版本
 
 #### PTT
-- [ ] 將更詳細的PTT目前狀態做判定及記錄，避免腳本操作意外出錯
 - [ ] 推文功能
 - [ ] 任務柱列功能
 - [ ] 修正PTT有時候會爆炸沒處理到的問題
-- [ ] 修正實況模式中，自動更新推文有時候會跑到別的文章去導致失敗的問題
 
 #### Script
-- [ ] 導入nodejs 
-- [ ] 導入userscript-builder 
-- [ ] 根據userscript-builder 將腳本根據功能拆分 方便功能檢視以及多工協作
-- [ ] 將程式重構，把變數跟函式拆分得更乾淨
-- [ ] 導入bootstrap 客製化css參數
+- [ ] 把舊的功能搬到新的vue物件上面
+- [ ] 透過vuex element資料傳輸 [vue教學](https://ithelp.ithome.com.tw/users/20107673/ironman/1470?page=1) [todolist範例](https://codepen.io/oddvalue/pen/dpBGpj) [todolist範例2](https://codepen.io/mkumaran/pen/vZgara?editors=1010)
+- [ ] 根據網址撈實況開始時間[HoloStats](https://github.com/PoiScript/HoloStats/tree/master) [舊版api](https://holo.poi.cat/api/v3/streams_report?ids=skSmTEnAyGk&metrics=youtube_stream_viewer&start_at=0&end_at=0) [新版api](https://holo.poi.cat/api/v3/streams_report?ids=77OTDrqhN80&metrics=youtube_stream_viewer&start_at=0&end_at=0) [req測試](https://reqbin.com/)
+- [ ] 測試[彩虹官網](https://niji-mado.web.app/home)的支援度，[彩虹的開台統計](https://2434analytics.com/rank/dailyView.html)
 
-目前暫時不接受任何feature的PR，只接受hotfix的PR。
+#### CSS 
+- [ ] 確認插件在各網站的排版都正常且一樣
 
-在未來導入userscript-builder將功能拆分之後非常歡迎貢獻code！
+#### 本專案授權
+
+MIT License
+Copyright (c) 2020-2021 zoosewu
+
+#### 使用的開源程式碼授權
+[term.ptt.cc 自動登入](https://openuserjs.org/scripts/maple3142/term.ptt.cc_%E8%87%AA%E5%8B%95%E7%99%BB%E5%85%A5)
+```
+author       maple3142
+namespace    https://blog.maple3142.net/
+license      MIT
+```
+[enable-vue-devtools](https://github.com/52cik/enable-vue-devtools)
+```
+author       楼教主
+MIT License
+Copyright (c) 2019 楼教主
+```

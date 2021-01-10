@@ -1,0 +1,5 @@
+// Responsive font-size mixin
+@mixin rfs($fs, $important: false) {
+  $rfs-suffix: if($important, " !important", "");
+  font-size: #{$fs}#{$rfs-suffix};
+}

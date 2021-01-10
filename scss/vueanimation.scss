@@ -1,0 +1,11 @@
+.list-alert-enter,
+.list-alert-leave-to {
+  opacity: 0;
+  transform: translateX(300px);
+}
+.list-alert-leave-active {
+  position: absolute;
+}
+.alert {
+  transition: all 1s;
+}
