@@ -109,10 +109,6 @@ if (!isTopframe) throw "[Script Stopped: This script should run in top frame onl
 
     晚上為PTT使用尖峰時段，負載過大時PTT會不給連線，只能稍微等一下再重新嘗試。
 
-**可以直接用插件推文嗎**
-
-    未來會實作。
-
 **插件的自動滾動有時候會壞掉**
 
     請到github issue回報給我，並詳述什麼情況下會壞掉，壞掉前最後一次滾動的樣子有沒有異常。

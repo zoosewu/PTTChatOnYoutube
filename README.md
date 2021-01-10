@@ -3,38 +3,29 @@
 
 ## 如何開始開發
 
-編輯腳本:
->1. 推薦使用violentmonkey，並使用chrome開發，Firefox無法載入本地檔案。
->2. 管理擴充功能/套件->允許存取檔案位置打勾
->3. 新建腳本並將開頭註解的\=\=UserScript\=\=部分貼進去
->4. 將@require file://E:\\*\Main.user.js 路徑改成你的檔案位置
->5. 用你習慣的IDE打開腳本並修改Main.user.js腳本
 
-所有的腳本最終都會合併到Main.user.js發佈，發佈前會設置正確的版號並刪除開發用的```@require file://E:\\*\Main.user.js```
+推薦使用violentmonkey，並使用chrome開發，Firefox無法載入本地檔案。
 
-PTTConnect部分可以單獨在term.ptt.cc測試
+Chrome: 管理擴充功能/套件->允許存取檔案位置打勾，然後在腳本更新網址輸入腳本路徑```file:///C:/.../public/PTTChatOnYt.user.js```
+Firefox: 在專案底下輸入 ```npm run http```開啟本地伺服器，然後在腳本更新網址輸入伺服器腳本位置```http://127.0.0.1:8889/public/PTTChatOnYt.user.js```
 
-min檔為VScode插件Minify自動生成，以避免.js太冗長
-
-預覽腳本效果:
->1. 儲存檔案
->2. 儲存violentmonkey腳本(沒有作任何更動也要儲存，否則會讀取瀏覽器內的快取不會重新載入腳本)
->3. 重新整理網頁，violentmonkey會讀取完標頭後載入本地檔案。
+在專案底下輸入 ```npm run watch-dev```，每次腳本存當都會自動更新腳本
+在專案底下輸入 ```npm run watch-scss-map```，每次CSS存當都會自動更新腳本
 
 ## 建議及回報
 
-因為我本身是寫Unity、C#，前後端都不太了解也不常碰js。如果有任何建議或指教請歡迎提供討論。
+因為我本身是寫Unity C#，前後端都不太了解也不常碰js。
+
+如果有任何建議或指教請歡迎討論或發PR。
 
 ## TODO List
-#### Youtube
+#### App
 - [ ] 修正自動滾動功能有時候會失敗的問題
 - [ ] 彈幕版本
-- [ ] 彈幕版本
+- [ ] 修正實況紀錄效能很差的問題，目前猜測是vue的監視功能__ob__導致
 
 #### PTT
-- [ ] 推文功能
 - [ ] 任務柱列功能
-- [ ] 修正PTT有時候會爆炸沒處理到的問題
 
 #### Script
 - [ ] 把舊的功能搬到新的vue物件上面
@@ -45,12 +36,12 @@ min檔為VScode插件Minify自動生成，以避免.js太冗長
 #### CSS 
 - [ ] 確認插件在各網站的排版都正常且一樣
 
-#### 本專案授權
+## 本專案授權
 
 MIT License
 Copyright (c) 2020-2021 zoosewu
 
-#### 使用的開源程式碼授權
+## 使用的開源程式碼授權
 [term.ptt.cc 自動登入](https://openuserjs.org/scripts/maple3142/term.ptt.cc_%E8%87%AA%E5%8B%95%E7%99%BB%E5%85%A5)
 ```
 author       maple3142
