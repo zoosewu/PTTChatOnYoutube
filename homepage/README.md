@@ -66,7 +66,7 @@
 **term.ptt.cc使用者注意須知**
 
     如果你是透過瀏覽器使用PTT，並且有安裝其他PTT的輔助腳本例如自動登入/自動跳過畫面的話，
-    請在腳本最前面加上以下兩行程式碼，這是讓PTT如果不是在主視窗而是網頁內的元素時腳本就自動失效。
+    請在"其他"腳本最前面加上以下兩行程式碼，這是讓其他腳本不會干擾背景執行的PTT。
 ```js
 let isTopframe = (window.top == window.self);
 if (!isTopframe) throw "[Script Stopped: This script should run in top frame only.]";

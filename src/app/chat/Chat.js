@@ -25,7 +25,7 @@ export let Chat = {
       if (this.lastactiveChat != this.activeChat) {
         this.lastactiveChat = this.activeChat;
         //console.log("gray task, start, end, activeChat", this.chatList[0].index, this.chatList[this.chatList.length - 1].index, this.activeChat);
-        if (!disableGray) {
+        if (!this.disableGray) {
           for (let i = 0; i < this.chatList.length; i++) {
             chat = this.chatList[i];
             const isgray = chat.index > this.activeChat;

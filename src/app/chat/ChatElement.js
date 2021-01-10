@@ -19,15 +19,12 @@ Vue.component('chat-item', {
       return typecolor + " mr-2 mb-0";
     },
     bgc: function () {
-      if (this.disableGray) {
-        return "";
-      }
-      else {
-        // console.log("bgc", this.index, this.chat, this.chat.gray);
-        const isUnchat = this.gray ? "0.25" : "0";
-        const color = "rgba(128, 128, 128, " + isUnchat + ")";
-        return { backgroundColor: color, transition: "2s" };
-      }
+      if (this.disableGray) return "";
+
+      // console.log("bgc", this.index, this.chat, this.chat.gray);
+      const isUnchat = this.gray ? "0.25" : "0";
+      const color = "rgba(128, 128, 128, " + isUnchat + ")";
+      return { backgroundColor: color, transition: "2s" };
     },
     ...Vuex.mapGetters([
       'disableGray',
