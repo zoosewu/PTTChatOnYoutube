@@ -4,9 +4,8 @@ import { HerfFilter } from './filter/HerfFilter.js';
 import { ytfilter } from './youtube/ytfilter.js';
 import { htfilter } from './holotools/htfilter.js';
 import { blankfilter } from './blank/blankfilter.js';
-//import { custom } from '../css/custom.css';
 
-//import '../css/index.css';
+import '../css/index.css';
 //dev use 
 let devmode = true;
 const defaultopen = false;
