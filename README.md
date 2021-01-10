@@ -3,10 +3,10 @@
 
 ## 如何開始開發
 
-
-推薦使用violentmonkey，並使用chrome開發，Firefox無法載入本地檔案。
+推薦使用violentmonkey，並使用chrome開發，Firefox無法載入本地檔案
 在專案底下輸入 ```npm run watch-dev```，每次腳本存當都會自動更新腳本
 在專案底下輸入 ```npm run watch-scss-map```，每次CSS存當都會自動更新腳本
+
 ###### Chrome更新腳本: 
 管理擴充功能/套件->允許存取檔案位置打勾
 在腳本更新網址輸入腳本路徑```file:///C:/.../public/PTTChatOnYt.user.js```
