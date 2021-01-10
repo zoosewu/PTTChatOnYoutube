@@ -29,6 +29,7 @@ export const state = {
   gotoChat: false,
   PTTState: 0,
   enablesetnewpush: false,
+  disablepushgray: false,
 }
 // mutations
 export const mutations = {
@@ -83,4 +84,10 @@ export const mutations = {
     GM_setValue('enablesetnewpush', isenable);
     state.enablesetnewpush = isenable;
   },
+  [types.DISABLEPUSHGRAY](state, disable) {
+    //console.log("PTTState mutations", pttstate);
+    GM_setValue('disablepushgray', disable);
+    state.disablepushgray = disable;
+  },
+  
 }

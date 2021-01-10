@@ -25,11 +25,13 @@ export let Chat = {
       if (this.lastactiveChat != this.activeChat) {
         this.lastactiveChat = this.activeChat;
         //console.log("gray task, start, end, activeChat", this.chatList[0].index, this.chatList[this.chatList.length - 1].index, this.activeChat);
-        for (let i = 0; i < this.chatList.length; i++) {
-          chat = this.chatList[i];
-          const isgray = chat.index > this.activeChat;
-          //console.log("gray check, uid, activeChat, color, lastColor", chat.index, this.activeChat, isgray, chat.gray);
-          if (isgray != chat.gray) chat.gray = isgray;//console.log("gray change, graychange, chatuid", chat.gray, '=>', isgray, chat.index);
+        if (!disableGray) {
+          for (let i = 0; i < this.chatList.length; i++) {
+            chat = this.chatList[i];
+            const isgray = chat.index > this.activeChat;
+            //console.log("gray check, uid, activeChat, color, lastColor", chat.index, this.activeChat, isgray, chat.gray);
+            if (isgray != chat.gray) chat.gray = isgray;//console.log("gray change, graychange, chatuid", chat.gray, '=>', isgray, chat.index);
+          }
         }
       }
       if (this.isAutoScroll) {
@@ -168,6 +170,7 @@ export let Chat = {
       'post',
       'videoCurrentTime',
       'PTTState',
+      'disableGray',
     ])
   },
   mounted() {
@@ -176,7 +179,7 @@ export let Chat = {
 
     //初始化聊天列表
     this.lastChat = this.newChatList;
-    if (reportmode || true) this._allchats = testchat.list;//test
+    if (reportmode) this._allchats = testchat.list;//test
     else this._allchats = [];
     this.activeChat = 0;
     this.nextUpdateTime = Date.now() + 5 * 365 * 24 * 60 * 60 * 1000;

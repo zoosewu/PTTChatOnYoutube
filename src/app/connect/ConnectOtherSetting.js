@@ -1,13 +1,17 @@
 import { ConnectEnableSetNewChat } from './ConnectEnableSetNewChat.js';
+import { ConnectDisablePushGray } from './ConnectDisablePushGray.js';
 export let ConnectOtherSetting = {
   components: {
     "connect-enable-set-new-chat": ConnectEnableSetNewChat,
+    "connect-disable-push-gray": ConnectDisablePushGray,
+
   },
   template: `<div>
   <div id="PTTConnect-OtherSetting" class="form-row mb-2">
     <legend class="col-form-label col-3 pt-0">其他設定</legend>
     <div class="col">
       <connect-enable-set-new-chat></connect-enable-set-new-chat>
+      <connect-disable-push-gray></connect-disable-push-gray>
     </div>
   </div>
   <!-- test push button -->

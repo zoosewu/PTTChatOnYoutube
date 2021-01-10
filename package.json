@@ -35,7 +35,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "name": "pttchatonyoutube",
-  "version": "2.0.2311",
+  "version": "2.0.2350",
   "description": "Connect ptt pushes to youtube chatroom",
   "author": "Zoosewu",
   "license": "MIT",
@@ -46,7 +46,7 @@
     "fileName": "PTTChatOnYt",
     "meta": {
       "name:zh-TW": "Youtube聊天室顯示PTT推文",
-      "namespace": "https://github.com/zoosewu",
+      "namespace": "https://github.com/zoosewu/PTTChatOnYoutube",
       "description:zh-tw": "連結PTT推文到Youtube聊天室  讓你簡單追實況搭配推文",
       "match": [
         "https://www.youtube.com/*",

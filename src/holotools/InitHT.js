@@ -15,9 +15,9 @@ export function InitHT(messageposter) {
   //PTTApp global css
   setTimeout(() => {
     const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
-    const colorlight = "rgb(249, 249, 249)";
-    const colordark = "rgb(24, 24, 24)";
-    WhiteTheme = !(YTbgcolor === colordark);
+    const colorlight = "rgba(250, 250, 250, 0.824)";
+    console.log(YTbgcolor, colorlight, YTbgcolor === colorlight);
+    WhiteTheme = YTbgcolor === colorlight;
   }, 100);
   //run app instance loop
   let waswatch;

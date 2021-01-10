@@ -83,7 +83,7 @@ export const actions = {
       chat.type = currpush.type;
       chat.msg = currpush.content;
       chat.index = existpush + index;
-      chat.gray = true;
+      chat.gray = !state.disablepushgray;
       chatlist.push(chat);
       //console.log("new Chat", chat);
     }
@@ -143,5 +143,9 @@ export const actions = {
   enableSetNewPush: ({ commit }, isenable) => {
     //console.log("PTTState actions", pttstate);
     commit(types.ENABLESETNEWPUSH, isenable);
+  },
+  disablePushGray: ({ commit }, disablegray) => {
+    //console.log("PTTState actions", pttstate);
+    commit(types.DISABLEPUSHGRAY, disablegray);
   },
 }

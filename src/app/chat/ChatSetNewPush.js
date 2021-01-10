@@ -7,17 +7,19 @@ export let chatSetNewPush = {
   inject: ['msg', 'isStream'],
   methods: {
     setPush: function () {
-      const result = /.+/.exec(this.aid);
+      const result = /.+/.exec(this.pushtext);
       if (!result) this.$store.dispatch('Alert', { type: 0, msg: "請輸入文字。" });
       else if (this.PTTState < 1) this.$store.dispatch('Alert', { type: 0, msg: "PTT尚未登入，請先登入。" });
       else if (!this.post.gettedpost) this.$store.dispatch('Alert', { type: 0, msg: "尚未獲取文章，請先獲取文章。" });
       else this.msg.PostMessage("setNewPush", this.pushtext);
     },
     removePushedText(text) {
-      const reg = "(" + text + ")(.*)";
+      if (this.pushtext.indexOf(text) === 0) this.pushtext = this.pushtext.substring(text.length, this.pushtext.length);
+      console.log(this.pushtext);
+      /*const reg = "(" + text + ")(.*)";
       const result = new RegExp(reg).exec(this.pushtext);
       if (reportmode) console.log("removePushedText", text, this.pushtext, result);
-      this.pushtext = result[2];
+      this.pushtext = result[2];*/
     }
   },
   computed: {
