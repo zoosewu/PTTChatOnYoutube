@@ -9,17 +9,19 @@
 
 在專案底下輸入 ```npm run watch-scss-map```，每次CSS存當都會自動更新腳本
 
-###### Chrome更新腳本: 
+腳本更新依照下面步驟操作之後存檔完在violentmonkey設定那邊按一下更新就能測試
+
+###### Chrome: 
 管理擴充功能/套件->允許存取檔案位置打勾
 
 在腳本更新網址輸入腳本路徑```file:///C:/.../public/PTTChatOnYt.user.js```
 
-###### Firefox更新腳本: 
+###### Firefox: 
 在專案底下輸入 ```npm run http```開啟本地伺服器
 
 在腳本更新網址輸入伺服器腳本位置```http://127.0.0.1:8889/public/PTTChatOnYt.user.js```
 
-設定好之後存檔完在violentmonkey設定那邊按一下更新就能測試
+
 
 ## 建議及回報
 
