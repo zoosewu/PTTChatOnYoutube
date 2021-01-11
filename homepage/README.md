@@ -1,44 +1,60 @@
 # Youtube聊天室顯示PTT推文
 
-在Youtube的聊天室上面載入PTT推文。
+在Youtube/Holotools的網頁載入PTT討論串推文
 
-實況紀錄設定好開台時間會自動計算影片當下的推文，重現影片播放當時討論串的討論狀況。
+插件主要有以下兩個功能
 
-實況的話會定時載入新推文，並自動滾動到最下面。
+1. 實況:即時更新討論串推文，並且可以推文參與討論
+2. 實況紀錄:設定好影片開台時間後就能根據影片時間顯示當時的推文
+(實況紀錄目前僅支援Youtube實況影片)
 
 ![](https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/samplemain.gif "預覽圖")
 
-## 如何開始使用
+## 如何安裝
 
-1. [點我](https://violentmonkey.github.io/get-it/)下載violentmonkey
+**新使用者:**
 
-   推薦使用violentmonkey腳本載入器，這是在chrome、firefox皆可使用的腳本載入程式。
+1.[點我](https://violentmonkey.github.io/)安裝暴力猴
 
-   使用Tampermonkey及Greasymonkey不保證能正常運作。
+2.[點我](https://greasyfork.org/zh-TW/scripts/418469-pttchatonyt)安裝本插件
 
-2. [點我](https://greasyfork.org/zh-TW/scripts/418469-youtubechatonptt)下載插件
+**舊使用者:**
 
-3. Youtube實況或實況紀錄的聊天室左上角會有一個P的按鈕，點了就能打開介面
+腳本安裝之後每天會自動更新一次
 
-4. **實況請直接跳過此步驟**
+強制檢查更新:點右上角的暴力猴->設定(齒輪圖示)->檢查更新(重新整理圖示)
+
+## 如何使用
+
+1.打開插件
+
+   Youtube:實況或實況紀錄的聊天室左上角會有一個P的按鈕，點了就能打開介面
+
+   Holotools:右上角會有一個P的按鈕，點了就能打開介面
+
+2.設定實況紀錄開台時間 **(實況請直接跳過此步驟)**
 
    觀看實況紀錄前請先設定開台時間，腳本會自動預設為發文之後才開台，
 
    實況紀錄的開台在討論串發文之前的話請勾選發文前已開台。
 
-5. 輸入PTT帳號與密碼後登入
+3. 登入
 
-6. 輸入包含看板名稱的完整文章代碼
+   輸入PTT帳號與密碼並登入
+
+4. 輸入文章AID搜尋文章
+
+   請輸入包含看板名稱的完整文章代碼，範例:**#1V-u9-Uc (C_Chat)**
 
    (文章完整代碼獲得方法:在文章標題或文章內部鍵入大寫Q即可顯示複製)
 
-7. 文章讀取完成後會自動轉跳到聊天室介面
+5. 享受你的聊天室: )
 
-   實況紀錄:會自動計算並捲動到影片時間當下的推文。
+   文章讀取完成後會自動轉跳到聊天室介面
 
-   實況:會自動每2.5秒重新載入一次推文，並直接捲動到最新推文。
+   實況紀錄:會自動計算影片當下的時間並捲動到當時的推文。
 
-8. 享受你的聊天室: )
+   實況:會自動每2.5秒重新載入一次推文，並且可以推文參與討論。
 
 如果離開網頁時有個視窗一閃而過，那是背景執行的term.ptt.cc關閉視窗的警告動作，是正常現象。
 
@@ -51,15 +67,18 @@
 如果你沒有github帳號，也可以依照[問題回報範例](https://github.com/zoosewu/PTTChatOnYoutube/blob/master/.github/ISSUE_TEMPLATE/bug-report.md)及[建議範例](https://github.com/zoosewu/PTTChatOnYoutube/blob/master/.github/ISSUE_TEMPLATE/feature-request.md)在PTT內私信給我(Zoosewu)。
 
 ## 腳本功能
-全部都在你的瀏覽器處理，用你的瀏覽器撈資料再顯示出來。
+插件所有資料全部都在你的瀏覽器處理，
+用你的瀏覽器撈資料再顯示出來，
+沒有經過第三方的伺服器。
 
 紀錄重播功能
 * 在Youtube實況紀錄顯示PTT推文。
-* 設定好實況開台時間後會推算影片當下時間並重現影片播放當時討論串的討論狀況。
+* 自動計算影片當下的時間並捲動到當時的推文。
 
 實況功能
 * 在Youtube實況顯示PTT推文。
 * 定時更新文章最新推文。
+* 直接推文參與討論。
 
 ## 其他注意事項
 
@@ -93,7 +112,9 @@ if (!isTopframe) throw "[Script Stopped: This script should run in top frame onl
 
     本插件並且沒有架設任何伺服器去撈取資料，僅是單純的在你的前端開一個PTT幫你登入。
 
-    並且所有程式碼都沒有做任何的壓縮或混淆，在greasyfork、github以及你的瀏覽器都可以查看完整的程式碼以供任何人檢視，
+    並且帳號密碼的傳輸過程都有加密過，盡可能保護帳號的安全性。
+
+    所有程式碼都沒有做任何的壓縮或混淆，在greasyfork、github以及你的瀏覽器都可以查看完整的程式碼以供任何人檢視，
 
     如果對此插件還有疑慮的話請勿使用。
 
