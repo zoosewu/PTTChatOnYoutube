@@ -58,11 +58,11 @@
 
 如果離開網頁時有個視窗一閃而過，那是背景執行的term.ptt.cc關閉視窗的警告動作，是正常現象。
 
-想查看詳細的腳本介紹請[點我](https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage)。
+[腳本介紹](https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage): 如果你想想查看詳細的腳本介紹。
 
-想查看完整程式碼或是想要自己下載腳本測試修改請[點我](https://github.com/zoosewu/PTTChatOnYoutube/tree/master)。
+[Github](https://github.com/zoosewu/PTTChatOnYoutube/tree/master): 如果你想查看完整程式碼或是想要自己下載腳本測試、修改。
 
-有任何建議或是問題都可以[點我](https://github.com/zoosewu/PTTChatOnYoutube/issues)進入github issue回報，方便我追蹤進度。
+[回報問題或建議](https://github.com/zoosewu/PTTChatOnYoutube/issues): 有任何建議或是問題都可以在這邊回報，方便我追蹤進度。
 
 如果你沒有github帳號，也可以依照[問題回報範例](https://github.com/zoosewu/PTTChatOnYoutube/blob/master/.github/ISSUE_TEMPLATE/bug-report.md)及[建議範例](https://github.com/zoosewu/PTTChatOnYoutube/blob/master/.github/ISSUE_TEMPLATE/feature-request.md)在PTT內私信給我(Zoosewu)。
 
@@ -95,8 +95,7 @@ if (!isTopframe) throw "[Script Stopped: This script should run in top frame onl
 
 **有時候P的按鈕沒有冒出來給我用**
 
-    如果你是從youtube首頁或建議影片點進影片因為沒有重新載入頁面所以不會啟動。
-    只要重新整理就能恢復正常了。
+    請到github issue回報給我。
 
 **如果出現奇怪的現象或是你想了解腳本實際運作的情況**
 
