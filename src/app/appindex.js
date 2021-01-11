@@ -50,6 +50,8 @@ export function InitApp(chatcon, whitetheme, isstreaming, messageposter) {
           else { //console.log("Instance " + this.index + " alive.");
           }
         }), 1000);
+        this.$store.dispatch('isStream', isstreaming);
+        
         this.rootmsg["PTTState"] = data => { this.$store.dispatch('PTTState', data); };
       },
       beforeDestroy() {

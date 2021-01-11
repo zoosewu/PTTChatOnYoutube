@@ -7,7 +7,6 @@ import { blankfilter } from './blank/blankfilter.js';
 
 import '../css/index.css';
 //dev use 
-let devmode = true;
 const defaultopen = false;
 const disablepttframe = false;
 const simulateisstreaming = false;
@@ -15,9 +14,9 @@ const simulateisstreaming = false;
 let cryptkey;
 let appinscount = 0;
 /* 關閉vue-devtools */
-Vue.config.devtools = true;
+Vue.config.devtools = reportmode;
 /* 關閉錯誤警告 */
-Vue.config.debug = true;
+Vue.config.debug = reportmode;
 (function () {
   let msg = new MessagePoster;
   let filters = [];

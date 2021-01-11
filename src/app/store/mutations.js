@@ -6,17 +6,7 @@ export const state = {
   pluginHeight: GM_getValue(types.SETHEIGHT, 450),
   alert: { type: 0, msg: "" },
   msg: {},
-  post: {
-    AID: "",
-    board: "",
-    title: "",
-    date: (() => { const t = new Date(); t.setHours(0); t.setMinutes(0); t.setSeconds(0); return t; })(),
-    lastendline: 0,
-    lastpushtime: new Date(),
-    pushcount: 0,
-    nowpush: 0,
-    gettedpost: false,
-  },
+  post: { AID: "", board: "", title: "", date: (() => { const t = new Date(); t.setHours(0); t.setMinutes(0); t.setSeconds(0); return t; })(), lastendline: 0, lastpushtime: new Date(), pushcount: 0, nowpush: 0, gettedpost: false, },
   chatlist: [],
   log: {},
   firstChatTime: {},
@@ -30,6 +20,7 @@ export const state = {
   PTTState: 0,
   enablesetnewpush: false,
   disablepushgray: false,
+  isStream: true,
 }
 // mutations
 export const mutations = {
@@ -89,5 +80,7 @@ export const mutations = {
     GM_setValue('disablepushgray', disable);
     state.disablepushgray = disable;
   },
-  
+  [types.ISSTREAM](state, isStream) {
+    state.isStream = isStream;
+  },
 }

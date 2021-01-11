@@ -21,12 +21,15 @@ export function InitHT(messageposter) {
   }, 100);
   //run app instance loop
   let waswatch;
+  let iswatch;
   let tryinsholotools = 20;
   setTimeout(ChechChatInstanced, 1000);
   function ChechChatInstanced() {
     setTimeout(ChechChatInstanced, 1000);
-    const iswatch = /https:\/\/hololive\.jetri\.co\/#\/watch/.exec(window.location.href);
-    if (!waswatch && iswatch) {
+    const watchcheck = /https:\/\/hololive\.jetri\.co\/#\/ameliawatchon/.exec(window.location.href) || /https:\/\/hololive\.jetri\.co\/#\/watch/.exec(window.location.href);
+    if (watchcheck) iswatch = watchcheck[0];
+    else iswatch = false;
+    if (waswatch !== iswatch && iswatch) {
       tryinsholotools = 20;
     }
     if (tryinsholotools >= 0) {
@@ -37,7 +40,7 @@ export function InitHT(messageposter) {
   function TryInsChat() {
     const parent = $(`.container-watch`);
     if (reportmode) console.log("parent", parent);
-    if (parent.length > 0) {
+    if (parent.length > 0 && iswatch) {
       const fakeparent = $(`<div id="fakeparent" class="d-flex flex-row"></div>`);
       const defaultVideoHandler = $(`<div id="holotoolsvideohandler" class="flex-grow-1"></div>`);
       const defaultVideo = $(`.player-container.hasControls`);

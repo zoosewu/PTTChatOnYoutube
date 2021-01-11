@@ -64,21 +64,23 @@ export const actions = {
     for (let index = 0; index < pushes.length; index++) {
       const currpush = pushes[index];//抓出來的推文
       const chat = {};
-      if (index >= sametimeIndex) {//獲得同時間點的推文數量
-        for (let nextpointer = index + 1; nextpointer < pushes.length; nextpointer++) {
-          const element = pushes[nextpointer];
-          //console.log("currpush.date.getTime(), element.date.getTime()", currpush.date.getTime(), element.date.getTime());
-          if ((currpush.date.getTime() < element.date.getTime()) || (nextpointer >= pushes.length - 1)) {
-            sametimeIndex = nextpointer
-            sametimecount = nextpointer - index;
-            //console.log("sametimeIndex, sametimecount", sametimeIndex, sametimecount);
-            break;
+      if (!state.isStream) {
+        if (index >= sametimeIndex) {//獲得同時間點的推文數量
+          for (let nextpointer = index + 1; nextpointer < pushes.length; nextpointer++) {
+            const element = pushes[nextpointer];
+            //console.log("currpush.date.getTime(), element.date.getTime()", currpush.date.getTime(), element.date.getTime());
+            if ((currpush.date.getTime() < element.date.getTime()) || (nextpointer >= pushes.length - 1)) {
+              sametimeIndex = nextpointer
+              sametimecount = nextpointer - index;
+              //console.log("sametimeIndex, sametimecount", sametimeIndex, sametimecount);
+              break;
+            }
           }
         }
       }
       chat.time = new Date(currpush.date.getTime());
       //console.log("sametimeIndex, index, sametimecount", sametimeIndex, index, sametimecount);
-      if (sametimecount > 0) chat.time.setSeconds((sametimecount + index - sametimeIndex) * 60 / sametimecount);
+      if (!state.isStream && sametimecount > 0) chat.time.setSeconds((sametimecount + index - sametimeIndex) * 60 / sametimecount);
       chat.id = currpush.id;
       chat.type = currpush.type;
       chat.msg = currpush.content;
@@ -116,13 +118,13 @@ export const actions = {
     const time = state.VPlayedTime;//[H,m,s,isVideoVeforePost]
     let currtime = new Date(vstart.valueOf());
     currtime.setSeconds(vstart.getSeconds() + time);
-    if (reportmode)console.log("updateVideoCurrentTime check, currtime.valueOf() < state.post.date.valueOf()", currtime.valueOf() < state.post.date.valueOf(), state.VStartTime, state.VStartTime[3], currtime.valueOf(), state.post.date.valueOf());
+    if (reportmode) console.log("updateVideoCurrentTime check, currtime.valueOf() < state.post.date.valueOf()", currtime.valueOf() < state.post.date.valueOf(), state.VStartTime, state.VStartTime[3], currtime.valueOf(), state.post.date.valueOf());
 
     if (currtime.valueOf() < state.post.date.valueOf()) {
-      if (reportmode)console.log("updateVideoCurrentTime + 24");
+      if (reportmode) console.log("updateVideoCurrentTime + 24");
       currtime.setHours(currtime.getHours() + 24);
       if (state.VStartTime[3]) {
-        if (reportmode)console.log("updateVideoCurrentTime brfore - 24");
+        if (reportmode) console.log("updateVideoCurrentTime brfore - 24");
         currtime.setHours(currtime.getHours() - 24);
       }
     }
@@ -147,5 +149,9 @@ export const actions = {
   disablePushGray: ({ commit }, disablegray) => {
     //console.log("PTTState actions", pttstate);
     commit(types.DISABLEPUSHGRAY, disablegray);
+  },
+  isStream: ({ commit }, isStream) => {
+    //console.log("PTTState actions", pttstate);
+    commit(types.ISSTREAM, isStream);
   },
 }

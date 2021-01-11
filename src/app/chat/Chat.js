@@ -37,7 +37,7 @@ export let Chat = {
       if (this.isAutoScroll) {
         const scrollPos = this.getScrollPos();
         const p = this.$refs.chatmain.scrollTop - scrollPos;
-        if (reportmode) console.log("scrollToChat, scrollTop, scrollPos", this.$refs.chatmain.scrollTop, scrollPos, new Date());
+        if (reportmode) console.log("scrollToChat, scrollTop, scrollPos", this.$refs.chatmain.scrollTop, scrollPos);
         if (p > 20 || p < -20) { this.$refs.chatmain.scrollTo({ top: scrollPos, behavior: "smooth" }); }
       }
     },
@@ -126,9 +126,8 @@ export let Chat = {
       const visibleEnd = this.activeChat + this.activeRange / 2;
       this.activeChatEnd = visibleEnd < chats.length - 1 ? visibleEnd : chats.length - 1;
       this.activeChatStart = this.activeChatEnd - this.activeRange;
-      if (reportmode) console.log("getCurrentChat, chats.length-1", chats.length - 1, ", activeChat,", this.activeChat, " start,", this.activeChatStart, " end,", this.activeChatEnd, " isStream", this.isStream);
       setTimeout(() => this.scrollToChat(), 10);
-      if (reportmode) console.log(chats[this.activeChat]);
+      if (reportmode) console.log("getCurrentChat, chats.length-1", chats.length - 1, ", activeChat,", this.activeChat, " start,", this.activeChatStart, " end,", this.activeChatEnd, " isStream", this.isStream, "chats[this.activeChat].msg", chats[this.activeChat].msg);
     },
     MouseWheelHandler: function (e) {
       this.isAutoScroll = false;
