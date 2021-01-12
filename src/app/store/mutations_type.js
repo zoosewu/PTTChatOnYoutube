@@ -1,7 +1,7 @@
 export const types = {
   INCREASE: 'INCREASE',
   DECREASE: 'DECREASE',
-  SETHEIGHT: 'PluginHeight',
+  PLUGINHEIGHT: 'PluginHeight',
   PTTID: "PTTID",
   POSTAID: "LastPostAID",
   ALERT: "Alert",
@@ -16,7 +16,10 @@ export const types = {
   PAGECHANGE: "PAGECHANGE",
   GOTOCHAT: "GOTOCHAT",
   PTTSTATE: "PTTSTATE",
-  ENABLESETNEWPUSH: "ENABLESETNEWPUSH",
-  DISABLEPUSHGRAY: "DISABLEPUSHGRAY",
+  ENABLESETNEWPUSH: "EnableSetNewPush",
+  DISABLEPUSHGRAY: "DisablePushGray",
   ISSTREAM: "ISSTREAM",
+  CHATFONTSIZE: "Fontsize",
+  CHATSPACE: "ChatSpace",
+  PUSHINTERVAL: "PushInterval",
 }

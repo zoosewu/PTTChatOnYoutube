@@ -24,7 +24,7 @@ export let chatSetNewPush = {
   },
   computed: {
     placeholder: function () {
-      if (this.enableSetNewPush) return "輸入文字以推文...";
+      if (this.getEnableSetNewPush) return "輸入文字以推文...";
       else return "請到連線設定開啟測試版推文功能";
     },
     className: function () {
@@ -35,7 +35,7 @@ export let chatSetNewPush = {
     ...Vuex.mapGetters([
       'post',
       'PTTState',
-      'enableSetNewPush',
+      'getEnableSetNewPush',
     ])
   },
   mounted() {
@@ -44,7 +44,7 @@ export let chatSetNewPush = {
   template: `<div :class="className">
   <div class="col">
     <input id="setnewpush" class="form-control" type="text" style="font-size:14px" :placeholder="placeholder" autocomplete="off"
-      v-model.lazy="pushtext" v-on:keyup.13="setPush" :disabled="!enableSetNewPush">
+      v-model.lazy="pushtext" v-on:keyup.13="setPush" :disabled="!getEnableSetNewPush">
   </div>
   <div class="col-2 px-0">
     <button id="setnewpushbtn" class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="setPush()">推文</button>

@@ -93,6 +93,22 @@ $font-size-base: 12px;
   }
   @return $newcolor;
 }
+
+#PTTChat {
+  .ptt-chat {
+    font-weight: 500;
+  }
+  .ptt-chat-msg {
+    word-break: break-all;
+  }
+  hr {
+    border-top: 1px solid rgba(128, 128, 128, 0.5) !important;
+  }
+  .ptt-chat-msg a {
+    text-decoration: underline !important;
+  }
+}
+
 @each $name, $color in $ptt-theme-colors {
   //@warn $name;
   .#{$name} {
@@ -138,7 +154,4 @@ $font-size-base: 12px;
       border-color: $nav-tabs-link-active-border-color;
     }
   }
-}
-.ptt-chat-msg a {
-  text-decoration: underline !important;
 }

@@ -45,7 +45,7 @@
 - [ ] 測試[彩虹官網](https://niji-mado.web.app/home)的支援度，[彩虹的開台統計](https://2434analytics.com/rank/dailyView.html)
 
 #### CSS 
-- [ ] 確認插件在各網站的排版都正常且一樣
+- [ ] 確認套件在各網站的排版都正常且一樣
 
 ## 本專案授權
 

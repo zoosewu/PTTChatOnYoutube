@@ -19,30 +19,41 @@ Vue.component('chat-item', {
       return typecolor + " mr-2 mb-0";
     },
     bgc: function () {
-      if (this.disableGray) return "";
+      if (this.getDisablePushGray) return "";
 
       // console.log("bgc", this.index, this.chat, this.chat.gray);
       const isUnchat = this.gray ? "0.25" : "0";
       const color = "rgba(128, 128, 128, " + isUnchat + ")";
       return { backgroundColor: color, transition: "2s" };
     },
+    msgFontsize: function () {
+      return { 'font-size': this.getFontsize + 'px', "line-height": this.getFontsize * 1.2 + 'px' };
+    },
+    infoFontsize: function () {
+      return { 'font-size': this.getFontsize * 0.8334 + 'px', "line-height": this.getFontsize + 'px' };
+    },
+    space: function () {
+      return { 'margin-bottom': this.getChatSpace * 18 + 'px' };
+    },
     ...Vuex.mapGetters([
-      'disableGray',
+      'getDisablePushGray',
+      'getFontsize',
+      'getChatSpace',
     ])
   },
   // mounted() { console.log("mounted", this.index, this.chat); },
   updated: function () { if (reportmode) console.log('updated, uid, listIndex, chatIndex, msg', this.uid, this.index, this.chat.index, this.chat.msg); },
-  template: `<li :id="chat.index" class="media px-4" v-bind:style="bgc">
+  template: `<li :id="chat.index" class="ptt-chat media px-3" v-bind:style="bgc">
   <div class="media-body mw-100">
-    <div class="d-flex flex-row">
-      <h5 :class="typeclass">{{ this.chat.type }}</h5>
-      <h5 class="ptt-chat-id mr-2 mb-0 flex-grow-1">{{this.chat.id }}</h5>
-      <h5 class="ptt-chat-time mb-0">{{this.timeH }}:{{this.timem}}</h5>
+    <div class="ptt-chat-info d-flex flex-row" :style="infoFontsize">
+      <p :class="typeclass">{{ this.chat.type }}</p>
+      <p class="ptt-chat-id mr-2 mb-0 flex-grow-1">{{this.chat.id }}</p>
+      <p class="ptt-chat-time mb-0">{{this.timeH }}:{{this.timem}}</p>
     </div>
     <div>
-      <h4 class="ptt-chat-msg mb-0 ml-2 mr-2" style="word-break: break-all;" v-html="msg"></h4>
+      <p class="ptt-chat-msg mb-0 mx-2" :style="msgFontsize" v-html="msg"></p>
     </div>
-    <div class="mb-4"> </div>
+    <div :style="space"> </div>
   </div>
 </li>`,
 });

@@ -12,20 +12,16 @@ export let PTTAppContent = {
   components: {
     'PTTApp-Chat': Chat,
     "ChatTimeSetting": ChatTimeSetting,
-
     'PTTApp-Alert': ConnectAlert,
     'PTTApp-Connect': Connect,
-
     'PTTApp-Other': Other,
-
     'PTTApp-PTT': PTTScreen,
-
     'PTTApp-Log': Log
   },
   computed: {
     updateheight() {
       return {
-        height: this.$store.getters.getHeight + "px"
+        height: this.$store.getters.getPluginHeight + "px"
       }
     }
   },

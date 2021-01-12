@@ -25,7 +25,7 @@ export let Chat = {
       if (this.lastactiveChat != this.activeChat) {
         this.lastactiveChat = this.activeChat;
         //console.log("gray task, start, end, activeChat", this.chatList[0].index, this.chatList[this.chatList.length - 1].index, this.activeChat);
-        if (!this.disableGray) {
+        if (!this.getDisablePushGray) {
           for (let i = 0; i < this.chatList.length; i++) {
             chat = this.chatList[i];
             const isgray = chat.index > this.activeChat;
@@ -169,12 +169,16 @@ export let Chat = {
       'post',
       'videoCurrentTime',
       'PTTState',
-      'disableGray',
+      'getDisablePushGray',
+      'getPushInterval',
     ])
   },
   mounted() {
     //註冊文章事件
-    this.msg["newPush"] = data => { this.$store.dispatch('updatePost', data); this.nextUpdateTime = Date.now() + 2.5 * 1000; };
+    this.msg["newPush"] = data => {
+      this.$store.dispatch('updatePost', data);
+      this.nextUpdateTime = Date.now() + this.getPushInterval * 1000;
+    };
 
     //初始化聊天列表
     this.lastChat = this.newChatList;
