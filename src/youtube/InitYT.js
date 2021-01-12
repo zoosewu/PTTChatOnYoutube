@@ -35,7 +35,7 @@ export function InitYT(messageposter) {
       if (showalllog) console.log("PTTApp frame instance!");
       ChatContainer.css({ "position": "relative" });
 
-      //生出插件
+      //生出套件
       let isstream = checkvideotype();
       InitApp(ChatContainer, WhiteTheme, isstream, msg);
       setTimeout(CheckChatInstanced, 5000);

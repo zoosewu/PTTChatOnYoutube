@@ -14,9 +14,6 @@ export let PTTAppNav = {
       'gotoChat',
     ])
   },
-  mounted() {
-    //this.$store.dispatch('chatBtn', this.$refs.chatbtn);
-  },
   template: `<ul id="PTTChat-navbar" class="nav nav-tabs justify-content-center" role="tablist">
   <li class="nav-item" :go="isGotoChat">
     <a class="nav-link ptt-text bg-transparent" id="nav-item-Chat" data-toggle="tab" href="#PTTChat-contents-Chat"

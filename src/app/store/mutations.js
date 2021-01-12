@@ -3,7 +3,6 @@ import types from './mutations_type.js';
 // state
 export const state = {
   count: 0,
-  pluginHeight: GM_getValue(types.SETHEIGHT, 450),
   alert: { type: 0, msg: "" },
   msg: {},
   post: { AID: "", board: "", title: "", date: (() => { const t = new Date(); t.setHours(0); t.setMinutes(0); t.setSeconds(0); return t; })(), lastendline: 0, lastpushtime: new Date(), pushcount: 0, nowpush: 0, gettedpost: false, },
@@ -18,9 +17,13 @@ export const state = {
   pageChange: false,
   gotoChat: false,
   PTTState: 0,
-  enablesetnewpush: false,
-  disablepushgray: false,
   isStream: true,
+  enablesetnewpush: GM_getValue(types.ENABLESETNEWPUSH, false),
+  disablepushgray: GM_getValue(types.DISABLEPUSHGRAY, false),
+  pluginHeight: GM_getValue(types.PLUGINHEIGHT, -1),
+  pushInterval: GM_getValue(types.PUSHINTERVAL, -1),
+  chatFontsize: GM_getValue(types.CHATFONTSIZE, -1),
+  chatSpace: GM_getValue(types.CHATSPACE, -1),
 }
 // mutations
 export const mutations = {
@@ -31,10 +34,6 @@ export const mutations = {
   },
   [types.DECREASE](state) {
     state.count -= 1;
-  },
-  [types.SETHEIGHT](state, height) {
-    state.pluginHeight = height;
-    GM_setValue(types.SETHEIGHT, height);
   },
   [types.ALERT](state, alert) {
     state.alert = alert;
@@ -70,17 +69,34 @@ export const mutations = {
     //console.log("PTTState mutations", pttstate);
     state.PTTState = pttstate;
   },
+  [types.ISSTREAM](state, isStream) {
+    state.isStream = isStream;
+  },
   [types.ENABLESETNEWPUSH](state, isenable) {
     //console.log("PTTState mutations", pttstate);
-    GM_setValue('enablesetnewpush', isenable);
+    GM_setValue(types.ENABLESETNEWPUSH, isenable);
     state.enablesetnewpush = isenable;
   },
   [types.DISABLEPUSHGRAY](state, disable) {
     //console.log("PTTState mutations", pttstate);
-    GM_setValue('disablepushgray', disable);
+    GM_setValue(types.DISABLEPUSHGRAY, disable);
     state.disablepushgray = disable;
   },
-  [types.ISSTREAM](state, isStream) {
-    state.isStream = isStream;
+  [types.PLUGINHEIGHT](state, height) {
+    state.pluginHeight = height;
+    GM_setValue(types.PLUGINHEIGHT, height);
   },
+  [types.PUSHINTERVAL](state, interval) {
+    GM_setValue(types.PUSHINTERVAL, interval);
+    state.pushInterval = interval;
+  },
+  [types.CHATFONTSIZE](state, size) {
+    GM_setValue(types.CHATFONTSIZE, size);
+    state.chatFontsize = size;
+  },
+  [types.CHATSPACE](state, space) {
+    GM_setValue(types.CHATSPACE, space);
+    state.chatSpace = space;
+  },
+
 }

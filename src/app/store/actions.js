@@ -4,14 +4,7 @@ import types from './mutations_type.js';
 export const actions = {
   actionIncrease: ({ commit }) => { console.log('actionIncrease'); commit(types.INCREASE); },
   actionDecrease: ({ commit }) => { console.log('actionDecrease'); commit(types.DECREASE); },
-
-  setHeight: (context, height) => {
-    context.commit(types.SETHEIGHT, height);
-  },
-  Alert: (context, alertobject) => {
-    //console.log("actions Alert");
-    context.commit(types.ALERT, alertobject);
-  },
+  Alert: (context, alertobject) => { context.commit(types.ALERT, alertobject); },
   updateLog: (context, log) => {
     if (!Array.isArray(log)) context.commit(types.UPDATELOG, log);
     else for (let i = 0; i < log.length; i++) {
@@ -132,26 +125,16 @@ export const actions = {
     commit(types.UPDATELOG, { type: "videocurrenttime", data: currtime.toLocaleDateString() + " " + currtime.toLocaleTimeString() });
     commit(types.VIDEOCURRENTRIME, currtime);
   },
-  pageChange: ({ commit }, Change) => {
-    commit(types.PAGECHANGE, Change);
-  },
-  gotoChat: ({ commit }, gtChat) => {
-    commit(types.GOTOCHAT, gtChat);
-  },
-  PTTState: ({ commit }, pttstate) => {
-    //console.log("PTTState actions", pttstate);
-    commit(types.PTTSTATE, pttstate);
-  },
-  enableSetNewPush: ({ commit }, isenable) => {
-    //console.log("PTTState actions", pttstate);
-    commit(types.ENABLESETNEWPUSH, isenable);
-  },
-  disablePushGray: ({ commit }, disablegray) => {
-    //console.log("PTTState actions", pttstate);
-    commit(types.DISABLEPUSHGRAY, disablegray);
-  },
-  isStream: ({ commit }, isStream) => {
-    //console.log("PTTState actions", pttstate);
-    commit(types.ISSTREAM, isStream);
-  },
+  pageChange: ({ commit }, Change) => { commit(types.PAGECHANGE, Change); },
+  gotoChat: ({ commit }, gtChat) => { commit(types.GOTOCHAT, gtChat); },
+  PTTState: ({ commit }, pttstate) => { commit(types.PTTSTATE, pttstate); },
+  isStream: ({ commit }, isStream) => { commit(types.ISSTREAM, isStream); },
+  //checkbox
+  setEnableSetNewPush: ({ commit }, isenable) => { commit(types.ENABLESETNEWPUSH, isenable); },
+  setDisablePushGray: ({ commit }, disablepushgray) => { commit(types.DISABLEPUSHGRAY, disablepushgray); },
+  //input value
+  setPluginHeight: (context, height) => { context.commit(types.PLUGINHEIGHT, height); },
+  setFontsize: ({ commit }, size) => { commit(types.CHATFONTSIZE, size); },
+  setChatSpace: ({ commit }, space) => { commit(types.CHATSPACE, space); },
+  setPushInterval: ({ commit }, pushInterval) => { commit(types.PUSHINTERVAL, pushInterval); },
 }
