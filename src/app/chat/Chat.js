@@ -19,6 +19,7 @@ export let Chat = {
       intervalScroll: null,
       nextUpdateTime: Date.now() + 365 * 24 * 60 * 60 * 1000,
       isAutoScroll: true,
+      lastautoscrolltime: Date.now(),
     }
   },
   methods: {
@@ -35,18 +36,23 @@ export let Chat = {
           }
         }
       }
-      if (this.isAutoScroll) {
+      console.log("this.isAutoScroll", this.isAutoScroll, this.lastautoscrolltime + 50 < Date.now());
+      if (this.isAutoScroll && this.lastautoscrolltime + 50 < Date.now()) {
         const scrollPos = this.getScrollPos();
         const p = this.$refs.chatmain.scrollTop - scrollPos;
-        if (reportmode) console.log("scrollToChat, scrollTop, scrollPos", this.$refs.chatmain.scrollTop, scrollPos);
-        if (p > 20 || p < -20) { this.$refs.chatmain.scrollTo({ top: scrollPos, behavior: "smooth" }); }
+        if (p > 20 || p < -20) {
+          if (reportmode) console.log("scrollToChat, scrollTop, scrollPos", this.$refs.chatmain.scrollTop, scrollPos);
+          this.$refs.chatmain.scrollTo({ top: scrollPos, behavior: "smooth" });
+        }
       }
     },
     getScrollPos: function () {
       const clientHeight = this.$refs.chatmain ? this.$refs.chatmain.clientHeight : 0;
-      const current = this.activeChat + 1 - this.activeChatStart;
       const chatnode = this.$children.find(ele => { return ele.chat && ele.chat.index === this.activeChat; });
-      //console.log("getScrollPos, chatnode, chatnode - 1", current, [chatnode], this.$children[current - 1]);
+      if (reportmode) {
+        if (chatnode) console.log("getScrollPos, activeChat:", this.activeChat, ", chatnode:", [chatnode]/*, ", index:", chatnode.index*/);
+        else console.log("getScrollPos, activeChat:", this.activeChat, ", chatnode:", [chatnode], ", no chatnode found");
+      }
       if (!chatnode) return 0;
       const chat = chatnode.$el;
       const chatHeight = chat.clientHeight;
@@ -132,7 +138,7 @@ export let Chat = {
       this.activeChatEnd = visibleEnd < chats.length - 1 ? visibleEnd : chats.length - 1;
       this.activeChatStart = this.activeChatEnd - this.activeRange;
       setTimeout(() => this.scrollToChat(), 10);
-      if (reportmode) console.log("getCurrentChat, chats.length-1", chats.length - 1, ", activeChat,", this.activeChat, " start,", this.activeChatStart, " end,", this.activeChatEnd, " isStream", this.isStream, "chats[this.activeChat].msg", chats[this.activeChat].msg);
+      if (reportmode && this.lastactiveChat != this.activeChat) console.log("getCurrentChat, chats.length-1", chats.length - 1, ", activeChat,", this.activeChat, " start,", this.activeChatStart, " end,", this.activeChatEnd, " isStream", this.isStream, "chats[this.activeChat].msg", chats[this.activeChat].msg);
     },
     MouseWheelHandler: function (e) {
       this.isAutoScroll = false;
@@ -213,6 +219,7 @@ export let Chat = {
     else {// IE 6/7/8
       this.$refs.chatmain.attachEvent("onmousewheel", this.MouseWheelHandler);
     }
+    this.$refs.chatmain.addEventListener('scroll', e => { if (this.isAutoScroll) this.lastautoscrolltime = Date.now(); });
   },
   updated: function () { },
   beforeDestroy() {
