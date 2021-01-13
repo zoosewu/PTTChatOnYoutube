@@ -130,8 +130,8 @@ export function InitPTT(messageposter) {
       const filter = PTT.pagestatefilter[i];
       const result = PTT.screenHaveText(filter.reg);
       if (result != null) {
+        if (reportmode) console.log("==page state:" + PTT.pagestate + "->" + filter.state, result);
         PTT.pagestate = filter.state;
-        if (reportmode) console.log("==page state = " + PTT.pagestate, result);
         if (PTT.pagestate > 1) reconnecttrytimes = 10;
         msg.PostMessage("PTTState", PTT.pagestate);
         return;
@@ -234,6 +234,7 @@ export function InitPTT(messageposter) {
   // -----------------------task getpostbyline --------------------
   function gotoBoard() { insertText("s" + PTTPost.board + "\n"); }
   function boardcheck() {
+    console.log("Issue #9 trace, pagestate:", PTT.pagestate);
     const res = { pass: false, callback: gotoBoard }
     let reg = "";
     if (PTT.pagestate === 4) {
@@ -242,9 +243,10 @@ export function InitPTT(messageposter) {
     }
     else if (PTT.pagestate === 1) return res;
     else if (PTT.pagestate === 2) reg = "看板《" + PTTPost.board + "》";
-    else if (PTT.pagestate === 3) reg = "看板  " + PTTPost.board + " *";
+    else if (PTT.pagestate === 3) reg = "看板 *" + PTTPost.board;
     const currect = PTT.screenHaveText(reg);
     if (currect) res.pass = true;
+    console.log("Issue #9 trace, pass:", res.pass, ", currect:", currect);
     return res;
   }
 
@@ -314,6 +316,7 @@ export function InitPTT(messageposter) {
     const endline = lineresult[2];
     let targetline = PTTPost.endline - startline + 1;
     if (startline < 5) targetline += 1;
+    const checkedline = [];
     //console.log("==GetPush from " + targetline + "to " + (PTT.screen.length - 1));
     //console.log("==(pttstartline, pttendline, startline, endline, targetline): (" + PTTPost.startline + ", " + PTTPost.endline + ", " + startline + ", " + endline + ", " + targetline + ")");
     for (let i = targetline; i < PTT.screen.length; i++) {
@@ -324,9 +327,10 @@ export function InitPTT(messageposter) {
         var reg = /\s+$/g;
         content = content.replace(reg, "");
         savepush(content, result);
-        if (reportmode) console.log("targetline, endline, startline", i, PTTPost.endline, startline);
+        if (reportmode) checkedline.push(i);
       }
     }
+    if (reportmode) console.log("startline,endline, checked line", startline, PTTPost.endline, checkedline);
     let percentresult = PTT.screenHaveText(/瀏覽 第 .+ 頁 \( *(\d+)%\)/);
     PTTPost.percent = percentresult[1];
     PTTPost.startline = startline;
@@ -420,6 +424,7 @@ export function InitPTT(messageposter) {
     for (let i = 0; i < tasklist.length; i++) {
       const result = tasklist[i]();
       if (result.pass === false) {
+        if (reportmode) console.log("RunTask pass failed, pagestate:", PTT.pagestate, ", task name:", tasklist[i].name);
         result.callback();
         PTT.commands.add(/.*/, "", RunTask, tasklist, finishBehavior);
         return;
@@ -537,8 +542,9 @@ export function InitPTT(messageposter) {
           PTT.commands.add(/.*/, "", logincheck);
         }
         else {
-          msg.PostMessage("alert", { type: 0, msg: "發生了未知錯誤。" });
+          msg.PostMessage("alert", { type: 0, msg: "發生了未知錯誤，可能是因為保留連線導致被踢掉。" });
           console.log(PTT.screen);
+          PTT.unlock();
         }
       }
 

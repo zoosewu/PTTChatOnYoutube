@@ -9,6 +9,7 @@ export let Chat = {
       _allchats: [],
       chatList: [],
       lastChat: [],
+      instancedChat: [],
       acChat: 0,
       lastactiveChat: -1,
       activeRange: 200,
@@ -76,17 +77,21 @@ export let Chat = {
         //   }
         // }
         const tmpchat = [];
+        let addchat = false;
         for (let i = start; i < list.length && i <= end; i++) {
           const chat = list[i];
           //console.log("add check, i, chat.index, chat.msg, chat", i, chat.index, chat.msg, chat);
-          if (!this.chatList.includes(chat.ins)) {
+          if (!this.instancedChat.includes(i)) {
+            if (!addchat) addchat = true;
             const ins = { time: chat.time, id: chat.id, type: chat.type, msg: chat.msg, index: chat.index, gray: chat.gray, };
             tmpchat.push(ins);
-            chat.ins = ins;
+            this.instancedChat.push(i);
+            //chat.ins = ins;
             //console.log("add chat", i, chat.msg, chat);
           }
         }
-        this.chatList = this.chatList.concat(tmpchat);
+        console.log(this.instancedChat);
+        if (addchat) this.chatList = this.chatList.concat(tmpchat);
         //if (this.chatList.length > 0) console.log("after chat", this.chatList[0].msg, this.chatList[this.chatList.length - 1].msg);
         this.chatList.sort(function (a, b) { return a.index - b.index; });
         if (reportmode) console.log("activeChat, start, end, allList, chatList", this.activeChat, start, this.activeChatEnd, list, this.chatList);
@@ -152,6 +157,7 @@ export let Chat = {
       if (reportmode) console.log("new post:", this.post.AID);
       this._allchats = [];
       this.chatList = [];
+      this.instancedChat = [];
       return this.post.AID;
     },
     activeChat: {
