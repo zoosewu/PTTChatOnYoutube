@@ -25,7 +25,7 @@ export function InitPTT(messageposter) {
       let result = null;
       //debug用
       if (this.screenstate === 0) {
-        const sElement = $("[type='bbsrow']", this.wind.document);
+        const sElement = $("[data-type='bbsline']", this.wind.document);
         for (let i = 0; i < sElement.length; i++) {
           const txt = sElement[i].textContent;
           if (result == null) result = new RegExp(reg).exec(txt);
@@ -93,7 +93,16 @@ export function InitPTT(messageposter) {
       { reg: /本站歷史 \.\.\.\.\.\.\./, input: 'q' },
       { reg: /看 板  目錄數   檔案數     byte數   總 分     板   主/, input: 'q' },
       { reg: /名次──────範本───────────次數/, input: 'q' },
-      { reg: /鴻雁往返  \(R\/y\)回信 \(x\)站內轉寄 \(d\/D\)刪信 \(\^P\)寄發新信/, input: 'q' }
+      { reg: /鴻雁往返  \(R\/y\)回信 \(x\)站內轉寄 \(d\/D\)刪信 \(\^P\)寄發新信/, input: 'q' },
+      { reg: /【精華文章】/, input: 'q' },
+      { reg: /【看板列表】/, input: 'q' },
+      { reg: /【分類看板】/, input: 'q' },
+      { reg: /【電子郵件】/, input: 'e' },
+      { reg: /【聊天說話】/, input: 'e' },
+      { reg: /【個人設定】/, input: 'e' },
+      { reg: /【工具程式】/, input: 'e' },
+      { reg: /【網路遊樂場】/, input: 'e' },
+      { reg: /您確定要離開【 批踢踢實業坊 】嗎\(Y\/N\)？/, input: 'n\n' },
     ]
   }
   PTT.wind = window;
