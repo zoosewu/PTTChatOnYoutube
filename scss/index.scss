@@ -23,6 +23,26 @@ $rem1: 10px;
 
 $font-size-base: 12px;
 
+$grid-breakpoints: (
+  // Extra small screen / phone
+  xs: 0,
+  // Small screen / phone
+  sm: 500px,
+  // Medium screen / tablet
+  md: 768px,
+  // Large screen / desktop
+  lg: 992px,
+  // Extra large screen / wide desktop
+  xl: 1200px
+);
+
+$container-max-widths: (
+  sm: 500px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+);
+
 @import "variables";
 .blockquote-footer::before {
   content: "";

@@ -5,19 +5,11 @@ import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver } fr
 export function Initblank(messageposter) {
   const msg = messageposter;
   let WhiteTheme = true;
-  //generate crypt key everytime;
-  cryptkey = GenerateCryptKey();
-  //add bootstrap to use
-  BootStrap(document);
-  //PTTApp global css
+  //Check Theme
   setTimeout(() => {
     const colorlight = "rgb(249, 249, 249)";
     const colordark = "rgb(24, 24, 24)"
   }, 100);
-  //run app instance loop
-
-  //const blankcontainer = $(`<div id="container" class="position-relative" style="width:400px;height:800px;"></div>`)[0];
-  //`<div id="container" class="position-relative" style="width:400px;height:800px;"></div>`
   const Body = document.getElementsByTagName("BODY")[0];
   const container = document.createElement("div");
   container.id = "container";
@@ -26,5 +18,4 @@ export function Initblank(messageposter) {
   Body.prepend(container);
   //const blankcontainer = document.getElementById(`container`);
   InitApp([container], WhiteTheme, true, msg);
-
 }

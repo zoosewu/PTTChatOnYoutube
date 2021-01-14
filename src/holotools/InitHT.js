@@ -6,12 +6,6 @@ import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver } fr
 export function InitHT(messageposter) {
   const msg = messageposter;
   let WhiteTheme;
-  //generate crypt key everytime;
-  cryptkey = GenerateCryptKey();
-  //add bootstrap to use
-  BootStrap(document);
-  //AddPTTAppcss(whitetheme, colorlight, colordark)
-  AddStyle(true, "rgb(249, 249, 249)", "rgb(24, 24, 24)")
   //PTTApp global css
   setTimeout(() => {
     const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
@@ -42,9 +36,9 @@ export function InitHT(messageposter) {
     if (reportmode) console.log("parent", parent);
     if (parent.length > 0 && iswatch) {
       const fakeparent = $(`<div id="fakeparent" class="d-flex flex-row"></div>`);
-      const defaultVideoHandler = $(`<div id="holotoolsvideohandler" class="flex-grow-1"></div>`);
+      const defaultVideoHandler = $(`<div id="holotoolsvideohandler" style="flex:1 1 auto;"></div>`);
       const defaultVideo = $(`.player-container.hasControls`);
-      const PTTChatHandler = $(`<div id="pttchatparent" class="p-0 d-flex" style="width:400px;position:relative;"></div>`);
+      const PTTChatHandler = $(`<div id="pttchatparent" class="p-0 d-flex" style="flex:0 0 405px;position:relative;"></div>`);
       parent.append(fakeparent);
       fakeparent.append(defaultVideoHandler);
       defaultVideoHandler.append(defaultVideo);

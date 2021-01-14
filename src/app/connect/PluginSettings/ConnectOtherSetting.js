@@ -12,7 +12,7 @@ export let ConnectOtherSetting = {
     
     //console.log("remove check: " + GM_getValue('enablesetnewpush', "removed"));
   },
-  template: `<div id="PTTConnect-OtherSetting" class="form-row px-0 mx-0 col-12">
+  template: `<div id="PTTConnect-OtherSetting" class="form-row px-0 mx-0 col-12 my-3">
   <legend class="col-form-label col-3 pt-0">其他設定</legend>
   <div class="col px-0">
     <plugin-setting-checkbox setting-name="EnableSetNewPush" description="推文功能(使用此功能後果請自負)" defaultValue="false"></plugin-setting-checkbox>

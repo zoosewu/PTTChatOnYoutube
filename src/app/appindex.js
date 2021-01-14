@@ -10,6 +10,7 @@ export function InitApp(chatcon, whitetheme, isstreaming, messageposter) {
     ele.id = "PTTChat";
     ele.setAttribute("style", "z-index: 301;");
     if (cn) cn[0].appendChild(ele);
+    console.log("WIDTH,", cn[0].offsetWidth, "======================");
     //Vue.prototype.$bus = new Vue();
     let color = whitetheme ? "pttbgc-19 pttc-5" : "pttbgc-2 pttc-2";
     let PTT = new Vue({
@@ -33,6 +34,7 @@ export function InitApp(chatcon, whitetheme, isstreaming, messageposter) {
         return {
           msg: this.rootmsg,
           isStream: isstreaming,
+          pluginWidth: cn[0].offsetWidth,
         };
       },
       mounted() {
@@ -51,7 +53,7 @@ export function InitApp(chatcon, whitetheme, isstreaming, messageposter) {
           }
         }), 1000);
         this.$store.dispatch('isStream', isstreaming);
-        
+
         this.rootmsg["PTTState"] = data => { this.$store.dispatch('PTTState', data); };
       },
       beforeDestroy() {
