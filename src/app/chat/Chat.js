@@ -50,7 +50,7 @@ export let Chat = {
       const clientHeight = this.$refs.chatmain ? this.$refs.chatmain.clientHeight : 0;
       const chatnode = this.$children.find(ele => { return ele.chat && ele.chat.index === this.activeChat; });
       if (reportmode) {
-        if (chatnode) console.log("getScrollPos, activeChat:", this.activeChat, ", chatnode:", [chatnode]/*, ", index:", chatnode.index*/);
+        if (chatnode) console.log("getScrollPos, activeChat:", this.activeChat, ", chatnode:", [chatnode], ", index:", chatnode.index);
         else console.log("getScrollPos, activeChat:", this.activeChat, ", chatnode:", [chatnode], ", no chatnode found");
       }
       if (!chatnode) return 0;
@@ -232,7 +232,7 @@ export let Chat = {
   },
   template: `<div id="PTTChat-contents-Chat-main" class="h-100" style="display: flex;flex-direction: column;">
   <div ref="chatmain" class="h-100 row" style="overscroll-behavior: none;overflow-y: scroll;">
-    <ul id="PTTChat-contents-Chat-pushes" class="col mb-0 px-0" v-bind:post-aid="postAID" ref="chats">
+    <ul id="PTTChat-contents-Chat-pushes" class="col mb-0 px-0" :post-aid="postAID" :chat-count="allchats.length" ref="chats">
       <chat-item :index="index" :chat="item" :gray="item.gray" :key="item.index" v-for="(item, index) in chatList">
       </chat-item>
     </ul>
