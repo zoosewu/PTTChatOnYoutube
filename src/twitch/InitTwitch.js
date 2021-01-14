@@ -6,10 +6,7 @@ import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver } fr
 export function InitTwitch(messageposter) {
   const msg = messageposter;
   let WhiteTheme;
-  //generate crypt key everytime;
-  cryptkey = GenerateCryptKey();
-  //add bootstrap to use
-  BootStrap(document);
+  //Check Theme
   setTimeout(() => {
     const YTbgcolor = getComputedStyle($('body')[0]).backgroundColor;
     console.log(YTbgcolor);

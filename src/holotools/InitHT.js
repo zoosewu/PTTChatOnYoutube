@@ -6,7 +6,7 @@ import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver } fr
 export function InitHT(messageposter) {
   const msg = messageposter;
   let WhiteTheme;
-  //PTTApp global css
+  //Check Theme
   setTimeout(() => {
     const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
     const colorlight = "rgba(250, 250, 250, 0.824)";

@@ -129,6 +129,9 @@ export const actions = {
   gotoChat: ({ commit }, gtChat) => { commit(types.GOTOCHAT, gtChat); },
   PTTState: ({ commit }, pttstate) => { commit(types.PTTSTATE, pttstate); },
   isStream: ({ commit }, isStream) => { commit(types.ISSTREAM, isStream); },
+  previewImage: ({ commit }, src) => { commit(types.PREVIEWIMG, src); },
+
+  
   //checkbox
   setEnableSetNewPush: ({ commit }, isenable) => { commit(types.ENABLESETNEWPUSH, isenable); },
   setDisablePushGray: ({ commit }, disablepushgray) => { commit(types.DISABLEPUSHGRAY, disablepushgray); },

@@ -1,7 +1,8 @@
 import { store } from "../store/store.js";
+import { ChatPreviewImage } from './ChatPreviewImage.js';
 import { ChatScrollBtn } from './ChatScrollBtn.js';
 import { ChatElement } from './ChatElement.js';
-import { chatSetNewPush } from './chatSetNewPush.js';
+import { ChatSetNewPush } from './ChatSetNewPush.js';
 export let Chat = {
   inject: ['msg', 'isStream'],
   data: function () {
@@ -84,6 +85,7 @@ export let Chat = {
         // }
         const tmpchat = [];
         let addchat = false;
+        console.log("chats", list);
         for (let i = start; i < list.length && i <= end; i++) {
           const chat = list[i];
           //console.log("add check, i, chat.index, chat.msg, chat", i, chat.index, chat.msg, chat);
@@ -93,7 +95,6 @@ export let Chat = {
             tmpchat.push(ins);
             this.instancedChat.push(i);
             //chat.ins = ins;
-            //console.log("add chat", i, chat.msg, chat);
           }
         }
         console.log(this.instancedChat);
@@ -140,7 +141,7 @@ export let Chat = {
       this.activeChatEnd = visibleEnd < chats.length - 1 ? visibleEnd : chats.length - 1;
       this.activeChatStart = this.activeChatEnd - this.activeRange;
       setTimeout(() => this.scrollToChat(), 10);
-      if (reportmode && this.lastactiveChat != this.activeChat) console.log("getCurrentChat, chats.length-1", chats.length - 1, ", activeChat,", this.activeChat, " start,", this.activeChatStart, " end,", this.activeChatEnd, " isStream", this.isStream, "chats[this.activeChat].msg", chats[this.activeChat].msg);
+      if (reportmode && this.lastactiveChat != this.activeChat && chats[this.activeChat]) console.log("getCurrentChat, chats.length-1", chats.length - 1, ", activeChat,", this.activeChat, " start,", this.activeChatStart, " end,", this.activeChatEnd, " isStream", this.isStream, "chats[this.activeChat].msg", chats[this.activeChat].msg);
     },
     MouseWheelHandler: function (e) {
       this.isAutoScroll = false;
@@ -154,7 +155,6 @@ export let Chat = {
     allchats: function () {
       //console.log("allchats");
       if (this.newChatList !== this.lastChat) {
-
         this._allchats = this._allchats.concat(this.newChatList);
         this.lastChat = this.newChatList;
         //console.log("add chat, newChatList", this.newChatList);
@@ -195,9 +195,11 @@ export let Chat = {
     };
 
     //初始化聊天列表
-    this.lastChat = this.newChatList;
     if (reportmode) this._allchats = testchat.list;//test
     else this._allchats = [];
+    this.lastChat = [];
+
+    this.activeChat = 0;
     this.activeChat = 0;
     this.nextUpdateTime = Date.now() + 5 * 365 * 24 * 60 * 60 * 1000;
 
@@ -229,15 +231,18 @@ export let Chat = {
     clearInterval(this.intervalScroll);
   },
   components: {
+    "chat-preview-image": ChatPreviewImage,
     "chat-scroll-btn": ChatScrollBtn,
-    "chat-set-new-push": chatSetNewPush,
+    "chat-set-new-push": ChatSetNewPush,
   },
   template: `<div id="PTTChat-contents-Chat-main" class="h-100" style="display: flex;flex-direction: column;">
   <div ref="chatmain" class="h-100 row" style="overscroll-behavior: none;overflow-y: scroll;">
-    <ul id="PTTChat-contents-Chat-pushes" class="col mb-0 px-0" :post-aid="postAID" :chat-count="allchats.length" ref="chats">
+    <ul id="PTTChat-contents-Chat-pushes" class="col mb-0 px-0" :post-aid="postAID" :chat-count="allchats.length"
+      ref="chats">
       <chat-item :index="index" :chat="item" :gray="item.gray" :key="item.index" v-for="(item, index) in chatList">
       </chat-item>
     </ul>
+    <chat-preview-image></chat-preview-image>
     <chat-scroll-btn :is-auto-scroll="isAutoScroll" @autoscrollclick="EnableAutoScroll()"></chat-scroll-btn>
   </div>
   <chat-set-new-push></chat-set-new-push>
@@ -254,7 +259,7 @@ let testchat = {
         id: "Zoosewu ",
         time: new Date(),
       };
-      el.msg = i + " 太神啦 https://youtu.be/23y5h8kQsv8?t=4510 太神啦 https://youtu.be/23y5h8kQsv8?t=4510 太神啦";
+      el.msg = i + " 太神啦 https://youtu.be/23y5h8kQsv8?t=4510 太神啦 https://pbs.twimg.com/media/ErtC6XwVoAM_ktN.jpg 太神啦";
       el.time.setHours(18);
       el.time.setMinutes(0);
       el.time.setSeconds(i * 3);
