@@ -97,9 +97,11 @@ export let Chat = {
           }
         }
         console.log(this.instancedChat);
-        if (addchat) this.chatList = this.chatList.concat(tmpchat);
+        if (addchat) {
+          this.chatList = this.chatList.concat(tmpchat);
+          this.chatList.sort(function (a, b) { return a.index - b.index; });
+        }
         //if (this.chatList.length > 0) console.log("after chat", this.chatList[0].msg, this.chatList[this.chatList.length - 1].msg);
-        this.chatList.sort(function (a, b) { return a.index - b.index; });
         if (reportmode) console.log("activeChat, start, end, allList, chatList", this.activeChat, start, this.activeChatEnd, list, this.chatList);
       }
     },
