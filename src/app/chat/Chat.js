@@ -37,7 +37,7 @@ export let Chat = {
           }
         }
       }
-      console.log("this.isAutoScroll", this.isAutoScroll, this.lastautoscrolltime + 50 < Date.now());
+      if (reportmode) console.log("this.isAutoScroll", this.isAutoScroll, this.lastautoscrolltime + 50 < Date.now());
       if (this.isAutoScroll && this.lastautoscrolltime + 50 < Date.now()) {
         const scrollPos = this.getScrollPos();
         const p = this.$refs.chatmain.scrollTop - scrollPos;
@@ -85,7 +85,6 @@ export let Chat = {
         // }
         const tmpchat = [];
         let addchat = false;
-        console.log("chats", list);
         for (let i = start; i < list.length && i <= end; i++) {
           const chat = list[i];
           //console.log("add check, i, chat.index, chat.msg, chat", i, chat.index, chat.msg, chat);
@@ -97,7 +96,7 @@ export let Chat = {
             //chat.ins = ins;
           }
         }
-        console.log(this.instancedChat);
+        if (reportmode) console.log(this.instancedChat);
         if (addchat) {
           this.chatList = this.chatList.concat(tmpchat);
           this.chatList.sort(function (a, b) { return a.index - b.index; });

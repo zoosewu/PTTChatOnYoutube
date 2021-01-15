@@ -7,10 +7,7 @@ export const actions = {
   Alert: (context, alertobject) => { context.commit(types.ALERT, alertobject); },
   updateLog: (context, log) => {
     if (!Array.isArray(log)) context.commit(types.UPDATELOG, log);
-    else for (let i = 0; i < log.length; i++) {
-      const el = array[i];
-      context.commit(types.UPDATELOG, el);
-    }
+    else for (let i = 0; i < log.length; i++) context.commit(types.UPDATELOG, log[i]);
   },
   updatePost: ({ dispatch, commit, state }, postdata) => {
     let newpost;
@@ -31,11 +28,11 @@ export const actions = {
         gettedpost: true,
       };
       const t = newpost.date;
-      commit(types.UPDATELOG, { type: "postaid", data: newpost.AID });
-      commit(types.UPDATELOG, [{ type: "postboard", data: newpost.board },
-      { type: "posttitle", data: newpost.title },
-      { type: "postdate", data: t.toLocaleDateString() + " " + t.toLocaleTimeString() },
-      { type: "postendline", data: newpost.lastendline }]);
+      dispatch("updateLog", { type: "postAID", data: newpost.AID });
+      dispatch("updateLog", [{ type: "postBoard", data: newpost.board },
+      { type: "postTitle", data: newpost.title },
+      { type: "postDate", data: t.toLocaleDateString() + " " + t.toLocaleTimeString() },
+      { type: "postEndline", data: newpost.lastendline }]);
     }
     if (postdata.pushes.length > 0) {
       newpost.pushcount += postdata.pushes.length;
@@ -96,14 +93,14 @@ export const actions = {
     date.setHours(+time[0]);
     date.setMinutes(+time[1]);
     date.setSeconds(+time[2]);
-    commit(types.UPDATELOG, { type: "videostarttime", data: date.toLocaleDateString() + " " + date.toLocaleTimeString() });
+    dispatch("updateLog", { type: "videoStartTime", data: date.toLocaleDateString() + " " + date.toLocaleTimeString() });
     commit(types.VIDEOSTARTDATE, date);
     dispatch('updateVideoCurrentTime');
   },
   updateVideoPlayedTime: ({ dispatch, commit, state }, time) => {
     // console.log("updateVideoPlayedTime", time);
     commit(types.VIDEOPLAYEDTIME, time);
-    commit(types.UPDATELOG, { type: "videoplayedtime", data: time });
+    dispatch("updateLog", { type: "videoPlayedTime", data: time });
     dispatch('updateVideoCurrentTime');
   },
   updateVideoCurrentTime: ({ dispatch, commit, state }) => {
@@ -122,7 +119,7 @@ export const actions = {
       }
     }
     //console.log("updateVideoCurrentTime vstart, time, currtime", vstart, time, currtime);
-    commit(types.UPDATELOG, { type: "videocurrenttime", data: currtime.toLocaleDateString() + " " + currtime.toLocaleTimeString() });
+    dispatch("updateLog", { type: "videoCurrentTime", data: currtime.toLocaleDateString() + " " + currtime.toLocaleTimeString() });
     commit(types.VIDEOCURRENTRIME, currtime);
   },
   pageChange: ({ commit }, Change) => { commit(types.PAGECHANGE, Change); },
@@ -131,7 +128,7 @@ export const actions = {
   isStream: ({ commit }, isStream) => { commit(types.ISSTREAM, isStream); },
   previewImage: ({ commit }, src) => { commit(types.PREVIEWIMG, src); },
 
-  
+
   //checkbox
   setEnableSetNewPush: ({ commit }, isenable) => { commit(types.ENABLESETNEWPUSH, isenable); },
   setDisablePushGray: ({ commit }, disablepushgray) => { commit(types.DISABLEPUSHGRAY, disablepushgray); },

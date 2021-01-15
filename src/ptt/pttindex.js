@@ -521,7 +521,10 @@ export function InitPTT(messageposter) {
         }
         if (reportmode) console.log("Get new post's push.", bname, PTTPost.board, pAID, PTTPost.AID);
       }
-      if (PTT.pagestate === 1) insertText("m");//隨意切畫面
+      if (PTT.pagestate === 1) {
+        if (PTT.screenHaveText(/●\(M\)ail         【 私人信件區 】/)) insertText("c");//隨意切畫面
+        else insertText("m");//隨意切畫面
+      }
       else if (PTT.pagestate === 2) insertText("P");//切下一頁
       else if (PTT.pagestate === 3 || !PTTPost.isgotopost) {
         PTTPost.isgotopost = false;

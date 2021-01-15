@@ -1,0 +1,6 @@
+<tr>
+  <th colspan="1" scope="row">{{this.item1Title}}</th>
+  <td :colspan="item1ColSpan">{{this.item1Data}}</td>
+  <th scope="row" v-if="secondItemTitle">{{this.item2Title}}</th>
+  <td v-if="secondItemTitle">{{this.item2Data}}</td>
+</tr>

@@ -22,7 +22,7 @@ Vue.component('plugin-setting-input', {
   },
   methods: {
     $_PluginSetting_update: function () {
-      console.log("$_PluginSetting_update", this.SettingValue);
+      if (reportmode) console.log("$_PluginSetting_update", this.SettingValue);
       if (+this.SettingValue > this.ValueMax) { this.SettingValue = this.ValueMax; }
       else if (+this.SettingValue < this.ValueMin) { this.SettingValue = this.ValueMin; }
 
@@ -49,7 +49,7 @@ Vue.component('plugin-setting-input', {
     Classes: function () {
       let c = this.Col;
       if (this.pluginWidth < 399) c = Math.min(this.Col * 2, 12);
-      console.log("Classes", this.Col, c);
+      if (reportmode) console.log("Classes", this.Col, c);
       const classes = ["form-row", "px-0", "mx-0"];
       if (this.pluginWidth < 399) classes.push("my-2", "col-" + Math.min(this.Col * 2, 12));
       else classes.push("my-3", "col-" + Math.min(this.Col, 12));

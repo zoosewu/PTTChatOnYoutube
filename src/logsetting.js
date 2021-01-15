@@ -1,5 +1,5 @@
 //user log
-const reportmode = true;
+const reportmode = false;
 //all log
 const showalllog = false;
 //dev log

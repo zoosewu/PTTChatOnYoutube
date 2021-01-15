@@ -46,6 +46,7 @@ export const mutations = {
     state.chatlist = chatlist;
   },
   [types.UPDATELOG](state, log) {
+    if (reportmode) console.log("UPDATELOG", log);
     state.log = log;
   },
   [types.VIDEOSTARTTIME](state, videostarttime) {
