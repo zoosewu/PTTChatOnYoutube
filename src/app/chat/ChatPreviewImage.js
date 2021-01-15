@@ -10,12 +10,14 @@ export let ChatPreviewImage = {
   methods: {
     getWidth: function () {
       if (this.preview) this.w = this.$refs.imgel.width;
-      else this.w = -100;
+      else this.w = -10000;
+      if (this.w === 0) this.w = 400;
       return this.w;
     },
     getHeight: function () {
       if (this.preview) this.h = this.$refs.imgel.height;
-      else this.h = -100;
+      else this.h = -10000;
+      if (this.h === 0) this.h = 400;
       return this.h;
     },
   },
@@ -39,7 +41,7 @@ export let ChatPreviewImage = {
         };
         if (this.preview) {
           const el = this.$refs.imgel;
-          //console.log("W,H,", this.mousex, this.getWidth(), l, this.mousey, this.getHeight(), t);
+          if (reportmode) console.log("W,H,", this.mousex, this.getWidth(), l, this.mousey, this.getHeight(), t);
           styles = {
             maxHeight: "400px",
             maxWidth: "400px",

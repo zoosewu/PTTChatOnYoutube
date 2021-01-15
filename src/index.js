@@ -6,7 +6,7 @@ import { htfilter } from './holotools/htfilter.js';
 import { blankfilter } from './blank/blankfilter.js';
 import { twitchfilter } from './twitch/twitchfilter.js';
 
-//import '../css/index.css';
+import '../css/index.css';
 //dev use 
 const defaultopen = false;
 const disablepttframe = false;

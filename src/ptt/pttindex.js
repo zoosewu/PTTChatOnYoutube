@@ -77,6 +77,7 @@ export function InitPTT(messageposter) {
       { reg: /您想刪除其他重複登入的連線嗎|您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n' },
       { reg: /您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n' },
       { reg: /按任意鍵繼續/, input: '\n' },
+      { reg: /動畫播放中\.\.\./, input: 'q' },
       {
         reg: /系統過載, 請稍後再來\.\.\./, input: '', callback: () => {
           serverfull = true;
@@ -103,6 +104,7 @@ export function InitPTT(messageposter) {
       { reg: /【工具程式】/, input: 'e' },
       { reg: /【網路遊樂場】/, input: 'e' },
       { reg: /您確定要離開【 批踢踢實業坊 】嗎\(Y\/N\)？/, input: 'n\n' },
+
     ]
   }
   PTT.wind = window;
@@ -116,8 +118,8 @@ export function InitPTT(messageposter) {
     endline: 3,
     percent: 0,
     samepost: false,
-    isgotopost: false
-
+    isgotopost: false,
+    haveNormalTitle: false,
   }
   let serverfull = false;
   const insertText = (() => {
@@ -243,19 +245,16 @@ export function InitPTT(messageposter) {
   // -----------------------task getpostbyline --------------------
   function gotoBoard() { insertText("s" + PTTPost.board + "\n"); }
   function boardcheck() {
-    console.log("Issue #9 trace, pagestate:", PTT.pagestate);
     const res = { pass: false, callback: gotoBoard }
     let reg = "";
-    if (PTT.pagestate === 4) {
+    if (PTT.pagestate === 4 || PTT.pagestate === 3) {
       res.pass = true;
       return res;
     }
     else if (PTT.pagestate === 1) return res;
     else if (PTT.pagestate === 2) reg = "看板《" + PTTPost.board + "》";
-    else if (PTT.pagestate === 3) reg = "看板 *" + PTTPost.board;
     const currect = PTT.screenHaveText(reg);
     if (currect) res.pass = true;
-    console.log("Issue #9 trace, pass:", res.pass, ", currect:", currect);
     return res;
   }
 
@@ -271,23 +270,28 @@ export function InitPTT(messageposter) {
   function PotsTitleCheck() {
     const res = { pass: true, callback: backtoboard }
     if (PTT.pagestate === 3) {
+      PTTPost.isgotopost = false;
       const reg = / 標題 +(.+)/;
       const posttitle = PTT.screenHaveText(reg);
+      let title = "";
       if (posttitle) {
-        PTTPost.isgotopost = false;
-        var spacereg = /\s+$/g;
-        const title = posttitle[1].replace(spacereg, "");
-        if (PTTPost.samepost) {
-          if (title === PTTPost.title) { }
-          else { res.pass = false; }
-        }
-        else {
-          PTTPost.title = title;
-          let result = PTT.screenHaveText(/時間  (\S{3} \S{3} ...\d{2}:\d{2}:\d{2} \d{4})/);
-          PTTPost.posttime = new Date(result[1]);
-        }
+        PTTPost.haveNormalTitle = true;
+        if (reportmode) console.log("==set haveNormalTitle true", posttitle);
+        title = posttitle[1].replace(/\s+$/g, ""); //抓一般標題
       }
-      else { res.pass = false; console.log("==PotsTitleCheck error, Reg Parse Error."); }
+      else for (let i = 0; i < 5 && i < PTT.screen.length; i++) title += PTT.screen[i]; //抓前幾行
+
+
+      if (PTTPost.samepost) {
+        if (title === PTTPost.title) { }
+        else { res.pass = false; }
+      }
+      else {
+        PTTPost.title = title;
+        let result = PTT.screenHaveText(/時間  (\S{3} \S{3} ...\d{2}:\d{2}:\d{2} \d{4})/);
+        if (result) PTTPost.posttime = new Date(result[1]);
+        else PTTPost.posttime = new Date(Date.now());
+      }
     }
     else if (PTT.pagestate === 1) console.log("==PotsTitleCheck error, PTT.pagestate == 1.");
     else if (PTT.pagestate === 2) console.log("==PotsTitleCheck error, PTT.pagestate == 2.");
@@ -301,7 +305,7 @@ export function InitPTT(messageposter) {
       const lineresult = PTT.screenHaveText(/目前顯示: 第 (\d+)~(\d+) 行/);
       const startline = lineresult[1];
       let targetline = PTTPost.endline - startline + 1;
-      if (startline < 5) targetline += 1;
+      if (startline < 5 && PTTPost.haveNormalTitle) targetline += 1;
       if ((targetline < 1 || targetline > 23) && PTT.screenHaveText(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~\d+ 行/) === null) res.pass = false;
       else getpush();
     }
@@ -321,10 +325,10 @@ export function InitPTT(messageposter) {
   }
   function getpush() {
     const lineresult = PTT.screenHaveText(/目前顯示: 第 (\d+)~(\d+) 行/);
-    const startline = lineresult[1];
-    const endline = lineresult[2];
+    const startline = +lineresult[1];
+    const endline = +lineresult[2];
     let targetline = PTTPost.endline - startline + 1;
-    if (startline < 5) targetline += 1;
+    if (startline < 5 && PTTPost.haveNormalTitle) targetline += 1;
     const checkedline = [];
     //console.log("==GetPush from " + targetline + "to " + (PTT.screen.length - 1));
     //console.log("==(pttstartline, pttendline, startline, endline, targetline): (" + PTTPost.startline + ", " + PTTPost.endline + ", " + startline + ", " + endline + ", " + targetline + ")");
@@ -337,9 +341,11 @@ export function InitPTT(messageposter) {
         content = content.replace(reg, "");
         savepush(content, result);
         if (reportmode) checkedline.push(i);
+        if (reportmode) console.log("GetPush at line", i, content, line);
       }
+      else if (reportmode) console.log("GetPush at line fail", i, line);
     }
-    if (reportmode) console.log("startline,endline, checked line", startline, PTTPost.endline, checkedline);
+    if (reportmode) console.log("GetPush startline,", startline, ", endline", PTTPost.endline, ", targetline", targetline, ", checkedline", checkedline, ", haveNormalTitle", PTTPost.haveNormalTitle);
     let percentresult = PTT.screenHaveText(/瀏覽 第 .+ 頁 \( *(\d+)%\)/);
     PTTPost.percent = percentresult[1];
     PTTPost.startline = startline;
@@ -368,7 +374,7 @@ export function InitPTT(messageposter) {
         if (targetline < 3) targetline = 3;
         //console.log("==GetRecentLine, TotalLine, GotoLline", line[1], targetline);
         PTTPost.endline = targetline;
-        if (PTT.pagestate === 4) insertText(PTTPost.endline + ".\n");
+        if (PTT.pagestate === 4) insertText("q");//insertText(PTTPost.endline + ".\n");
         else if (PTT.pagestate === 3) insertText("q");
         res.pass = true;
       }
@@ -428,6 +434,7 @@ export function InitPTT(messageposter) {
   function RunTask(tasklist, finishBehavior) {
     if (PTTPost.isgotopost && PTT.pagestate === 2) {
       msg.PostMessage("alert", { type: 0, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
+      if (reportmode) console.log("文章AID錯誤，文章已消失或是你找錯看板了", PTTPost.isgotopost, PTT.pagestate, PTT, PTTPost);
       PTT.unlock();
     }
     for (let i = 0; i < tasklist.length; i++) {
@@ -510,12 +517,16 @@ export function InitPTT(messageposter) {
           percent: 0,
           samepost: false,
           isgotopost: false,
+          haveNormalTitle: false,
         }
         if (reportmode) console.log("Get new post's push.", bname, PTTPost.board, pAID, PTTPost.AID);
       }
-      if (PTT.pagestate === 1) insertText("m");
-      if (PTT.pagestate === 2) insertText("P");
-      else if (PTT.pagestate === 3 || !PTTPost.isgotopost) insertText("q");
+      if (PTT.pagestate === 1) insertText("m");//隨意切畫面
+      else if (PTT.pagestate === 2) insertText("P");//切下一頁
+      else if (PTT.pagestate === 3 || !PTTPost.isgotopost) {
+        PTTPost.isgotopost = false;
+        insertText("q");//在標題或是其他文章就退出
+      }
       else insertText("q\n");
       PTT.commands.add(/.*/, "", task);
     }
@@ -528,7 +539,7 @@ export function InitPTT(messageposter) {
       PTT.unlock();
     }
   }
-
+  let TryLogin = 0;
   function Login(id, pw) {
     msg.PostMessage("alert", { type: 2, msg: "登入中" });
     if (!PTT.login) {
@@ -556,9 +567,14 @@ export function InitPTT(messageposter) {
           PTT.unlock();
         }
       }
-
       let result = PTT.screenHaveText(/請輸入代號，或以 guest 參觀，或以 new 註冊/);
       if (result) {
+        if (TryLogin <= 0) {//防止過度嘗試
+          msg.PostMessage("alert", { type: 0, msg: "未知原因登入失敗。" });
+          PTT.unlock();
+          return;
+        }
+        else TryLogin--;
         insertText(id + "\n" + pw + "\n");
         PTT.commands.add(/.*/, "", logincheck);
       }
@@ -598,6 +614,7 @@ export function InitPTT(messageposter) {
   msg["login"] = data => {
     const i = CryptoJS.AES.decrypt(data.id, cryptkey).toString(CryptoJS.enc.Utf8);
     const p = CryptoJS.AES.decrypt(data.pw, cryptkey).toString(CryptoJS.enc.Utf8);
+    TryLogin = 2;
     //console.log(data );
     //console.log([i, p],cryptkey);
     PTTLockCheck(Login, i, p);
