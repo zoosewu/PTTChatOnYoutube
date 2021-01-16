@@ -190,7 +190,7 @@ export let Chat = {
     //註冊文章事件
     this.msg["newPush"] = data => {
       this.$store.dispatch('updatePost', data);
-      this.nextUpdateTime = Date.now() + this.getPushInterval * 1000;
+      this.nextUpdateTime = Date.now() + Math.max(this.getPushInterval, 2.5) * 1000;
     };
 
     //初始化聊天列表
