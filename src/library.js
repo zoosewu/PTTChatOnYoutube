@@ -50,6 +50,7 @@ function cloneObj(from) {
 function cloneArr(from) {
   return from.map((n) => clone(n));
 }
+
 // 复制输入值
 function clone(from) {
   if (from instanceof Array) {
@@ -59,4 +60,11 @@ function clone(from) {
   } else {
     return (from);
   }
+}
+
+
+function ThemeCheck(CSSSelector, WhiteThemeColor) {
+  const bgcolor = getComputedStyle(document.querySelector(CSSSelector)).backgroundColor;
+  console.log("Theme Color Check: bgcolor", bgcolor, ", white theme color", WhiteThemeColor, ", is whitetheme ", bgcolor === WhiteThemeColor);
+  return bgcolor === WhiteThemeColor;
 }

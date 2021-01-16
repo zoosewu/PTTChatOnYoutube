@@ -1,15 +1,12 @@
-import { InitApp } from '../app/appindex.js';
-import { BootStrap } from '../BootStrap.js';
-import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver } from '../library.js';
+import { InitApp } from '../../app/appindex.js';
+import { BootStrap } from '../../BootStrap.js';
+import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver, clone, ThemeCheck } from '../../library.js';
 
 export function Initblank(messageposter) {
   const msg = messageposter;
   let WhiteTheme = true;
   //Check Theme
-  setTimeout(() => {
-    const colorlight = "rgb(249, 249, 249)";
-    const colordark = "rgb(24, 24, 24)"
-  }, 100);
+
   const Body = document.getElementsByTagName("BODY")[0];
   const container = document.createElement("div");
   container.id = "container";

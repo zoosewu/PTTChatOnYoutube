@@ -1,18 +1,14 @@
 
-import { InitApp } from '../app/appindex.js';
-import { BootStrap } from '../BootStrap.js';
-import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver } from '../library.js';
+import { InitApp } from '../../app/appindex.js';
+import { BootStrap } from '../../BootStrap.js';
+import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver, clone, ThemeCheck } from '../../library.js';
 
 export function InitHT(messageposter) {
   const msg = messageposter;
   let WhiteTheme;
   //Check Theme
-  setTimeout(() => {
-    const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
-    const colorlight = "rgba(250, 250, 250, 0.824)";
-    console.log(YTbgcolor, colorlight, YTbgcolor === colorlight);
-    WhiteTheme = YTbgcolor === colorlight;
-  }, 100);
+  setTimeout(() => { WhiteTheme = ThemeCheck('html', 'rgb(250, 250, 250)'); }, 100);
+
   //run app instance loop
   let waswatch;
   let iswatch;

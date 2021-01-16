@@ -1,19 +1,14 @@
 
-import { InitApp } from '../app/appindex.js';
-import { BootStrap } from '../BootStrap.js';
-import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver } from '../library.js';
+import { InitApp } from '../../app/appindex.js';
+import { BootStrap } from '../../BootStrap.js';
+import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver, clone, ThemeCheck } from '../../library.js';
 
 export function InitTwitch(messageposter) {
   const msg = messageposter;
   let WhiteTheme;
   //Check Theme
-  setTimeout(() => {
-    const YTbgcolor = getComputedStyle($('body')[0]).backgroundColor;
-    console.log(YTbgcolor);
-    const colorlight = "rgb(247, 247, 248)";
-    console.log(YTbgcolor, colorlight, YTbgcolor === colorlight);
-    WhiteTheme = YTbgcolor === colorlight;
-  }, 100);
+  setTimeout(() => { WhiteTheme = ThemeCheck('body', 'rgb(247, 247, 248)'); }, 100);
+  
   //run app instance loop
   setTimeout(ChechChatInstanced, 1000);
   function ChechChatInstanced() {
