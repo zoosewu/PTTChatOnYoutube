@@ -1,5 +1,6 @@
 
 
+import ChatElementMessage from './ChatElementMessage.js';
 Vue.component('chat-item', {
   props: ['index', 'chat', 'gray'],
   data: function () {
@@ -10,10 +11,10 @@ Vue.component('chat-item', {
     }
   },
   computed: {
-    msg: function () {
+    /*msg: function () {
       var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
       return this.chat.msg.replace(exp, "<a class='ptt-chat-msg' href='$1' target='_blank' rel='noopener noreferrer'>$1</a>");
-    },
+    },*/
     typeclass: function () {
       const typecolor = this.chat.type === "推 " ? "ptt-chat-type" : "ptt-chat-type-n";
       return typecolor + " mr-2 mb-0";
@@ -42,7 +43,7 @@ Vue.component('chat-item', {
     ])
   },
   // mounted() { console.log("mounted", this.index, this.chat); },
-  updated: function () { if (reportmode) console.log('updated, uid, listIndex, chatIndex, msg', this.uid, this.index, this.chat.index, this.chat.msg); },
+  //updated: function () { if (reportmode) console.log('updated, uid, listIndex, chatIndex, msg', this.uid, this.index, this.chat.index, this.chat.msg); },
   template: `<li :id="chat.index" class="ptt-chat media px-3" v-bind:style="bgc">
   <div class="media-body mw-100">
     <div class="ptt-chat-info d-flex flex-row" :style="infoFontsize">
@@ -51,7 +52,7 @@ Vue.component('chat-item', {
       <p class="ptt-chat-time mb-0">{{this.timeH }}:{{this.timem}}</p>
     </div>
     <div>
-      <p class="ptt-chat-msg mb-0 mx-2" :style="msgFontsize" v-html="msg"></p>
+      <chat-item-msg :msg="chat.msg"></chat-item-msg>
     </div>
     <div :style="space"> </div>
   </div>

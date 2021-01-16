@@ -1,9 +1,11 @@
 <div id="PTTChat-contents-Chat-main" class="h-100" style="display: flex;flex-direction: column;">
   <div ref="chatmain" class="h-100 row" style="overscroll-behavior: none;overflow-y: scroll;">
-    <ul id="PTTChat-contents-Chat-pushes" class="col mb-0 px-0" v-bind:post-aid="postAID" ref="chats">
+    <ul id="PTTChat-contents-Chat-pushes" class="col mb-0 px-0" :post-aid="postAID" :chat-count="allchats.length"
+      ref="chats">
       <chat-item :index="index" :chat="item" :gray="item.gray" :key="item.index" v-for="(item, index) in chatList">
       </chat-item>
     </ul>
+    <chat-preview-image></chat-preview-image>
     <chat-scroll-btn :is-auto-scroll="isAutoScroll" @autoscrollclick="EnableAutoScroll()"></chat-scroll-btn>
   </div>
   <chat-set-new-push></chat-set-new-push>

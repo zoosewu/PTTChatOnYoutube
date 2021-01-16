@@ -33,6 +33,7 @@ export function InitApp(chatcon, whitetheme, isstreaming, messageposter) {
         return {
           msg: this.rootmsg,
           isStream: isstreaming,
+          pluginWidth: cn[0].offsetWidth,
         };
       },
       mounted() {
@@ -51,7 +52,7 @@ export function InitApp(chatcon, whitetheme, isstreaming, messageposter) {
           }
         }), 1000);
         this.$store.dispatch('isStream', isstreaming);
-        
+
         this.rootmsg["PTTState"] = data => { this.$store.dispatch('PTTState', data); };
       },
       beforeDestroy() {

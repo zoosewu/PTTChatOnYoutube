@@ -1,4 +1,4 @@
-export let chatSetNewPush = {
+export let ChatSetNewPush = {
   data: function () {
     return {
       pushtext: "",

@@ -1,7 +1,8 @@
 import { store } from "../store/store.js";
+import { ChatPreviewImage } from './ChatPreviewImage.js';
 import { ChatScrollBtn } from './ChatScrollBtn.js';
 import { ChatElement } from './ChatElement.js';
-import { chatSetNewPush } from './chatSetNewPush.js';
+import { ChatSetNewPush } from './ChatSetNewPush.js';
 export let Chat = {
   inject: ['msg', 'isStream'],
   data: function () {
@@ -9,6 +10,7 @@ export let Chat = {
       _allchats: [],
       chatList: [],
       lastChat: [],
+      instancedChat: [],
       acChat: 0,
       lastactiveChat: -1,
       activeRange: 200,
@@ -18,6 +20,7 @@ export let Chat = {
       intervalScroll: null,
       nextUpdateTime: Date.now() + 365 * 24 * 60 * 60 * 1000,
       isAutoScroll: true,
+      lastautoscrolltime: Date.now(),
     }
   },
   methods: {
@@ -34,18 +37,23 @@ export let Chat = {
           }
         }
       }
-      if (this.isAutoScroll) {
+      if (reportmode) console.log("this.isAutoScroll", this.isAutoScroll, this.lastautoscrolltime + 50 < Date.now());
+      if (this.isAutoScroll && this.lastautoscrolltime + 50 < Date.now()) {
         const scrollPos = this.getScrollPos();
         const p = this.$refs.chatmain.scrollTop - scrollPos;
-        if (reportmode) console.log("scrollToChat, scrollTop, scrollPos", this.$refs.chatmain.scrollTop, scrollPos);
-        if (p > 20 || p < -20) { this.$refs.chatmain.scrollTo({ top: scrollPos, behavior: "smooth" }); }
+        if (p > 20 || p < -20) {
+          if (reportmode) console.log("scrollToChat, scrollTop, scrollPos", this.$refs.chatmain.scrollTop, scrollPos);
+          this.$refs.chatmain.scrollTo({ top: scrollPos, behavior: "smooth" });
+        }
       }
     },
     getScrollPos: function () {
       const clientHeight = this.$refs.chatmain ? this.$refs.chatmain.clientHeight : 0;
-      const current = this.activeChat + 1 - this.activeChatStart;
       const chatnode = this.$children.find(ele => { return ele.chat && ele.chat.index === this.activeChat; });
-      //console.log("getScrollPos, chatnode, chatnode - 1", current, [chatnode], this.$children[current - 1]);
+      if (reportmode) {
+        if (chatnode) console.log("getScrollPos, activeChat:", this.activeChat, ", chatnode:", [chatnode], ", index:", chatnode.index);
+        else console.log("getScrollPos, activeChat:", this.activeChat, ", chatnode:", [chatnode], ", no chatnode found");
+      }
       if (!chatnode) return 0;
       const chat = chatnode.$el;
       const chatHeight = chat.clientHeight;
@@ -76,19 +84,24 @@ export let Chat = {
         //   }
         // }
         const tmpchat = [];
+        let addchat = false;
         for (let i = start; i < list.length && i <= end; i++) {
           const chat = list[i];
           //console.log("add check, i, chat.index, chat.msg, chat", i, chat.index, chat.msg, chat);
-          if (!this.chatList.includes(chat.ins)) {
+          if (!this.instancedChat.includes(i)) {
+            if (!addchat) addchat = true;
             const ins = { time: chat.time, id: chat.id, type: chat.type, msg: chat.msg, index: chat.index, gray: chat.gray, };
             tmpchat.push(ins);
-            chat.ins = ins;
-            //console.log("add chat", i, chat.msg, chat);
+            this.instancedChat.push(i);
+            //chat.ins = ins;
           }
         }
-        this.chatList = this.chatList.concat(tmpchat);
+        if (reportmode) console.log(this.instancedChat);
+        if (addchat) {
+          this.chatList = this.chatList.concat(tmpchat);
+          this.chatList.sort(function (a, b) { return a.index - b.index; });
+        }
         //if (this.chatList.length > 0) console.log("after chat", this.chatList[0].msg, this.chatList[this.chatList.length - 1].msg);
-        this.chatList.sort(function (a, b) { return a.index - b.index; });
         if (reportmode) console.log("activeChat, start, end, allList, chatList", this.activeChat, start, this.activeChatEnd, list, this.chatList);
       }
     },
@@ -127,7 +140,7 @@ export let Chat = {
       this.activeChatEnd = visibleEnd < chats.length - 1 ? visibleEnd : chats.length - 1;
       this.activeChatStart = this.activeChatEnd - this.activeRange;
       setTimeout(() => this.scrollToChat(), 10);
-      if (reportmode) console.log("getCurrentChat, chats.length-1", chats.length - 1, ", activeChat,", this.activeChat, " start,", this.activeChatStart, " end,", this.activeChatEnd, " isStream", this.isStream, "chats[this.activeChat].msg", chats[this.activeChat].msg);
+      if (reportmode && this.lastactiveChat != this.activeChat && chats[this.activeChat]) console.log("getCurrentChat, chats.length-1", chats.length - 1, ", activeChat,", this.activeChat, " start,", this.activeChatStart, " end,", this.activeChatEnd, " isStream", this.isStream, "chats[this.activeChat].msg", chats[this.activeChat].msg);
     },
     MouseWheelHandler: function (e) {
       this.isAutoScroll = false;
@@ -141,7 +154,6 @@ export let Chat = {
     allchats: function () {
       //console.log("allchats");
       if (this.newChatList !== this.lastChat) {
-
         this._allchats = this._allchats.concat(this.newChatList);
         this.lastChat = this.newChatList;
         //console.log("add chat, newChatList", this.newChatList);
@@ -152,6 +164,7 @@ export let Chat = {
       if (reportmode) console.log("new post:", this.post.AID);
       this._allchats = [];
       this.chatList = [];
+      this.instancedChat = [];
       return this.post.AID;
     },
     activeChat: {
@@ -177,13 +190,15 @@ export let Chat = {
     //註冊文章事件
     this.msg["newPush"] = data => {
       this.$store.dispatch('updatePost', data);
-      this.nextUpdateTime = Date.now() + this.getPushInterval * 1000;
+      this.nextUpdateTime = Date.now() + Math.max(this.getPushInterval, 2.5) * 1000;
     };
 
     //初始化聊天列表
-    this.lastChat = this.newChatList;
     if (reportmode) this._allchats = testchat.list;//test
     else this._allchats = [];
+    this.lastChat = [];
+
+    this.activeChat = 0;
     this.activeChat = 0;
     this.nextUpdateTime = Date.now() + 5 * 365 * 24 * 60 * 60 * 1000;
 
@@ -207,6 +222,7 @@ export let Chat = {
     else {// IE 6/7/8
       this.$refs.chatmain.attachEvent("onmousewheel", this.MouseWheelHandler);
     }
+    this.$refs.chatmain.addEventListener('scroll', e => { if (this.isAutoScroll) this.lastautoscrolltime = Date.now(); });
   },
   updated: function () { },
   beforeDestroy() {
@@ -214,15 +230,18 @@ export let Chat = {
     clearInterval(this.intervalScroll);
   },
   components: {
+    "chat-preview-image": ChatPreviewImage,
     "chat-scroll-btn": ChatScrollBtn,
-    "chat-set-new-push": chatSetNewPush,
+    "chat-set-new-push": ChatSetNewPush,
   },
   template: `<div id="PTTChat-contents-Chat-main" class="h-100" style="display: flex;flex-direction: column;">
   <div ref="chatmain" class="h-100 row" style="overscroll-behavior: none;overflow-y: scroll;">
-    <ul id="PTTChat-contents-Chat-pushes" class="col mb-0 px-0" v-bind:post-aid="postAID" ref="chats">
+    <ul id="PTTChat-contents-Chat-pushes" class="col mb-0 px-0" :post-aid="postAID" :chat-count="allchats.length"
+      ref="chats">
       <chat-item :index="index" :chat="item" :gray="item.gray" :key="item.index" v-for="(item, index) in chatList">
       </chat-item>
     </ul>
+    <chat-preview-image></chat-preview-image>
     <chat-scroll-btn :is-auto-scroll="isAutoScroll" @autoscrollclick="EnableAutoScroll()"></chat-scroll-btn>
   </div>
   <chat-set-new-push></chat-set-new-push>
@@ -239,7 +258,7 @@ let testchat = {
         id: "Zoosewu ",
         time: new Date(),
       };
-      el.msg = i + " 太神啦 https://youtu.be/23y5h8kQsv8?t=4510 太神啦 https://youtu.be/23y5h8kQsv8?t=4510 太神啦";
+      el.msg = i + " 太神啦 https://youtu.be/23y5h8kQsv8?t=4510 太神啦 https://pbs.twimg.com/media/ErtC6XwVoAM_ktN.jpg 太神啦";
       el.time.setHours(18);
       el.time.setMinutes(0);
       el.time.setSeconds(i * 3);

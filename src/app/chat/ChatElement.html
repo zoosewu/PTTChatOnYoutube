@@ -6,7 +6,7 @@
       <p class="ptt-chat-time mb-0">{{this.timeH }}:{{this.timem}}</p>
     </div>
     <div>
-      <p class="ptt-chat-msg mb-0 mx-2" :style="msgFontsize" v-html="msg"></p>
+      <chat-item-msg :msg="chat.msg"></chat-item-msg>
     </div>
     <div :style="space"> </div>
   </div>

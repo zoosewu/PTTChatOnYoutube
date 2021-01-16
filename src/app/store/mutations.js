@@ -18,6 +18,7 @@ export const state = {
   gotoChat: false,
   PTTState: 0,
   isStream: true,
+  previewImg: "",
   enablesetnewpush: GM_getValue(types.ENABLESETNEWPUSH, false),
   disablepushgray: GM_getValue(types.DISABLEPUSHGRAY, false),
   pluginHeight: GM_getValue(types.PLUGINHEIGHT, -1),
@@ -45,6 +46,7 @@ export const mutations = {
     state.chatlist = chatlist;
   },
   [types.UPDATELOG](state, log) {
+    if (reportmode) console.log("UPDATELOG", log);
     state.log = log;
   },
   [types.VIDEOSTARTTIME](state, videostarttime) {
@@ -71,6 +73,9 @@ export const mutations = {
   },
   [types.ISSTREAM](state, isStream) {
     state.isStream = isStream;
+  },
+  [types.PREVIEWIMG](state, src) {
+    state.previewImg = src;
   },
   [types.ENABLESETNEWPUSH](state, isenable) {
     //console.log("PTTState mutations", pttstate);

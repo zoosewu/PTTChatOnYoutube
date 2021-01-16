@@ -22,4 +22,6 @@ export const types = {
   CHATFONTSIZE: "Fontsize",
   CHATSPACE: "ChatSpace",
   PUSHINTERVAL: "PushInterval",
+  PREVIEWIMG: "PREVIEWIMG",
+  
 }

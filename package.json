@@ -35,7 +35,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "name": "pttchatonyoutube",
-  "version": "2.0.2668",
+  "version": "2.0.3108",
   "description": "Connect ptt pushes to youtube chatroom",
   "author": "Zoosewu",
   "license": "MIT",
@@ -53,6 +53,7 @@
         "https://youtu.be/*",
         "https://term.ptt.cc/*",
         "https://hololive.jetri.co/*",
+        "https://www.twitch.tv/*",
         "http://blank.org/"
       ],
       "grant": [

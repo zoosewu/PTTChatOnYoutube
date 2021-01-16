@@ -5,11 +5,7 @@ import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver } fr
 export function InitYT(messageposter) {
   const msg = messageposter;
   let WhiteTheme;
-  //generate crypt key everytime;
-  cryptkey = GenerateCryptKey();
-  //add bootstrap to use
-  BootStrap(document);
-  //PTTApp global css
+  //Check Theme
   setTimeout(() => {
     const YTbgcolor = getComputedStyle($('html')[0]).backgroundColor;
     const colorlight = "rgb(249, 249, 249)";

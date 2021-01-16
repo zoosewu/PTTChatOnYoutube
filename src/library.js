@@ -1,16 +1,4 @@
 
-//add global style
-export function AddStyle(css) {
-  const style = document.createElement('style');
-  if (style.styleSheet) {
-    ///好像都沒用到
-    style.styleSheet.cssText = css;
-  } else {
-    style.appendChild(document.createTextNode(css));
-  }
-  $('head')[0].appendChild(style);
-}
-
 //cryptkey
 export function GenerateCryptKey() {
   let c = makeid(20 + Math.random() * 10);

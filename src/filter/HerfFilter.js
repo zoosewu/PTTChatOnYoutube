@@ -24,7 +24,13 @@ export function HerfFilter(msg, filters) {
         msg.ownerorigin = f.ownerorigin;
         //-----
         console.log("Script started at " + window.location.href);
-        setTimeout(f.callback, 10, msg);
+        setTimeout(m => {
+          //generate crypt key everytime;
+          cryptkey = GenerateCryptKey();
+          //add bootstrap to use
+          BootStrap(document);
+          f.callback(m)
+        }, 100, msg);
         console.log(f.Fullname + " Script initialize finish.");
         //-----
         break;
