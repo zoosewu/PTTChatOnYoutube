@@ -1,6 +1,6 @@
 export let ConnectStreamTimeSetting = {
   inject: ['isStream'],
-  data: function () {
+  data() {
     return {
       VideoTime: "18:00:00",
       isbeforpost: false,

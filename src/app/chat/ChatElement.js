@@ -2,8 +2,12 @@
 
 import ChatElementMessage from './ChatElementMessage.js';
 Vue.component('chat-item', {
-  props: ['index', 'chat', 'gray'],
-  data: function () {
+  props: {
+    index: { type: Number, required: true },
+    chat: { type: Object, required: true },
+    gray: { type: Boolean, required: true },
+  },
+  data() {
     return {
       uid: this.index,
       timeH: paddingLeft(this.chat.time.getHours(), +2),

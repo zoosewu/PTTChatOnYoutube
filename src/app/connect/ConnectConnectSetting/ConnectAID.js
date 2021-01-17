@@ -1,10 +1,10 @@
 export let ConnectAID = {
-  data: function () {
+  inject: ['msg', 'isStream'],
+  data() {
     return {
       aid: GM_getValue("PostAID", ""),
     }
   },
-  inject: ['msg', 'isStream'],
   methods: {
     getPush: function () {
       const result = /#(.+) \((.+)\)/.exec(this.aid);
@@ -40,7 +40,7 @@ export let ConnectAID = {
     ])
   },
   template: `<div class="form-row my-3">
-  <label for="postAID" class="col-3 col-form-label">輸入文章AID</label>
+  <label for="postAID" class="col-3 col-form-label">文章AID</label>
   <div class="col">
     <input id="postAID" class="form-control" type="text" placeholder="#1VobIvqC (C_Chat)" autocomplete="off" v-model.lazy="aid" v-on:keyup.13="getPush">
   </div>

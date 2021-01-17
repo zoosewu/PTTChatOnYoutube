@@ -1,6 +1,6 @@
 export let ConnectAlert = {
   inject: ['msg'],
-  data: function () {
+  data() {
     return {
       al: [],
       lastAlert: null,
@@ -36,14 +36,14 @@ export let ConnectAlert = {
   template: `<div id="PTTChat-contents-Connect-alert" class="position-relative container"
   style="top:-100%; z-index:400; pointer-events: none;">
   <transition-group name="list-alert" tag="div">
-    <alert-item :alert="item" :key="item" :index="index" @destroyalert="removeAlert(item)" v-for="(item, index) in alertlist"> </alert-item>
+    <alert-item :alert="item" :key="item" @destroyalert="removeAlert(item)" v-for="(item, index) in alertlist"> </alert-item>
   </transition-group>
 </div>`,
 }
 
 Vue.component('alert-item', {
-  props: ['alert', 'index'],
-  data: function () {
+  props: { alert: { type: Object, required: true }, },
+  data() {
     return {
       dismissCount: 2,
       timerInterval: null,
@@ -61,17 +61,13 @@ Vue.component('alert-item', {
   methods: {
     CountDown: function () {
       this.dismissCount--;
-      //console.log(this.alert.msg + " index ", this.index,"dismissCount",this.dismissCount, "CountDown");
       if (this.dismissCount <= 0) { this.destroy(); }
     },
     destroy: function () {
-      //console.log(this.alert.msg + " index", this.index, "beforeDestroy");
       this.$emit("destroyalert");
     }
   },
   mounted() {
-    //console.log(this.alert.msg + ": index", this.index, "mounted");
-    //不知道為什麼會stack溢出     this.timerInterval = window.setInterval(this.CountDown, 1000);
     this.timerInterval = setTimeout(this.destroy, this.dismissCount * 1000);
   },
   beforeDestroy() {

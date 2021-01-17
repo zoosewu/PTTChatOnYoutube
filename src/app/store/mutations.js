@@ -19,12 +19,16 @@ export const state = {
   PTTState: 0,
   isStream: true,
   previewImg: "",
+  //checkbox
   enablesetnewpush: GM_getValue(types.ENABLESETNEWPUSH, false),
   disablepushgray: GM_getValue(types.DISABLEPUSHGRAY, false),
+  deleteotherconnect: GM_getValue(types.DELETEOTHERCONNECT, false),
+  //input value
   pluginHeight: GM_getValue(types.PLUGINHEIGHT, -1),
   pushInterval: GM_getValue(types.PUSHINTERVAL, -1),
   chatFontsize: GM_getValue(types.CHATFONTSIZE, -1),
   chatSpace: GM_getValue(types.CHATSPACE, -1),
+  pluginWidth: GM_getValue(types.PLUGINWIDTH, -1),
 }
 // mutations
 export const mutations = {
@@ -68,7 +72,6 @@ export const mutations = {
     state.gotoChat = gotoChat;
   },
   [types.PTTSTATE](state, pttstate) {
-    //console.log("PTTState mutations", pttstate);
     state.PTTState = pttstate;
   },
   [types.ISSTREAM](state, isStream) {
@@ -77,19 +80,19 @@ export const mutations = {
   [types.PREVIEWIMG](state, src) {
     state.previewImg = src;
   },
-  [types.ENABLESETNEWPUSH](state, isenable) {
-    //console.log("PTTState mutations", pttstate);
-    GM_setValue(types.ENABLESETNEWPUSH, isenable);
-    state.enablesetnewpush = isenable;
+  //checkbox
+  [types.DELETEOTHERCONNECT](state, deleteotherconnect) {
+    GM_setValue(types.DELETEOTHERCONNECT, deleteotherconnect);
+    state.deleteotherconnect = deleteotherconnect;
   },
   [types.DISABLEPUSHGRAY](state, disable) {
-    //console.log("PTTState mutations", pttstate);
     GM_setValue(types.DISABLEPUSHGRAY, disable);
     state.disablepushgray = disable;
   },
+  //input value
   [types.PLUGINHEIGHT](state, height) {
-    state.pluginHeight = height;
     GM_setValue(types.PLUGINHEIGHT, height);
+    state.pluginHeight = height;
   },
   [types.PUSHINTERVAL](state, interval) {
     GM_setValue(types.PUSHINTERVAL, interval);
@@ -102,6 +105,10 @@ export const mutations = {
   [types.CHATSPACE](state, space) {
     GM_setValue(types.CHATSPACE, space);
     state.chatSpace = space;
+  },
+  [types.PLUGINWIDTH](state, width) {
+    GM_setValue(types.PLUGINWIDTH, width);
+    state.pluginWidth = width;
   },
 
 }

@@ -1,8 +1,8 @@
 export let Other = {
-  inject: ['pluginWidth'],
+  inject: ['nowPluginWidth'],
   computed: {
     Classes: function () {
-      if (this.pluginWidth < 399) return "px-0";
+      if (this.nowPluginWidth < 399) return "px-0";
       else return "px-5";
     },
   },

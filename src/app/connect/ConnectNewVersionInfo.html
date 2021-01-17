@@ -1,0 +1,10 @@
+<div class="mt-4 mb-1">
+  <div :class="Classes">
+    <h4 class="text-center my-1">近期改版</h4>
+    <p class="text-center my-1">完整說明請到PTT搜尋YT聊天室顯示PTT推文</p>
+    <div v-for="versionInfo in versionInfos">
+      <hr class="mt-1 mb-2">
+      <p class="mt-1 mb-0 px-1" v-for="info in versionInfo">{{info}}</p>
+    </div>
+  </div>
+</div>

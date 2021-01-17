@@ -1,5 +1,5 @@
 export let ChatPreviewImage = {
-  data: function () {
+  data() {
     return {
       mousex: 0,
       mousey: 0,

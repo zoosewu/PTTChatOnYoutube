@@ -1,10 +1,10 @@
 export let ChatSetNewPush = {
-  data: function () {
+  inject: ['msg', 'isStream'],
+  data() {
     return {
       pushtext: "",
     }
   },
-  inject: ['msg', 'isStream'],
   methods: {
     setPush: function () {
       const result = /.+/.exec(this.pushtext);

@@ -1,5 +1,5 @@
 Vue.component('plugin-setting-input', {
-  inject: ['pluginWidth'],
+  inject: ['nowPluginWidth'],
   props: {
     settingName: { type: String, required: true },
     description: { type: String, required: true },
@@ -9,7 +9,7 @@ Vue.component('plugin-setting-input', {
     confirmBtn: { type: Boolean, required: false },
     column: { type: Number, required: false },
   },
-  data: function () {
+  data() {
     return {
       SettingValue: this.$store.getters["get" + this.settingName],
       ValueMax: +GM_getValue('A-custom-' + this.settingName + 'Max', -1),
@@ -48,18 +48,19 @@ Vue.component('plugin-setting-input', {
   computed: {
     Classes: function () {
       let c = this.Col;
-      if (this.pluginWidth < 399) c = Math.min(this.Col * 2, 12);
+      if (this.nowPluginWidth < 399) c = Math.min(this.Col * 2, 12);
       if (reportmode) console.log("Classes", this.Col, c);
-      const classes = ["form-row", "px-0", "mx-0"];
-      if (this.pluginWidth < 399) classes.push("my-2", "col-" + Math.min(this.Col * 2, 12));
-      else classes.push("my-3", "col-" + Math.min(this.Col, 12));
+      const classes = ["form-row", "px-0", "mx-0", "my-2"];
+      if (this.nowPluginWidth < 399) classes.push("col-" + Math.min(this.Col * 2, 12));
+      else classes.push("col-" + Math.min(this.Col, 12));
       return classes.join(' ');
     },
     LabelClasses: function () {
       const col = parseInt(12 / this.Col) * 3;
       const classes = ["col-form-label"];
-      if (this.pluginWidth < 399) classes.push("col-" + Math.min(col * 2, 12));
+      if (this.nowPluginWidth < 399) classes.push("col-12");
       else classes.push("col-" + col);
+      if (reportmode) console.log("LabelClasses", this.description, classes, col);
       return classes.join(' ');
     },
   },

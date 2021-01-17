@@ -5,7 +5,7 @@ import { ChatElement } from './ChatElement.js';
 import { ChatSetNewPush } from './ChatSetNewPush.js';
 export let Chat = {
   inject: ['msg', 'isStream'],
-  data: function () {
+  data() {
     return {
       _allchats: [],
       chatList: [],

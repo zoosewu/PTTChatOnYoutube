@@ -1,11 +1,11 @@
 import { logsetting } from './logsetting.js';
 import { MessagePoster } from './MessagePoster.js';
 import { HerfFilter } from './filter/HerfFilter.js';
-import { ytfilter } from './youtube/ytfilter.js';
-import { htfilter } from './holotools/htfilter.js';
-import { blankfilter } from './blank/blankfilter.js';
-import { twitchfilter } from './twitch/twitchfilter.js';
-
+import { ytfilter } from './SupportWebsite/youtube/ytfilter.js';
+import { htfilter } from './SupportWebsite/holotools/htfilter.js';
+import { blankfilter } from './SupportWebsite/blank/blankfilter.js';
+import { twitchfilter } from './SupportWebsite/twitch/twitchfilter.js';
+import { nijimadofilter } from './SupportWebsite/nijimado/nijimadofilter.js';
 import '../css/index.css';
 //dev use 
 const defaultopen = false;
@@ -25,5 +25,6 @@ Vue.config.debug = reportmode;
   filters.push(htfilter);
   filters.push(blankfilter);
   filters.push(twitchfilter);
+  filters.push(nijimadofilter);
   HerfFilter(msg, filters);
 })();

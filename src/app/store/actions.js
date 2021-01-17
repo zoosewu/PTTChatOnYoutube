@@ -132,9 +132,12 @@ export const actions = {
   //checkbox
   setEnableSetNewPush: ({ commit }, isenable) => { commit(types.ENABLESETNEWPUSH, isenable); },
   setDisablePushGray: ({ commit }, disablepushgray) => { commit(types.DISABLEPUSHGRAY, disablepushgray); },
+  setDeleteOtherConnect: ({ commit }, DeleteOtherConnect) => { commit(types.DELETEOTHERCONNECT, DeleteOtherConnect); },
   //input value
   setPluginHeight: (context, height) => { context.commit(types.PLUGINHEIGHT, height); },
   setFontsize: ({ commit }, size) => { commit(types.CHATFONTSIZE, size); },
   setChatSpace: ({ commit }, space) => { commit(types.CHATSPACE, space); },
   setPushInterval: ({ commit }, pushInterval) => { commit(types.PUSHINTERVAL, pushInterval); },
+  setPluginWidth: ({ commit }, pluginWidth) => { commit(types.PLUGINWIDTH, pluginWidth); },
+  
 }
