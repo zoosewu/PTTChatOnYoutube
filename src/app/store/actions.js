@@ -132,6 +132,7 @@ export const actions = {
   //checkbox
   setEnableSetNewPush: ({ commit }, isenable) => { commit(types.ENABLESETNEWPUSH, isenable); },
   setDisablePushGray: ({ commit }, disablepushgray) => { commit(types.DISABLEPUSHGRAY, disablepushgray); },
+  setDeleteOtherConnect: ({ commit }, DeleteOtherConnect) => { commit(types.DELETEOTHERCONNECT, DeleteOtherConnect); },
   //input value
   setPluginHeight: (context, height) => { context.commit(types.PLUGINHEIGHT, height); },
   setFontsize: ({ commit }, size) => { commit(types.CHATFONTSIZE, size); },

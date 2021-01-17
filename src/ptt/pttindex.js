@@ -74,8 +74,15 @@ export function InitPTT(messageposter) {
       { reg: /目前顯示\: 第/, state: 4 },
     ],
     autocom: [
-      { reg: /您想刪除其他重複登入的連線嗎|您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n' },
-      { reg: /您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n' },
+      {
+        reg: /您想刪除其他重複登入的連線嗎/, input: '', callback: () => {
+          const inserttxt = PTT.DeleteOtherConnect ? 'y\n' : 'n\n';
+          insertText(inserttxt);
+        }
+      },
+      {
+        reg: /您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n'
+      },
       { reg: /按任意鍵繼續/, input: '\n' },
       { reg: /動畫播放中\.\.\./, input: 'q' },
       {
@@ -159,7 +166,8 @@ export function InitPTT(messageposter) {
         ComLog(cmd);
         insertText(cmd.input);
         if (typeof cmd.callback !== "undefined") {
-          cmd.callback(...cmd.args);
+          const args = cmd.args ? cmd.args : [];
+          cmd.callback(...args);
         }
         return true;
       }
@@ -174,7 +182,8 @@ export function InitPTT(messageposter) {
       ComLog(cmd);
       insertText(cmd.input);
       if (typeof cmd.callback == "function") {
-        cmd.callback(...cmd.args);
+        const args = cmd.args ? cmd.args : [];
+        cmd.callback(...args);
       }
     }
   }
@@ -543,9 +552,10 @@ export function InitPTT(messageposter) {
     }
   }
   let TryLogin = 0;
-  function Login(id, pw) {
+  function Login(id, pw, DeleteOtherConnect) {
     msg.PostMessage("alert", { type: 2, msg: "登入中" });
     if (!PTT.login) {
+      PTT.DeleteOtherConnect = DeleteOtherConnect;
       const logincheck = () => {
         if (PTT.screenHaveText(/密碼不對或無此帳號。請檢查大小寫及有無輸入錯誤。|請重新輸入/)) {
           msg.PostMessage("alert", { type: 0, msg: "登入失敗，帳號或密碼有誤。" });
@@ -620,7 +630,7 @@ export function InitPTT(messageposter) {
     TryLogin = 2;
     //console.log(data );
     //console.log([i, p],cryptkey);
-    PTTLockCheck(Login, i, p);
+    PTTLockCheck(Login, i, p, data.DeleteOtherConnect);
   };
   msg["getPushByLine"] = data => { if (reportmode) console.log("getPushByLine", data); PTTLockCheck(GetPush, data.AID, data.board, data.startline, GetPushTask); };
   msg["getPushByRecent"] = data => { if (reportmode) console.log("getPushByRecent", data); PTTLockCheck(GetPush, data.AID, data.board, data.recent, GetRecentLineTask); };

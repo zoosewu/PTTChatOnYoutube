@@ -1,11 +1,11 @@
 export let ConnectLogin = {
-  data: function () {
+  inject: ['msg'],
+  data() {
     return {
       id: GM_getValue("PTTID", ""),
       pw: ""
     }
   },
-  inject: ['msg'],
   methods: {
     login: function () {
       if (this.id === "" || this.pw === "") {
@@ -19,10 +19,14 @@ export let ConnectLogin = {
       GM_setValue("PTTID", this.id);
       const i = CryptoJS.AES.encrypt(this.id, cryptkey).toString();
       const p = CryptoJS.AES.encrypt(this.pw, cryptkey).toString();
-      this.msg.PostMessage("login", { id: i, pw: p });
+      console.log("=============================", this.getDeleteOtherConnect);
+      this.msg.PostMessage("login", { id: i, pw: p, DeleteOtherConnect: this.getDeleteOtherConnect });
     }
   },
-  template: `<div class="form-row my-3">
+  computed: {
+    ...Vuex.mapGetters(['getDeleteOtherConnect'])
+  },
+  template: `<div class="form-row mt-3">
   <div class="col-5">
     <label for="PTTid">PTT ID</label>
     <input id="PTTid" type="text" class="form-control" placeholder="PTT ID" autocomplete="off" v-on:keyup.13="login"

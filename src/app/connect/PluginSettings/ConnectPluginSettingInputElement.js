@@ -9,7 +9,7 @@ Vue.component('plugin-setting-input', {
     confirmBtn: { type: Boolean, required: false },
     column: { type: Number, required: false },
   },
-  data: function () {
+  data() {
     return {
       SettingValue: this.$store.getters["get" + this.settingName],
       ValueMax: +GM_getValue('A-custom-' + this.settingName + 'Max', -1),

@@ -4,7 +4,7 @@ Vue.component('plugin-setting-checkbox', {
     description: { type: String, required: true },
     defaultValue: { type: Number, required: true },
   },
-  data: function () {
+  data() {
     return { SettingValue: this.$store.getters["get" + this.settingName], }
   },
   methods: {

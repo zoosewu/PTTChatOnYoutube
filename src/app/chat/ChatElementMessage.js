@@ -2,7 +2,7 @@
 
 Vue.component('chat-item-msg', {
   props: { msg: { type: String, required: true }, },
-  data: function () {
+  data() {
     return {
       parsedmsg: [],
     }

@@ -1,5 +1,5 @@
 export let ChatScrollBtn = {
-  props: ['isAutoScroll'],
+  props: {    isAutoScroll: { type: Boolean, required: true },  },
   methods: {
     click: function () {
       this.$emit("autoscrollclick");

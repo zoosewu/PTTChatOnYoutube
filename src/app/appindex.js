@@ -20,7 +20,7 @@ export function InitApp(chatcon, whitetheme, isstreaming, messageposter) {
         'PTTAppBtn': PTTAppBtn,
         'PTTApp': PTTApp
       },
-      data: function () {
+      data() {
         return {
           index: appinscount,
           rootmsg: messageposter,

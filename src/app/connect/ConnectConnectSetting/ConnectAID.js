@@ -1,10 +1,10 @@
 export let ConnectAID = {
-  data: function () {
+  inject: ['msg', 'isStream'],
+  data() {
     return {
       aid: GM_getValue("PostAID", ""),
     }
   },
-  inject: ['msg', 'isStream'],
   methods: {
     getPush: function () {
       const result = /#(.+) \((.+)\)/.exec(this.aid);

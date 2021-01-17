@@ -1,6 +1,6 @@
 export let PTTScreen = {
   inject: ['msg'],
-  data: function () {
+  data() {
     return {
       src: "//term.ptt.cc/?url=" + this.msg.ownerorigin,
       iframe: {},

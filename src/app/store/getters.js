@@ -12,6 +12,7 @@ export const getters = {
   //checkbox
   getEnableSetNewPush: state => { return state.enablesetnewpush; },
   getDisablePushGray: state => { return state.disablepushgray; },
+  getDeleteOtherConnect: state => { return state.deleteotherconnect; },
   //input value
   getPluginHeight: state => { return state.pluginHeight },
   getFontsize: state => { return state.chatFontsize; },

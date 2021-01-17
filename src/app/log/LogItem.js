@@ -6,7 +6,7 @@ export let LogItem = {
     secondItemTitle: { type: String, required: false },
     secondItemType: { type: String, required: false },
   },
-  data: function () {
+  data() {
     return {
       item1Title: this.itemTitle,
       i1Data: "--",
