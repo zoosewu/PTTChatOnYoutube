@@ -50,9 +50,9 @@ Vue.component('plugin-setting-input', {
       let c = this.Col;
       if (this.pluginWidth < 399) c = Math.min(this.Col * 2, 12);
       if (reportmode) console.log("Classes", this.Col, c);
-      const classes = ["form-row", "px-0", "mx-0"];
-      if (this.pluginWidth < 399) classes.push("my-2", "col-" + Math.min(this.Col * 2, 12));
-      else classes.push("my-3", "col-" + Math.min(this.Col, 12));
+      const classes = ["form-row", "px-0", "mx-0", "my-2"];
+      if (this.pluginWidth < 399) classes.push("col-" + Math.min(this.Col * 2, 12));
+      else classes.push("col-" + Math.min(this.Col, 12));
       return classes.join(' ');
     },
     LabelClasses: function () {

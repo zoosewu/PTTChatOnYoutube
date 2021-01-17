@@ -30,7 +30,7 @@ export let ConnectNewVersionInfo = {
   components: {
     "connect-new-version-info-element": ConnectNewVersionInfoElement,
   },
-  template: `<div class="my-4">
+  template: `<div class="mt-4 mb-1">
   <div :class="Classes">
     <h4 class="text-center my-1">近期改版</h4>
     <p class="text-center my-1">完整說明請到PTT搜尋YT聊天室顯示PTT推文</p>

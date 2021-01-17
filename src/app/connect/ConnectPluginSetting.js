@@ -7,7 +7,7 @@ export let ConnectPluginSetting = {
     "connect-other-setting": ConnectOtherSetting,
     "connect-new-version": ConnectNewVersion,
   },
-  template: `<div class="my-4">
+  template: `<div class="mt-4 mb-1">
   <div class="text-center mb-2">
     <h4 class="mb-1 mt-0">套件設定</h4>
     <p class="mt-1 mb-0">輸入數值之後按Enter確認</p>

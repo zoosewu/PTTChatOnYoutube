@@ -10,9 +10,9 @@ export let Connect = {
   },
   template: `<div id="PTTChat-contents-Connect-main" class="col overflow-auto h-100 mb-0 p-4" data-spy="scroll" data-offset="0">
   <connect-connect-setting></connect-connect-setting>
-  <hr>
+  <hr class="my-1">
   <connect-plugin-setting></connect-plugin-setting>
-  <hr>
+  <hr class="my-1">
   <connect-new-version-info></connect-new-version-info>
 </div>`,
 }
