@@ -60,7 +60,7 @@ Vue.component('plugin-setting-input', {
       const classes = ["col-form-label"];
       if (this.nowPluginWidth < 399) classes.push("col-12");
       else classes.push("col-" + col);
-      console.log("LabelClasses", this.description, classes, col);
+      if (reportmode) console.log("LabelClasses", this.description, classes, col);
       return classes.join(' ');
     },
   },
