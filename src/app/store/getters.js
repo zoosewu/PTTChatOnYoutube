@@ -18,4 +18,6 @@ export const getters = {
   getFontsize: state => { return state.chatFontsize; },
   getChatSpace: state => { return state.chatSpace; },
   getPushInterval: state => { return state.pushInterval; },
+  getPluginWidth: state => { return state.pluginWidth; },
+
 }

@@ -1,7 +1,7 @@
 import PTTApp from './PTTApp.js';
 import PTTAppBtn from './PTTAppBtn.js';
 import store from './store/store.js';
-export function InitApp(chatcon, whitetheme, isstreaming, messageposter) {
+export function InitApp(chatcon, whitetheme, isstreaming, messageposter, dynamicPlugin = false) {
   InitChatApp(chatcon);
   function InitChatApp(cn) {
     /*-----------------------------------preInitApp-----------------------------------*/
@@ -33,7 +33,8 @@ export function InitApp(chatcon, whitetheme, isstreaming, messageposter) {
         return {
           msg: this.rootmsg,
           isStream: isstreaming,
-          pluginWidth: cn[0].offsetWidth,
+          nowPluginWidth: cn[0].offsetWidth,
+          dynamicPlugin: dynamicPlugin,
         };
       },
       mounted() {

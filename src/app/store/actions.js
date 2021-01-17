@@ -138,4 +138,6 @@ export const actions = {
   setFontsize: ({ commit }, size) => { commit(types.CHATFONTSIZE, size); },
   setChatSpace: ({ commit }, space) => { commit(types.CHATSPACE, space); },
   setPushInterval: ({ commit }, pushInterval) => { commit(types.PUSHINTERVAL, pushInterval); },
+  setPluginWidth: ({ commit }, pluginWidth) => { commit(types.PLUGINWIDTH, pluginWidth); },
+  
 }

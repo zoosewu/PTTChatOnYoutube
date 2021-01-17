@@ -28,6 +28,7 @@ export const state = {
   pushInterval: GM_getValue(types.PUSHINTERVAL, -1),
   chatFontsize: GM_getValue(types.CHATFONTSIZE, -1),
   chatSpace: GM_getValue(types.CHATSPACE, -1),
+  pluginWidth: GM_getValue(types.PLUGINWIDTH, -1),
 }
 // mutations
 export const mutations = {
@@ -104,6 +105,10 @@ export const mutations = {
   [types.CHATSPACE](state, space) {
     GM_setValue(types.CHATSPACE, space);
     state.chatSpace = space;
+  },
+  [types.PLUGINWIDTH](state, width) {
+    GM_setValue(types.PLUGINWIDTH, width);
+    state.pluginWidth = width;
   },
 
 }
