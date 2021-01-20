@@ -3,107 +3,57 @@ import { ChatPreviewImage } from './ChatPreviewImage.js';
 import { ChatScrollBtn } from './ChatScrollBtn.js';
 import { ChatElement } from './ChatElement.js';
 import { ChatSetNewPush } from './ChatSetNewPush.js';
+
+Vue.component('dynamic-scroller', VueVirtualScroller.DynamicScroller);
+Vue.component('dynamic-scroller-item', VueVirtualScroller.DynamicScrollerItem);
+//Vue.component('RecycleScroller', VueVirtualScroller.RecycleScroller)
 export let Chat = {
   inject: ['msg', 'isStream'],
   data() {
     return {
       _allchats: [],
-      chatList: [],
       lastChat: [],
-      instancedChat: [],
       acChat: 0,
+      lastpostaid: "",
       lastactiveChat: -1,
-      activeRange: 200,
-      activeChatStart: 0,
-      activeChatEnd: 0,
       intervalChat: null,
       intervalScroll: null,
       nextUpdateTime: Date.now() + 365 * 24 * 60 * 60 * 1000,
       isAutoScroll: true,
       lastautoscrolltime: Date.now(),
+      ChatElement: ChatElement,
+      scrolloffset: 0,
     }
   },
   methods: {
     scrollToChat: function () {
       if (this.lastactiveChat != this.activeChat) {
         this.lastactiveChat = this.activeChat;
-        //console.log("gray task, start, end, activeChat", this.chatList[0].index, this.chatList[this.chatList.length - 1].index, this.activeChat);
         if (!this.getDisablePushGray) {
-          for (let i = 0; i < this.chatList.length; i++) {
-            chat = this.chatList[i];
+          for (let i = 0; i < this.allchats.length; i++) {
+            chat = this.allchats[i];
             const isgray = chat.index > this.activeChat;
-            //console.log("gray check, uid, activeChat, color, lastColor", chat.index, this.activeChat, isgray, chat.gray);
+            // console.log("gray check, uid, activeChat, color, lastColor", chat.index, this.activeChat, isgray, chat.gray);
             if (isgray != chat.gray) chat.gray = isgray;//console.log("gray change, graychange, chatuid", chat.gray, '=>', isgray, chat.index);
           }
         }
       }
       if (reportmode) console.log("this.isAutoScroll", this.isAutoScroll, this.lastautoscrolltime + 50 < Date.now());
       if (this.isAutoScroll && this.lastautoscrolltime + 50 < Date.now()) {
-        const scrollPos = this.getScrollPos();
-        const p = this.$refs.chatmain.scrollTop - scrollPos;
-        if (p > 20 || p < -20) {
-          if (reportmode) console.log("scrollToChat, scrollTop, scrollPos", this.$refs.chatmain.scrollTop, scrollPos);
-          this.$refs.chatmain.scrollTo({ top: scrollPos, behavior: "smooth" });
+        const list = this.$refs.chatmain;
+        let clientHeight = list.getClientSize() / 2;
+        let i = 0;
+        for (; clientHeight > 0 && i < 15 && this.activeChat - i > 0; i++) {
+          if (list.getSize(this.activeChat - i)) clientHeight -= list.getSize(this.activeChat - i);
+          else break;
         }
+        list.scrollToIndex(this.activeChat - i);
+        console.log("getScrollPos", list, this.activeChat, i);
       }
-    },
-    getScrollPos: function () {
-      const clientHeight = this.$refs.chatmain ? this.$refs.chatmain.clientHeight : 0;
-      const chatnode = this.$children.find(ele => { return ele.chat && ele.chat.index === this.activeChat; });
-      if (reportmode) {
-        if (chatnode) console.log("getScrollPos, activeChat:", this.activeChat, ", chatnode:", [chatnode], ", index:", chatnode.index);
-        else console.log("getScrollPos, activeChat:", this.activeChat, ", chatnode:", [chatnode], ", no chatnode found");
-      }
-      if (!chatnode) return 0;
-      const chat = chatnode.$el;
-      const chatHeight = chat.clientHeight;
-
-      const scrolloffset = (clientHeight - chatHeight) / 2;
-      const scrollmin = 0;
-      const scrollmax = this.$refs.chats.clientHeight - clientHeight;
-      let scrollPos = chat.offsetTop - scrolloffset;
-      if (scrollPos < scrollmin) scrollPos = scrollmin;
-      else if (scrollPos > scrollmax) scrollPos = scrollmax;
-      return scrollPos;
     },
     updateChat: function () {
       this.getCurrentChat();
-      if (this.lastactiveChat != this.activeChat) {
-        const list = this.allchats;
-        const start = this.activeChatStart > 0 ? this.activeChatStart : 0;
-        const end = this.activeChatEnd;
-        //if (this.chatList.length > 0) console.log("beforeupdate chat", this.chatList[0].msg, this.chatList[this.chatList.length - 1].msg);
-        // if (this.chatList.length > 2000) {
-        //   for (let i = this.chatList.length - 1; i >= 0; i--) {
-        //     const chat = this.chatList[i];
-        //     //console.log("remove check", chat.index, chat.msg, chat);
-        //     if (chat.index < start || chat.index > end) {
-        //       this.chatList.splice(i, 1);
-        //       console.log("remove chat", chat.index, chat.msg, chat);
-        //     }
-        //   }
-        // }
-        const tmpchat = [];
-        let addchat = false;
-        for (let i = start; i < list.length && i <= end; i++) {
-          const chat = list[i];
-          //console.log("add check, i, chat.index, chat.msg, chat", i, chat.index, chat.msg, chat);
-          if (!this.instancedChat.includes(i)) {
-            if (!addchat) addchat = true;
-            const ins = { time: chat.time, id: chat.id, type: chat.type, msg: chat.msg, index: chat.index, gray: chat.gray, };
-            tmpchat.push(ins);
-            this.instancedChat.push(i);
-            //chat.ins = ins;
-          }
-        }
-        if (reportmode) console.log(this.instancedChat);
-        if (addchat) {
-          this.chatList = this.chatList.concat(tmpchat);
-          this.chatList.sort(function (a, b) { return a.index - b.index; });
-        }
-        //if (this.chatList.length > 0) console.log("after chat", this.chatList[0].msg, this.chatList[this.chatList.length - 1].msg);
-        if (reportmode) console.log("activeChat, start, end, allList, chatList", this.activeChat, start, this.activeChatEnd, list, this.chatList);
-      }
+      setTimeout(() => this.scrollToChat(), 10);
     },
     getCurrentChat: function () {
       const chats = this.allchats;
@@ -135,12 +85,7 @@ export let Chat = {
           if (move === 1) break;
         }
       }
-
-      const visibleEnd = this.activeChat + this.activeRange / 2;
-      this.activeChatEnd = visibleEnd < chats.length - 1 ? visibleEnd : chats.length - 1;
-      this.activeChatStart = this.activeChatEnd - this.activeRange;
-      setTimeout(() => this.scrollToChat(), 10);
-      if (reportmode && this.lastactiveChat != this.activeChat && chats[this.activeChat]) console.log("getCurrentChat, chats.length-1", chats.length - 1, ", activeChat,", this.activeChat, " start,", this.activeChatStart, " end,", this.activeChatEnd, " isStream", this.isStream, "chats[this.activeChat].msg", chats[this.activeChat].msg);
+      if (reportmode && this.lastactiveChat != this.activeChat && chats[this.activeChat]) console.log("getCurrentChat, chats.length-1", chats.length - 1, ", activeChat,", this.activeChat, " isStream", this.isStream, "chats[this.activeChat].msg", chats[this.activeChat].msg);
     },
     MouseWheelHandler: function (e) {
       this.isAutoScroll = false;
@@ -149,23 +94,32 @@ export let Chat = {
       this.isAutoScroll = true;
       this.scrollToChat();
     },
+    AddEventHandler: function () {
+      const list = this.$refs.chatmain.$el;
+      //使用者滾輪事件
+      if (list.addEventListener) {
+        list.addEventListener("mousewheel", this.MouseWheelHandler, false);// IE9, Chrome, Safari, Opera
+        list.addEventListener("DOMMouseScroll", this.MouseWheelHandler, false);// Firefox
+      }
+      else {// IE 6/7/8
+        list.attachEvent("onmousewheel", this.MouseWheelHandler);
+      }
+      list.addEventListener('scroll', e => { if (this.isAutoScroll) this.lastautoscrolltime = Date.now(); });
+    },
+    AddToList: function (newItems) {
+
+    }
   },
   computed: {
     allchats: function () {
       //console.log("allchats");
-      if (this.newChatList !== this.lastChat) {
+      if (this.newChatList !== this.lastChat && this._allchats) {
+        if (this.lastpostaid != this.post.AID) { this.lastpostaid = this.post.AID; this._allchats = []; }
         this._allchats = this._allchats.concat(this.newChatList);
         this.lastChat = this.newChatList;
         //console.log("add chat, newChatList", this.newChatList);
       }
-      return this._allchats;
-    },
-    postAID: function () {
-      if (reportmode) console.log("new post:", this.post.AID);
-      this._allchats = [];
-      this.chatList = [];
-      this.instancedChat = [];
-      return this.post.AID;
+      return this._allchats ? this._allchats : [];
     },
     activeChat: {
       get() {
@@ -197,6 +151,7 @@ export let Chat = {
     if (reportmode) this._allchats = testchat.list;//test
     else this._allchats = [];
     this.lastChat = [];
+    this.lastpostaid = this.post.AID;
 
     this.activeChat = 0;
     this.activeChat = 0;
@@ -213,16 +168,6 @@ export let Chat = {
 
     //定時滾動
     this.intervalScroll = window.setInterval(() => { this.updateChat(); }, 500);
-
-    //使用者滾輪事件
-    if (this.$refs.chatmain.addEventListener) {
-      this.$refs.chatmain.addEventListener("mousewheel", this.MouseWheelHandler, false);// IE9, Chrome, Safari, Opera
-      this.$refs.chatmain.addEventListener("DOMMouseScroll", this.MouseWheelHandler, false);// Firefox
-    }
-    else {// IE 6/7/8
-      this.$refs.chatmain.attachEvent("onmousewheel", this.MouseWheelHandler);
-    }
-    this.$refs.chatmain.addEventListener('scroll', e => { if (this.isAutoScroll) this.lastautoscrolltime = Date.now(); });
   },
   updated: function () { },
   beforeDestroy() {
@@ -233,18 +178,16 @@ export let Chat = {
     "chat-preview-image": ChatPreviewImage,
     "chat-scroll-btn": ChatScrollBtn,
     "chat-set-new-push": ChatSetNewPush,
+    'virtual-list': VirtualList,
   },
-  template: `<div id="PTTChat-contents-Chat-main" class="h-100" style="display: flex;flex-direction: column;">
-  <div ref="chatmain" class="h-100 row" style="overscroll-behavior: none;overflow-y: scroll;">
-    <ul id="PTTChat-contents-Chat-pushes" class="col mb-0 px-0" :post-aid="postAID" :chat-count="allchats.length"
-      ref="chats">
-      <chat-item :index="index" :chat="item" :gray="item.gray" :key="item.index" v-for="(item, index) in chatList">
-      </chat-item>
-    </ul>
-    <chat-preview-image></chat-preview-image>
-    <chat-scroll-btn :is-auto-scroll="isAutoScroll" @autoscrollclick="EnableAutoScroll()"></chat-scroll-btn>
-  </div>
+  template: `<div id="PTTChat-contents-Chat-main" class="h-100 d-flex flex-column">
+  <virtual-list ref="chatmain" class="flex-grow-1"
+    style="overscroll-behavior: none;overflow-y: scroll;min-height: 0; scroll-behavior: smooth;" :data-key="'index'"
+    :data-sources="allchats" :data-component="ChatElement" :chat-count="allchats.length" keeps="100"
+    :offset="scrolloffset" @hook:mounted="AddEventHandler"></virtual-list>
   <chat-set-new-push></chat-set-new-push>
+  <chat-preview-image></chat-preview-image>
+  <chat-scroll-btn :is-auto-scroll="isAutoScroll" @autoscrollclick="EnableAutoScroll()"></chat-scroll-btn>
 </div>`,
 }
 

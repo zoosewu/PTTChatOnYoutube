@@ -6,6 +6,7 @@ import { htfilter } from './SupportWebsite/holotools/htfilter.js';
 import { blankfilter } from './SupportWebsite/blank/blankfilter.js';
 import { twitchfilter } from './SupportWebsite/twitch/twitchfilter.js';
 import { nijimadofilter } from './SupportWebsite/nijimado/nijimadofilter.js';
+import { lineTVfilter } from './SupportWebsite/lineTV/lineTVfilter.js';
 import '../css/index.css';
 //dev use 
 const defaultopen = false;
@@ -26,5 +27,6 @@ Vue.config.debug = reportmode;
   filters.push(blankfilter);
   filters.push(twitchfilter);
   filters.push(nijimadofilter);
+  //filters.push(lineTVfilter);
   HerfFilter(msg, filters);
 })();

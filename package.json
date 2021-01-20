@@ -35,7 +35,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "name": "pttchatonyoutube",
-  "version": "2.1.0",
+  "version": "2.1.379",
   "description": "Connect ptt pushes to youtube chatroom",
   "author": "Zoosewu",
   "license": "MIT",
@@ -55,6 +55,8 @@
         "https://hololive.jetri.co/*",
         "https://www.twitch.tv/*",
         "https://niji-mado.web.app/home",
+        "https://lin.ee/*",
+        "https://today.line.me/tw/v2/article/*",
         "http://blank.org/"
       ],
       "grant": [
@@ -73,7 +75,7 @@
         "https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js",
         "https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js",
         "https://cdn.jsdelivr.net/npm/vuex@3.6.0/dist/vuex.min.js",
-        "https://cdn.jsdelivr.net/npm/vue-scrollto@2.20.0/vue-scrollto.min.js"
+        "https://cdn.jsdelivr.net/npm/vue-virtual-scroller@1.0.10/dist/vue-virtual-scroller.umd.min.js"
       ],
       "homepageURL": "https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage",
       "//downloadURL": "https://greasyfork.org/scripts/418469-pttchatonyt/code/PttChatOnYt.user.js"

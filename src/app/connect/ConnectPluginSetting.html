@@ -21,6 +21,16 @@
     <p class="my-0 px-2">僅Holotools、niji-mado可用，需重新整理</p>
   </div>
   <div class="form-row px-2">
+    <connect-dropdown setting-name="Theme" description="主題顏色" :option-group="ThemeOptions" default-value="0">
+    </connect-dropdown>
+    <connect-dropdown setting-name="ThemeColorBG" description="背景亮度" :option-group="ThemeColorBGOptions"
+      default-value="2" v-if="showThemeColorOption">
+    </connect-dropdown>
+    <connect-dropdown setting-name="ThemeColorBorder" description="字體亮度" :option-group="ThemeColorBorderOptions"
+      default-value="2" v-if="showThemeColorOption">
+    </connect-dropdown>
+  </div>
+  <div class="form-row px-2">
     <connect-other-setting></connect-other-setting>
   </div>
   <div class="form-row px-2">

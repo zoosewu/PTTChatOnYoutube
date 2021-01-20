@@ -6,7 +6,7 @@ export let Log = {
     "log-item": LogItem,
     "log-title": LogTitle,
   },
-  template: `<div class="flex-grow-1 overflow-auto mh-100 row" id="PTTChat-contents-log-main" style="overscroll-behavior: contain;">
+  template: `<div class="flex-grow-1 overflow-auto h-100 w-100 mx-0 row" id="PTTChat-contents-log-main" style="overscroll-behavior: contain;">
   <table class="table ptt-bg">
     <tbody class="ptt-text">
       <log-item item-title="PTT狀態" itemType="--pagestate"></log-item>

@@ -26,17 +26,20 @@ Vue.component('chat-item-msg', {
       if (msg !== "") this.parsedmsg.push({ islink: false, string: msg });
     },
   },
-
-  mounted() {
-    this.$_ChatElementMessage_ParseMsg();
-  },
   computed: {
     Fontsize: function () {
       return { 'font-size': this.getFontsize + 'px', "line-height": this.getFontsize * 1.2 + 'px' };
     },
     ...Vuex.mapGetters([
       'getFontsize',
+      'previewImage',
     ])
+  },
+  mounted() {
+    this.$_ChatElementMessage_ParseMsg();
+  },
+  beforeDestroy() {
+    this.parsedmsg.forEach(element => { if (element.islink && this.previewImage === element.string) this.$store.dispatch('previewImage', ""); });
   },
   render: function (createElement) {
     //<p class="ptt-chat-msg mb-0 mx-2" :style="msgFontsize"></p>

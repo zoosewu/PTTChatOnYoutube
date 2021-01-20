@@ -1,5 +1,5 @@
-import mutations from './mutations.js';
-import types from './mutations_type.js';
+import { mutations } from './mutations.js';
+import { types } from './mutations_type.js';
 
 export const actions = {
   actionIncrease: ({ commit }) => { console.log('actionIncrease'); commit(types.INCREASE); },
@@ -130,14 +130,17 @@ export const actions = {
 
 
   //checkbox
-  setEnableSetNewPush: ({ commit }, isenable) => { commit(types.ENABLESETNEWPUSH, isenable); },
-  setDisablePushGray: ({ commit }, disablepushgray) => { commit(types.DISABLEPUSHGRAY, disablepushgray); },
-  setDeleteOtherConnect: ({ commit }, DeleteOtherConnect) => { commit(types.DELETEOTHERCONNECT, DeleteOtherConnect); },
+  setEnableSetNewPush: ({ commit }, value) => { commit(types.ENABLESETNEWPUSH, value); },
+  setDisablePushGray: ({ commit }, value) => { commit(types.DISABLEPUSHGRAY, value); },
+  setDeleteOtherConnect: ({ commit }, value) => { commit(types.DELETEOTHERCONNECT, value); },
   //input value
-  setPluginHeight: (context, height) => { context.commit(types.PLUGINHEIGHT, height); },
-  setFontsize: ({ commit }, size) => { commit(types.CHATFONTSIZE, size); },
-  setChatSpace: ({ commit }, space) => { commit(types.CHATSPACE, space); },
-  setPushInterval: ({ commit }, pushInterval) => { commit(types.PUSHINTERVAL, pushInterval); },
-  setPluginWidth: ({ commit }, pluginWidth) => { commit(types.PLUGINWIDTH, pluginWidth); },
-  
+  setPluginHeight: (context, value) => { context.commit(types.PLUGINHEIGHT, value); },
+  setFontsize: ({ commit }, value) => { commit(types.CHATFONTSIZE, value); },
+  setChatSpace: ({ commit }, value) => { commit(types.CHATSPACE, value); },
+  setPushInterval: ({ commit }, value) => { commit(types.PUSHINTERVAL, value); },
+  setPluginWidth: ({ commit }, value) => { commit(types.PLUGINWIDTH, value); },
+  //dropdown
+  setTheme: ({ commit }, value) => { commit(types.THEME, value); },
+  setThemeColorBG: ({ commit }, value) => { commit(types.THEMECOLORBG, value); },
+  setThemeColorBorder: ({ commit }, value) => { commit(types.THEMECOLORBORDER, value); },
 }
