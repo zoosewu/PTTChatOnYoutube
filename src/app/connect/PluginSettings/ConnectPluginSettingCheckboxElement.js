@@ -2,11 +2,9 @@ Vue.component('plugin-setting-checkbox', {
   props: {
     settingName: { type: String, required: true },
     description: { type: String, required: true },
-    defaultValue: { type: Number, required: true },
+    defaultValue: { type: Boolean, required: false, default: false },
   },
-  data() {
-    return { SettingValue: this.$store.getters["get" + this.settingName], }
-  },
+  data() { return { SettingValue: this.$store.getters["get" + this.settingName], } },
   methods: {
     $_PluginSetting_valueChange: function () { this.$store.dispatch('set' + this.settingName, this.SettingValue); }
   },

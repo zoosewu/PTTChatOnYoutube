@@ -1,13 +1,13 @@
-<li :id="chat.index" class="ptt-chat media px-3" v-bind:style="bgc">
+<div :id="item.id" class="ptt-chat media px-3" v-bind:style="bgc" :key="item.id">
   <div class="media-body mw-100">
     <div class="ptt-chat-info d-flex flex-row" :style="infoFontsize">
-      <p :class="typeclass">{{ this.chat.type }}</p>
-      <p class="ptt-chat-id mr-2 mb-0 flex-grow-1">{{this.chat.id }}</p>
-      <p class="ptt-chat-time mb-0">{{this.timeH }}:{{this.timem}}</p>
+      <p :class="typeclass">{{ this.item.type }}</p>
+      <p class="ptt-chat-id mr-2 mb-0 flex-grow-1">{{this.item.pttid }}</p>
+      <p class="ptt-chat-time mb-0">{{this.idState.timeH }}:{{this.idState.timem}}</p>
     </div>
     <div>
-      <chat-item-msg :msg="chat.msg"></chat-item-msg>
+      <chat-item-msg :msg="item.msg"></chat-item-msg>
     </div>
     <div :style="space"> </div>
   </div>
-</li>
+</div>

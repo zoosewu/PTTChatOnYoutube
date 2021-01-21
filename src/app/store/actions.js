@@ -71,10 +71,10 @@ export const actions = {
       chat.time = new Date(currpush.date.getTime());
       //console.log("sametimeIndex, index, sametimecount", sametimeIndex, index, sametimecount);
       if (!state.isStream && sametimecount > 0) chat.time.setSeconds((sametimecount + index - sametimeIndex) * 60 / sametimecount);
-      chat.id = currpush.id;
+      chat.pttid = currpush.id;
       chat.type = currpush.type;
       chat.msg = currpush.content;
-      chat.index = existpush + index;
+      chat.id = existpush + index;
       chat.gray = !state.disablepushgray;
       chatlist.push(chat);
       //console.log("new Chat", chat);

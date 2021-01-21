@@ -41,14 +41,14 @@ export let Chat = {
       if (reportmode) console.log("this.isAutoScroll", this.isAutoScroll, this.lastautoscrolltime + 50 < Date.now());
       if (this.isAutoScroll && this.lastautoscrolltime + 50 < Date.now()) {
         const list = this.$refs.chatmain;
-        let clientHeight = list.getClientSize() / 2;
-        let i = 0;
+        let clientHeight = list.$el.clientHeight;
+        /*let i = 0;
         for (; clientHeight > 0 && i < 15 && this.activeChat - i > 0; i++) {
-          if (list.getSize(this.activeChat - i)) clientHeight -= list.getSize(this.activeChat - i);
+          if (list.getSize(this.activeChat - i)) clientHeight -= 100;
           else break;
-        }
-        list.scrollToIndex(this.activeChat - i);
-        console.log("getScrollPos", list, this.activeChat, i);
+        }*/
+        list.scrollToItem(this.activeChat);
+        console.log("getScrollPos", list, this.activeChat);
       }
     },
     updateChat: function () {
@@ -131,6 +131,16 @@ export let Chat = {
         else this.acChat = value;
       }
     },
+    //chatelement computed
+    elementMsgFontsize: function () {
+      return { 'font-size': this.getFontsize + 'px', "line-height": this.getFontsize * 1.2 + 'px' };
+    },
+    elementInfoFontsize: function () {
+      return { 'font-size': this.getFontsize * 0.8334 + 'px', "line-height": this.getFontsize + 'px' };
+    },
+    elementSpace: function () {
+      return { 'margin-bottom': this.getChatSpace * 18 + 'px' };
+    },
     ...Vuex.mapGetters([
       'newChatList',
       'post',
@@ -138,6 +148,8 @@ export let Chat = {
       'PTTState',
       'getDisablePushGray',
       'getPushInterval',
+      'getFontsize',
+      'getChatSpace',
     ])
   },
   mounted() {
@@ -169,7 +181,7 @@ export let Chat = {
     //定時滾動
     this.intervalScroll = window.setInterval(() => { this.updateChat(); }, 500);
   },
-  updated: function () { },
+  updated: function () { console.log("updateChat", this.allchats); },
   beforeDestroy() {
     clearInterval(this.intervalChat);
     clearInterval(this.intervalScroll);
@@ -178,13 +190,18 @@ export let Chat = {
     "chat-preview-image": ChatPreviewImage,
     "chat-scroll-btn": ChatScrollBtn,
     "chat-set-new-push": ChatSetNewPush,
-    'virtual-list': VirtualList,
+    "chat-element": ChatElement,
   },
   template: `<div id="PTTChat-contents-Chat-main" class="h-100 d-flex flex-column">
-  <virtual-list ref="chatmain" class="flex-grow-1"
-    style="overscroll-behavior: none;overflow-y: scroll;min-height: 0; scroll-behavior: smooth;" :data-key="'index'"
-    :data-sources="allchats" :data-component="ChatElement" :chat-count="allchats.length" keeps="100"
-    :offset="scrolloffset" @hook:mounted="AddEventHandler"></virtual-list>
+  <dynamic-scroller ref="chatmain"
+    style="overscroll-behavior: none;overflow-y: scroll;height: 100%; scroll-behavior: smooth;"
+    @hook:mounted="AddEventHandler" :items="allchats" :min-item-size="30" class="scroller" key-field="id">
+    <template v-slot="{ item, index, active }">
+      <dynamic-scroller-item :item="item" :active="active" :index="index" :size-dependencies="[item.msg,getFontsize,getChatSpace]">
+        <chat-element :item="item" :index="index" :key="index" :msg-fontsize="elementMsgFontsize" :info-fontsize="elementInfoFontsize" :space="elementSpace"></chat-element>
+      </dynamic-scroller-item>
+    </template>
+  </dynamic-scroller>
   <chat-set-new-push></chat-set-new-push>
   <chat-preview-image></chat-preview-image>
   <chat-scroll-btn :is-auto-scroll="isAutoScroll" @autoscrollclick="EnableAutoScroll()"></chat-scroll-btn>
@@ -198,14 +215,14 @@ let testchat = {
     for (let i = this.l.length; i < 12000; i++) {
       const el = {
         type: "推 ",
-        id: "Zoosewu ",
+        pttid: "ID_NO." + i,
         time: new Date(),
       };
       el.msg = i + " 太神啦 https://youtu.be/23y5h8kQsv8?t=4510 太神啦 https://pbs.twimg.com/media/ErtC6XwVoAM_ktN.jpg 太神啦";
       el.time.setHours(18);
       el.time.setMinutes(0);
       el.time.setSeconds(i * 3);
-      el.index = i;
+      el.id = i;
       el.gray = true;
       this.l.push(el);
     }

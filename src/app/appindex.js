@@ -1,6 +1,6 @@
-import PTTApp from './PTTApp.js';
-import PTTAppBtn from './PTTAppBtn.js';
-import store from './store/store.js';
+import{ PTTApp }from './PTTApp.js';
+import{ PTTAppBtn }from './PTTAppBtn.js';
+import{ store }from './store/store.js';
 export function InitApp(chatcon, whitetheme, isstreaming, messageposter, dynamicPlugin = false) {
   InitChatApp(chatcon);
   function InitChatApp(cn) {
