@@ -2,7 +2,7 @@
 export function InitPTT(messageposter) {
   const msg = messageposter;
   //get crypt key;
-  cryptkey = GM_getValue("cryptkey", Math.random());
+  cryptkey = GenerateCryptKey();
   //start script
   let PTT = {
     connect: true,//自動 連線狀態

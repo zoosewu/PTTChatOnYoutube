@@ -25,8 +25,7 @@ export function HerfFilter(msg, filters) {
         //-----
         console.log("Script started at " + window.location.href);
         setTimeout(m => {
-          //generate crypt key everytime;
-          cryptkey = GenerateCryptKey();
+
           //add bootstrap to use
           BootStrap(document);
           f.callback(m)

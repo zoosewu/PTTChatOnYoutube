@@ -14,6 +14,12 @@ export let ConnectNewVersionInfo = {
   mounted() {
     let info;
     info = [
+      "新增使用者自訂主題。",
+      "(因為有時候偵測不到網站主題)",
+      "偵測到imgur連結會自動補.png預覽",
+    ];
+    this.versionInfos.push(info);
+    info = [
       "支援niji-mado。",
       "登入失敗可開啟刪除重複登入的功能。",
       "自訂套件寬度(特定網站可用)",

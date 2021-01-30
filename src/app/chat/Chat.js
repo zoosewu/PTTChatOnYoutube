@@ -132,14 +132,14 @@ export let Chat = {
       }
     },
     //chatelement computed
-    elementMsgFontsize: function () {
-      return { 'font-size': this.getFontsize + 'px', "line-height": this.getFontsize * 1.2 + 'px' };
-    },
-    elementInfoFontsize: function () {
-      return { 'font-size': this.getFontsize * 0.8334 + 'px', "line-height": this.getFontsize + 'px' };
-    },
-    elementSpace: function () {
-      return { 'margin-bottom': this.getChatSpace * 18 + 'px' };
+    elMsgLineHeight: function () { return this.getFontsize * 1.2; },
+    elMsgStyle: function () { return { 'font-size': this.getFontsize + 'px', "line-height": this.elMsgLineHeight + 'px' }; },
+    elInfoStyle: function () { return { 'font-size': this.getFontsize * 0.8334 + 'px', "line-height": this.getFontsize + 'px' }; },
+    elSpace: function () { return this.getChatSpace * this.getFontsize; },
+    elSpaceStyle: function () { return { 'margin-bottom': this.elSpace + 'px' }; },
+    defaultElClientHeight: function () {
+      console.log("defaultElClientHeight", this.elMsgLineHeight, this.getFontsize, this.elSpace, (+this.elMsgLineHeight + +this.getFontsize + +this.elSpace));
+      return +this.elMsgLineHeight + +this.getFontsize + +this.elSpace;
     },
     ...Vuex.mapGetters([
       'newChatList',
@@ -195,10 +195,13 @@ export let Chat = {
   template: `<div id="PTTChat-contents-Chat-main" class="h-100 d-flex flex-column">
   <dynamic-scroller ref="chatmain"
     style="overscroll-behavior: none;overflow-y: scroll;height: 100%; scroll-behavior: smooth;"
-    @hook:mounted="AddEventHandler" :items="allchats" :min-item-size="30" class="scroller" key-field="id">
+    @hook:mounted="AddEventHandler" :items="allchats" :min-item-size="defaultElClientHeight" class="scroller"
+    key-field="id">
     <template v-slot="{ item, index, active }">
-      <dynamic-scroller-item :item="item" :active="active" :index="index" :size-dependencies="[item.msg,getFontsize,getChatSpace]">
-        <chat-element :item="item" :index="index" :key="index" :msg-fontsize="elementMsgFontsize" :info-fontsize="elementInfoFontsize" :space="elementSpace"></chat-element>
+      <dynamic-scroller-item :item="item" :active="active" :index="item.id"
+        :size-dependencies="[item.msg,defaultElClientHeight]">
+        <chat-element :item="item" :index="index" :key="index" :msg-style="elMsgStyle" :info-style="elInfoStyle"
+          :space-style="elSpaceStyle"></chat-element>
       </dynamic-scroller-item>
     </template>
   </dynamic-scroller>

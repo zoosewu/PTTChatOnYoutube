@@ -1,45 +1,49 @@
 
 
 Vue.component('chat-item-msg', {
-  props: { msg: { type: String, required: true }, },
+  props: { msg: { type: String, required: true }, style: { type: Object, required: true } },
   data() {
     return {
       parsedmsg: [],
     }
   },
-  methods: {
+  /*methods: {
     $_ChatElementMessage_ParseMsg: function () {
       //var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
       //return this.chat.msg.replace(exp, "<a class='ptt-chat-msg' href='$1' target='_blank' rel='noopener noreferrer'>$1</a>");
+
+    },
+  },*/
+  computed: {
+    msgList: function () {
+      this.parsedmsg.forEach(element => { if (element.islink && this.previewImage === element.string) this.$store.dispatch('previewImage', ""); });
+      this.parsedmsg = [];
+      let msgs = this.parsedmsg;
       let msg = this.msg;
       let result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])(.*)/ig.exec(msg);
       let parsetime = 5;
       while (result && msg !== "" && parsetime > 0) {
         const prestring = result[1];
         const linkstring = result[2];
-        if (prestring !== "") this.parsedmsg.push({ islink: false, string: prestring });
-        this.parsedmsg.push({ islink: true, string: linkstring });
+        if (prestring !== "") msgs.push({ islink: false, string: prestring });
+        msgs.push({ islink: true, string: linkstring });
         msg = result[3];
         result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])(.*)/ig.exec(msg);
         parsetime--;
       }
-      if (msg !== "") this.parsedmsg.push({ islink: false, string: msg });
-    },
-  },
-  computed: {
-    Fontsize: function () {
-      return { 'font-size': this.getFontsize + 'px', "line-height": this.getFontsize * 1.2 + 'px' };
+      if (msg !== "") msgs.push({ islink: false, string: msg });
+      return msgs;
     },
     ...Vuex.mapGetters([
       'getFontsize',
       'previewImage',
     ])
   },
-  mounted() {
+  /*mounted() {
     this.$_ChatElementMessage_ParseMsg();
-  },
+  },*/
   beforeDestroy() {
-    this.parsedmsg.forEach(element => { if (element.islink && this.previewImage === element.string) this.$store.dispatch('previewImage', ""); });
+    this.msgList.forEach(element => { if (element.islink && this.previewImage === element.string) this.$store.dispatch('previewImage', ""); });
   },
   render: function (createElement) {
     //<p class="ptt-chat-msg mb-0 mx-2" :style="msgFontsize"></p>
@@ -51,25 +55,25 @@ Vue.component('chat-item-msg', {
           "mb-0": true,
           "mx-2": true,
         },
-        style: this.Fontsize,
+        style: this.style,
       },
-      this.parsedmsg.map(data => {
-        if (data.islink)
-          return createElement('a', {
-            class: {
-              "ptt-chat-msg": true,
-            },
-            attrs: {
-              href: data.string,
-              target: '_blank',
-              rel: 'noopener noreferrer',
-            },
-            on: {
-              mouseover: () => { /*console.log("onmouseover", data.string);*/ this.$store.dispatch('previewImage', data.string) },
-              mouseleave: () => { /*console.log("onmouseout", data.string);*/ this.$store.dispatch('previewImage', "") },
-            },
-          }, data.string);
-        else return data.string;
-      }));
+      this.msgList.map(data => {
+        if (!data.islink) return data.string;
+        return createElement('a', {
+          class: {
+            "ptt-chat-msg": true,
+          },
+          attrs: {
+            href: data.string,
+            target: '_blank',
+            rel: 'noopener noreferrer',
+          },
+          on: {
+            mouseover: () => { /*console.log("onmouseover", data.string);*/ this.$store.dispatch('previewImage', data.string) },
+            mouseleave: () => { /*console.log("onmouseout", data.string);*/ this.$store.dispatch('previewImage', "") },
+          },
+        }, data.string);
+      })
+    );
   },
 });

@@ -1,20 +1,13 @@
 <div id="PTTChat-contents-Chat-main" class="h-100 d-flex flex-column">
-  <virtual-list ref="chatmain" class="flex-grow-1"
-    style="overscroll-behavior: none;overflow-y: scroll;min-height: 0; scroll-behavior: smooth;" :data-key="'index'"
-    :data-sources="allchats" :data-component="ChatElement" :chat-count="allchats.length" keeps="100"
-    :offset="scrolloffset" @hook:mounted="AddEventHandler"></virtual-list>
-  <chat-set-new-push></chat-set-new-push>
-  <chat-preview-image></chat-preview-image>
-  <chat-scroll-btn :is-auto-scroll="isAutoScroll" @autoscrollclick="EnableAutoScroll()"></chat-scroll-btn>
-</div>
-
-<div id="PTTChat-contents-Chat-main" class="h-100 d-flex flex-column">
   <dynamic-scroller ref="chatmain"
     style="overscroll-behavior: none;overflow-y: scroll;height: 100%; scroll-behavior: smooth;"
-    @hook:mounted="AddEventHandler" :items="allchats" :min-item-size="30" class="scroller" key-field="id">
+    @hook:mounted="AddEventHandler" :items="allchats" :min-item-size="defaultElClientHeight" class="scroller"
+    key-field="id">
     <template v-slot="{ item, index, active }">
-      <dynamic-scroller-item :item="item" :active="active" :index="index" :size-dependencies="[item.msg,getFontsize,getChatSpace]">
-        <chat-element :item="item" :index="index" :key="index" :msg-fontsize="elementMsgFontsize" :info-fontsize="elementInfoFontsize" :space="elementSpace"></chat-element>
+      <dynamic-scroller-item :item="item" :active="active" :index="item.id"
+        :size-dependencies="[item.msg,defaultElClientHeight]">
+        <chat-element :item="item" :index="index" :key="index" :msg-style="elMsgStyle" :info-style="elInfoStyle"
+          :space-style="elSpaceStyle"></chat-element>
       </dynamic-scroller-item>
     </template>
   </dynamic-scroller>
@@ -23,7 +16,15 @@
   <chat-scroll-btn :is-auto-scroll="isAutoScroll" @autoscrollclick="EnableAutoScroll()"></chat-scroll-btn>
 </div>
 
-
+<div id="PTTChat-contents-Chat-main" class="h-100 d-flex flex-column">
+  <virtual-list ref="chatmain" class="flex-grow-1"
+    style="overscroll-behavior: none;overflow-y: scroll;min-height: 0; scroll-behavior: smooth;" :data-key="'index'"
+    :data-sources="allchats" :data-component="ChatElement" :chat-count="allchats.length" keeps="100"
+    :offset="scrolloffset" @hook:mounted="AddEventHandler"></virtual-list>
+  <chat-set-new-push></chat-set-new-push>
+  <chat-preview-image></chat-preview-image>
+  <chat-scroll-btn :is-auto-scroll="isAutoScroll" @autoscrollclick="EnableAutoScroll()"></chat-scroll-btn>
+</div>
 
 <li :id="chat.index" class="ptt-chat media px-3" v-bind:style="bgc">
   <div class="media-body mw-100">
