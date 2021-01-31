@@ -9,9 +9,9 @@ export function HerfFilter(msg, filters) {
     msg.targetorigin = /\?url=(.+?)\/?$/.exec(window.location.href)[1];// \?url=(https\:\/\/|http\:\/\/)(.+)
     msg.targetWindow = top;
     //-----
-    console.log("Script started at " + window.location.href);
+    console.log("PTTChatOnYT PTT part started at " + window.location.href);
     InitPTT(msg);
-    console.log("PTT Script initialize finish.");
+    console.log("PTTChatOnYT PTT part initialize finish.");
     //-----
   }
   else {
@@ -23,14 +23,24 @@ export function HerfFilter(msg, filters) {
         msg.targetorigin = "https://term.ptt.cc";
         msg.ownerorigin = f.ownerorigin;
         //-----
-        console.log("Script started at " + window.location.href);
-        setTimeout(m => {
-
-          //add bootstrap to use
+        console.log("PTTChatOnYT Script started at " + f.Fullname + ", href:", window.location.href);
+        switch (document.readyState) {
+          case "complete":
+            InitualizeScript();
+            break;
+          default:
+            document.onreadystatechange = function () {
+              if (document.readyState == "complete") {
+                InitualizeScript();
+              }
+            }
+            break;
+        }
+        function InitualizeScript() {
           BootStrap(document);
-          f.callback(m)
-        }, 100, msg);
-        console.log(f.Fullname + " Script initialize finish.");
+          f.callback(msg)
+          console.log("PTTChatOnYT initialize finished at", f.Fullname);
+        }
         //-----
         break;
       }

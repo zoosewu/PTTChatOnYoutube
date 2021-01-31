@@ -16,15 +16,15 @@ export let ConnectDropdownElement = {
   methods: {
     $_ConnectDropdownElement_Select(newOption) {
       if (newOption > this.optionGroup.length - 1) {
-        console.log(this.description + " set to length - 1", this.optionGroup.length - 1);
+        // console.log(this.description + " set to length - 1", this.optionGroup.length - 1);
         this.SettingValue = this.optionGroup.length - 1;
       }
       else if (newOption < 0) {
-        console.log(this.description + " set to defaultValue", this.defaultValue);
+        // console.log(this.description + " set to defaultValue", this.defaultValue);
         this.SettingValue = this.defaultValue;
       }
       else {
-        console.log(this.description + " set to newOption", newOption);
+        // console.log(this.description + " set to newOption", newOption);
         this.SettingValue = newOption;
       }
       this.$store.dispatch('set' + this.settingName, this.SettingValue);
@@ -34,7 +34,7 @@ export let ConnectDropdownElement = {
     DisplayOption() { return this.optionGroup[this.SettingValue]; }
   },
   mounted() {
-    console.log(this.description + " mounted", this.settingName, this.SettingValue, this.defaultValue);
+    // console.log(this.description + " mounted", this.settingName, this.SettingValue, this.defaultValue);
     this.$_ConnectDropdownElement_Select(this.SettingValue);
   },
   template: `<div :id="id" class="form-row px-0 mx-0 col-12 my-2">

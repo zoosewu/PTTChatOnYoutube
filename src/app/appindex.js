@@ -4,7 +4,6 @@ import { store } from './store/store.js';
 export function InitApp(chatcon, whitetheme, isstreaming, messageposter, dynamicPlugin = false) {
   //generate crypt key everytime;
   cryptkey = GenerateCryptKey();
-  console.log("GM_info", GM_info);
   InitChatApp(chatcon);
   function InitChatApp(cn) {
     /*-----------------------------------preInitApp-----------------------------------*/
@@ -38,27 +37,23 @@ export function InitApp(chatcon, whitetheme, isstreaming, messageposter, dynamic
       computed: {
         classes: function () {
           let classes = ["position-absolute", "w-100"];
+          if (reportmode) console.log("Appindex set theme", this.getTheme);
           switch (+this.getTheme) {
             case 0:
-              console.log("Appindex set theme", this.getTheme);
               if (whitetheme) classes.push(themewhite);
               else classes.push(themedark);
               break;
             case 1:
-              console.log("Appindex set theme", this.getTheme);
               classes.push(themewhite);
               break;
             case 2:
-              console.log("Appindex set theme", this.getTheme);
               classes.push(themedark);
               break;
             case 3:
-              console.log("Appindex set theme", this.getTheme);
               classes.push("pttbgc-" + this.getThemeColorBG);
               classes.push("pttc-" + (10 - this.getThemeColorBorder));
               break;
             default:
-              console.log("Appindex set theme default", this.getTheme);
               break;
           }
           return classes.join(' ');

@@ -52,7 +52,7 @@ function cloneArr(from) {
 }
 
 // 复制输入值
-function clone(from) {
+export function clone(from) {
   if (from instanceof Array) {
     return cloneArr(from);
   } else if (from instanceof Object) {
@@ -63,8 +63,11 @@ function clone(from) {
 }
 
 
-function ThemeCheck(CSSSelector, WhiteThemeColor) {
-  const bgcolor = getComputedStyle(document.querySelector(CSSSelector)).backgroundColor;
-  console.log("Theme Color Check: bgcolor", bgcolor, ", white theme color", WhiteThemeColor, ", is whitetheme ", bgcolor === WhiteThemeColor);
-  return bgcolor === WhiteThemeColor;
+export function ThemeCheck(CSSSelector, WhiteThemeColor) {
+  const element = document.querySelector(CSSSelector);
+  // console.log("ThemeCheck element", element);
+  const bgcolor = getComputedStyle(element).backgroundColor;
+  // console.log("ThemeCheck bgcolor", bgcolor);
+  console.log("Theme color check: website bgcolor is '" + bgcolor + "', WhiteThemeColor is '" + WhiteThemeColor + "', whitetheme =", bgcolor.indexOf(WhiteThemeColor) >= 0);
+  return bgcolor.indexOf(WhiteThemeColor) >= 0;
 }

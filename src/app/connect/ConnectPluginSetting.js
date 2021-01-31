@@ -23,7 +23,7 @@ export let ConnectPluginSetting = {
       return array;
     },
     showThemeColorOption: function () {
-      console.log("showThemeColorOption", (+this.getTheme == 3));
+      // console.log("showThemeColorOption", (+this.getTheme == 3));
       return (+this.getTheme == 3);
     },
     ...Vuex.mapGetters([

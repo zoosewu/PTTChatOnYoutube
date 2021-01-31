@@ -4,12 +4,10 @@ import { GenerateCryptKey, paddingLeft, paddingRight, dateReviver, clone, ThemeC
 
 export function InitYT(messageposter) {
   const msg = messageposter;
-  let WhiteTheme;
   //Check Theme
-  setTimeout(() => { WhiteTheme = ThemeCheck('html', 'rgb(249, 249, 249)'); }, 100);
+  let WhiteTheme = ThemeCheck('html', 'rgb(249, 249, 249)');
 
-  setTimeout(CheckChatInstanced, 3000)
-  function CheckChatInstanced() {
+  (function CheckChatInstanced() {
     if (/www\.youtube\.com\/watch\?v=/.exec(window.location.href) === null) {
       if (showalllog) console.log("not watch video.");
       setTimeout(CheckChatInstanced, 2000);
@@ -36,7 +34,7 @@ export function InitYT(messageposter) {
       if (showalllog) console.log("watching video without chatroom.");
       setTimeout(CheckChatInstanced, 5000);
     }
-  }
+  })();
   function checkvideotype() {
     const streambtncss = $('.ytp-live-badge').css("display");
     const logstr = [`$('.ytp-live-badge').css("display")`, streambtncss];

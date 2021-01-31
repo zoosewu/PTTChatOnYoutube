@@ -48,7 +48,7 @@ export let Chat = {
           else break;
         }*/
         list.scrollToItem(this.activeChat);
-        console.log("getScrollPos", list, this.activeChat);
+        // console.log("getScrollPos", list, this.activeChat);
       }
     },
     updateChat: function () {
@@ -134,11 +134,11 @@ export let Chat = {
     //chatelement computed
     elMsgLineHeight: function () { return this.getFontsize * 1.2; },
     elMsgStyle: function () { return { 'font-size': this.getFontsize + 'px', "line-height": this.elMsgLineHeight + 'px' }; },
-    elInfoStyle: function () { return { 'font-size': this.getFontsize * 0.8334 + 'px', "line-height": this.getFontsize + 'px' }; },
+    elInfoStyle: function () { return { 'font-size': this.getFontsize / 1.2 + 'px', "line-height": this.getFontsize + 'px' }; },
     elSpace: function () { return this.getChatSpace * this.getFontsize; },
     elSpaceStyle: function () { return { 'margin-bottom': this.elSpace + 'px' }; },
     defaultElClientHeight: function () {
-      console.log("defaultElClientHeight", this.elMsgLineHeight, this.getFontsize, this.elSpace, (+this.elMsgLineHeight + +this.getFontsize + +this.elSpace));
+      // console.log("defaultElClientHeight", this.elMsgLineHeight, this.getFontsize, this.elSpace, (+this.elMsgLineHeight + +this.getFontsize + +this.elSpace));
       return +this.elMsgLineHeight + +this.getFontsize + +this.elSpace;
     },
     ...Vuex.mapGetters([
@@ -181,7 +181,7 @@ export let Chat = {
     //定時滾動
     this.intervalScroll = window.setInterval(() => { this.updateChat(); }, 500);
   },
-  updated: function () { console.log("updateChat", this.allchats); },
+  // updated: function () { console.log("updateChat", this.allchats); },
   beforeDestroy() {
     clearInterval(this.intervalChat);
     clearInterval(this.intervalScroll);
