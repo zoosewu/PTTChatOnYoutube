@@ -4,18 +4,16 @@ import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver, clo
 
 export function InitNijimado(messageposter) {
   const msg = messageposter;
-  let WhiteTheme = true;
   //Check Theme
-  setTimeout(() => { WhiteTheme = ThemeCheck('mat-drawer-container', 'rgb(250, 250, 250)'); }, 100);
+  let WhiteTheme = ThemeCheck('mat-drawer-container', 'rgb(250, 250, 250)');
 
   let tryinsholotools = 20;
-  setTimeout(ChechChatInstanced, 1000);
-  function ChechChatInstanced() {
+  (function ChechChatInstanced() {
     if (tryinsholotools >= 0) {
       TryInsChat();
       setTimeout(ChechChatInstanced, 1000);
     }
-  }
+  })();
   function TryInsChat() {
     const parent = $('app-home.ng-star-inserted');
     if (reportmode) console.log("parent", parent);

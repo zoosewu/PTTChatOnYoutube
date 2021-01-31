@@ -19,7 +19,6 @@ export let ConnectLogin = {
       GM_setValue("PTTID", this.id);
       const i = CryptoJS.AES.encrypt(this.id, cryptkey).toString();
       const p = CryptoJS.AES.encrypt(this.pw, cryptkey).toString();
-      console.log("=============================", this.getDeleteOtherConnect);
       this.msg.PostMessage("login", { id: i, pw: p, DeleteOtherConnect: this.getDeleteOtherConnect });
     }
   },

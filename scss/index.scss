@@ -23,7 +23,7 @@ $rem1: 10px;
 
 $font-size-base: 12px;
 
-$grid-breakpoints: (
+/*$grid-breakpoints: (
   // Extra small screen / phone
   xs: 0,
   // Small screen / phone
@@ -33,15 +33,15 @@ $grid-breakpoints: (
   // Large screen / desktop
   lg: 992px,
   // Extra large screen / wide desktop
-  xl: 1200px
-);
+  xl: 1920px
+);*/
 
-$container-max-widths: (
+/*$container-max-widths: (
   sm: 500px,
   md: 720px,
   lg: 960px,
-  xl: 1140px,
-);
+  xl: 1900px,
+);*/
 
 @import "variables";
 .blockquote-footer::before {
@@ -71,7 +71,7 @@ $container-max-widths: (
 @import "node_modules/bootstrap/scss/forms";
 @import "node_modules/bootstrap/scss/buttons";
 @import "node_modules/bootstrap/scss/transitions";
-// @import "node_modules/bootstrap/scss/dropdown";
+@import "node_modules/bootstrap/scss/dropdown";
 @import "node_modules/bootstrap/scss/button-group";
 // @import "node_modules/bootstrap/scss/input-group";
 // @import "node_modules/bootstrap/scss/custom-forms";
@@ -119,7 +119,7 @@ $container-max-widths: (
     font-weight: 500;
   }
   .ptt-chat-msg {
-    word-break: break-all;
+    word-break: break-word;
   }
   hr {
     border-top: 1px solid rgba(128, 128, 128, 0.5) !important;

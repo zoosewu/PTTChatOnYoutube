@@ -1,7 +1,9 @@
-import PTTApp from './PTTApp.js';
-import PTTAppBtn from './PTTAppBtn.js';
-import store from './store/store.js';
+import { PTTApp } from './PTTApp.js';
+import { PTTAppBtn } from './PTTAppBtn.js';
+import { store } from './store/store.js';
 export function InitApp(chatcon, whitetheme, isstreaming, messageposter, dynamicPlugin = false) {
+  //generate crypt key everytime;
+  cryptkey = GenerateCryptKey();
   InitChatApp(chatcon);
   function InitChatApp(cn) {
     /*-----------------------------------preInitApp-----------------------------------*/
@@ -11,10 +13,13 @@ export function InitApp(chatcon, whitetheme, isstreaming, messageposter, dynamic
     ele.setAttribute("style", "z-index: 301;");
     if (cn) cn[0].appendChild(ele);
     //Vue.prototype.$bus = new Vue();
+    const themewhite = "pttbgc-19 pttc-5";
+    const themedark = "pttbgc-2 pttc-2";
     let color = whitetheme ? "pttbgc-19 pttc-5" : "pttbgc-2 pttc-2";
+
     let PTT = new Vue({
       el: '#PTTChat',
-      template: `<div id="PTTChat" class="position-absolute w-100 ` + color + `" ins="` + appinscount + `"><PTTAppBtn></PTTAppBtn><PTTApp></PTTApp></div>`,
+
       store,
       components: {
         'PTTAppBtn': PTTAppBtn,
@@ -28,6 +33,36 @@ export function InitApp(chatcon, whitetheme, isstreaming, messageposter, dynamic
           playertime: null,
           exist: null,
         }
+      },
+      computed: {
+        classes: function () {
+          let classes = ["position-absolute", "w-100"];
+          if (reportmode) console.log("Appindex set theme", this.getTheme);
+          switch (+this.getTheme) {
+            case 0:
+              if (whitetheme) classes.push(themewhite);
+              else classes.push(themedark);
+              break;
+            case 1:
+              classes.push(themewhite);
+              break;
+            case 2:
+              classes.push(themedark);
+              break;
+            case 3:
+              classes.push("pttbgc-" + this.getThemeColorBG);
+              classes.push("pttc-" + (10 - this.getThemeColorBorder));
+              break;
+            default:
+              break;
+          }
+          return classes.join(' ');
+        },
+        ...Vuex.mapGetters([
+          'getTheme',
+          'getThemeColorBG',
+          'getThemeColorBorder',
+        ]),
       },
       provide: function () {
         return {
@@ -61,7 +96,10 @@ export function InitApp(chatcon, whitetheme, isstreaming, messageposter, dynamic
         clearInterval(this.playertime);
         clearInterval(this.exist);
       },
+      template: `<div id="PTTChat" :class="classes" :ins="index">
+      <PTTAppBtn></PTTAppBtn>
+      <PTTApp></PTTApp>
+    </div>`,
     });
-    return;
   }
 }

@@ -41,13 +41,15 @@ export let ChatSetNewPush = {
   mounted() {
     this.msg["pushedText"] = data => this.removePushedText(data);
   },
-  template: `<div :class="className">
-  <div class="col">
-    <input id="setnewpush" class="form-control" type="text" style="font-size:14px" :placeholder="placeholder" autocomplete="off"
-      v-model.lazy="pushtext" v-on:keyup.13="setPush" :disabled="!getEnableSetNewPush">
-  </div>
-  <div class="col-2 px-0">
-    <button id="setnewpushbtn" class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="setPush()">推文</button>
+  template: `<div class="container">
+  <div :class="className">
+    <div class="col">
+      <input id="setnewpush" class="form-control" type="text" style="font-size:14px" :placeholder="placeholder"
+        autocomplete="off" v-model.lazy="pushtext" v-on:keyup.13="setPush" :disabled="!getEnableSetNewPush">
+    </div>
+    <div class="col-2 px-0">
+      <button id="setnewpushbtn" class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="setPush()">推文</button>
+    </div>
   </div>
 </div>`,
 }

@@ -20,11 +20,11 @@ export function MessagePoster() {
     if (showonMessage && data.m !== "PlayerUpdate") console.log(this.ownerorigin + " get message from " + this.targetorigin, data);
   };
   if (window.addEventListener) {
-    console.log("addEventListener message");
+    if (reportmode) console.log("addEventListener message");
     window.addEventListener("message", event => { this.onMessage.call(this, event); }, false);
   }
   else if (window.attachEvent) {
-    console.log("addEventListener onmessage");
+    if (reportmode) console.log("addEventListener onmessage");
     window.attachEvent("onmessage", event => { this.onMessage.call(this, event); }, false);
   }
 }

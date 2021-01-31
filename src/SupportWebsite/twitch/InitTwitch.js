@@ -5,16 +5,14 @@ import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver, clo
 
 export function InitTwitch(messageposter) {
   const msg = messageposter;
-  let WhiteTheme;
   //Check Theme
-  setTimeout(() => { WhiteTheme = ThemeCheck('body', 'rgb(247, 247, 248)'); }, 100);
-  
+  let WhiteTheme = ThemeCheck('body', 'rgb(247, 247, 248)');
+
   //run app instance loop
-  setTimeout(ChechChatInstanced, 1000);
-  function ChechChatInstanced() {
+  (function ChechChatInstanced() {
     setTimeout(ChechChatInstanced, 1000);
     TryInsChat();
-  }
+  })();
   function TryInsChat() {
     const parent = $("section.chat-room");
     if (reportmode) console.log("parent", parent);

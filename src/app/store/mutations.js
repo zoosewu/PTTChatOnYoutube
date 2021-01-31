@@ -1,4 +1,4 @@
-import types from './mutations_type.js';
+import { types } from './mutations_type.js';
 
 // state
 export const state = {
@@ -29,6 +29,10 @@ export const state = {
   chatFontsize: GM_getValue(types.CHATFONTSIZE, -1),
   chatSpace: GM_getValue(types.CHATSPACE, -1),
   pluginWidth: GM_getValue(types.PLUGINWIDTH, -1),
+  //dropdown
+  theme: GM_getValue(types.THEME, -1),
+  themeColorBG: GM_getValue(types.THEMECOLORBG, -1),
+  themeColorBorder: GM_getValue(types.THEMECOLORBORDER, -1),
 }
 // mutations
 export const mutations = {
@@ -110,5 +114,17 @@ export const mutations = {
     GM_setValue(types.PLUGINWIDTH, width);
     state.pluginWidth = width;
   },
-
+  //dropdown
+  [types.THEME](state, theme) {
+    GM_setValue(types.THEME, theme);
+    state.theme = theme;
+  },
+  [types.THEMECOLORBG](state, themecolorbg) {
+    GM_setValue(types.THEMECOLORBG, themecolorbg);
+    state.themeColorBG = themecolorbg;
+  },
+  [types.THEMECOLORBORDER](state, themecolorborder) {
+    GM_setValue(types.THEMECOLORBORDER, themecolorborder);
+    state.themeColorBorder = themecolorborder;
+  },
 }

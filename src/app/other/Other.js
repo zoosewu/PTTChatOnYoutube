@@ -2,8 +2,10 @@ export let Other = {
   inject: ['nowPluginWidth'],
   computed: {
     Classes: function () {
-      if (this.nowPluginWidth < 399) return "px-0";
-      else return "px-5";
+      let classes = ["container" ];
+      if (this.nowPluginWidth < 399) { classes.push("px-0"); }
+      else { classes.push("px-5"); }
+      return classes.join(' ');
     },
   },
   template: `<div id="PTTChat-contents-other-main" :class="Classes">

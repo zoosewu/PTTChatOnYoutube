@@ -5,16 +5,15 @@ import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver, clo
 
 export function InitHT(messageposter) {
   const msg = messageposter;
-  let WhiteTheme;
   //Check Theme
-  setTimeout(() => { WhiteTheme = ThemeCheck('html', 'rgb(250, 250, 250)'); }, 100);
+  let WhiteTheme = ThemeCheck('html', '250, 250, 250');
 
   //run app instance loop
   let waswatch;
   let iswatch;
   let tryinsholotools = 20;
-  setTimeout(ChechChatInstanced, 1000);
-  function ChechChatInstanced() {
+
+  (function ChechChatInstanced() {
     setTimeout(ChechChatInstanced, 1000);
     const watchcheck = /https:\/\/hololive\.jetri\.co\/#\/ameliawatchon/.exec(window.location.href) || /https:\/\/hololive\.jetri\.co\/#\/watch/.exec(window.location.href);
     if (watchcheck) iswatch = watchcheck[0];
@@ -26,7 +25,7 @@ export function InitHT(messageposter) {
       TryInsChat();
     }
     waswatch = iswatch;
-  }
+  })();
   function TryInsChat() {
     const parent = $(`.container-watch`);
     if (reportmode) console.log("parent", parent);

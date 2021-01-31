@@ -37,7 +37,7 @@ export let PTTAppNav = {
   </li>
   <li class="nav-item">
     <button class="nav-link ptt-text bg-transparent d-none" id="nav-item-TimeSet" type="button" data-toggle="collapse"
-      data-target="#PTTChat-Time" aria-controls="PTTChat-Time" aria-expanded="false">時間</a>
+      data-target="#PTTChat-Time" aria-controls="PTTChat-Time" aria-expanded="false">時間</button>
   </li>
 </ul>`,
 }
