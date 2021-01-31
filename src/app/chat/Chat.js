@@ -114,7 +114,7 @@ export let Chat = {
     allchats: function () {
       //console.log("allchats");
       if (this.newChatList !== this.lastChat && this._allchats) {
-        if (this.lastpostaid != this.post.AID) { this.lastpostaid = this.post.AID; this._allchats = []; }
+        if (this.lastpostaid !== this.post.AID) { this.lastpostaid = this.post.AID; this._allchats = []; }
         this._allchats = this._allchats.concat(this.newChatList);
         this.lastChat = this.newChatList;
         //console.log("add chat, newChatList", this.newChatList);
@@ -196,7 +196,7 @@ export let Chat = {
   <dynamic-scroller ref="chatmain"
     style="overscroll-behavior: none;overflow-y: scroll;height: 100%; scroll-behavior: smooth;"
     @hook:mounted="AddEventHandler" :items="allchats" :min-item-size="defaultElClientHeight" class="scroller"
-    key-field="id">
+    key-field="uid">
     <template v-slot="{ item, index, active }">
       <dynamic-scroller-item :item="item" :active="active" :index="item.id"
         :size-dependencies="[item.msg,defaultElClientHeight]">
@@ -226,6 +226,7 @@ let testchat = {
       el.time.setMinutes(0);
       el.time.setSeconds(i * 3);
       el.id = i;
+      el.uid = "#test_" + i;
       el.gray = true;
       this.l.push(el);
     }

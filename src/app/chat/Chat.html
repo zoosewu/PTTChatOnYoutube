@@ -5,7 +5,7 @@
     key-field="id">
     <template v-slot="{ item, index, active }">
       <dynamic-scroller-item :item="item" :active="active" :index="item.id"
-        :size-dependencies="[item.msg,defaultElClientHeight]">
+        :size-dependencies="[item.msg,defaultElClientHeight,post.AID]">
         <chat-element :item="item" :index="index" :key="index" :msg-style="elMsgStyle" :info-style="elInfoStyle"
           :space-style="elSpaceStyle"></chat-element>
       </dynamic-scroller-item>

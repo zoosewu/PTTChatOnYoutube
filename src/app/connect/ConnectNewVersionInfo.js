@@ -14,9 +14,10 @@ export let ConnectNewVersionInfo = {
   mounted() {
     let info;
     info = [
+      "修正效能，現在不會越來越卡了。",
       "新增使用者自訂主題。",
-      "(因為有時候偵測不到網站主題)",
-      "偵測到imgur連結會自動補.png預覽",
+      "修正holotools主題偵測失敗的問題。",
+      "偵測到imgur連結會自動補.png預覽。",
     ];
     this.versionInfos.push(info);
     info = [

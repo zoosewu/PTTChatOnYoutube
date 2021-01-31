@@ -75,6 +75,7 @@ export const actions = {
       chat.type = currpush.type;
       chat.msg = currpush.content;
       chat.id = existpush + index;
+      chat.uid = state.post.AID + "_" + chat.id;
       chat.gray = !state.disablepushgray;
       chatlist.push(chat);
       //console.log("new Chat", chat);
