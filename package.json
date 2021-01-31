@@ -7,14 +7,14 @@
     "npm-watch": "^0.7.0"
   },
   "watch": {
-    "dev": {
+    "build": {
       "patterns": [
         "src",
         "css"
       ],
       "extensions": "js,css"
     },
-    "release-hotfix": {
+    "release:bugfix": {
       "patterns": [
         "src",
         "css"
@@ -23,19 +23,19 @@
     }
   },
   "scripts": {
-    "watch-dev": "npm-watch release-hotfix",
+    "watch-dev": "npm-watch release:bugfix",
     "watch-scss-map": "node-sass --source-map map --watch scss/index.scss -o css",
     "http": "http-server ./ --cors -c-1 -p 8889",
     "watch-scss": "node-sass --watch scss/index.scss -o css",
-    "release-minor": "node ./node_modules/userscript-builder/bin/builder.js --mode minor",
-    "watch-dev-n": "npm-watch dev",
-    "release-hotfix": "node ./node_modules/userscript-builder/bin/builder.js --mode bugfix",
-    "release-major": "node ./node_modules/userscript-builder/bin/builder.js --mode major",
-    "dev": "node ./node_modules/userscript-builder/bin/builder.js --mode dev",
+    "watch-dev-n": "npm-watch build",
+    "build": "userscript-builder --mode dev",
+    "release:bugfix": "userscript-builder --mode bugfix",
+    "release:minor": "userscript-builder --mode minor",
+    "release:major": "userscript-builder --mode major",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "name": "pttchatonyoutube",
-  "version": "2.1.641",
+  "version": "2.1.645",
   "description": "Connect ptt pushes to youtube chatroom",
   "author": "Zoosewu",
   "license": "MIT",

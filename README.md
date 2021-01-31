@@ -5,9 +5,11 @@
 
 推薦使用violentmonkey，並使用chrome開發，Firefox無法載入本地檔案
 
-在專案底下輸入 ```npm run watch-dev```，每次腳本存當都會自動更新腳本
+在專案底下輸入 ```npm run watch-dev```，每次腳本存檔都會自動更新腳本
 
-在專案底下輸入 ```npm run watch-scss-map```，每次CSS存當都會自動更新腳本
+在專案底下輸入 ```npm run watch-scss```，每次css存檔都會自動更新腳本
+
+如果需要追蹤scss，可以使用 ```npm run watch-scss-map```就會生成帶map檔的css，但是限定http使用。
 
 腳本更新依照下面步驟操作之後存檔完在violentmonkey設定那邊按一下更新就能測試
 
@@ -31,15 +33,12 @@
 
 ## TODO List
 #### App
-- [ ] 修正自動滾動功能有時候會失敗的問題
 - [ ] 彈幕版本
-- [ ] 修正實況紀錄效能很差的問題，目前猜測是vue的監視功能__ob__導致
 
 #### PTT
 - [ ] 任務柱列功能
 
 #### Script
-- [ ] 把舊的功能搬到新的vue物件上面
 - [ ] 透過vuex element資料傳輸 [vue教學](https://ithelp.ithome.com.tw/users/20107673/ironman/1470?page=1) [todolist範例](https://codepen.io/oddvalue/pen/dpBGpj) [todolist範例2](https://codepen.io/mkumaran/pen/vZgara?editors=1010)
 - [ ] 根據網址撈實況開始時間[HoloStats](https://github.com/PoiScript/HoloStats/tree/master) [舊版api](https://holo.poi.cat/api/v3/streams_report?ids=skSmTEnAyGk&metrics=youtube_stream_viewer&start_at=0&end_at=0) [新版api](https://holo.poi.cat/api/v3/streams_report?ids=77OTDrqhN80&metrics=youtube_stream_viewer&start_at=0&end_at=0) [req測試](https://reqbin.com/)
 - [ ] 測試[彩虹官網](https://niji-mado.web.app/home)的支援度，[彩虹的開台統計](https://2434analytics.com/rank/dailyView.html)
