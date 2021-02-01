@@ -3,15 +3,7 @@ import { ConnectPluginSettingCheckboxElement } from './ConnectPluginSettingCheck
 //import { ConnectEnableSetNewChat } from './ConnectEnableSetNewChat.js';
 //import { ConnectDisablePushGray } from './ConnectPluginSettingCheckboxElement.js';
 export let ConnectOtherSetting = {
-  mounted() {
-    GM_deleteValue('disablepushgray');///
-    GM_deleteValue('enablesetnewpush');///
-    GM_deleteValue('chatFontsize');///
-    GM_deleteValue('chatSpace');///
-    GM_deleteValue('LastPostUID');///
-    
-    //console.log("remove check: " + GM_getValue('enablesetnewpush', "removed"));
-  },
+  // mounted() { },
   template: `<div id="PTTConnect-OtherSetting" class="form-row px-0 mx-0 col-12 my-2">
   <legend class="col-form-label col-3 pt-0">其他設定</legend>
   <div class="col px-0">

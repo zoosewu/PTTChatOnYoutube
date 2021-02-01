@@ -10,7 +10,7 @@ export const getters = {
   previewImage: state => { return state.previewImg; },
 
   //checkbox
-  getEnableSetNewPush: state => { return state.enablesetnewpush; },
+  getEnableSetNewPush: state => {/*console.log("EnableSetNewPush getter",state.enablesetnewpush);*/ return state.enablesetnewpush; },
   getDisablePushGray: state => { return state.disablepushgray; },
   getDeleteOtherConnect: state => { return state.deleteotherconnect; },
   //input value

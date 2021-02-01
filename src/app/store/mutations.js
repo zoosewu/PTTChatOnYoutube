@@ -89,6 +89,10 @@ export const mutations = {
     GM_setValue(types.DELETEOTHERCONNECT, deleteotherconnect);
     state.deleteotherconnect = deleteotherconnect;
   },
+  [types.ENABLESETNEWPUSH](state, value) {
+    GM_setValue(types.ENABLESETNEWPUSH, value);
+    state.enablesetnewpush = value;
+  },
   [types.DISABLEPUSHGRAY](state, disable) {
     GM_setValue(types.DISABLEPUSHGRAY, disable);
     state.disablepushgray = disable;

@@ -10,7 +10,7 @@ Vue.component('plugin-setting-checkbox', {
   },
   template: `<div class="form-check">
   <input type="checkbox" class="form-check-input" :id="settingName" v-model="SettingValue"
-    @change="$_PluginSetting_valueChange($event)">
+    @change="$_PluginSetting_valueChange()">
   <label class="form-check-label ml-2" :for="settingName">{{this.description}}</label>
 </div>`,
 });
