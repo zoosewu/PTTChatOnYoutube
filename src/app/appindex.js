@@ -16,7 +16,7 @@ export function InitApp(chatcon, whitetheme, isstreaming, messageposter, dynamic
     const themewhite = "pttbgc-19 pttc-5";
     const themedark = "pttbgc-2 pttc-2";
     let color = whitetheme ? "pttbgc-19 pttc-5" : "pttbgc-2 pttc-2";
-
+    console.log("Instance PTTChatOnYT App, index", appinscount);
     let PTT = new Vue({
       el: '#PTTChat',
 

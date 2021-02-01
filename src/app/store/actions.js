@@ -131,7 +131,7 @@ export const actions = {
 
 
   //checkbox
-  setEnableSetNewPush: ({ commit }, value) => { commit(types.ENABLESETNEWPUSH, value); },
+  setEnableSetNewPush: ({ commit }, value) => { /*console.log("EnableSetNewPush action",value);*/commit(types.ENABLESETNEWPUSH, value); },
   setDisablePushGray: ({ commit }, value) => { commit(types.DISABLEPUSHGRAY, value); },
   setDeleteOtherConnect: ({ commit }, value) => { commit(types.DELETEOTHERCONNECT, value); },
   //input value

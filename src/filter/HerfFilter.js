@@ -29,11 +29,11 @@ export function HerfFilter(msg, filters) {
             InitualizeScript();
             break;
           default:
-            document.onreadystatechange = function () {
+            document.addEventListener('readystatechange', function () {
               if (document.readyState == "complete") {
                 InitualizeScript();
               }
-            }
+            });
             break;
         }
         function InitualizeScript() {
