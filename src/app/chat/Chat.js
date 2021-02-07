@@ -26,29 +26,30 @@ export let Chat = {
     }
   },
   methods: {
+    updateGray: function (index, isgray) {
+      console.log("update gray", index, this.allchats[index].gray, "->", isgray, this.allchats[index].msg);
+      if (this.allchats[index].gray != isgray) this.allchats[index].gray = isgray;
+    },
     scrollToChat: function () {
-      if (this.lastactiveChat != this.activeChat) {
+      if (reportmode) console.log("scrollToChat", this.lastactiveChat, this.activeChat, this.lastactiveChat !== this.activeChat);
+      if (this.lastactiveChat !== this.activeChat) {
         this.lastactiveChat = this.activeChat;
-        if (!this.getDisablePushGray) {
-          for (let i = 0; i < this.allchats.length; i++) {
-            chat = this.allchats[i];
-            const isgray = chat.index > this.activeChat;
-            // console.log("gray check, uid, activeChat, color, lastColor", chat.index, this.activeChat, isgray, chat.gray);
+        /*if (!this.getDisablePushGray) {
+          const chats = this.allchats;
+          for (let i = 0; i < chats.length; i++) {
+            const chat = chats[i];
+            const isgray = chat.id > this.activeChat;
+            // console.log("gray check chat", chat, chats);
+            // console.log("gray check, uid, activeChat, color, lastColor", chat.id, this.activeChat, isgray, chat.gray);
             if (isgray != chat.gray) chat.gray = isgray;//console.log("gray change, graychange, chatuid", chat.gray, '=>', isgray, chat.index);
           }
-        }
+          console.log("gray check end");
+        }*/
       }
       if (reportmode) console.log("this.isAutoScroll", this.isAutoScroll, this.lastautoscrolltime + 50 < Date.now());
       if (this.isAutoScroll && this.lastautoscrolltime + 50 < Date.now()) {
         const list = this.$refs.chatmain;
-        let clientHeight = list.$el.clientHeight;
-        /*let i = 0;
-        for (; clientHeight > 0 && i < 15 && this.activeChat - i > 0; i++) {
-          if (list.getSize(this.activeChat - i)) clientHeight -= 100;
-          else break;
-        }*/
         list.scrollToItem(this.activeChat);
-        // console.log("getScrollPos", list, this.activeChat);
       }
     },
     updateChat: function () {
@@ -63,17 +64,11 @@ export let Chat = {
       else {
         if (this.activeChat && chats && reportmode) {
           console.log("current time: " + this.videoCurrentTime.toString(), ", activeChat", this.activeChat);
-          if (chats[this.activeChat - 1]) {
-            console.log("activeChat-1", chats[this.activeChat - 1].time.toString());
-          }
-          if (chats[this.activeChat]) {
-            console.log("activeChat+0", chats[this.activeChat].time.toString(), ", activeChat > CurrentTime", chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf());
-          }
-          if (chats[this.activeChat + 1]) {
-            console.log("activeChat+1", chats[this.activeChat + 1].time.toString(), ", activeChat < CurrentTime", chats[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf());
-          }
+          if (chats[this.activeChat - 1]) { console.log("activeChat-1", chats[this.activeChat - 1].time.toString()); }
+          if (chats[this.activeChat]) { console.log("activeChat+0", chats[this.activeChat].time.toString(), ", activeChat > CurrentTime", chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()); }
+          if (chats[this.activeChat + 1]) { console.log("activeChat+1", chats[this.activeChat + 1].time.toString(), ", activeChat < CurrentTime", chats[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf()); }
         }
-        for (move = 128; move > 0; move = move / 2) {
+        for (move = 128; move > 1; move = move / 2) {
           while (this.activeChat > 0 && chats[this.activeChat] && chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()) {
             this.activeChat -= move;
             //console.log("move activeChat to ", this.activeChat);
@@ -82,7 +77,6 @@ export let Chat = {
             this.activeChat += move;
             //console.log("move activeChat to ", this.activeChat);
           }
-          if (move === 1) break;
         }
       }
       if (reportmode && this.lastactiveChat != this.activeChat && chats[this.activeChat]) console.log("getCurrentChat, chats.length-1", chats.length - 1, ", activeChat,", this.activeChat, " isStream", this.isStream, "chats[this.activeChat].msg", chats[this.activeChat].msg);
@@ -106,18 +100,17 @@ export let Chat = {
       }
       list.addEventListener('scroll', e => { if (this.isAutoScroll) this.lastautoscrolltime = Date.now(); });
     },
-    AddToList: function (newItems) {
-
-    }
   },
   computed: {
     allchats: function () {
       //console.log("allchats");
-      if (this.newChatList !== this.lastChat && this._allchats) {
+      if (this.newChatList !== this.lastChat) {
         if (this.lastpostaid !== this.post.AID) { this.lastpostaid = this.post.AID; this._allchats = []; }
-        this._allchats = this._allchats.concat(this.newChatList);
+        if (!this._allchats) this._allchats = [];
+        const new_allchats = this._allchats.concat(this.newChatList);
+        console.log("old _allchats", this._allchats, "newChatList", this.newChatList, "new_allchats", new_allchats);
+        this._allchats = new_allchats;
         this.lastChat = this.newChatList;
-        //console.log("add chat, newChatList", this.newChatList);
       }
       return this._allchats ? this._allchats : [];
     },
@@ -152,13 +145,7 @@ export let Chat = {
       'getChatSpace',
     ])
   },
-  mounted() {
-    //註冊文章事件
-    this.msg["newPush"] = data => {
-      this.$store.dispatch('updatePost', data);
-      this.nextUpdateTime = Date.now() + Math.max(this.getPushInterval, 2.5) * 1000;
-    };
-
+  created() {
     //初始化聊天列表
     if (reportmode) this._allchats = testchat.list;//test
     else this._allchats = [];
@@ -166,9 +153,14 @@ export let Chat = {
     this.lastpostaid = this.post.AID;
 
     this.activeChat = 0;
-    this.activeChat = 0;
     this.nextUpdateTime = Date.now() + 5 * 365 * 24 * 60 * 60 * 1000;
-
+  },
+  mounted() {
+    //註冊文章事件
+    this.msg["newPush"] = data => {
+      this.$store.dispatch('updatePost', data);
+      this.nextUpdateTime = Date.now() + Math.max(this.getPushInterval, 2.5) * 1000;
+    };
     //定時抓新聊天
     this.intervalChat = window.setInterval(() => {
       if (this.isStream && this.PTTState > 0 && Date.now() > this.nextUpdateTime) {
@@ -177,7 +169,6 @@ export let Chat = {
         this.msg.PostMessage("getPushByLine", { AID: this.post.AID, board: this.post.board, startline: this.post.lastendline });
       }
     }, 340);
-
     //定時滾動
     this.intervalScroll = window.setInterval(() => { this.updateChat(); }, 500);
   },
@@ -201,7 +192,7 @@ export let Chat = {
       <dynamic-scroller-item :item="item" :active="active" :index="item.id"
         :size-dependencies="[item.msg,defaultElClientHeight]">
         <chat-element :item="item" :index="index" :key="index" :msg-style="elMsgStyle" :info-style="elInfoStyle"
-          :space-style="elSpaceStyle"></chat-element>
+          :space-style="elSpaceStyle" :active-chat="activeChat" @updategray="updateGray"></chat-element>
       </dynamic-scroller-item>
     </template>
   </dynamic-scroller>

@@ -7,6 +7,14 @@ export let ChatElement = {
     msgStyle: { type: Object, required: true, },
     infoStyle: { type: Object, required: true, },
     spaceStyle: { type: Object, required: true, },
+    activeChat: { type: Boolean, required: true, },
+  },
+  methods: {
+    $_ChatElementMessage_GrayCheck() {
+      if (reportmode) console.log("GrayCheck", this.item, "id", this.item.id, "activeChat", this.activeChat, this.item, "id>activeChat", this.item.id > this.activeChat, this.item.gray)
+      if (this.item.id > this.activeChat && !this.item.gray) this.$emit('updategray', this.item.id, true);
+      else if (this.item.id <= this.activeChat && this.item.gray) this.$emit('updategray', this.item.id, false);
+    }
   },
   computed: {
     /*msg: function () {
@@ -27,10 +35,14 @@ export let ChatElement = {
     },
     ...Vuex.mapGetters(['getDisablePushGray',])
   },
-  mounted() { console.log("mounted", this.item); },
-  updated: function () {
-    if (reportmode) console.log('updated, listIndex, chatIndex, msg', this.item.id, this.item.msg);
+  watch: {
+    activeChat: function () { this.$_ChatElementMessage_GrayCheck(); }
   },
+  mounted() {
+    this.$_ChatElementMessage_GrayCheck();
+    if (reportmode) console.log("mounted");
+  },
+  updated() { if (reportmode) console.log('updated, listIndex, chatIndex, msg', this.item.id, this.item.msg); },
   template: `<div class="ptt-chat media px-3" :style="bgc">
   <div class="media-body mw-100">
     <div class="ptt-chat-info d-flex flex-row" :style="infoStyle">
