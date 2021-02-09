@@ -7,7 +7,7 @@
       <dynamic-scroller-item :item="item" :active="active" :index="item.id"
         :size-dependencies="[item.msg,defaultElClientHeight]">
         <chat-element :item="item" :index="index" :key="index" :msg-style="elMsgStyle" :info-style="elInfoStyle"
-          :space-style="elSpaceStyle" :active-chat="activeChat"></chat-element>
+          :space-style="elSpaceStyle" :active-chat="activeChat" @updategray="updateGray"></chat-element>
       </dynamic-scroller-item>
     </template>
   </dynamic-scroller>

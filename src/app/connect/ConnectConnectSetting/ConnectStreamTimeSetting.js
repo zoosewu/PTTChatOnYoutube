@@ -34,7 +34,7 @@ export let ConnectStreamTimeSetting = {
     }
   },
   mounted() {
-    this.$store.dispatch('updateVideoStartTime', ["18", "00", "00", false]);
+    //this.$store.dispatch('updateVideoStartTime', ["18", "00", "00", false]);
   },
   template: `<div id="PTTConnect-Time-Setting" :class="className">
   <div class="form-group col-8">
