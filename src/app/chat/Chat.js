@@ -26,29 +26,27 @@ export let Chat = {
     }
   },
   methods: {
+    updateGray: function (index, isgray) {
+      if (reportmode) console.log("update gray", index, this.allchats[index].gray, "->", isgray, this.allchats[index].msg);
+      if (this.allchats[index].gray != isgray) this.allchats[index].gray = isgray;
+      else console.log("update gray error", index, this.allchats[index].gray, "->", isgray, this.allchats[index].msg);
+    },
     scrollToChat: function () {
-      if (this.lastactiveChat != this.activeChat) {
-        this.lastactiveChat = this.activeChat;
-        if (!this.getDisablePushGray) {
-          for (let i = 0; i < this.allchats.length; i++) {
-            chat = this.allchats[i];
-            const isgray = chat.index > this.activeChat;
-            // console.log("gray check, uid, activeChat, color, lastColor", chat.index, this.activeChat, isgray, chat.gray);
-            if (isgray != chat.gray) chat.gray = isgray;//console.log("gray change, graychange, chatuid", chat.gray, '=>', isgray, chat.index);
-          }
-        }
-      }
+      if (reportmode) console.log("scrollToChat", this.lastactiveChat, this.activeChat, this.lastactiveChat !== this.activeChat);
+      if (this.lastactiveChat !== this.activeChat) { this.lastactiveChat = this.activeChat; }
       if (reportmode) console.log("this.isAutoScroll", this.isAutoScroll, this.lastautoscrolltime + 50 < Date.now());
       if (this.isAutoScroll && this.lastautoscrolltime + 50 < Date.now()) {
         const list = this.$refs.chatmain;
-        let clientHeight = list.$el.clientHeight;
-        /*let i = 0;
-        for (; clientHeight > 0 && i < 15 && this.activeChat - i > 0; i++) {
-          if (list.getSize(this.activeChat - i)) clientHeight -= 100;
-          else break;
-        }*/
-        list.scrollToItem(this.activeChat);
-        // console.log("getScrollPos", list, this.activeChat);
+        const scroller = list.$refs.scroller;
+        const accumulator = this.activeChat > 0 ? scroller.sizes[this.activeChat - 1].accumulator : 0;
+        const clientHeight = list.$el.clientHeight;
+        let scroll = accumulator - clientHeight / 2;
+        if (scroll < 0) scroll = 0;
+        scroller.$el.scrollTo({
+          top: scroll,
+          behavior: ((Math.abs(scroller.$el.scrollTop - scroll) > clientHeight) ? 'auto' : 'smooth'),
+        });
+        // scroller.scrollToPosition(scroll);
       }
     },
     updateChat: function () {
@@ -57,23 +55,17 @@ export let Chat = {
     },
     getCurrentChat: function () {
       const chats = this.allchats;
-      if (this.isStream) {
-        this.activeChat = chats.length - 1;
-      }
+      if (this.isStream) { this.activeChat = chats.length - 1; }
       else {
-        if (this.activeChat && chats && reportmode) {
+        // console.log("this.activeChat && chats && reportmode", this.activeChat, chats, reportmode);
+        if (this.activeChat > -1 && chats && reportmode) {
           console.log("current time: " + this.videoCurrentTime.toString(), ", activeChat", this.activeChat);
-          if (chats[this.activeChat - 1]) {
-            console.log("activeChat-1", chats[this.activeChat - 1].time.toString());
-          }
-          if (chats[this.activeChat]) {
-            console.log("activeChat+0", chats[this.activeChat].time.toString(), ", activeChat > CurrentTime", chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf());
-          }
-          if (chats[this.activeChat + 1]) {
-            console.log("activeChat+1", chats[this.activeChat + 1].time.toString(), ", activeChat < CurrentTime", chats[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf());
-          }
+          if (chats[this.activeChat - 1]) { console.log("activeChat-1", chats[this.activeChat - 1].time.toString()); }
+          if (chats[this.activeChat]) { console.log("activeChat+0", chats[this.activeChat].time.toString(), ", activeChat > CurrentTime", chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()); }
+          if (chats[this.activeChat + 1]) { console.log("activeChat+1", chats[this.activeChat + 1].time.toString(), ", activeChat < CurrentTime", chats[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf()); }
         }
-        for (move = 128; move > 0; move = move / 2) {
+        let move = 128;
+        while (true) {
           while (this.activeChat > 0 && chats[this.activeChat] && chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()) {
             this.activeChat -= move;
             //console.log("move activeChat to ", this.activeChat);
@@ -82,10 +74,11 @@ export let Chat = {
             this.activeChat += move;
             //console.log("move activeChat to ", this.activeChat);
           }
-          if (move === 1) break;
+          if (move <= 1) break;
+          move = move / 2
         }
       }
-      if (reportmode && this.lastactiveChat != this.activeChat && chats[this.activeChat]) console.log("getCurrentChat, chats.length-1", chats.length - 1, ", activeChat,", this.activeChat, " isStream", this.isStream, "chats[this.activeChat].msg", chats[this.activeChat].msg);
+      if (reportmode && this.lastactiveChat != this.activeChat && chats[this.activeChat]) console.log("CurrentChat, ", this.lastactiveChat, "->", this.activeChat, "chats.length-1", chats.length - 1, " isStream", this.isStream, "chats[this.activeChat].msg", chats[this.activeChat].msg);
     },
     MouseWheelHandler: function (e) {
       this.isAutoScroll = false;
@@ -106,18 +99,36 @@ export let Chat = {
       }
       list.addEventListener('scroll', e => { if (this.isAutoScroll) this.lastautoscrolltime = Date.now(); });
     },
-    AddToList: function (newItems) {
-
-    }
+  },
+  //chatelement methods
+  GrayCheck(item) {
+    if (reportmode) console.log("GrayCheck", item, "id", item.id, "activeChat", this.activeChat, item, "id>activeChat", item.id > this.activeChat, item.gray)
+    if (item.id > this.activeChat && !item.gray) this.$emit('updategray', item.id, true);
+    else if (item.id <= this.activeChat && item.gray) this.$emit('updategray', item.id, false);
+  },
+  timeH: function (item) { return paddingLeft(item.time.getHours(), + 2); },
+  timem: function (item) { return paddingLeft(item.time.getMinutes(), +2); },
+  typeclass: function (item) {
+    const typecolor = item.type === "推 " ? "ptt-chat-type" : "ptt-chat-type-n";
+    return typecolor + " mr-2 mb-0";
+  },
+  bgc: function (item) {
+    if (this.getDisablePushGray) return "";
+    const isUnchat = item.gray ? "0.25" : "0";
+    const color = "rgba(128, 128, 128, " + isUnchat + ")";
+    return { backgroundColor: color, transition: "2s" };
   },
   computed: {
     allchats: function () {
       //console.log("allchats");
-      if (this.newChatList !== this.lastChat && this._allchats) {
+      if (this.newChatList !== this.lastChat) {
         if (this.lastpostaid !== this.post.AID) { this.lastpostaid = this.post.AID; this._allchats = []; }
-        this._allchats = this._allchats.concat(this.newChatList);
+        if (!this._allchats) this._allchats = [];
+        if (!this.isStream) this.newChatList.forEach(item => { item.gray = item.id > this.activeChat; });
+        const new_allchats = this._allchats.concat(this.newChatList);
+        // console.log("old _allchats", this._allchats, "newChatList", this.newChatList, "new_allchats", new_allchats);
+        this._allchats = new_allchats;
         this.lastChat = this.newChatList;
-        //console.log("add chat, newChatList", this.newChatList);
       }
       return this._allchats ? this._allchats : [];
     },
@@ -152,13 +163,7 @@ export let Chat = {
       'getChatSpace',
     ])
   },
-  mounted() {
-    //註冊文章事件
-    this.msg["newPush"] = data => {
-      this.$store.dispatch('updatePost', data);
-      this.nextUpdateTime = Date.now() + Math.max(this.getPushInterval, 2.5) * 1000;
-    };
-
+  created() {
     //初始化聊天列表
     if (reportmode) this._allchats = testchat.list;//test
     else this._allchats = [];
@@ -166,9 +171,14 @@ export let Chat = {
     this.lastpostaid = this.post.AID;
 
     this.activeChat = 0;
-    this.activeChat = 0;
     this.nextUpdateTime = Date.now() + 5 * 365 * 24 * 60 * 60 * 1000;
-
+  },
+  mounted() {
+    //註冊文章事件
+    this.msg["newPush"] = data => {
+      this.$store.dispatch('updatePost', data);
+      this.nextUpdateTime = Date.now() + Math.max(this.getPushInterval, 2.5) * 1000;
+    };
     //定時抓新聊天
     this.intervalChat = window.setInterval(() => {
       if (this.isStream && this.PTTState > 0 && Date.now() > this.nextUpdateTime) {
@@ -177,7 +187,6 @@ export let Chat = {
         this.msg.PostMessage("getPushByLine", { AID: this.post.AID, board: this.post.board, startline: this.post.lastendline });
       }
     }, 340);
-
     //定時滾動
     this.intervalScroll = window.setInterval(() => { this.updateChat(); }, 500);
   },
@@ -194,14 +203,14 @@ export let Chat = {
   },
   template: `<div id="PTTChat-contents-Chat-main" class="h-100 d-flex flex-column">
   <dynamic-scroller ref="chatmain"
-    style="overscroll-behavior: none;overflow-y: scroll;height: 100%; scroll-behavior: smooth;"
+    style="overscroll-behavior: none;overflow-y: scroll;height: 100%;"
     @hook:mounted="AddEventHandler" :items="allchats" :min-item-size="defaultElClientHeight" class="scroller"
     key-field="uid">
     <template v-slot="{ item, index, active }">
       <dynamic-scroller-item :item="item" :active="active" :index="item.id"
         :size-dependencies="[item.msg,defaultElClientHeight]">
         <chat-element :item="item" :index="index" :key="index" :msg-style="elMsgStyle" :info-style="elInfoStyle"
-          :space-style="elSpaceStyle"></chat-element>
+          :space-style="elSpaceStyle" :active-chat="activeChat" @updategray="updateGray"></chat-element>
       </dynamic-scroller-item>
     </template>
   </dynamic-scroller>
@@ -221,7 +230,21 @@ let testchat = {
         pttid: "ID_NO." + i,
         time: new Date(),
       };
-      el.msg = i + " 太神啦 https://youtu.be/23y5h8kQsv8?t=4510 太神啦 https://pbs.twimg.com/media/ErtC6XwVoAM_ktN.jpg 太神啦";
+      let msg = "";
+      let m = filterXSS(i + " 太神啦 https://youtu.be/23y5h8kQsv8?t=4510 太神啦 https://pbs.twimg.com/media/ErtC6XwVoAM_ktN.jpg 太神啦");
+      let result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])(.*)/ig.exec(m);
+      let parsetime = 5;
+      while (result && m !== "" && parsetime > 0) {
+        const prestring = result[1];
+        const linkstring = result[2];
+        if (prestring !== "") msg = msg + prestring;
+        msg = msg + `<a href="` + linkstring + `" target="_blank" rel="noopener noreferrer" class="ptt-chat-msg" ref="link` + (5 - parsetime) + `" onmouseover="this.parentNode.mouseEnter(this.href)" onmouseleave="this.parentNode.mouseLeave(this.href)">` + linkstring + `</a>`;
+        m = result[3];
+        result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])(.*)/ig.exec(m);
+        parsetime--;
+      }
+      if (m !== "") msg = msg + m;
+      el.msg = msg;
       el.time.setHours(18);
       el.time.setMinutes(0);
       el.time.setSeconds(i * 3);

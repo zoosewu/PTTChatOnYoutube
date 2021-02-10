@@ -38,7 +38,6 @@ export const actions = {
       newpost.pushcount += postdata.pushes.length;
       commit(types.UPDATEPOST, newpost);
       dispatch('updateChat', postdata.pushes);
-      dispatch('updateVideoStartDate');
     }
     //console.log("state.pageChange", state.pageChange);
     if (state.pageChange) {
@@ -73,29 +72,35 @@ export const actions = {
       if (!state.isStream && sametimecount > 0) chat.time.setSeconds((sametimecount + index - sametimeIndex) * 60 / sametimecount);
       chat.pttid = currpush.id;
       chat.type = currpush.type;
-      chat.msg = currpush.content;
+      // chat.msg = currpush.content;
+      let msg = "";
+      let m = filterXSS(currpush.content);
+      let result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])(.*)/ig.exec(m);
+      let parsetime = 5;
+      while (result && m !== "" && parsetime > 0) {
+        const prestring = result[1];
+        const linkstring = result[2];
+        if (prestring !== "") msg = msg + prestring;
+        msg = msg + `<a href="` + linkstring + `" target="_blank" rel="noopener noreferrer" class="ptt-chat-msg" ref="link` + (5 - parsetime) + `" onmouseover="this.parentNode.mouseEnter(this.href)" onmouseleave="this.parentNode.mouseLeave(this.href)">` + linkstring + `</a>`;
+        m = result[3];
+        result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])(.*)/ig.exec(m);
+        parsetime--;
+      }
+      if (m !== "") msg = msg + m;
+      chat.msg = msg;
       chat.id = existpush + index;
       chat.uid = state.post.AID + "_" + chat.id;
       chat.gray = !state.disablepushgray;
       chatlist.push(chat);
-      //console.log("new Chat", chat);
+      console.log("new Chat", chat, currpush);
     }
     //console.log("chatlist actions", chatlist);
     commit(types.UPDATECHAT, chatlist);
   },
-  updateVideoStartTime: ({ dispatch, commit, state }, time) => {
-    commit(types.VIDEOSTARTTIME, time);
-    dispatch('updateVideoStartDate');
-  },
-  updateVideoStartDate: ({ dispatch, commit, state }) => {
-    const postdate = state.post.date || new Date();
-    const time = state.VStartTime;
-    const date = new Date(postdate);
-    date.setHours(+time[0]);
-    date.setMinutes(+time[1]);
-    date.setSeconds(+time[2]);
-    dispatch("updateLog", { type: "videoStartTime", data: date.toLocaleDateString() + " " + date.toLocaleTimeString() });
-    commit(types.VIDEOSTARTDATE, date);
+  updateVideoStartDate: ({ dispatch, commit, state }, d) => {
+    console.trace("updateVideoStartDate", d);
+    dispatch("updateLog", { type: "videoStartTime", data: d.toLocaleDateString() + " " + d.toLocaleTimeString() });
+    commit(types.VIDEOSTARTDATE, d);
     dispatch('updateVideoCurrentTime');
   },
   updateVideoPlayedTime: ({ dispatch, commit, state }, time) => {
@@ -109,16 +114,7 @@ export const actions = {
     const time = state.VPlayedTime;//[H,m,s,isVideoVeforePost]
     let currtime = new Date(vstart.valueOf());
     currtime.setSeconds(vstart.getSeconds() + time);
-    if (reportmode) console.log("updateVideoCurrentTime check, currtime.valueOf() < state.post.date.valueOf()", currtime.valueOf() < state.post.date.valueOf(), state.VStartTime, state.VStartTime[3], currtime.valueOf(), state.post.date.valueOf());
-
-    if (currtime.valueOf() < state.post.date.valueOf()) {
-      if (reportmode) console.log("updateVideoCurrentTime + 24");
-      currtime.setHours(currtime.getHours() + 24);
-      if (state.VStartTime[3]) {
-        if (reportmode) console.log("updateVideoCurrentTime brfore - 24");
-        currtime.setHours(currtime.getHours() - 24);
-      }
-    }
+    if (reportmode) console.log("updateVideoCurrentTime check, currtime.valueOf() < state.post.date.valueOf()", currtime.valueOf() < state.post.date.valueOf(), currtime.valueOf(), state.post.date.valueOf());
     //console.log("updateVideoCurrentTime vstart, time, currtime", vstart, time, currtime);
     dispatch("updateLog", { type: "videoCurrentTime", data: currtime.toLocaleDateString() + " " + currtime.toLocaleTimeString() });
     commit(types.VIDEOCURRENTRIME, currtime);

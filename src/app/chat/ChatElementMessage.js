@@ -1,7 +1,7 @@
 
 
 Vue.component('chat-item-msg', {
-  props: { msg: { type: String, required: true }, style: { type: Object, required: true } },
+  props: { msgs: { type: String, required: true }, style: { type: Object, required: true } },
   data() {
     return {
       parsedmsg: [],
@@ -16,23 +16,8 @@ Vue.component('chat-item-msg', {
   },*/
   computed: {
     msgList: function () {
-      this.parsedmsg.forEach(element => { if (element.islink && this.previewImage === element.string) this.$store.dispatch('previewImage', ""); });
-      this.parsedmsg = [];
-      let msgs = this.parsedmsg;
-      let msg = this.msg;
-      let result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])(.*)/ig.exec(msg);
-      let parsetime = 5;
-      while (result && msg !== "" && parsetime > 0) {
-        const prestring = result[1];
-        const linkstring = result[2];
-        if (prestring !== "") msgs.push({ islink: false, string: prestring });
-        msgs.push({ islink: true, string: linkstring });
-        msg = result[3];
-        result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])(.*)/ig.exec(msg);
-        parsetime--;
-      }
-      if (msg !== "") msgs.push({ islink: false, string: msg });
-      return msgs;
+
+      return this.msgs;
     },
     ...Vuex.mapGetters([
       'getFontsize',

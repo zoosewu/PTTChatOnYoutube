@@ -88,6 +88,18 @@ export function InitApp(chatcon, whitetheme, isstreaming, messageposter, dynamic
           }
         }), 1000);
         this.$store.dispatch('isStream', isstreaming);
+        if (!isstreaming) {
+          try {
+            const videoinfo = JSON.parse(document.getElementById('scriptTag').innerHTML);
+            if (reportmode) console.log("videoinfo", videoinfo);
+            const startDate = new Date(videoinfo.publication[0].startDate);
+            if (reportmode) console.log("startDate", startDate);
+            this.$store.dispatch('updateVideoStartDate', startDate);
+          }
+          catch (e) {
+            console.log(e);
+          }
+        }
 
         this.rootmsg["PTTState"] = data => { this.$store.dispatch('PTTState', data); };
       },

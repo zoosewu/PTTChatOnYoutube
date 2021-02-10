@@ -3,11 +3,27 @@
     <div class="ptt-chat-info d-flex flex-row" :style="infoStyle">
       <p :class="typeclass">{{ this.item.type }}</p>
       <p class="ptt-chat-id mr-2 mb-0 flex-grow-1">{{this.item.pttid }}</p>
-      <p class="ptt-chat-time mb-0">{{this.idState.timeH }}:{{this.idState.timem}}</p>
+      <p class="ptt-chat-time mb-0">{{this.timeH }}:{{this.timem}}</p>
     </div>
     <div>
-      <chat-item-msg :msg="item.msg" :style="msgStyle"></chat-item-msg>
+      <p class="ptt-chat-msg mb-0 mx-2" :style="msgStyle" v-html="item.msg" ref="p"></p>
     </div>
     <div :style="spaceStyle"> </div>
+  </div>
+</div>
+
+<div>
+  <div class="ptt-chat media px-3" style="background-color: rgba(128, 128, 128, 0); transition: all 2s ease 0s;">
+    <div class="media-body mw-100">
+      <div class="ptt-chat-info d-flex flex-row" style="font-size: 13.3333px; line-height: 16px;">
+        <p class="ptt-chat-type mr-2 mb-0">推 </p>
+        <p class="ptt-chat-id mr-2 mb-0 flex-grow-1">sarsman</p>
+        <p class="ptt-chat-time mb-0">03:58</p>
+      </div>
+      <div>
+        <p class="ptt-chat-msg mb-0 mx-2" style="font-size: 16px; line-height: 19.2px;">vegetable sticks ...?</p>
+      </div>
+      <div style="margin-bottom: 8px;"></div>
+    </div>
   </div>
 </div>

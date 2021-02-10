@@ -10,7 +10,6 @@ export const state = {
   log: {},
   firstChatTime: {},
   lastChatTime: {},
-  VStartTime: ["18", "00", "00", false],
   VStartDate: (() => { const t = new Date(); t.setHours(0); t.setMinutes(0); t.setSeconds(0); return t; })(),
   VPlayedTime: 0,
   VCurrentTime: new Date(),
@@ -57,10 +56,8 @@ export const mutations = {
     if (reportmode) console.log("UPDATELOG", log);
     state.log = log;
   },
-  [types.VIDEOSTARTTIME](state, videostarttime) {
-    state.VStartTime = videostarttime;
-  },
   [types.VIDEOSTARTDATE](state, videostartdate) {
+    console.trace('VIDEOSTARTDATE mutations', videostartdate);
     state.VStartDate = videostartdate;
   },
   [types.VIDEOPLAYEDTIME](state, videoplayedtime) {

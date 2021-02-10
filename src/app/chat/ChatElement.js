@@ -7,12 +7,24 @@ export let ChatElement = {
     msgStyle: { type: Object, required: true, },
     infoStyle: { type: Object, required: true, },
     spaceStyle: { type: Object, required: true, },
+    activeChat: { type: Boolean, required: true, },
+  },
+  methods: {
+    $_ChatElementMessage_GrayCheck() {
+      if (reportmode) console.log("GrayCheck", this.item, "id", this.item.id, "activeChat", this.activeChat, this.item, "id>activeChat", this.item.id > this.activeChat, "->", this.item.gray)
+      if (this.item.id > this.activeChat && !this.item.gray) this.$emit('updategray', this.item.id, true);
+      else if (this.item.id <= this.activeChat && this.item.gray) this.$emit('updategray', this.item.id, false);
+    },
+    $_ChatElementMessage_MoueseEnter(url) {
+      // console.log("MoueseEnter", url);
+      this.$store.dispatch('previewImage', url);
+    },
+    $_ChatElementMessage_MoueseLeave(url) {
+      // console.log("MoueseLeave", url);
+      this.$store.dispatch('previewImage', "");
+    },
   },
   computed: {
-    /*msg: function () {
-      var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-      return this.chat.msg.replace(exp, "<a class='ptt-chat-msg' href='$1' target='_blank' rel='noopener noreferrer'>$1</a>");
-    },*/
     timeH: function () { return paddingLeft(this.item.time.getHours(), + 2); },
     timem: function () { return paddingLeft(this.item.time.getMinutes(), +2); },
     typeclass: function () {
@@ -27,10 +39,18 @@ export let ChatElement = {
     },
     ...Vuex.mapGetters(['getDisablePushGray',])
   },
-  mounted() { console.log("mounted", this.item); },
-  updated: function () {
-    if (reportmode) console.log('updated, listIndex, chatIndex, msg', this.item.id, this.item.msg);
+  watch: {
+    activeChat: function () { this.$_ChatElementMessage_GrayCheck(); }
   },
+  mounted() {
+    this.$_ChatElementMessage_GrayCheck();
+    this.$nextTick(function () {
+      this.$refs.p.mouseEnter = this.$_ChatElementMessage_MoueseEnter;
+      this.$refs.p.mouseLeave = this.$_ChatElementMessage_MoueseLeave;
+      if (reportmode) console.log("mounted", this, this.$refs);
+    });
+  },
+  updated() { if (reportmode) console.log('updated, listIndex, chatIndex, msg', this.item.id, this.item.msg); },
   template: `<div class="ptt-chat media px-3" :style="bgc">
   <div class="media-body mw-100">
     <div class="ptt-chat-info d-flex flex-row" :style="infoStyle">
@@ -39,7 +59,7 @@ export let ChatElement = {
       <p class="ptt-chat-time mb-0">{{this.timeH }}:{{this.timem}}</p>
     </div>
     <div>
-      <chat-item-msg :msg="item.msg" :style="msgStyle"></chat-item-msg>
+      <p class="ptt-chat-msg mb-0 mx-2" :style="msgStyle" v-html="item.msg" ref="p"></p>
     </div>
     <div :style="spaceStyle"> </div>
   </div>
