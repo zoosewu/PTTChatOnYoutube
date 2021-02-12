@@ -92,7 +92,7 @@ export const actions = {
       chat.uid = state.post.AID + "_" + chat.id;
       chat.gray = !state.disablepushgray;
       chatlist.push(chat);
-      console.log("new Chat", chat, currpush);
+      if (reportmode) console.log("new Chat", chat, currpush);
     }
     //console.log("chatlist actions", chatlist);
     commit(types.UPDATECHAT, chatlist);

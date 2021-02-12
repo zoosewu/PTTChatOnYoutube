@@ -31,27 +31,29 @@ export let Chat = {
       if (this.allchats[index].gray != isgray) this.allchats[index].gray = isgray;
       else console.log("update gray error", index, this.allchats[index].gray, "->", isgray, this.allchats[index].msg);
     },
-    scrollToChat: function () {
-      if (reportmode) console.log("scrollToChat", this.lastactiveChat, this.activeChat, this.lastactiveChat !== this.activeChat);
-      if (this.lastactiveChat !== this.activeChat) { this.lastactiveChat = this.activeChat; }
-      if (reportmode) console.log("this.isAutoScroll", this.isAutoScroll, this.lastautoscrolltime + 50 < Date.now());
-      if (this.isAutoScroll && this.lastautoscrolltime + 50 < Date.now()) {
-        const list = this.$refs.chatmain;
-        const scroller = list.$refs.scroller;
-        const accumulator = this.activeChat > 0 ? scroller.sizes[this.activeChat - 1].accumulator : 0;
-        const clientHeight = list.$el.clientHeight;
-        let scroll = accumulator - clientHeight / 2;
-        if (scroll < 0) scroll = 0;
-        scroller.$el.scrollTo({
-          top: scroll,
-          behavior: ((Math.abs(scroller.$el.scrollTop - scroll) > clientHeight) ? 'auto' : 'smooth'),
-        });
-        // scroller.scrollToPosition(scroll);
-      }
-    },
     updateChat: function () {
       this.getCurrentChat();
       setTimeout(() => this.scrollToChat(), 10);
+    },
+    autoScrollCheck: function () {
+      if (reportmode) console.log("scrollToChat", this.lastactiveChat, this.activeChat, this.lastactiveChat !== this.activeChat, "this.isAutoScroll", this.isAutoScroll, this.lastautoscrolltime + 50 < Date.now());
+      if (this.lastactiveChat !== this.activeChat) { this.lastactiveChat = this.activeChat; }
+      if (this.isAutoScroll && this.lastautoscrolltime + 50 < Date.now()) {
+        this.scrollToChat();
+      }
+    },
+    scrollToChat: function () {
+      const list = this.$refs.chatmain;
+      const scroller = list.$refs.scroller;
+      const accumulator = this.activeChat > 0 ? scroller.sizes[this.activeChat - 1].accumulator : 0;
+      const clientHeight = list.$el.clientHeight;
+      let scroll = accumulator - clientHeight / 2;
+      if (scroll < 0) scroll = 0;
+      scroller.$el.scrollTo({
+        top: scroll,
+        behavior: ((Math.abs(scroller.$el.scrollTop - scroll) > clientHeight) ? 'auto' : 'smooth'),
+      });
+      // scroller.scrollToPosition(scroll);
     },
     getCurrentChat: function () {
       const chats = this.allchats;
@@ -68,11 +70,9 @@ export let Chat = {
         while (true) {
           while (this.activeChat > 0 && chats[this.activeChat] && chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()) {
             this.activeChat -= move;
-            //console.log("move activeChat to ", this.activeChat);
           }
           while (chats[this.activeChat + 1] && chats[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf()) {
             this.activeChat += move;
-            //console.log("move activeChat to ", this.activeChat);
           }
           if (move <= 1) break;
           move = move / 2
@@ -100,31 +100,12 @@ export let Chat = {
       list.addEventListener('scroll', e => { if (this.isAutoScroll) this.lastautoscrolltime = Date.now(); });
     },
   },
-  //chatelement methods
-  GrayCheck(item) {
-    if (reportmode) console.log("GrayCheck", item, "id", item.id, "activeChat", this.activeChat, item, "id>activeChat", item.id > this.activeChat, item.gray)
-    if (item.id > this.activeChat && !item.gray) this.$emit('updategray', item.id, true);
-    else if (item.id <= this.activeChat && item.gray) this.$emit('updategray', item.id, false);
-  },
-  timeH: function (item) { return paddingLeft(item.time.getHours(), + 2); },
-  timem: function (item) { return paddingLeft(item.time.getMinutes(), +2); },
-  typeclass: function (item) {
-    const typecolor = item.type === "推 " ? "ptt-chat-type" : "ptt-chat-type-n";
-    return typecolor + " mr-2 mb-0";
-  },
-  bgc: function (item) {
-    if (this.getDisablePushGray) return "";
-    const isUnchat = item.gray ? "0.25" : "0";
-    const color = "rgba(128, 128, 128, " + isUnchat + ")";
-    return { backgroundColor: color, transition: "2s" };
-  },
   computed: {
     allchats: function () {
       //console.log("allchats");
       if (this.newChatList !== this.lastChat) {
         if (this.lastpostaid !== this.post.AID) { this.lastpostaid = this.post.AID; this._allchats = []; }
         if (!this._allchats) this._allchats = [];
-        if (!this.isStream) this.newChatList.forEach(item => { item.gray = item.id > this.activeChat; });
         const new_allchats = this._allchats.concat(this.newChatList);
         // console.log("old _allchats", this._allchats, "newChatList", this.newChatList, "new_allchats", new_allchats);
         this._allchats = new_allchats;
@@ -143,13 +124,22 @@ export let Chat = {
       }
     },
     //chatelement computed
-    elMsgLineHeight: function () { return this.getFontsize * 1.2; },
-    elMsgStyle: function () { return { 'font-size': this.getFontsize + 'px', "line-height": this.elMsgLineHeight + 'px' }; },
-    elInfoStyle: function () { return { 'font-size': this.getFontsize / 1.2 + 'px', "line-height": this.getFontsize + 'px' }; },
-    elSpace: function () { return this.getChatSpace * this.getFontsize; },
-    elSpaceStyle: function () { return { 'margin-bottom': this.elSpace + 'px' }; },
+    elMsgLineHeight: function () {
+      return this.getFontsize * 1.2;
+    },
+    elMsgStyle: function () {
+      return { 'font-size': this.getFontsize + 'px', "line-height": this.elMsgLineHeight + 'px' };
+    },
+    elInfoStyle: function () {
+      return { 'font-size': this.getFontsize / 1.2 + 'px', "line-height": this.getFontsize + 'px' };
+    },
+    elSpace: function () {
+      return this.getChatSpace * this.getFontsize;
+    },
+    elSpaceStyle: function () {
+      return { 'margin-bottom': this.elSpace + 'px' };
+    },
     defaultElClientHeight: function () {
-      // console.log("defaultElClientHeight", this.elMsgLineHeight, this.getFontsize, this.elSpace, (+this.elMsgLineHeight + +this.getFontsize + +this.elSpace));
       return +this.elMsgLineHeight + +this.getFontsize + +this.elSpace;
     },
     ...Vuex.mapGetters([
@@ -164,7 +154,6 @@ export let Chat = {
     ])
   },
   created() {
-    //初始化聊天列表
     if (reportmode) this._allchats = testchat.list;//test
     else this._allchats = [];
     this.lastChat = [];

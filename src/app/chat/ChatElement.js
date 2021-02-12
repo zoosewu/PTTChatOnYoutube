@@ -11,7 +11,8 @@ export let ChatElement = {
   },
   methods: {
     $_ChatElementMessage_GrayCheck() {
-      if (reportmode) console.log("GrayCheck", this.item, "id", this.item.id, "activeChat", this.activeChat, this.item, "id>activeChat", this.item.id > this.activeChat, "->", this.item.gray)
+
+      if (reportmode) console.log("GrayCheck", this.item, "id", this.item.id, "activeChat", this.activeChat, this.item, "id>activeChat", this.item.id > this.activeChat, "->", this.item.gray, "getDisablePushGray", this.getDisablePushGray);
       if (this.item.id > this.activeChat && !this.item.gray) this.$emit('updategray', this.item.id, true);
       else if (this.item.id <= this.activeChat && this.item.gray) this.$emit('updategray', this.item.id, false);
     },
@@ -43,7 +44,7 @@ export let ChatElement = {
     activeChat: function () { this.$_ChatElementMessage_GrayCheck(); }
   },
   mounted() {
-    this.$_ChatElementMessage_GrayCheck();
+    if (!this.getDisablePushGray) this.$_ChatElementMessage_GrayCheck();
     this.$nextTick(function () {
       this.$refs.p.mouseEnter = this.$_ChatElementMessage_MoueseEnter;
       this.$refs.p.mouseLeave = this.$_ChatElementMessage_MoueseLeave;
