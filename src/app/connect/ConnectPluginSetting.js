@@ -48,9 +48,9 @@ export let ConnectPluginSetting = {
       column="6"> </plugin-setting-input>
   </div>
   <div class="form-row px-2">
-    <plugin-setting-input setting-name="Fontsize" description="字體尺寸(px)" default-value="18" max="30" min="9" column="6">
+    <plugin-setting-input setting-name="Fontsize" description="字體尺寸(px)" default-value="16" max="30" min="9" column="6">
     </plugin-setting-input>
-    <plugin-setting-input setting-name="ChatSpace" description="推文間隔(行)" default-value="0.8333" max="5" min="0"
+    <plugin-setting-input setting-name="ChatSpace" description="推文間隔(行)" default-value="0.5" max="5" min="0"
       column="6"> </plugin-setting-input>
   </div>
   <div class="form-row px-2" v-if="dynamicPlugin">
