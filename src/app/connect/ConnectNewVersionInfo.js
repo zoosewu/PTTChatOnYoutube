@@ -14,6 +14,11 @@ export let ConnectNewVersionInfo = {
   mounted() {
     let info;
     info = [
+      "實況紀錄現在會自動抓到開台時間了。",
+      "減少推文造成的卡頓問題。",
+    ];
+    this.versionInfos.push(info);
+    info = [
       "修正效能，現在不會越來越卡了。",
       "新增使用者自訂主題。",
       "修正holotools主題偵測失敗的問題。",
