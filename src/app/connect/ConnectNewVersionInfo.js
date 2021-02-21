@@ -14,6 +14,11 @@ export let ConnectNewVersionInfo = {
   mounted() {
     let info;
     info = [
+      `新增贊助訊息，喜歡這個套件歡迎<a id="other-btn-donations" href="https://qr.opay.tw/eZHf2" class="ptt-text" target="_blank" rel="noopener noreferrer" role="button"><u>點我贊助</u></a>。`,
+      "套件現階段還是不打算加入廣告。",
+    ];
+    this.versionInfos.push(info);
+    info = [
       "實況紀錄現在會自動抓到開台時間了。",
       "減少推文造成的卡頓問題。",
     ];
@@ -50,7 +55,7 @@ export let ConnectNewVersionInfo = {
     <p class="text-center my-1">完整說明請到PTT搜尋YT聊天室顯示PTT推文</p>
     <div v-for="versionInfo in versionInfos">
       <hr class="mt-1 mb-2">
-      <p class="mt-1 mb-0 px-1" v-for="info in versionInfo">{{info}}</p>
+      <p class="mt-1 mb-0 px-1" v-for="info in versionInfo" v-html="info"></p>
     </div>
   </div>
 </div>`,
