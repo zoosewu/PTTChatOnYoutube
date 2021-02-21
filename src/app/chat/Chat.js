@@ -33,7 +33,7 @@ export let Chat = {
     },
     updateChat: function () {
       this.getCurrentChat();
-      setTimeout(() => this.scrollToChat(), 10);
+      setTimeout(() => this.autoScrollCheck(), 10);
     },
     autoScrollCheck: function () {
       if (reportmode) console.log("scrollToChat", this.lastactiveChat, this.activeChat, this.lastactiveChat !== this.activeChat, "this.isAutoScroll", this.isAutoScroll, this.lastautoscrolltime + 50 < Date.now());
@@ -51,7 +51,7 @@ export let Chat = {
       if (scroll < 0) scroll = 0;
       scroller.$el.scrollTo({
         top: scroll,
-        behavior: ((Math.abs(scroller.$el.scrollTop - scroll) > clientHeight) ? 'auto' : 'smooth'),
+        behavior: ((Math.abs(scroller.$el.scrollTop - scroll) > clientHeight * 2) ? 'auto' : 'smooth'),
       });
       // scroller.scrollToPosition(scroll);
     },

@@ -21,30 +21,31 @@ export function InitPTT(messageposter) {
     screen: [],//自動 畫面資料
     screenstate: 0,//0 clear, 1 full 自動 畫面是否已更新
     wind: null,//自動
-    screenHaveText: function (reg) {
+    screenHaveText: function (regText) {
       let result = null;
-      //debug用
+      let reg = regText;
+      if (typeof regText.exec !== "function")
+        reg = new RegExp(regText, 'i');
       if (this.screenstate === 0) {
         const sElement = $("[data-type='bbsline']", this.wind.document);
         for (let i = 0; i < sElement.length; i++) {
           const txt = sElement[i].textContent;
-          if (result == null) result = new RegExp(reg).exec(txt);
+          if (result == null) result = new RegExp(reg, 'i').exec(txt);
           this.screen.push(txt);
+          if (reportmode) console.log("==screenHaveText", reg, result, txt);
         }
         this.screenstate = 1;
-        if (showalllog) console.log("==screenHaveText", reg, result);
         return result;
       }
       else {
         for (let i = 0; i < this.screen.length; i++) {
           const txt = this.screen[i];
-          result = new RegExp(reg).exec(txt);
+          result = new RegExp(reg, 'i').exec(txt);
+          if (reportmode) console.log("==screenHaveText", reg, result, txt);
           if (result != null) {
-            if (showalllog) console.log("==screenHaveText", reg, result);
             return result;
           }
         }
-        if (showalllog) console.log("==screenHaveText", reg, result);
         return null;
       }
     },
