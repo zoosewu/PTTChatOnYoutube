@@ -46,6 +46,12 @@
 #### CSS 
 - [ ] 確認套件在各網站的排版都正常且一樣
 
+## 贊助
+
+如果你覺得這個套件好用，歡迎[點我](https://qr.opay.tw/eZHf2)贊助或使用下方QR Code。
+
+[![](https://payment.opay.tw/Upload/Broadcaster/2303549/QRcode/QRCode_C65AA1C8A89CB53AF4D93286E44468BF.png "贊助連結")](https://qr.opay.tw/eZHf2)
+
 ## 本專案授權
 
 MIT License
