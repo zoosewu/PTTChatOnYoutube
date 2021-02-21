@@ -26,6 +26,8 @@ export let Other = {
       target="_blank" rel="noopener noreferrer" role="button">github</a>
     <a id="gfbtn" class="btn ptt-btnoutline m-2 " href="https://greasyfork.org/zh-TW/scripts/418469-youtubechatonptt"
       target="_blank" rel="noopener noreferrer" role="button">greasyfork</a>
+    <a id="other-btn-donations" class="btn ptt-btnoutline m-2 " href="https://qr.opay.tw/eZHf2"
+      target="_blank" rel="noopener noreferrer" role="button">贊助</a>
   </div>
   <h4 class="text-center mt-5 mb-1">聲明</h4>
   <hr class="mt-1 mb-2">
