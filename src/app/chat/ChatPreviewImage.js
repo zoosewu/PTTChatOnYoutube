@@ -20,10 +20,63 @@ export let ChatPreviewImage = {
       if (this.h === 0) this.h = 400;
       return this.h;
     },
+    getNormalImage(text) {
+      if (text.match(/\.(jpeg|jpg|gif|png)$/))
+        return text;
+      else
+        return null;
+    },
+    getImgurImage(text) {
+      const isImageURL = text.match(/\b(https?|ftp|file):\/\/imgur\.com\/(\w+)/);
+      if (isImageURL && isImageURL.length > 2)
+        return "https://i.imgur.com/" + isImageURL[2] + ".png";
+      else
+        return null;
+    },
+    getYoutubeImage(text) {
+      const videoURL = this.isYoutubeVideo(text);
+      if (videoURL !== null)
+        return 'https://i.ytimg.com/vi/' + videoURL + '/maxresdefault.jpg';
+      else
+        return null;
+    },
+    isYoutubeVideo(text) {
+      try {
+        var youtubeURL = new URL(text);
+        switch (youtubeURL.host) {
+          case "www.youtube.com":
+          case "m.youtube.com":
+            return this.parseYoutubePreviewImage(youtubeURL);
+          case "youtu.be":
+            return this.parseYoutubePreviewImageWithShortUrl(youtubeURL);
+          default:
+            return null;
+        }
+      }
+      catch (e) {
+        return null;
+      }
+    },
+    parseYoutubePreviewImage(youtubeURL) {
+      let youtubeURLArgs = youtubeURL.search.split("&");
+      for (let i = 0; i < youtubeURLArgs.length; i++) {
+        const isargvideo = this.parseYoutubeArgument(youtubeURLArgs[i]);
+        if (isargvideo !== null) return isargvideo;
+      }
+      return null;
+    },
+    parseYoutubeArgument(youtubeURLArg) {
+      const isYoutubeURLArgVideo = youtubeURLArg.match('v=(.+)');
+      if (isYoutubeURLArgVideo !== null) return isYoutubeURLArgVideo[1];
+      else return null;
+    },
+    parseYoutubePreviewImageWithShortUrl(url) {
+      return url.pathname.split("/")[1];
+    },
   },
   computed: {
     preview: function () {
-      return (this.previewImage.match(/\.(jpeg|jpg|gif|png)$/) != null) || (this.previewImage.match(/\b(https?|ftp|file):\/\/imgur\.com\/(\w+)/) != null);
+      return this.previewImageURL.match(/\.(jpeg|jpg|gif|png)$/) !== null;
     },
     className: function () {
       let classes = ["position-fixed", "my-2"];
@@ -52,12 +105,8 @@ export let ChatPreviewImage = {
       return styles;
     },
     previewImageURL: function () {
-      if (this.previewImage.match(/\.(jpeg|jpg|gif|png)$/)) return this.previewImage;
-      const result = this.previewImage.match(/\b(https?|ftp|file):\/\/imgur\.com\/(\w+)/);
-      if (result && result.length > 2) {
-        return "https://i.imgur.com/" + result[2] + ".png";
-      }
-      return "";
+      let url = this.previewImage;
+      return this.getNormalImage(url) || this.getImgurImage(url) || this.getYoutubeImage(url) || "";
     },
     ...Vuex.mapGetters(['previewImage']),
   },

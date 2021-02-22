@@ -208,8 +208,6 @@ export let Chat = {
   <chat-scroll-btn :is-auto-scroll="isAutoScroll" @autoscrollclick="EnableAutoScroll()"></chat-scroll-btn>
 </div>`,
 }
-
-
 let testchat = {
   l: [],
   get list() {
@@ -220,7 +218,23 @@ let testchat = {
         time: new Date(),
       };
       let msg = "";
-      let m = filterXSS(i + " 太神啦 https://youtu.be/23y5h8kQsv8?t=4510 太神啦 https://pbs.twimg.com/media/ErtC6XwVoAM_ktN.jpg 太神啦");
+      let m = i + "";
+      switch (i % 4) {
+        case 0:
+          m += filterXSS("太神啦 https://youtu.be/23y5h8kQsv8?t=4510 太神啦 https://www.youtube.com/watch?t=1237&v=Suab3SD1rbI&feature=youtu.be");
+          break;
+        case 1:
+          m += filterXSS("太神啦 https://pbs.twimg.com/media/ErtC6XwVoAM_ktN.jpg 太神啦 https://imgur.com/kFOAhnc");
+          break;
+        case 2:
+          m += filterXSS("太神啦 https://i.imgur.com/m8VTnyA.png 太神啦 https://m.youtube.com/watch?v=8p-JW2RtLoY&feature=youtu.be");
+          break;
+        case 3:
+          m += filterXSS("太神啦 https://hololive.jetri.co/#/watch ");
+          break;
+        default:
+          break;
+      }
       let result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])(.*)/ig.exec(m);
       let parsetime = 5;
       while (result && m !== "" && parsetime > 0) {
