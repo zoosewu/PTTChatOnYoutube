@@ -16,6 +16,7 @@ export let ConnectNewVersionInfo = {
     info = [
       `新增贊助訊息，喜歡這個套件歡迎<a id="other-btn-donations" href="https://qr.opay.tw/eZHf2" class="ptt-text" target="_blank" rel="noopener noreferrer" role="button"><u>點我贊助</u></a>。`,
       "套件現階段還是不打算加入廣告。",
+      "推文的Youtube連結現在也會顯示預覽圖了。",
     ];
     this.versionInfos.push(info);
     info = [
