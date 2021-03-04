@@ -27,7 +27,10 @@ export let Chat = {
   },
   methods: {
     updateGray: function (index, isgray) {
-      if (reportmode) console.log("update gray", index, this.allchats[index].gray, "->", isgray, this.allchats[index].msg);
+      if (reportmode) {
+        console.log("update gray", index, this.allchats[index]);
+        console.log("update gray", this.allchats[index].gray, "->", isgray, this.allchats[index].msg);
+      };
       if (this.allchats[index].gray != isgray) this.allchats[index].gray = isgray;
       else console.log("update gray error", index, this.allchats[index].gray, "->", isgray, this.allchats[index].msg);
     },
@@ -104,7 +107,7 @@ export let Chat = {
     allchats: function () {
       //console.log("allchats");
       if (this.newChatList !== this.lastChat) {
-        if (this.lastpostaid !== this.post.AID) { this.lastpostaid = this.post.AID; this._allchats = []; }
+        if (this.lastpostaid !== this.post.AID) { this.lastpostaid = this.post.AID; this._allchats = []; console.log("allchats new post"); }
         if (!this._allchats) this._allchats = [];
         const new_allchats = this._allchats.concat(this.newChatList);
         // console.log("old _allchats", this._allchats, "newChatList", this.newChatList, "new_allchats", new_allchats);
@@ -171,8 +174,7 @@ export let Chat = {
     //定時抓新聊天
     this.intervalChat = window.setInterval(() => {
       if (this.isStream && this.PTTState > 0 && Date.now() > this.nextUpdateTime) {
-        this.nextUpdateTime = Date.now() + 5 * 365 * 24 * 60 * 60 * 1000;
-        //console.log("updateChat", this.isStream, Date.now(), this.nextUpdateTime);
+        this.nextUpdateTime = Date.now() + 10 * 60 * 1000;
         this.msg.PostMessage("getPushByLine", { AID: this.post.AID, board: this.post.board, startline: this.post.lastendline });
       }
     }, 340);

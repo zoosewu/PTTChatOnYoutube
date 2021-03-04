@@ -17,6 +17,9 @@ export let ConnectNewVersionInfo = {
       `新增贊助訊息，喜歡這個套件歡迎<a id="other-btn-donations" href="https://qr.opay.tw/eZHf2" class="ptt-text" target="_blank" rel="noopener noreferrer" role="button"><u>點我贊助</u></a>。`,
       "套件現階段還是不打算加入廣告。",
       "推文的Youtube連結現在也會顯示預覽圖了。",
+      "新增按鈕一鍵重啟PTT。",
+      "修正換串時不會換新聊天串的問題",
+      "修正連續換串(第三次以上)會壞掉的問題"
     ];
     this.versionInfos.push(info);
     info = [
@@ -35,18 +38,6 @@ export let ConnectNewVersionInfo = {
       "支援niji-mado。",
       "登入失敗可開啟刪除重複登入的功能。",
       "自訂套件寬度(特定網站可用)",
-    ];
-    this.versionInfos.push(info);
-    info = [
-      "支援Twitch。",
-      "推文內的連結可以直接點開，圖片可以直接預覽。",
-      "移除前三行的文章可以正常讀取，",
-      "例如:#1W00ZXmh (LoL)。",
-    ];
-    this.versionInfos.push(info);
-    info = [
-      "新增套件長度、推文更新、字體尺寸、推文間隔。",
-      "套件長度最大值現在可以到850。",
     ];
     this.versionInfos.push(info);
   },

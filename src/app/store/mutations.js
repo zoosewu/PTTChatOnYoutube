@@ -18,6 +18,7 @@ export const state = {
   PTTState: 0,
   isStream: true,
   previewImg: "",
+  InstancePTTID: 1,
   //checkbox
   enablesetnewpush: GM_getValue(types.ENABLESETNEWPUSH, false),
   disablepushgray: GM_getValue(types.DISABLEPUSHGRAY, false),
@@ -47,9 +48,11 @@ export const mutations = {
     state.alert = alert;
   },
   [types.UPDATEPOST](state, post) {
+    if (reportmode) console.log("UPDATEPOST", post);
     state.post = post;
   },
   [types.UPDATECHAT](state, chatlist) {
+    if (reportmode) console.log("UPDATECHAT", chatlist);
     state.chatlist = chatlist;
   },
   [types.UPDATELOG](state, log) {
@@ -81,6 +84,10 @@ export const mutations = {
   [types.PREVIEWIMG](state, src) {
     state.previewImg = src;
   },
+  [types.REINSTANCEPTT](state) {
+    state.InstancePTTID++;
+  },
+
   //checkbox
   [types.DELETEOTHERCONNECT](state, deleteotherconnect) {
     GM_setValue(types.DELETEOTHERCONNECT, deleteotherconnect);
