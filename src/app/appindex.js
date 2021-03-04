@@ -3,7 +3,6 @@ import { PTTAppBtn } from './PTTAppBtn.js';
 import { store } from './store/store.js';
 export function InitApp(chatcon, whitetheme, isstreaming, messageposter, dynamicPlugin = false) {
   //generate crypt key everytime;
-  cryptkey = GenerateCryptKey();
   InitChatApp(chatcon);
   function InitChatApp(cn) {
     /*-----------------------------------preInitApp-----------------------------------*/

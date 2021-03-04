@@ -16,6 +16,7 @@ export const types = {
   PTTSTATE: "PTTSTATE",
   ISSTREAM: "ISSTREAM",
   PREVIEWIMG: "PREVIEWIMG",
+  REINSTANCEPTT: "REINSTANCEPTT",
   //checkbox
   ENABLESETNEWPUSH: "EnableSetNewPush",
   DISABLEPUSHGRAY: "DisablePushGray",

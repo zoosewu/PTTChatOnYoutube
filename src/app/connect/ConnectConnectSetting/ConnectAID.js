@@ -22,11 +22,11 @@ export let ConnectAID = {
           this.msg.PostMessage("getPushByLine", { AID: result[1], board: result[2], startline: this.post.lastendline });
         }
         else if (this.isStream) {//實況取得最近的推文
-          if (reportmode) console.log("getPush same recent", result[1], result[2], 200);
+          if (reportmode) console.log("getPush recent", result[1], result[2], 200);
           this.msg.PostMessage("getPushByRecent", { AID: result[1], board: result[2], recent: 200 });
         }
         else {//實況紀錄取得所有推文
-          console.log("getPush same total", result[1], result[2], 0);
+          console.log("getPush total", result[1], result[2], 0);
           this.msg.PostMessage("getPushByLine", { AID: result[1], board: result[2], startline: 0 });
         }
         this.$store.dispatch('pageChange', true);

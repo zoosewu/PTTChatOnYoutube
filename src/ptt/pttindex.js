@@ -1,5 +1,6 @@
 
 export function InitPTT(messageposter) {
+  const SkipCommand = true;
   const msg = messageposter;
   //get crypt key;
   cryptkey = GM_getValue("cryptkey", Math.random());
@@ -32,7 +33,7 @@ export function InitPTT(messageposter) {
           const txt = sElement[i].textContent;
           if (result == null) result = new RegExp(reg, 'i').exec(txt);
           this.screen.push(txt);
-          if (reportmode) console.log("==screenHaveText", reg, result, txt);
+          // if (reportmode) console.log("==screenHaveText", reg, result, txt);
         }
         this.screenstate = 1;
         return result;
@@ -41,7 +42,7 @@ export function InitPTT(messageposter) {
         for (let i = 0; i < this.screen.length; i++) {
           const txt = this.screen[i];
           result = new RegExp(reg, 'i').exec(txt);
-          if (reportmode) console.log("==screenHaveText", reg, result, txt);
+          // if (reportmode) console.log("==screenHaveText", reg, result, txt);
           if (result != null) {
             return result;
           }
@@ -79,12 +80,21 @@ export function InitPTT(messageposter) {
         reg: /您想刪除其他重複登入的連線嗎/, input: '', callback: () => {
           const inserttxt = PTT.DeleteOtherConnect ? 'y\n' : 'n\n';
           insertText(inserttxt);
+          return SkipCommand;
         }
       },
+      { reg: /您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n' },
       {
-        reg: /您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n'
+        reg: /按任意鍵繼續/, input: '', callback: () => {
+          result = PTT.screenHaveText(/(找不到這個文章代碼\(AID\)，可能是文章已消失，或是你找錯看板了|這一篇文章值)/)
+          if (result)
+            return !SkipCommand;
+          else {
+            insertText('\n');
+            return SkipCommand;
+          }
+        }
       },
-      { reg: /按任意鍵繼續/, input: '\n' },
       { reg: /動畫播放中\.\.\./, input: 'q' },
       {
         reg: /系統過載, 請稍後再來\.\.\./, input: '', callback: () => {
@@ -92,6 +102,7 @@ export function InitPTT(messageposter) {
           if (PTT.controlstate === 1) {
             PTT.unlock();
             msg.PostMessage("alert", { type: 0, msg: "系統過載, 請稍後再來..." });
+            return SkipCommand;
           }
         }, args: []
       },
@@ -126,8 +137,8 @@ export function InitPTT(messageposter) {
     endline: 3,
     percent: 0,
     samepost: false,
-    isgotopost: false,
     haveNormalTitle: false,
+    enteredAID: false,
   }
   let serverfull = false;
   const insertText = (() => {
@@ -168,9 +179,10 @@ export function InitPTT(messageposter) {
         insertText(cmd.input);
         if (typeof cmd.callback !== "undefined") {
           const args = cmd.args ? cmd.args : [];
-          cmd.callback(...args);
+          return cmd.callback(...args);
         }
-        return true;
+        else
+          return true;
       }
     }
     return false;
@@ -268,19 +280,41 @@ export function InitPTT(messageposter) {
     return res;
   }
 
-  function gotoPost() { insertText("NPP#" + PTTPost.AID + "\n\n"); PTTPost.isgotopost = true; }
+  function gotoPost() {
+    if (PTTPost.enteredAID) {
+      insertText("r");
+      PTTPost.enteredAID = false;
+    }
+    else {
+      insertText("NPP#" + PTTPost.AID + "\n");
+      PTTPost.enteredAID = true;
+    }
+  }
   function PostCheck() {
     const res = { pass: true, callback: gotoPost }
-    if (PTT.pagestate === 2) res.pass = false;
+    if (PTT.pagestate === 2) {
+      if (!PTTPost.enteredAID)
+        res.pass = false;
+      else {
+        if (PTT.screenHaveText(/找不到這個文章代碼\(AID\)，可能是文章已消失，或是你找錯看板了/)) {
+          msg.PostMessage("alert", { type: 0, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
+          if (reportmode) console.log("文章AID錯誤，文章已消失或是你找錯看板了", PTT.pagestate, PTT, PTTPost);
+          PTT.unlock();
+          return;
+        }
+        else {
+          res.pass = false;
+        }
+      }
+    }
     else if (PTT.pagestate === 1) console.log("==PostCheck error, PTT.pagestate == 1.");
     return res;
   }
 
-  function backtoboard() { insertText("q"); }
+  function backtoboard() { insertText("qP"); }
   function PotsTitleCheck() {
     const res = { pass: true, callback: backtoboard }
     if (PTT.pagestate === 3) {
-      PTTPost.isgotopost = false;
       const reg = / 標題 +(.+)/;
       const posttitle = PTT.screenHaveText(reg);
       let title = "";
@@ -290,8 +324,6 @@ export function InitPTT(messageposter) {
         title = posttitle[1].replace(/\s+$/g, ""); //抓一般標題
       }
       else for (let i = 0; i < 5 && i < PTT.screen.length; i++) title += PTT.screen[i]; //抓前幾行
-
-
       if (PTTPost.samepost) {
         if (title === PTTPost.title) { }
         else { res.pass = false; }
@@ -384,8 +416,7 @@ export function InitPTT(messageposter) {
         if (targetline < 3) targetline = 3;
         //console.log("==GetRecentLine, TotalLine, GotoLline", line[1], targetline);
         PTTPost.endline = targetline;
-        if (PTT.pagestate === 4) insertText("q");//insertText(PTTPost.endline + ".\n");
-        else if (PTT.pagestate === 3) insertText("q");
+        if (PTT.pagestate === 4 || PTT.pagestate === 3) insertText("qP");//insertText(PTTPost.endline + ".\n");
         res.pass = true;
       }
     }
@@ -442,11 +473,6 @@ export function InitPTT(messageposter) {
   }
   //------------------------task--------------------------------
   function RunTask(tasklist, finishBehavior) {
-    if (PTTPost.isgotopost && PTT.pagestate === 2) {
-      msg.PostMessage("alert", { type: 0, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
-      if (reportmode) console.log("文章AID錯誤，文章已消失或是你找錯看板了", PTTPost.isgotopost, PTT.pagestate, PTT, PTTPost);
-      PTT.unlock();
-    }
     for (let i = 0; i < tasklist.length; i++) {
       const result = tasklist[i]();
       if (result.pass === false) {
@@ -512,7 +538,6 @@ export function InitPTT(messageposter) {
         PTTPost.pushes = [];
         PTTPost.samepost = true;
         PTTPost.endline = startline;
-        PTTPost.isgotopost = true;
         if (reportmode) console.log("Get same post's push.", bname, PTTPost.board, pAID, PTTPost.AID);
       }
       else {
@@ -526,8 +551,8 @@ export function InitPTT(messageposter) {
           endline: startline,
           percent: 0,
           samepost: false,
-          isgotopost: false,
           haveNormalTitle: false,
+          enteredAID: false,
         }
         if (reportmode) console.log("Get new post's push.", bname, PTTPost.board, pAID, PTTPost.AID);
       }
@@ -536,11 +561,12 @@ export function InitPTT(messageposter) {
         else insertText("m");//隨意切畫面
       }
       else if (PTT.pagestate === 2) insertText("P");//切下一頁
-      else if (PTT.pagestate === 3 || !PTTPost.isgotopost) {
-        PTTPost.isgotopost = false;
-        insertText("q");//在標題或是其他文章就退出
+      else {//PTT.pagestate === 3 || 4
+        if (!PTTPost.samepost) {
+          insertText("qP");//在標題或是其他文章就退出
+        }
+        else insertText("qr");//相同文章直接進入標題
       }
-      else insertText("q\n");
       PTT.commands.add(/.*/, "", task);
     }
     else if (PTT.screenstate === -1) {

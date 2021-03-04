@@ -36,9 +36,9 @@ export const actions = {
     }
     if (postdata.pushes.length > 0) {
       newpost.pushcount += postdata.pushes.length;
-      commit(types.UPDATEPOST, newpost);
-      dispatch('updateChat', postdata.pushes);
     }
+    commit(types.UPDATEPOST, newpost);
+    dispatch('updateChat', postdata.pushes);
     //console.log("state.pageChange", state.pageChange);
     if (state.pageChange) {
       dispatch('gotoChat', true);
@@ -124,7 +124,7 @@ export const actions = {
   PTTState: ({ commit }, pttstate) => { commit(types.PTTSTATE, pttstate); },
   isStream: ({ commit }, isStream) => { commit(types.ISSTREAM, isStream); },
   previewImage: ({ commit }, src) => { commit(types.PREVIEWIMG, src); },
-
+  reInstancePTT: ({ commit }) => commit(types.REINSTANCEPTT),
 
   //checkbox
   setEnableSetNewPush: ({ commit }, value) => { /*console.log("EnableSetNewPush action",value);*/commit(types.ENABLESETNEWPUSH, value); },
