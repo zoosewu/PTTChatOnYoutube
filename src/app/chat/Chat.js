@@ -232,10 +232,14 @@ let testchat = {
           m += filterXSS("太神啦 https://i.imgur.com/m8VTnyA.png 太神啦 https://m.youtube.com/watch?v=8p-JW2RtLoY&feature=youtu.be");
           break;
         case 3:
-          m += filterXSS("太神啦 https://hololive.jetri.co/#/watch ");
+          m += filterXSS("太神啦 https://hololive.jetri.co/#/watch #1WHqSb2l (C_Chat)");
           break;
         default:
           break;
+      }
+      const haveAID = /(.*)(#.{8} \(.+\))(.*)/.exec(m);
+      if (haveAID && haveAID.length > 3) {
+        m = haveAID[1] + '<u onclick="this.parentNode.gotoPost(`' + haveAID[2] + '`)" style="cursor: pointer;">' + haveAID[2] + "</u>" + haveAID[3];
       }
       let result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])(.*)/ig.exec(m);
       let parsetime = 5;

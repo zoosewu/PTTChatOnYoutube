@@ -11,18 +11,19 @@ export let ChatElement = {
   },
   methods: {
     $_ChatElementMessage_GrayCheck() {
-
       if (reportmode) console.log("GrayCheck", this.item, "id", this.item.id, "activeChat", this.activeChat, this.item, "id>activeChat", this.item.id > this.activeChat, "->", this.item.gray, "getDisablePushGray", this.getDisablePushGray);
       if (this.item.id > this.activeChat && !this.item.gray) this.$emit('updategray', this.item.id, true);
       else if (this.item.id <= this.activeChat && this.item.gray) this.$emit('updategray', this.item.id, false);
     },
     $_ChatElementMessage_MoueseEnter(url) {
-      // console.log("MoueseEnter", url);
       this.$store.dispatch('previewImage', url);
     },
     $_ChatElementMessage_MoueseLeave(url) {
-      // console.log("MoueseLeave", url);
       this.$store.dispatch('previewImage', "");
+    },
+    $_ChatElementMessage_GotoPost(aid) {
+      console.log("GotoPost");
+      this.$store.dispatch("gotoPost", aid);
     },
   },
   computed: {
@@ -48,6 +49,7 @@ export let ChatElement = {
     this.$nextTick(function () {
       this.$refs.p.mouseEnter = this.$_ChatElementMessage_MoueseEnter;
       this.$refs.p.mouseLeave = this.$_ChatElementMessage_MoueseLeave;
+      this.$refs.p.gotoPost = this.$_ChatElementMessage_GotoPost;
       if (reportmode) console.log("mounted", this, this.$refs);
     });
   },

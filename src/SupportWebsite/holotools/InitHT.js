@@ -4,7 +4,6 @@ import { BootStrap } from '../../BootStrap.js';
 import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver, clone, ThemeCheck } from '../../library.js';
 
 export function InitHT(messageposter) {
-  const msg = messageposter;
   //Check Theme
   let WhiteTheme = ThemeCheck('html', '250, 250, 250');
 
@@ -40,7 +39,7 @@ export function InitHT(messageposter) {
       defaultVideoHandler.append(defaultVideo);
       fakeparent.append(PTTChatHandler);
       $(`.reopen-toolbar`).css({ "z-index": "302" });
-      InitApp(PTTChatHandler, WhiteTheme, true, msg, true);
+      InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true);
       tryinsholotools = -10;
     }
     else {
