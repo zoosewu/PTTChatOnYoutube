@@ -4,7 +4,6 @@ import { BootStrap } from '../../BootStrap.js';
 import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver, clone, ThemeCheck } from '../../library.js';
 
 export function InitTwitch(messageposter) {
-  const msg = messageposter;
   //Check Theme
   let WhiteTheme = ThemeCheck('body', 'rgb(247, 247, 248)');
 
@@ -21,7 +20,7 @@ export function InitTwitch(messageposter) {
       if (PTTApp.length > 0) { }
       else {
         if (reportmode) console.log("InitApp");
-        InitApp(parent, WhiteTheme, true, msg);
+        InitApp(parent, WhiteTheme, true, messageposter);
       }
     }
   }

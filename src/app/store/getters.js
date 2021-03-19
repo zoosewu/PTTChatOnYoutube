@@ -1,6 +1,7 @@
 export const getters = {
   getCount: state => { return state.count },
   newAlert: state => { return state.alert },
+  gotoAID: state => { return state.aid; },
   log: state => { return state.log },
   post: state => { return state.post },
   newChatList: state => { return state.chatlist },
