@@ -23,12 +23,14 @@ export const state = {
   enablesetnewpush: GM_getValue(types.ENABLESETNEWPUSH, false),
   disablepushgray: GM_getValue(types.DISABLEPUSHGRAY, false),
   deleteotherconnect: GM_getValue(types.DELETEOTHERCONNECT, false),
+  enableblacklist: GM_getValue(types.ENABLEBLACKLIST, false),
   //input value
   pluginHeight: GM_getValue(types.PLUGINHEIGHT, -1),
   pushInterval: GM_getValue(types.PUSHINTERVAL, -1),
   chatFontsize: GM_getValue(types.CHATFONTSIZE, -1),
   chatSpace: GM_getValue(types.CHATSPACE, -1),
   pluginWidth: GM_getValue(types.PLUGINWIDTH, -1),
+  blacklist: GM_getValue(types.BLACKLIST, null),
   //dropdown
   theme: GM_getValue(types.THEME, -1),
   themeColorBG: GM_getValue(types.THEMECOLORBG, -1),
@@ -104,6 +106,10 @@ export const mutations = {
     GM_setValue(types.DISABLEPUSHGRAY, disable);
     state.disablepushgray = disable;
   },
+  [types.ENABLEBLACKLIST](state, enable) {
+    GM_setValue(types.ENABLEBLACKLIST, enable);
+    state.enableblacklist = enable;
+  },
   //input value
   [types.PLUGINHEIGHT](state, height) {
     GM_setValue(types.PLUGINHEIGHT, height);
@@ -124,6 +130,10 @@ export const mutations = {
   [types.PLUGINWIDTH](state, width) {
     GM_setValue(types.PLUGINWIDTH, width);
     state.pluginWidth = width;
+  },
+  [types.BLACKLIST](states, list) {
+    GM_setValue(types.BLACKLIST, list);
+    state.blacklist = list;
   },
   //dropdown
   [types.THEME](state, theme) {

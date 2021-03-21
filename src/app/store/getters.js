@@ -15,12 +15,14 @@ export const getters = {
   getEnableSetNewPush: state => {/*console.log("EnableSetNewPush getter",state.enablesetnewpush);*/ return state.enablesetnewpush; },
   getDisablePushGray: state => { return state.disablepushgray; },
   getDeleteOtherConnect: state => { return state.deleteotherconnect; },
+  getEnableBlacklist: state => { return state.enableblacklist},
   //input value
   getPluginHeight: state => { return state.pluginHeight },
   getFontsize: state => { return state.chatFontsize; },
   getChatSpace: state => { return state.chatSpace; },
   getPushInterval: state => { return state.pushInterval; },
   getPluginWidth: state => { return state.pluginWidth; },
+  getBlacklist: state => { return state.blacklist},
   //dropdown
   getTheme: state => { return state.theme; },
   getThemeColorBG: state => { return state.themeColorBG; },

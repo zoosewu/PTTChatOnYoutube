@@ -110,6 +110,16 @@ export const actions = {
       chat.id = existpush + index;
       chat.uid = state.post.AID + "_" + chat.id;
       chat.gray = !state.disablepushgray;
+      if (state.enableblacklist){
+        list = state.blacklist.split('\n');
+        for (let index = 0; index < list.length; index++){
+          if(chat.pttid == list[index]) {
+            chat.pttid = "隱藏的使用者";
+            chat.msg = "";
+            chat.type="→ ";
+          }
+        }
+      }
       chatlist.push(chat);
       if (reportmode) console.log("new Chat", chat, currpush);
     }
@@ -149,12 +159,14 @@ export const actions = {
   setEnableSetNewPush: ({ commit }, value) => { /*console.log("EnableSetNewPush action",value);*/commit(types.ENABLESETNEWPUSH, value); },
   setDisablePushGray: ({ commit }, value) => { commit(types.DISABLEPUSHGRAY, value); },
   setDeleteOtherConnect: ({ commit }, value) => { commit(types.DELETEOTHERCONNECT, value); },
+  setEnableBlacklist: ({ commit }, value) => { commit(types.ENABLEBLACKLIST, value); },
   //input value
   setPluginHeight: (context, value) => { context.commit(types.PLUGINHEIGHT, value); },
   setFontsize: ({ commit }, value) => { commit(types.CHATFONTSIZE, value); },
   setChatSpace: ({ commit }, value) => { commit(types.CHATSPACE, value); },
   setPushInterval: ({ commit }, value) => { commit(types.PUSHINTERVAL, value); },
   setPluginWidth: ({ commit }, value) => { commit(types.PLUGINWIDTH, value); },
+  setBlacklist: ({ commit }, value) => { commit(types.BLACKLIST, value); },
   //dropdown
   setTheme: ({ commit }, value) => { commit(types.THEME, value); },
   setThemeColorBG: ({ commit }, value) => { commit(types.THEMECOLORBG, value); },

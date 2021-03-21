@@ -22,12 +22,14 @@ export const types = {
   ENABLESETNEWPUSH: "EnableSetNewPush",
   DISABLEPUSHGRAY: "DisablePushGray",
   DELETEOTHERCONNECT: "DeleteOtherConnect",
+  ENABLEBLACKLIST: "EnableBlacklist",
   //input value
   PLUGINHEIGHT: 'PluginHeight',
   CHATFONTSIZE: "Fontsize",
   CHATSPACE: "ChatSpace",
   PUSHINTERVAL: "PushInterval",
   PLUGINWIDTH: "PluginWidth",
+  BLACKLIST: "Blacklist",
   //dropdown
   THEME: "Theme",
   THEMECOLORBG: "ThemeColorBG",
