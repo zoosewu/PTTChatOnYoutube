@@ -110,13 +110,14 @@ export const actions = {
       chat.id = existpush + index;
       chat.uid = state.post.AID + "_" + chat.id;
       chat.gray = !state.disablepushgray;
-      if (state.enableblacklist){
-        list = state.blacklist.split('\n');
-        for (let index = 0; index < list.length; index++){
-          if(chat.pttid == list[index]) {
+      if (state.enableblacklist) {
+        let list = state.blacklist.split('\n');
+        let id = chat.pttid.toLowerCase();
+        for (let index = 0; index < list.length; index++) {
+          if (id == list[index]) {
             chat.pttid = "隱藏的使用者";
             chat.msg = "";
-            chat.type="→ ";
+            chat.type = "→ ";
           }
         }
       }

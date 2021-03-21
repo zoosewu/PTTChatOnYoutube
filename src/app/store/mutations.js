@@ -132,8 +132,9 @@ export const mutations = {
     state.pluginWidth = width;
   },
   [types.BLACKLIST](states, list) {
-    GM_setValue(types.BLACKLIST, list);
-    state.blacklist = list;
+    const l = list.toLowerCase();
+    GM_setValue(types.BLACKLIST, l);
+    state.blacklist = l;
   },
   //dropdown
   [types.THEME](state, theme) {
