@@ -4,7 +4,7 @@ import { types } from './mutations_type.js';
 export const state = {
   count: 0,
   alert: { type: 0, msg: "" },
-  msg: {},
+  aid: "",
   post: { AID: "", board: "", title: "", date: (() => { const t = new Date(); t.setHours(0); t.setMinutes(0); t.setSeconds(0); return t; })(), lastendline: 0, lastpushtime: new Date(), pushcount: 0, nowpush: 0, gettedpost: false, },
   chatlist: [],
   log: {},
@@ -48,6 +48,9 @@ export const mutations = {
   },
   [types.ALERT](state, alert) {
     state.alert = alert;
+  },
+  [types.GOTOPOST](state, aid) {
+    state.aid = aid;
   },
   [types.UPDATEPOST](state, post) {
     if (reportmode) console.log("UPDATEPOST", post);

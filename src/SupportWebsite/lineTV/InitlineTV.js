@@ -3,7 +3,6 @@ import { BootStrap } from '../../BootStrap.js';
 import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver, clone, ThemeCheck } from '../../library.js';
 
 export function InitlineTV(messageposter) {
-  const msg = messageposter;
   let WhiteTheme = true;
   //Check Theme
   //setTimeout(() => { WhiteTheme = ThemeCheck('mat-drawer-container', 'rgb(250, 250, 250)'); }, 100);
@@ -26,7 +25,7 @@ export function InitlineTV(messageposter) {
       const defaultVideoHandler = $(`<div id="videohandler" style="flex:1 1 auto;"></div>`);
       const PTTChatHandler = $(`<div id="pttchatparent" class="p-0 d-flex" style="flex:0 0 ` + pluginwidth + `px;position:relative;"></div>`);
       defaultVideo.append(PTTChatHandler);
-      InitApp(PTTChatHandler, WhiteTheme, true, msg, true);
+      InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true);
       tryinsholotools = -10;
     }
     else {
@@ -42,7 +41,7 @@ export function InitlineTV(messageposter) {
       const headerspace = $(".hubHeader.miniHub")[0].clientHeight;
       const PTTChatHandler = $(`<div id="pttchatparent" class="p-0" style="width: ` + pluginwidth + `px;position:fixed;right:0px;top:` + headerspace + `px;"></div>`);
       parent.append(PTTChatHandler);
-      InitApp(PTTChatHandler, WhiteTheme, true, msg, true);
+      InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true);
       tryinsholotools = -10;
     }
     else {
@@ -64,7 +63,7 @@ export function InitlineTV(messageposter) {
       fakeparent.append(defaultVideoHandler);
       defaultVideoHandler.append(defaultVideo);
       fakeparent.append(PTTChatHandler);
-      InitApp(PTTChatHandler, WhiteTheme, true, msg, true);
+      InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true);
       tryinsholotools = -10;
     }
     else {

@@ -565,7 +565,12 @@ export function InitPTT(messageposter) {
         if (!PTTPost.samepost) {
           insertText("qP");//在標題或是其他文章就退出
         }
-        else insertText("qr");//相同文章直接進入標題
+        else {
+          if (PTT.screenHaveText(/目前顯示: 第 01~/))
+            insertText("q");//原本就在第一頁則直接退出
+          else
+            insertText("qr");//相同文章直接進入標題
+        }
       }
       PTT.commands.add(/.*/, "", task);
     }

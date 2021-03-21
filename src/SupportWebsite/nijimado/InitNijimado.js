@@ -3,7 +3,6 @@ import { BootStrap } from '../../BootStrap.js';
 import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver, clone, ThemeCheck } from '../../library.js';
 
 export function InitNijimado(messageposter) {
-  const msg = messageposter;
   //Check Theme
   let WhiteTheme = ThemeCheck('mat-drawer-container', 'rgb(250, 250, 250)');
 
@@ -28,7 +27,7 @@ export function InitNijimado(messageposter) {
       defaultVideoHandler.append(defaultVideo);
       fakeparent.append(PTTChatHandler);
       $(`.reopen-toolbar`).css({ "z-index": "302" });
-      InitApp(PTTChatHandler, WhiteTheme, true, msg, true);
+      InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true);
       tryinsholotools = -10;
     }
     else {

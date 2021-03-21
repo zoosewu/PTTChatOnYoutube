@@ -5,6 +5,20 @@ export const actions = {
   actionIncrease: ({ commit }) => { console.log('actionIncrease'); commit(types.INCREASE); },
   actionDecrease: ({ commit }) => { console.log('actionDecrease'); commit(types.DECREASE); },
   Alert: (context, alertobject) => { context.commit(types.ALERT, alertobject); },
+  gotoPost: ({ dispatch, commit, state }, aid) => {
+    const result = /#(.+) \((.+)\)/.exec(aid);
+    if (!result || result.length <= 2) {
+      dispatch('Alert', { type: 0, msg: "文章AID格式錯誤，請重新輸入。" });
+    }
+    else if (state.PTTState < 1) {
+      dispatch('Alert', { type: 0, msg: "PTT尚未登入，請先登入。" });
+    }
+    else {
+      GM_setValue("PostAID", aid);
+      dispatch('pageChange', true);
+      commit(types.GOTOPOST, aid);
+    }
+  },
   updateLog: (context, log) => {
     if (!Array.isArray(log)) context.commit(types.UPDATELOG, log);
     else for (let i = 0; i < log.length; i++) context.commit(types.UPDATELOG, log[i]);
@@ -75,6 +89,11 @@ export const actions = {
       // chat.msg = currpush.content;
       let msg = "";
       let m = filterXSS(currpush.content);
+      const haveAID = /(.*)(#.{8} \(.+\))(.*)/.exec(m);
+      if (haveAID && haveAID.length > 3) {
+        m = haveAID[1] + '<u onclick="this.parentNode.gotoPost(`' + haveAID[2] + '`)" style="cursor: pointer;">' + haveAID[2] + "</u>" + haveAID[3];
+        console.log(haveAID[1] + '<u onclick="this.parentNode.gotoPost(' + haveAID[2] + ')">' + haveAID[2] + "</u>" + haveAID[3]);
+      }
       let result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])(.*)/ig.exec(m);
       let parsetime = 5;
       while (result && m !== "" && parsetime > 0) {

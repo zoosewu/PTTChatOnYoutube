@@ -3,7 +3,6 @@ import { BootStrap } from '../../BootStrap.js';
 import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver, clone, ThemeCheck } from '../../library.js';
 
 export function Initblank(messageposter) {
-  const msg = messageposter;
   let WhiteTheme = true;
   //Check Theme
 
@@ -15,5 +14,5 @@ export function Initblank(messageposter) {
   container.setAttribute("style", "width:" + pluginwidth + "px;height:800px;");
   Body.prepend(container);
   //const blankcontainer = document.getElementById(`container`);
-  InitApp([container], WhiteTheme, true, msg, true);
+  InitApp([container], WhiteTheme, true, messageposter, true);
 }

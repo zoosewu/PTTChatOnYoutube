@@ -4,6 +4,7 @@ export const types = {
   PTTID: "PTTID",
   POSTAID: "LastPostAID",
   ALERT: "Alert",
+  GOTOPOST: "GOTOPOST",
   PUSHDATA: "PushData",
   UPDATEPOST: "UpdatePost",
   UPDATECHAT: "Updatechatlist",
