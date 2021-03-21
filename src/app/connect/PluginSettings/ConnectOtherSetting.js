@@ -2,6 +2,7 @@
 import { ConnectPluginSettingCheckboxElement } from './ConnectPluginSettingCheckboxElement.js';
 //import { ConnectEnableSetNewChat } from './ConnectEnableSetNewChat.js';
 //import { ConnectDisablePushGray } from './ConnectPluginSettingCheckboxElement.js';
+import { ConnectPluginSettingBlacklistElement} from './ConnectPluginSettingBlacklistElement.js';
 export let ConnectOtherSetting = {
   // mounted() { },
   template: `<div id="PTTConnect-OtherSetting" class="form-row px-0 mx-0 col-12 my-2">
@@ -9,6 +10,10 @@ export let ConnectOtherSetting = {
   <div class="col px-0">
     <plugin-setting-checkbox setting-name="EnableSetNewPush" description="推文功能(使用此功能後果請自負)" defaultValue="false"></plugin-setting-checkbox>
     <plugin-setting-checkbox setting-name="DisablePushGray" description="關閉灰色漸變以提升效能" defaultValue="false"></plugin-setting-checkbox>
+    <plugin-setting-checkbox setting-name="EnableBlacklist" description="啟用黑名單功能(一行一個ID，隱藏舊推文需重新整理)" defaultValue="false"></plugin-setting-checkbox>
+    <div class="col px-0 ml-2 mt-2">
+      <plugin-setting-blacklist setting-name="Blacklist" discription="黑名單" text=""></plugun-setting-blacklist>
+    </div>
   </div>
 </div>`,
 }
