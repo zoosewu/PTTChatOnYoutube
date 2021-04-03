@@ -139,6 +139,9 @@ export function InitPTT(messageposter) {
     samepost: false,
     haveNormalTitle: false,
     enteredAID: false,
+    titleforsearch:  "",
+    enableautofetchpost: false,
+    isenterpost: false,
   }
   let serverfull = false;
   const insertText = (() => {
@@ -274,27 +277,40 @@ export function InitPTT(messageposter) {
       return res;
     }
     else if (PTT.pagestate === 1) return res;
-    else if (PTT.pagestate === 2) reg = "看板《" + PTTPost.board + "》";
+    else if (PTT.pagestate === 2) 
+    reg = "看板《" + PTTPost.board + "》";
+    re =  "系列《" + PTTPost.board + "》";
     const currect = PTT.screenHaveText(reg);
-    if (currect) res.pass = true;
+    const curr = PTT.screenHaveText(re);
+    if (currect || curr) res.pass = true;
     return res;
   }
 
   function gotoPost() {
-    if (PTTPost.enteredAID) {
-      insertText("r");
-      PTTPost.enteredAID = false;
+    if (!PTTPost.enableautofetchpost) {
+      if (PTTPost.enteredAID) {
+        insertText("r");
+        PTTPost.enteredAID = false;
+      }
+      else {
+        insertText("P$#" + PTTPost.AID + "\n");
+        PTTPost.enteredAID = true;
+      }
     }
     else {
-      insertText("NPP#" + PTTPost.AID + "\n");
-      PTTPost.enteredAID = true;
+      if (!PTTPost.enteredAID) {
+        insertText("$/" + PTTPost.titleforsearch + "\n");
+        PTTPost.enteredAID = true;
+      }
+      else {
+        insertText("r");
+      }
     }
   }
   function PostCheck() {
-    const res = { pass: true, callback: gotoPost }
+    const res = { pass: true, callback: gotoPost };
     if (PTT.pagestate === 2) {
-      if (!PTTPost.enteredAID)
-        res.pass = false;
+      if (!PTTPost.enteredAID)  res.pass = false;
       else {
         if (PTT.screenHaveText(/找不到這個文章代碼\(AID\)，可能是文章已消失，或是你找錯看板了/)) {
           msg.PostMessage("alert", { type: 0, msg: "文章AID錯誤，文章已消失或是你找錯看板了。" });
@@ -302,16 +318,13 @@ export function InitPTT(messageposter) {
           PTT.unlock();
           return;
         }
-        else {
-          res.pass = false;
-        }
+        else res.pass = false;
       }
     }
     else if (PTT.pagestate === 1) console.log("==PostCheck error, PTT.pagestate == 1.");
     return res;
   }
-
-  function backtoboard() { insertText("qP"); }
+  function backtoboard() { insertText("q$"); }
   function PotsTitleCheck() {
     const res = { pass: true, callback: backtoboard }
     if (PTT.pagestate === 3) {
@@ -325,8 +338,9 @@ export function InitPTT(messageposter) {
       }
       else for (let i = 0; i < 5 && i < PTT.screen.length; i++) title += PTT.screen[i]; //抓前幾行
       if (PTTPost.samepost) {
-        if (title === PTTPost.title) { }
-        else { res.pass = false; }
+        if (!PTTPost.enableautofetchpost) {
+          if (title !== PTTPost.title) res.pass = false; 
+        }
       }
       else {
         PTTPost.title = title;
@@ -354,6 +368,62 @@ export function InitPTT(messageposter) {
     else if (PTT.pagestate === 1) console.log("==PistLineCheck error, PTT.pagestate == 1.");
     else if (PTT.pagestate === 2) console.log("==PistLineCheck error, PTT.pagestate == 2.");
     return res;
+  }
+  
+  function searchfortitle() {
+    if (!PTTPost.istitleentered) { 
+     insertText("$/" + PTTPost.titleforsearch + "\n" );
+     PTTPost.istitleentered = true;
+    }
+    else insertText("r");
+  }
+  function istitleexistcheck() {
+    const res = { pass: true, callback: searchfortitle};
+    if (PTT.pagestate === 2) {
+      if (!PTTPost.istitleentered) res.pass = false;
+      else {
+        const istitleunavailable = PTT.screenHaveText(/看板《 .+ 》;/);
+        if (istitleunavailable) {
+          if (reportmode) console.log("==searchfortitle error, title unavailable.");
+          msg.PostMessage("alert", { type: 0, msg: "無此標題文章" });
+          PTT.unlock();
+          return;
+        }
+        else res.pass = false;
+      }
+    }
+    // else if (PTT.pagestate === 1) console.log("==searchfortitle error, PTT.pagestate == 1.");
+    // else if (PTT.pagestate === 3) console.log("==searchfortitle error, PTT.pagestate == 3.");
+    // else if (PTT.pagestate === 4) console.log("==searchfortitle error, PTT.pagestate == 4.");
+    return res;
+  }
+  function newesttitlecheck() {
+    const res = { pass: true, callback: backtoboard };
+    if (PTT.pagestate === 3) {
+      const reg = / 標題 +(.+)/;
+      const posttitle = PTT.screenHaveText(reg);
+      let title = "";
+      if (posttitle) {
+        PTTPost.haveNormalTitle = true;
+        if (reportmode) console.log("==set haveNormalTitle true", posttitle);
+        title = posttitle[1].replace(/\s+$/g, "").substr(5); //抓一般標題 去除" 標題 "
+      }
+      if (title === "" || title === null) res.pass = false;
+      else PTTPost.title = title;
+    }
+    // else if (PTT.pagestate === 1) console.log("==newesttitlecheck error, PTT.pagestate == 1.");
+    // else if (PTT.pagestate === 2) console.log("==newesttitlecheck error, PTT.pagestate == 2.");
+    // else if (PTT.pagestate === 4) console.log("==newesttitlecheck error, PTT.pagestate == 4.");
+    return res;
+  }
+  function receiveTitle() {
+    PTT.unlock();
+    msg.PostMessage("alert", { type: 2, msg: "標題讀取完成。" });
+    msg.PostMessage("getAutoFetchedPostTitle", PTTPost.title);
+    insertText("qq");
+    PTTPost.title = "";
+    PTTPost.titleforsearch = "";
+    PTTPost.board = "";
   }
 
   function savepush(content, result) {
@@ -416,7 +486,8 @@ export function InitPTT(messageposter) {
         if (targetline < 3) targetline = 3;
         //console.log("==GetRecentLine, TotalLine, GotoLline", line[1], targetline);
         PTTPost.endline = targetline;
-        if (PTT.pagestate === 4 || PTT.pagestate === 3) insertText("qP");//insertText(PTTPost.endline + ".\n");
+        /* if (PTT.pagestate === 4 || PTT.pagestate === 3) */ 
+        insertText("q$"); //insertText(PTTPost.endline + ".\n");
         res.pass = true;
       }
     }
@@ -475,8 +546,9 @@ export function InitPTT(messageposter) {
   function RunTask(tasklist, finishBehavior) {
     for (let i = 0; i < tasklist.length; i++) {
       const result = tasklist[i]();
+      if (result.pass === true) console.log("RunTask pass, pagestate:", PTT.pagestate, ", task name:", tasklist[i].name);
       if (result.pass === false) {
-        if (reportmode) console.log("RunTask pass failed, pagestate:", PTT.pagestate, ", task name:", tasklist[i].name);
+        if (reportmode) console.log("RunTask failed, pagestate:", PTT.pagestate, ", task name:", tasklist[i].name);
         result.callback();
         PTT.commands.add(/.*/, "", RunTask, tasklist, finishBehavior);
         return;
@@ -490,6 +562,8 @@ export function InitPTT(messageposter) {
   task.GetPostByLine = [boardcheck, PostCheck, PotsTitleCheck, PostLineCheck, PostPercentCheck];
   task.GetPostRecentLine = [boardcheck, PostCheck, PotsTitleCheck, GetRecentLine];
   task.SetPostNewPush = [boardcheck, PostCheck, PotsTitleCheck, SetNewPush];
+  task.GetPostTitle = [boardcheck, istitleexistcheck, newesttitlecheck];
+
   function SetNewPushTask(pushtext) {
     let allowedchar = 24;
     let addedtext = "";
@@ -512,6 +586,12 @@ export function InitPTT(messageposter) {
     PTTPost.setpush = addedtext;
     RunTask(task.SetPostNewPush, recieveNewPush);
   }
+  function GetPostTitleTask( _board, _titleforsearch) {
+    PTTPost.board = _board; 
+    PTTPost.titleforsearch = _titleforsearch;
+    PTTPost.istitleentered = false;
+    RunTask( task.GetPostTitle, receiveTitle);
+  }
 
   function recieveNewPush() {
     msg.PostMessage("alert", { type: 2, msg: "推文成功。" });
@@ -529,12 +609,13 @@ export function InitPTT(messageposter) {
     if (showalllog) console.log(PTTPost);
   }
   //------------------------Main Command--------------------------------
-  function GetPush(pAID, bname, startline, task) {
+  function GetPush(pAID, bname, startline, task, ptitleforsearch) {
     if (PTT.pagestate > 0) {
       startline = startline || 3;
       msg.PostMessage("alert", { type: 2, msg: "文章讀取中。" });
-      const samepost = (bname === PTTPost.board) && (pAID === PTTPost.AID);
-      if (samepost) {
+      const samepostbyAID = (bname === PTTPost.board) && (pAID === PTTPost.AID);
+      const samepostbytitle = (bname === PTTPost.board) && (ptitleforsearch === PTTPost.titleforsearch);
+      if (samepostbyAID || (samepostbytitle && (ptitleforsearch !== undefined)) ) {
         PTTPost.pushes = [];
         PTTPost.samepost = true;
         PTTPost.endline = startline;
@@ -553,6 +634,9 @@ export function InitPTT(messageposter) {
           samepost: false,
           haveNormalTitle: false,
           enteredAID: false,
+          titleforsearch: ptitleforsearch,
+          enableautofetchpost: (ptitleforsearch === undefined ? false : true),
+          isenterpost: false,
         }
         if (reportmode) console.log("Get new post's push.", bname, PTTPost.board, pAID, PTTPost.AID);
       }
@@ -560,13 +644,13 @@ export function InitPTT(messageposter) {
         if (PTT.screenHaveText(/●\(M\)ail         【 私人信件區 】/)) insertText("c");//隨意切畫面
         else insertText("m");//隨意切畫面
       }
-      else if (PTT.pagestate === 2) insertText("P");//切下一頁
+      else if (PTT.pagestate === 2) insertText("$");//切下一頁
       else {//PTT.pagestate === 3 || 4
         if (!PTTPost.samepost) {
-          insertText("qP");//在標題或是其他文章就退出
+          insertText("q$");//在標題或是其他文章就退出
         }
         else {
-          if (PTT.screenHaveText(/目前顯示: 第 01~/))
+          if (PTT.screenHaveText(/目前顯示: 第 01~/)) //內容少於一頁會卡在看板畫面
             insertText("q");//原本就在第一頁則直接退出
           else
             insertText("qr");//相同文章直接進入標題
@@ -665,6 +749,7 @@ export function InitPTT(messageposter) {
     PTTLockCheck(Login, i, p, data.DeleteOtherConnect);
   };
   msg["getPushByLine"] = data => { if (reportmode) console.log("getPushByLine", data); PTTLockCheck(GetPush, data.AID, data.board, data.startline, GetPushTask); };
-  msg["getPushByRecent"] = data => { if (reportmode) console.log("getPushByRecent", data); PTTLockCheck(GetPush, data.AID, data.board, data.recent, GetRecentLineTask); };
+  msg["getPushByRecent"] = data => { if (reportmode) console.log("getPushByRecent", data); PTTLockCheck(GetPush, data.AID, data.board, data.recent, GetRecentLineTask, data.titleforsearch); };
   msg["setNewPush"] = data => { if (reportmode) console.log("setNewPush", data); PTTLockCheck(SetNewPushTask, data); };
+  msg["getPostTitle"] = data => { if (reportmode) console.log("getPostTitle", data); PTTLockCheck(GetPostTitleTask, data.board, data.titleforsearch); };
 }

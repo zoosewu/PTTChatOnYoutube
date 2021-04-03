@@ -1,0 +1,45 @@
+<!-- reference: https://codepen.io/svnt/pen/beEgre -->
+
+<div class="form-group">
+  <div class="form-row mt-3 mb-2">
+    <label class="col-3 col-form-label">{{this.description}}</label>
+    <div class="col">
+      <div class="dropdown" v-show="!enableManualSetting">
+        <button class="btn ptt-btnoutline dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          {{this.DisplayOption}}
+        </button>
+        <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+          <li class="dropdown-submenu" v-for="(item, board) in AvailableDict">
+            <a class="dropdown-item" tabindex="-1" href="#" @click.prevent>{{board}}</a>
+            <ul class="dropdown-menu">
+              <li class="dropdown-item" type="button" v-for="(item, species) in item"><a tabindex="-1" href="#"
+                  @click.prevent>{{species}}</a></li>
+            </ul>
+          </li>
+          <li class="dropdown-divider"></li>
+          <h6 class="dropdown-header"><em>施工中</em></h6>
+          <li class="dropdown-item disabled" v-for="(item, board) in UnavailableDict"><a href="#">{{board}}</a></li>
+          <li class="dropdown-divider"></li>
+          <li class="dropdown-item"><a href="#" @click.prevent="$_ConnectAutoFetchPost_enableManualSetting()">其他</a></li>
+        </ul>
+      </div>
+      <div class="col px-0" v-show="enableManualSetting" v-on:keyup.13="getPostTitle">
+        <input type="text" class="form-control mb-1" placeholder="看板：" @change="$_ConnectAutoFetchPost_manualBoardChange">
+        <input type="text" class="form-control mt-1" placeholder="標題：" @change="$_ConnectAutoFetchPost_manualTitleChange">
+      </div>
+    </div>
+    <div class="col-2 px-0">
+      <button id="asd" class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="getPostTitle()">讀取</button>
+    </div>
+  </div>
+  <div class="form-row mt-2 mb-3" v-show="showPreviewForm">
+    <div class="col-3"></div>
+    <div class="col">
+      <input class="form-control" type="text" placeholder="文章標題預覽" readonly v-model="SetingValue_previewTitle">
+    </div>
+    <div class="col-2 px-0">
+      <button id="asd" class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="getPost()">確定</button>
+    </div>
+  </div>
+</div>
