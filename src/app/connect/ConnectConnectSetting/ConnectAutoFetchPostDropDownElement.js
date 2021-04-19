@@ -3,10 +3,10 @@ export let ConnectAutoFetchPostDropDownElement = {
   props: {
     settingName: { type: String, required: true },
     description: { type: String, required: true },
-    optionGroup: { type: Object, required: true },
   },
   data() {
     return {
+      optionGroup: this.$store.getters["getSearchTitle"],
       dropdownPreview: null,
       board: null,
       title: null,
@@ -20,49 +20,92 @@ export let ConnectAutoFetchPostDropDownElement = {
   mounted() {
     this.msg["getAutoFetchedPostTitle"] = data => { 
       this.SetingValue_previewTitle = data; 
-      if (reportmode) console.log("gettitle" + this.title);
+      //if (reportmode) console.log("gettitle" + this.title);
     };
+    if (this.optionGroup === null || (this.optionGroup !== null && Object.keys(this.optionGroup).length === 0)) {
+      const dict = {
+        "直播單 (C_Chat)": "直播單 (C_Chat)",
+        "彩虹直播 (Vtuber)": "彩虹直播 (Vtuber)"
+      }
+      this.optionGroup = { };
+      this.optionGroup = dict;
+      this.$store.dispatch("setSearchTitle", dict);
+      console.log("defalt dict");
+    }
   },
   methods: {
+    $_ConnectAutoFetchPost_onClickRemoveOption(_parent) {
+      const c = this.optionGroup;
+      this.optionGroup = {};
+      this.optionGroup = c;
+      delete this.optionGroup[_parent];
+      this.$store.dispatch("setSearchTitle", this.optionGroup);
+    },
     $_ConnectAutoFetchPost_onClickDropdownItem(_board, _species) {
       this.board = _board; 
       this.title = this.optionGroup[_board][_species];
       this.dropdownPreview = _board + " " + _species;
       this.showPreviewForm = true;
     },
-    $_ConnectAutoFetchPost_enableManualSetting() {
+    $_ConnectAutoFetchPost_onClickDropdownItem(_parents) {
+      const result = /(.+) \((.+)\)/.exec(_parents);
+      this.board = result[2];
+      this.title = result[1];
+      this.dropdownPreview = result[1] + " (" + result[2] + ")";
       this.showPreviewForm = true;
+      const self = this;
+      $(this.$refs.preview).on('shown.bs.collapse', ()=>{ 
+        $(self.$refs.preview).removeAttr('id');
+      });    
+    },
+    $_ConnectAutoFetchPost_enableManualSetting() {
+      //this.showPreviewForm = true;
+      const self = this;
+      $(this.$refs.manualinput).on('shown.bs.collapse', ()=>{ 
+        if (!this.showPreviewForm) $(self.$refs.preview).collapse('toggle');
+      });
       this.enableManualSetting = true;
     },
     getPostTitle: function () {
       if ( this.connectAutoFetchPost_manualBoard !== null && this.connectAutoFetchPost_manualTitle !== null) {
         this.board = this.connectAutoFetchPost_manualBoard; 
         this.title = this.connectAutoFetchPost_manualTitle;
+        this.optionGroup[this.title + " (" + this.board + ")"] = this.title + " (" + this.board + ")";
+        this.$store.dispatch("setSearchTitle", this.optionGroup);
       }
-      this.msg.PostMessage("getPostTitle", { board: this.board, titleforsearch: this.title });
+      if (this.PTTState < 1) {
+        this.$store.dispatch('Alert', { type: 0, msg: "PTT尚未登入，請先登入。" });
+        return;
+      }
+      this.msg.PostMessage("getPostTitle", { boardforsearch: this.board, titleforsearch: this.title });
     },
     getPost: function () {
-      if (reportmode) console.log("click AutoFetchPostBtn" + this.board + " " + this.title + " " + this.SetingValue_previewTitle);
-      this.msg.PostMessage("getPushByRecent", { board: this.board, titleforsearch: this.title, recent: 200 });
+      //if (reportmode) console.log("click AutoFetchPostBtn" + this.board + " " + this.title + " " + this.SetingValue_previewTitle);
+      if (this.PTTState < 1) {
+        this.$store.dispatch('Alert', { type: 0, msg: "PTT尚未登入，請先登入。" });
+        return;
+      }
+      this.msg.PostMessage("getPushByRecent", { boardforsearch: this.board, titleforsearch: this.title, recent: 200 });
       this.$store.dispatch("gotoChat", true);
     },
   },
   computed: {
     DisplayOption() { return  this.dropdownPreview === null ? "請選擇...." : this.dropdownPreview},
-    AvailableDict: function () { 
+    TwoLevelDict: function () {
       let container = {};
-      for ( [board, species] of Object.entries(this.optionGroup)) {
-        if(Object.keys(species).length !== 0) {container[board] = this.optionGroup[board];}
+      for ( [parents, children] of Object.entries(this.optionGroup)) {
+        if(typeof children === 'object' && Object.keys(children).length !== 0) container[parents] = this.optionGroup[parents];
       }
       return container;
     },
-    UnavailableDict: function () { 
+    OneLevelDict: function () { 
       let container = {};
-      for ( [board, species] of Object.entries(this.optionGroup)) {
-        if(Object.keys(species).length === 0) {container[board] = this.optionGroup[board];}
+      for ( [parents, children] of Object.entries(this.optionGroup)) {
+        if(typeof children !== 'object' || Object.keys(children).length === 0) container[parents] = this.optionGroup[parents];
       }
       return container;
     },
+    ...Vuex.mapGetters(['PTTState'])
   },
   template: `<div class="form-group">
   <div class="form-row mt-3 mb-2">
@@ -74,36 +117,34 @@ export let ConnectAutoFetchPostDropDownElement = {
           {{this.DisplayOption}}
         </button>
         <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
-          <li class="dropdown-submenu" v-for="(item, board) in AvailableDict">
-            <a class="dropdown-item" tabindex="-1" href="#" @click.prevent>{{board}}</a>
+          <li class="dropdown-submenu" v-for="(item, parents) in TwoLevelDict" v-show="Object.keys(TwoLevelDict).length !== 0">
+            <a class="dropdown-item" tabindex="-1" href="#" @click.prevent>{{parents}}</a>
             <ul class="dropdown-menu">
-              <li class="dropdown-item" type="button" v-for="(item, species) in item"><a tabindex="-1" href="#"
-                  @click.prevent="$_ConnectAutoFetchPost_onClickDropdownItem(board, species)">{{species}}</a></li>
+              <li class="dropdown-item" type="button" v-for="(item, children) in item" data-toggle="collapse" data-target="#previewtitle"><a tabindex="-1" href="#"
+                  @click.prevent="$_ConnectAutoFetchPost_onClickDropdownItem(parents, children)">{{children}}</a></li>
             </ul>
           </li>
+          <a href="#" class="dropdown-item" v-for="(item, parents) in OneLevelDict" data-toggle="collapse" data-target="#previewtitle" v-show="Object.keys(TwoLevelDict).length === 0" @click.prevent="$_ConnectAutoFetchPost_onClickDropdownItem(parents)">{{parents}}<button type="button" @click.stop="$_ConnectAutoFetchPost_onClickRemoveOption(parents)" @click.prevent class="close">&times;</button></a>
           <li class="dropdown-divider"></li>
-          <h6 class="dropdown-header"><em>施工中</em></h6>
-          <li class="dropdown-item disabled" v-for="(item, board) in UnavailableDict"><a href="#">{{board}}</a></li>
-          <li class="dropdown-divider"></li>
-          <li class="dropdown-item"><a href="#" @click.prevent="$_ConnectAutoFetchPost_enableManualSetting()">其他</a></li>
+          <a href="#" class="dropdown-item" data-toggle="collapse" data-target="#manualinputarea" @click.prevent="$_ConnectAutoFetchPost_enableManualSetting()">其他</a>
         </ul>
       </div>
-      <div class="col px-0" v-show="enableManualSetting" v-on:keyup.13="getPostTitle">
+      <div ref="manualinput" class="col px-0 collapse" v-on:keyup.13="getPostTitle" id="manualinputarea">
         <input type="text" class="form-control mb-1" v-model="connectAutoFetchPost_manualBoard" placeholder="看板：">
         <input type="text" class="form-control mt-1" v-model="connectAutoFetchPost_manualTitle" placeholder="標題：">
       </div>
     </div>
     <div class="col-2 px-0">
-      <button id="asd" class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="getPostTitle()">讀取</button>
+      <button class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="getPostTitle()">搜尋</button>
     </div>
   </div>
-  <div class="form-row mt-2 mb-3" v-show="showPreviewForm">
+  <div ref="preview" class="form-row mt-2 mb-3 collapse" id="previewtitle">
     <div class="col-3"></div>
-    <div class="col">
-      <input class="form-control" type="text" placeholder="文章標題預覽" readonly v-model="SetingValue_previewTitle">
+    <div class="col mx-2" style="border:1px solid;">
+      <div class="my-2">{{SetingValue_previewTitle}}</div>
     </div>
     <div class="col-2 px-0">
-      <button id="asd" class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="getPost()">確定</button>
+      <button id="asd" class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="getPost()">讀取</button>
     </div>
   </div>
 </div>`,

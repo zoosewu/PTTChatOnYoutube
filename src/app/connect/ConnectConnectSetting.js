@@ -20,7 +20,9 @@ export let ConnectConnectSetting = {
         },
         "LoL": {
           
-        }
+        },
+        "直播單 (C_Chat)": "直播單 (C_Chat)",
+        "彩虹直播 (Vtuber)": "彩虹直播 (Vtuber)",
       },
     };
   },
@@ -35,7 +37,7 @@ export let ConnectConnectSetting = {
   <connect-login></connect-login>
   <connect-login-delete-other-connect></connect-login-delete-other-connect>
   <connect-aid></connect-aid>
-  <connect-autofetchpostdropdown setting-name="AutoFetchPost" description="自動載入" :option-group="DropDownList"></connect-autofetchpostdropdown>
+  <connect-autofetchpostdropdown setting-name="AutoFetchPost" description="標題搜尋"></connect-autofetchpostdropdown>
   <connect-reinstance-ptt-btn></connect-reinstance-ptt-btn>
 </div>`,
 }
