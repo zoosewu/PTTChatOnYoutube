@@ -35,7 +35,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "name": "pttchatonyoutube",
-  "version": "2.5.8",
+  "version": "2.5.24",
   "description": "Connect ptt pushes to youtube chatroom",
   "author": "Zoosewu",
   "license": "MIT",
@@ -57,7 +57,8 @@
         "https://niji-mado.web.app/home",
         "https://lin.ee/*",
         "https://today.line.me/tw/v2/article/*",
-        "http://blank.org/"
+        "http://blank.org/",
+        "https://holodex.net/*"
       ],
       "grant": [
         "GM_xmlhttpRequest ",
