@@ -35,6 +35,7 @@ export const state = {
   theme: GM_getValue(types.THEME, -1),
   themeColorBG: GM_getValue(types.THEMECOLORBG, -1),
   themeColorBorder: GM_getValue(types.THEMECOLORBORDER, -1),
+  searchTitle: GM_getValue(types.SEARCHTITLE, null),
 }
 // mutations
 export const mutations = {
@@ -131,7 +132,7 @@ export const mutations = {
     GM_setValue(types.PLUGINWIDTH, width);
     state.pluginWidth = width;
   },
-  [types.BLACKLIST](states, list) {
+  [types.BLACKLIST](state, list) {
     const l = list.toLowerCase();
     GM_setValue(types.BLACKLIST, l);
     state.blacklist = l;
@@ -148,5 +149,9 @@ export const mutations = {
   [types.THEMECOLORBORDER](state, themecolorborder) {
     GM_setValue(types.THEMECOLORBORDER, themecolorborder);
     state.themeColorBorder = themecolorborder;
+  },
+  [types.SEARCHTITLE](state, list) {
+    GM_setValue(types.SEARCHTITLE, list);
+    state.searchTitle = list;
   },
 }

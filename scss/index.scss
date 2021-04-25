@@ -86,7 +86,7 @@ $font-size-base: 12px;
 // @import "node_modules/bootstrap/scss/progress";
 @import "node_modules/bootstrap/scss/media";
 // @import "node_modules/bootstrap/scss/list-group";
-// @import "node_modules/bootstrap/scss/close";
+@import "node_modules/bootstrap/scss/close";
 // @import "node_modules/bootstrap/scss/toasts";
 // @import "node_modules/bootstrap/scss/modal";
 // @import "node_modules/bootstrap/scss/tooltip";
@@ -126,6 +126,34 @@ $font-size-base: 12px;
   }
   .ptt-chat-msg a {
     text-decoration: underline !important;
+  }
+  // reference: https://codepen.io/svnt/pen/beEgre
+  .dropdown-submenu {
+    position: relative;
+  }
+  .dropdown-submenu>.dropdown-menu {
+      top: 0;
+      left: 50%;
+      margin-top: -6px;
+  }
+  .dropdown-submenu:hover>.dropdown-menu {
+      display: block;
+  }
+  .dropdown-submenu>a:after {
+      display: block;
+      content: " ";
+      float: right;
+      border-color: transparent;
+      border-style: solid;
+      border-width: 5px 0 5px 5px;
+      border-left-color: #ccc;
+      margin-top: 5px;
+      margin-right: -10px;
+  }
+  .transition-smooth {
+    height: 0;
+    overflow: hidden;
+    transition: 1s;
   }
   .col-form-label {
     padding-top: 4.75px;

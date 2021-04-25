@@ -16,6 +16,11 @@ export let ConnectNewVersionInfo = {
     info = [
       `新增贊助訊息，喜歡這個套件歡迎<a id="other-btn-donations" href="https://qr.opay.tw/eZHf2" class="ptt-text" target="_blank" rel="noopener noreferrer" role="button"><u>點我贊助</u></a>。`,
       "套件現階段還是不打算加入廣告。",
+      "新增黑名單功能。",
+      "新增自動載入討論串下拉選單。"
+    ];
+    this.versionInfos.push(info);
+    info = [
       "推文的Youtube連結現在也會顯示預覽圖了。",
       "新增按鈕一鍵重啟PTT。",
       "修正換串時不會換新聊天串的問題。",

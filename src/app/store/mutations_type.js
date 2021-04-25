@@ -34,4 +34,5 @@ export const types = {
   THEME: "Theme",
   THEMECOLORBG: "ThemeColorBG",
   THEMECOLORBORDER: "ThemeColorBorder",
+  SEARCHTITLE: "SearchTitle",
 }

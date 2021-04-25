@@ -27,4 +27,5 @@ export const getters = {
   getTheme: state => { return state.theme; },
   getThemeColorBG: state => { return state.themeColorBG; },
   getThemeColorBorder: state => { return state.themeColorBorder; },
+  getSearchTitle: state => { return state.searchTitle; },
 }

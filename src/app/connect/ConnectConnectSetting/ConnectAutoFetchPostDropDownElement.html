@@ -1,0 +1,43 @@
+<!-- reference: https://codepen.io/svnt/pen/beEgre -->
+
+<div class="form-group">
+  <div class="form-row mt-3 mb-2">
+    <label class="col-3 col-form-label">{{this.description}}</label>
+    <div class="col">
+      <div class="dropdown" v-show="!enableManualSetting">
+        <button class="btn ptt-btnoutline dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          {{this.DisplayOption}}
+        </button>
+        <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+          <li class="dropdown-submenu" v-for="(item, parents) in TwoLevelDict" v-show="Object.keys(TwoLevelDict).length !== 0">
+            <a class="dropdown-item" tabindex="-1" href="#" @click.prevent>{{parents}}</a>
+            <ul class="dropdown-menu">
+              <li class="dropdown-item" type="button" v-for="(item, children) in item" data-toggle="collapse" data-target="#previewtitle"><a tabindex="-1" href="#"
+                  @click.prevent="$_ConnectAutoFetchPost_onClickDropdownItem(parents, children)">{{children}}</a></li>
+            </ul>
+          </li>
+          <a href="#" class="dropdown-item" v-for="(item, parents) in OneLevelDict" data-toggle="collapse" data-target="#previewtitle" v-show="Object.keys(TwoLevelDict).length === 0" @click.prevent="$_ConnectAutoFetchPost_onClickDropdownItem(parents)">{{parents}}<button type="button" @click.stop="$_ConnectAutoFetchPost_onClickRemoveOption(parents)" @click.prevent class="close">&times;</button></a>
+          <li class="dropdown-divider"></li>
+          <a href="#" class="dropdown-item" data-toggle="collapse" data-target="#manualinputarea" @click.prevent="$_ConnectAutoFetchPost_enableManualSetting()">其他</a>
+        </ul>
+      </div>
+      <div ref="manualinput" class="col px-0 collapse" v-on:keyup.13="getPostTitle" id="manualinputarea">
+        <input type="text" class="form-control mb-1" v-model="connectAutoFetchPost_manualBoard" placeholder="看板：">
+        <input type="text" class="form-control mt-1" v-model="connectAutoFetchPost_manualTitle" placeholder="標題：">
+      </div>
+    </div>
+    <div class="col-2 px-0">
+      <button class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="getPostTitle()">讀取</button>
+    </div>
+  </div>
+  <div ref="preview" class="form-row mt-2 mb-3 collapse" id="previewtitle">
+    <div class="col-3"></div>
+    <div class="col mx-2" style="border:1px solid;">
+      <div class="my-2">{{SetingValue_previewTitle}}</div>
+    </div>
+    <div class="col-2 px-0">
+      <button id="asd" class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="getPost()">確定</button>
+    </div>
+  </div>
+</div>

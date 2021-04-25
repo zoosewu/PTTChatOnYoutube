@@ -37,7 +37,7 @@
   "name": "pttchatonyoutube",
   "version": "2.5.24",
   "description": "Connect ptt pushes to youtube chatroom",
-  "author": "Zoosewu",
+  "author": "Zoosewu, crimsonmoon9",
   "license": "MIT",
   "userscript": {
     "entry": "./src/index.js",
