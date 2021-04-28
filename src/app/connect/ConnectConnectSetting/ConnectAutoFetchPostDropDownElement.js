@@ -6,7 +6,7 @@ export let ConnectAutoFetchPostDropDownElement = {
   },
   data() {
     return {
-      optionGroup: this.$store.getters["getSearchTitle"],
+      optionGroup: this.checkOptionGroup(),
       dropdownPreview: null,
       board: null,
       title: null,
@@ -22,16 +22,6 @@ export let ConnectAutoFetchPostDropDownElement = {
       this.SetingValue_previewTitle = data; 
       //if (reportmode) console.log("gettitle" + this.title);
     };
-    if (this.optionGroup === null || (this.optionGroup !== null && Object.keys(this.optionGroup).length === 0)) {
-      const dict = {
-        "直播單 (C_Chat)": "直播單 (C_Chat)",
-        "彩虹直播 (Vtuber)": "彩虹直播 (Vtuber)"
-      }
-      this.optionGroup = { };
-      this.optionGroup = dict;
-      this.$store.dispatch("setSearchTitle", dict);
-      console.log("defalt dict");
-    }
   },
   methods: {
     $_ConnectAutoFetchPost_onClickRemoveOption(_parent) {
@@ -87,6 +77,15 @@ export let ConnectAutoFetchPostDropDownElement = {
       }
       this.msg.PostMessage("getPushByRecent", { boardforsearch: this.board, titleforsearch: this.title, recent: 200 });
       this.$store.dispatch("gotoChat", true);
+    },
+    checkOptionGroup: function() {
+      let option = this.$store.getters["getSearchTitle"];
+      if (option === null || (option !== null && Object.keys(option).length === 0)) 
+      return {
+        "直播單 (C_Chat)": "直播單 (C_Chat)",
+        "彩虹直播 (Vtuber)": "彩虹直播 (Vtuber)"
+      }
+      else return option;
     },
   },
   computed: {
