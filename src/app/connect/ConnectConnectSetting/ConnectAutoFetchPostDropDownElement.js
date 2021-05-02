@@ -23,8 +23,8 @@ export let ConnectAutoFetchPostDropDownElement = {
     }
   },
   mounted() {
-    this.msg["getAutoFetchedPostTitle"] = data => { 
-      this.SetingValue_previewTitle = data; 
+    this.msg["getAutoFetchedPostTitle"] = data => {
+      this.SetingValue_previewTitle = data;
       //if (reportmode) console.log("gettitle" + this.title);
     };
   },
@@ -44,7 +44,8 @@ export let ConnectAutoFetchPostDropDownElement = {
       this.msg.PostMessage("getPostTitle", { boardforsearch: this.board, titleforsearch: this.title });
     },
     addAndSearch: function () {
-      if ( this.connectAutoFetchPost_manualBoard !== null && this.connectAutoFetchPost_manualTitle !== null) {
+      if (this.connectAutoFetchPost_manualBoard !== null && this.connectAutoFetchPost_manualTitle !== null) {
+        console.log(this.optionGroup);
         this.optionGroup.unshift(this.connectAutoFetchPost_manualTitle + " (" + this.connectAutoFetchPost_manualBoard + ")");
       }
       else {
@@ -66,17 +67,19 @@ export let ConnectAutoFetchPostDropDownElement = {
       this.msg.PostMessage("getPushByRecent", { boardforsearch: this.board, titleforsearch: this.title, recent: 200 });
       this.$store.dispatch("gotoChat", true);
     },
-    checkOptionGroup: function() {
+    checkOptionGroup: function () {
       let option = this.$store.getters["getSearchTitle"];
       if (option === null || option.length === 0)
-      return [
-        "直播單 (C_Chat)",
-        "彩虹直播 (Vtuber)"]
-      else return option;
+        return [
+          "直播單 (C_Chat)",
+          "彩虹直播 (Vtuber)"
+        ];
+      else
+        return option;
     },
   },
   computed: {
-    DisplayOption() { return  this.dropdownPreview === null ? "請選擇...." : this.dropdownPreview},
+    DisplayOption() { return this.dropdownPreview === null ? "請選擇...." : this.dropdownPreview },
     ...Vuex.mapGetters(['PTTState'])
   },
   template: `<div class="form-group my-3">
