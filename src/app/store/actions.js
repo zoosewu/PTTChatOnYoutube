@@ -172,4 +172,5 @@ export const actions = {
   setTheme: ({ commit }, value) => { commit(types.THEME, value); },
   setThemeColorBG: ({ commit }, value) => { commit(types.THEMECOLORBG, value); },
   setThemeColorBorder: ({ commit }, value) => { commit(types.THEMECOLORBORDER, value); },
+  setSearchTitle: ({ commit }, value) => { commit(types.SEARCHTITLE, value); },
 }

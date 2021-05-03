@@ -8,9 +8,9 @@ Vue.component('plugin-setting-blacklist', {
   methods: {
     $_PluginSetting_valueChange: function () {this.$store.dispatch('set' + this.settingName, this.SettingValue); }
   },
-	template: `<div class="form-group">
-	<textarea class="form-control" id="blacklist" rows="5" v-model="SettingValue" 
-	@change="$_PluginSetting_valueChange($event)">
+	template: `<div class="col">
+    <textarea class="form-control" id="blacklist" rows="5" placeholder="一行一個ID，隱藏舊推文需重新整理" v-model="SettingValue" 
+    @change="$_PluginSetting_valueChange($event)">
 </textarea>
 </div>`
 });

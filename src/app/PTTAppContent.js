@@ -1,5 +1,4 @@
 import Chat from './chat/Chat.js';
-import ChatTimeSetting from './chat/ChatTimeSetting.js';
 import Connect from './connect/Connect.js';
 import ConnectAlert from './connect/ConnectAlert.js';
 import Other from './other/Other.js';
@@ -11,7 +10,6 @@ import getter from './store/getters.js';
 export let PTTAppContent = {
   components: {
     'PTTApp-Chat': Chat,
-    "ChatTimeSetting": ChatTimeSetting,
     'PTTApp-Alert': ConnectAlert,
     'PTTApp-Connect': Connect,
     'PTTApp-Other': Other,
@@ -29,7 +27,6 @@ export let PTTAppContent = {
   <!-------- 聊天室 -------->
   <div class="tab-pane h-100 w-100 mx-0 position-relative fade" id="PTTChat-contents-Chat" role="tabpanel"
     aria-labelledby="nav-item-Chat">
-    <ChatTimeSetting></ChatTimeSetting>
     <PTTApp-Chat></PTTApp-Chat>
   </div>
   <!-------- 連線設定 -------->

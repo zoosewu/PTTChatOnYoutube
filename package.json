@@ -27,17 +27,17 @@
     "watch-scss-map": "node-sass --source-map map --watch scss/index.scss -o css",
     "http": "http-server ./ --cors -c-1 -p 8889",
     "watch-scss": "node-sass --watch scss/index.scss -o css",
+    "release": "userscript-builder --mode minor",
     "watch-dev-n": "npm-watch build",
     "build": "userscript-builder --mode dev",
     "release:bugfix": "userscript-builder --mode bugfix",
-    "release:minor": "userscript-builder --mode minor",
     "release:major": "userscript-builder --mode major",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "name": "pttchatonyoutube",
-  "version": "2.5.8",
+  "version": "2.6.0",
   "description": "Connect ptt pushes to youtube chatroom",
-  "author": "Zoosewu",
+  "author": "Zoosewu, crimsonmoon9",
   "license": "MIT",
   "userscript": {
     "entry": "./src/index.js",
@@ -57,7 +57,8 @@
         "https://niji-mado.web.app/home",
         "https://lin.ee/*",
         "https://today.line.me/tw/v2/article/*",
-        "http://blank.org/"
+        "http://blank.org/",
+        "https://holodex.net/*"
       ],
       "grant": [
         "GM_xmlhttpRequest ",
