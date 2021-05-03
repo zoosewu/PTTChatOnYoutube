@@ -87,7 +87,8 @@ export function InitPTT(messageposter) {
       { reg: /您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n' },
       {
         reg: /按任意鍵繼續/, input: '', callback: () => {
-          result = PTT.screenHaveText(/(找不到這個文章代碼\(AID\)，可能是文章已消失，或是你找錯看板了|這一篇文章值)/)
+          reg = /(找不到這個文章代碼\(AID\)，可能是文章已消失，或是你找錯看板了|這一篇文章值|◆ 本文已過長, 禁止快速連續推文|◆ 對不起，您的文章或推文間隔太近囉！)/;
+          result = PTT.screenHaveText(reg);
           if (result)
             return !SkipCommand;
           else {
@@ -521,10 +522,10 @@ export function InitPTT(messageposter) {
     SetNewPushtrytime--;
     if (SetNewPushtrytime < 0) { res.pass = true; return res; }
     if (PTT.pagestate === 4 || PTT.pagestate === 3) {
-      const pushcd = PTT.screenHaveText(/◆ 本文已過長, 禁止快速連續推文/);
+      const pushcd = PTT.screenHaveText(/◆ 本文已過長, 禁止快速連續推文|◆ 對不起，您的文章或推文間隔太近囉！/);
       if (pushcd) {
-        msg.PostMessage("alert", { type: 0, msg: "本文已過長, 禁止快速連續推文。" });
-        res.pass = true
+        msg.PostMessage("alert", { type: 0, msg: "推文遭暫時禁止。" });
+        res.pass = true;
         return res;
       }
       const pushtext = PTTPost.setpush + "\n";
@@ -534,7 +535,8 @@ export function InitPTT(messageposter) {
         PTTPost.setpush = "";
         PTTPost.pushedtext = pushcheck[2];
         insertText("y\n\nG");
-        res.pass = true
+        res.pass = true;
+        msg.PostMessage("alert", { type: 2, msg: "推文成功。" });
         return res;
       }
       const pushtype = PTT.screenHaveText(/您覺得這篇文章/);
@@ -564,7 +566,7 @@ export function InitPTT(messageposter) {
   function RunTask(tasklist, finishBehavior) {
     for (let i = 0; i < tasklist.length; i++) {
       const result = tasklist[i]();
-      if (result.pass === true) console.log("RunTask pass, pagestate:", PTT.pagestate, ", task name:", tasklist[i].name);
+      if (result.pass === true) if (reportmode) console.log("RunTask pass, pagestate:", PTT.pagestate, ", task name:", tasklist[i].name);
       if (result.pass === false) {
         if (reportmode) console.log("RunTask failed, pagestate:", PTT.pagestate, ", task name:", tasklist[i].name);
         result.callback();
@@ -632,7 +634,6 @@ export function InitPTT(messageposter) {
   }
 
   function recieveNewPush() {
-    msg.PostMessage("alert", { type: 2, msg: "推文成功。" });
     msg.PostMessage("pushedText", PTTPost.pushedtext);
     PTTPost.pushedtext = "";
     if (showalllog) console.log(PTTPost);
