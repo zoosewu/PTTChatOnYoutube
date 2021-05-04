@@ -4,7 +4,7 @@ export let ConnectReinstancePTTBtn = {
       'reInstancePTT', // 将 `this.reInstancePTT()` 映射为 `this.$store.dispatch('reInstancePTT')`
     ]),
   },
-  template: `<div class="row my-3">
+  template: `<div class="form-row my-3">
   <label class="col-3 col-form-label">重啟PTT</label>
   <div class="col-2 px-0 ml-3">
     <button id="reinstance-ptt-btn" class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="reInstancePTT()">點我</button>
