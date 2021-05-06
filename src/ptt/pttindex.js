@@ -506,7 +506,7 @@ export function InitPTT(messageposter) {
         //console.log("==GetRecentLine, TotalLine, GotoLline", line[1], targetline);
         PTTPost.endline = targetline;
         /* if (PTT.pagestate === 4 || PTT.pagestate === 3) */
-        insertText("q$"); //insertText(PTTPost.endline + ".\n");
+        insertText("qP"); //insertText(PTTPost.endline + ".\n");
         res.pass = true;
       }
     }
