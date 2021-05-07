@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 // user log
-const reportmode = false
+const reportmode = true
 // all log
 const showalllog = false
 // dev log

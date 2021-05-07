@@ -1,4 +1,4 @@
-export const ConnectNewVersion = {
+export const ConnectPluginSettingBlacklist = {
   props: {
     settingName: { type: String, required: true },
     description: { type: String, required: true },

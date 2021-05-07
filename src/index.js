@@ -18,7 +18,9 @@ const disablepttframe = false
 const simulateisstreaming = false
 // add listener to get msg
 let cryptkey
-const appinscount = 0
+/* eslint-disable prefer-const */
+let appinscount = 0
+/* eslint-enable prefer-const */
 /* eslint-enable no-unused-vars */
 /* 關閉vue-devtools */
 Vue.config.devtools = reportmode
@@ -35,4 +37,6 @@ Vue.config.debug = reportmode;
   // filters.push(lineTVfilter);
   filters.push(hdfilter)
   HerfFilter(msg, filters)
-})()
+  /* eslint-disable semi */
+})();
+/* eslint-enable semi */

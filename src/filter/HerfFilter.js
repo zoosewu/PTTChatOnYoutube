@@ -1,6 +1,5 @@
-
 import { InitPTT } from '../ptt/pttindex.js'
-import { BootStrap } from '../../BootStrap.js'
+import { BootStrap } from '../BootStrap.js'
 export function HerfFilter (msg, filters) {
   const isTopframe = (window.top === window.self)
   if (/term\.ptt\.cc/.exec(window.location.href) !== null) {

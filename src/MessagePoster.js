@@ -14,6 +14,7 @@ export function MessagePoster () {
     if (event.origin !== this.targetorigin) return
 
     const data = event.data
+    console.log('typeof (this[data.m])', typeof (this[data.m]))
     if (typeof (this[data.m]) === 'function') {
       this[data.m].call(null, data.d)
     }
@@ -21,9 +22,11 @@ export function MessagePoster () {
   }
   if (window.addEventListener) {
     if (reportmode) console.log('addEventListener message')
-    window.addEventListener('message', event => { this.onMessage(this, event) }, false)
+    /* eslint-disable no-useless-call */
+    window.addEventListener('message', event => { this.onMessage.call(this, event) }, false)
   } else if (window.attachEvent) {
     if (reportmode) console.log('addEventListener onmessage')
-    window.attachEvent('onmessage', event => { this.onMessage(this, event) }, false)
+    window.attachEvent('onmessage', event => { this.onMessage.call(this, event) }, false)
+    /* eslint-enable no-useless-call */
   }
 }
