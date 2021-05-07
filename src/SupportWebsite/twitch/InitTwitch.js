@@ -1,26 +1,24 @@
 
-import { InitApp } from '../../app/appindex.js';
-import { BootStrap } from '../../BootStrap.js';
-import { AddStyle, GenerateCryptKey, paddingLeft, paddingRight, dateReviver, clone, ThemeCheck } from '../../library.js';
+import { InitApp } from '../../app/appindex.js'
+import { ThemeCheck } from '../../library.js'
 
-export function InitTwitch(messageposter) {
-  //Check Theme
-  let WhiteTheme = ThemeCheck('body', 'rgb(247, 247, 248)');
+export function InitTwitch (messageposter) {
+  // Check Theme
+  const WhiteTheme = ThemeCheck('body', 'rgb(247, 247, 248)');
 
-  //run app instance loop
-  (function ChechChatInstanced() {
-    setTimeout(ChechChatInstanced, 1000);
-    TryInsChat();
-  })();
-  function TryInsChat() {
-    const parent = $("section.chat-room");
-    if (reportmode) console.log("parent", parent);
+  // run app instance loop
+  (function ChechChatInstanced () {
+    setTimeout(ChechChatInstanced, 1000)
+    TryInsChat()
+  })()
+  function TryInsChat () {
+    const parent = $('section.chat-room')
+    if (reportmode) console.log('parent', parent)
     if (parent.length > 0) {
-      const PTTApp = $(`#PTTChat`, parent);
-      if (PTTApp.length > 0) { }
-      else {
-        if (reportmode) console.log("InitApp");
-        InitApp(parent, WhiteTheme, true, messageposter);
+      const PTTApp = $('#PTTChat', parent)
+      if (PTTApp.length < 1) {
+        if (reportmode) console.log('InitApp')
+        InitApp(parent, WhiteTheme, true, messageposter)
       }
     }
   }

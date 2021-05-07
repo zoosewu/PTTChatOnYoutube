@@ -1,13 +1,11 @@
-import Chat from './chat/Chat.js';
-import Connect from './connect/Connect.js';
-import ConnectAlert from './connect/ConnectAlert.js';
-import Other from './other/Other.js';
-import PTTScreen from './ptt/PTTScreen.js';
-import Log from './log/Log.js';
+import Chat from './chat/Chat.js'
+import Connect from './connect/Connect.js'
+import ConnectAlert from './connect/ConnectAlert.js'
+import Other from './other/Other.js'
+import PTTScreen from './ptt/PTTScreen.js'
+import Log from './log/Log.js'
 
-import getter from './store/getters.js';
-
-export let PTTAppContent = {
+export const PTTAppContent = {
   components: {
     'PTTApp-Chat': Chat,
     'PTTApp-Alert': ConnectAlert,
@@ -17,9 +15,9 @@ export let PTTAppContent = {
     'PTTApp-Log': Log
   },
   computed: {
-    updateheight() {
+    updateheight () {
       return {
-        height: this.$store.getters.getPluginHeight + "px"
+        height: this.$store.getters.getPluginHeight + 'px'
       }
     }
   },
@@ -51,4 +49,3 @@ export let PTTAppContent = {
   </div>
 </div>`
 }
-

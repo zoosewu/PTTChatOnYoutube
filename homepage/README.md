@@ -86,7 +86,7 @@
     如果你是透過瀏覽器使用PTT，並且有安裝其他PTT的輔助腳本例如自動登入/自動跳過畫面的話，
     請在"其他"腳本最前面加上以下兩行程式碼，這是讓其他腳本不會干擾背景執行的PTT。
 ```js
-let isTopframe = (window.top == window.self);
+let isTopframe = (window.top === window.self);
 if (!isTopframe) throw "[Script Stopped: This script should run in top frame only.]";
 ```
 新增完之後應該長這樣：

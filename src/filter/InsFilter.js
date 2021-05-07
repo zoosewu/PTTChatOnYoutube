@@ -1,4 +1,4 @@
-export function InsFilter(fullname, reg, ownerorigin, Initcallback) {
+export function InsFilter (fullname, reg, ownerorigin, Initcallback) {
   return {
     Fullname: fullname,
     Reg: reg,

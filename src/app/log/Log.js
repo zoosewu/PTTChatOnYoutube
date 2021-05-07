@@ -1,10 +1,10 @@
-import LogItem from './LogItem.js';
-import LogTitle from './LogTitle.js';
-export let Log = {
+import LogItem from './LogItem.js'
+import LogTitle from './LogTitle.js'
+export const Log = {
 
   components: {
-    "log-item": LogItem,
-    "log-title": LogTitle,
+    'log-item': LogItem,
+    'log-title': LogTitle
   },
   template: `<div class="flex-grow-1 overflow-auto h-100 w-100 mx-0 row" id="PTTChat-contents-log-main" style="overscroll-behavior: contain;">
   <table class="table ptt-bg">
@@ -32,5 +32,5 @@ export let Log = {
       <log-title title="近期訊息"></log-title>
     </tbody>
   </table>
-</div>`,
+</div>`
 }

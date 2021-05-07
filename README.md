@@ -13,6 +13,7 @@
 
 腳本更新依照下面步驟操作之後存檔完在violentmonkey設定那邊按一下更新就能測試
 
+
 ###### Chrome: 
 管理擴充功能/套件->允許存取檔案位置打勾
 
@@ -23,7 +24,11 @@
 
 在腳本更新網址輸入伺服器腳本位置```http://127.0.0.1:8889/publish/PTTChatOnYt.user.js```
 
+#### Standard: 
+[![Standard - JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+請依照提示安裝StandardJS，並用pre-commit確保程式碼遵循風格。
 
+VSCode設定請開啟 ```"javascript.format.insertSpaceBeforeFunctionParenthesis": true```
 
 ## 建議及回報
 

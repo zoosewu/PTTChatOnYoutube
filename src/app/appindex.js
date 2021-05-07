@@ -1,116 +1,116 @@
-import { PTTApp } from './PTTApp.js';
-import { PTTAppBtn } from './PTTAppBtn.js';
-import { store } from './store/store.js';
-export function InitApp(chatcon, whitetheme, isstreaming, messageposter, dynamicPlugin = false) {
-  //generate crypt key everytime;
-  InitChatApp(chatcon);
-  function InitChatApp(cn) {
-    /*-----------------------------------preInitApp-----------------------------------*/
-    //init property
-    let ele = document.createElement('div');
-    ele.id = "PTTChat";
-    ele.setAttribute("style", "z-index: 301;");
-    if (cn) cn[0].appendChild(ele);
-    //Vue.prototype.$bus = new Vue();
-    const themewhite = "pttbgc-19 pttc-5";
-    const themedark = "pttbgc-2 pttc-2";
-    let color = whitetheme ? "pttbgc-19 pttc-5" : "pttbgc-2 pttc-2";
-    console.log("Instance PTTChatOnYT App, index", appinscount);
-    let PTT = new Vue({
+import { PTTApp } from './PTTApp.js'
+import { PTTAppBtn } from './PTTAppBtn.js'
+import { store } from './store/store.js'
+export function InitApp (chatcon, whitetheme, isstreaming, messageposter, dynamicPlugin = false) {
+  // generate crypt key everytime;
+  InitChatApp(chatcon)
+  function InitChatApp (cn) {
+    /* -----------------------------------preInitApp----------------------------------- */
+    // init property
+    const ele = document.createElement('div')
+    ele.id = 'PTTChat'
+    ele.setAttribute('style', 'z-index: 301;')
+    if (cn) cn[0].appendChild(ele)
+    // Vue.prototype.$bus = new Vue();
+    const themewhite = 'pttbgc-19 pttc-5'
+    const themedark = 'pttbgc-2 pttc-2'
+    // const color = whitetheme ? 'pttbgc-19 pttc-5' : 'pttbgc-2 pttc-2'
+    console.log('Instance PTTChatOnYT App, index', appinscount)
+    const PTT = new Vue({
       el: '#PTTChat',
 
       store,
       components: {
-        'PTTAppBtn': PTTAppBtn,
-        'PTTApp': PTTApp
+        PTTAppBtn: PTTAppBtn,
+        PTTApp: PTTApp
       },
-      data() {
+      data () {
         return {
           index: appinscount,
           rootmsg: messageposter,
-          player: document.getElementsByTagName("video")[0],
+          player: document.getElementsByTagName('video')[0],
           playertime: null,
-          exist: null,
+          exist: null
         }
       },
       computed: {
         classes: function () {
-          let classes = ["position-absolute", "w-100"];
-          if (reportmode) console.log("Appindex set theme", this.getTheme);
+          const classes = ['position-absolute', 'w-100']
+          if (reportmode) console.log('Appindex set theme', this.getTheme)
           switch (+this.getTheme) {
             case 0:
-              if (whitetheme) classes.push(themewhite);
-              else classes.push(themedark);
-              break;
+              if (whitetheme) classes.push(themewhite)
+              else classes.push(themedark)
+              break
             case 1:
-              classes.push(themewhite);
-              break;
+              classes.push(themewhite)
+              break
             case 2:
-              classes.push(themedark);
-              break;
+              classes.push(themedark)
+              break
             case 3:
-              classes.push("pttbgc-" + this.getThemeColorBG);
-              classes.push("pttc-" + (10 - this.getThemeColorBorder));
-              break;
+              classes.push('pttbgc-' + this.getThemeColorBG)
+              classes.push('pttc-' + (10 - this.getThemeColorBorder))
+              break
             default:
-              break;
+              break
           }
-          return classes.join(' ');
+          return classes.join(' ')
         },
         ...Vuex.mapGetters([
           'getTheme',
           'getThemeColorBG',
-          'getThemeColorBorder',
-        ]),
+          'getThemeColorBorder'
+        ])
       },
       provide: function () {
         return {
           msg: this.rootmsg,
           isStream: isstreaming,
           nowPluginWidth: cn[0].offsetWidth,
-          dynamicPlugin: dynamicPlugin,
-        };
+          dynamicPlugin: dynamicPlugin
+        }
       },
-      mounted() {
-        appinscount++;
-        this.playertime = window.setInterval((() => {
-          if (this.player) this.$store.dispatch('updateVideoPlayedTime', this.player.currentTime);
-          else clearInterval(this.playertime);
-        }), 1000);
-        this.exist = window.setInterval((() => {
-          const self = document.querySelector('#PTTChat[ins="' + this.index + '"');
+      mounted () {
+        /* eslint-disable no-global-assign */
+        appinscount++
+        /* eslint-enable no-global-assign */
+        this.playertime = window.setInterval(() => {
+          if (this.player) this.$store.dispatch('updateVideoPlayedTime', this.player.currentTime)
+          else clearInterval(this.playertime)
+        }, 1000)
+        this.exist = window.setInterval(() => {
+          const self = document.querySelector('#PTTChat[ins="' + this.index + '"')
           if (!self) {
-            console.log("Instance " + this.index + " destroyed.");
-            PTT.$destroy();
+            console.log('Instance ' + this.index + ' destroyed.')
+            PTT.$destroy()
+          } else { // console.log("Instance " + this.index + " alive.");
           }
-          else { //console.log("Instance " + this.index + " alive.");
-          }
-        }), 1000);
-        this.$store.dispatch('isStream', isstreaming);
+        }, 1000)
+        this.$store.dispatch('isStream', isstreaming)
         if (!isstreaming) {
           try {
-            const videoinfo = JSON.parse(document.getElementById('scriptTag').innerHTML);
-            if (reportmode) console.log("videoinfo", videoinfo);
-            const startDate = new Date(videoinfo.publication[0].startDate);
-            if (reportmode) console.log("startDate", startDate);
-            this.$store.dispatch('updateVideoStartDate', startDate);
-          }
-          catch (e) {
-            console.log(e);
+            const videoinfo = JSON.parse(document.getElementById('scriptTag').innerHTML)
+            if (reportmode) console.log('videoinfo', videoinfo)
+            const startDate = new Date(videoinfo.publication[0].startDate)
+            if (reportmode) console.log('startDate', startDate)
+            this.$store.dispatch('updateVideoStartDate', startDate)
+          } catch (e) {
+            console.log(e)
           }
         }
 
-        this.rootmsg["PTTState"] = data => { this.$store.dispatch('PTTState', data); };
+        this.rootmsg.PTTState = data => { this.$store.dispatch('PTTState', data) }
       },
-      beforeDestroy() {
-        console.log("beforeDestroy", this);
-        clearInterval(this.playertime);
-        clearInterval(this.exist);
+      beforeDestroy () {
+        console.log('beforeDestroy', this)
+        clearInterval(this.playertime)
+        clearInterval(this.exist)
       },
       template: `<div id="PTTChat" :class="classes" :ins="index">
       <PTTAppBtn></PTTAppBtn>
       <PTTApp></PTTApp>
-    </div>`,
-    });
+    </div>`
+    })
   }
 }

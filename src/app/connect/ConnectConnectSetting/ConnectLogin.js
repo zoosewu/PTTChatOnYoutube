@@ -1,25 +1,24 @@
-export let ConnectLogin = {
+export const ConnectLogin = {
   inject: ['msg'],
-  data() {
+  data () {
     return {
-      id: GM_getValue("PTTID", ""),
-      pw: ""
+      id: GM_getValue('PTTID', ''),
+      pw: ''
     }
   },
   methods: {
     login: function () {
-      if (this.id === "" || this.pw === "") {
-        this.$store.dispatch('Alert', { type: 0, msg: "帳號或密碼不得為空。" });
-        return;
+      if (this.id === '' || this.pw === '') {
+        this.$store.dispatch('Alert', { type: 0, msg: '帳號或密碼不得為空。' })
+        return
+      } else if (this.PTTState > 0) {
+        this.$store.dispatch('Alert', { type: 0, msg: '已經登入，請勿重複登入。' })
+        return
       }
-      else if (this.PTTState > 0) {
-        this.$store.dispatch('Alert', { type: 0, msg: "已經登入，請勿重複登入。" });
-        return;
-      }
-      GM_setValue("PTTID", this.id);
-      const i = CryptoJS.AES.encrypt(this.id, cryptkey).toString();
-      const p = CryptoJS.AES.encrypt(this.pw, cryptkey).toString();
-      this.msg.PostMessage("login", { id: i, pw: p, DeleteOtherConnect: this.getDeleteOtherConnect });
+      GM_setValue('PTTID', this.id)
+      const i = CryptoJS.AES.encrypt(this.id, cryptkey).toString()
+      const p = CryptoJS.AES.encrypt(this.pw, cryptkey).toString()
+      this.msg.PostMessage('login', { id: i, pw: p, DeleteOtherConnect: this.getDeleteOtherConnect })
     }
   },
   computed: {
@@ -40,5 +39,5 @@ export let ConnectLogin = {
     <label for="PTTlogin" class="col-2">&nbsp;</label>
     <button id="PTTlogin" class="btn ptt-btnoutline w-100" type="button" @click.self="login()">登入</button>
   </div>
-</div>`,
+</div>`
 }
