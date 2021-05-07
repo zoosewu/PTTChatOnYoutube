@@ -6,10 +6,10 @@ export const ConnectReinstancePTTBtn = {
   },
   template: `<div class="form-row my-3">
   <label class="col-3 col-form-label">重啟PTT</label>
-  <div class="col-2 px-0 ml-3">
+  <div class="col-2 px-0 ml-2">
     <button id="reinstance-ptt-btn" class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="reInstancePTT()">點我</button>
   </div>
-  <label class="col-6 col-form-label pr-0">PTT跑到奇怪的畫面壞掉時使用</label>
+  <label class="col col-form-label ml-2">PTT跑到奇怪的畫面壞掉時使用</label>
 </div>
 `
 }

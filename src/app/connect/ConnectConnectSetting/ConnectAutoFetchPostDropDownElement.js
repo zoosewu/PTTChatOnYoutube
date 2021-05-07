@@ -85,8 +85,8 @@ export const ConnectAutoFetchPostDropDownElement = {
     <label class="col-3 col-form-label">{{this.description}}</label>
     <div class="col">
       <div class="dropdown">
-        <button class="btn ptt-btnoutline dropdown-toggle" type="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
+        <button class="btn ptt-btnoutline dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
           {{this.DisplayOption}}
         </button>
         <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
@@ -95,27 +95,32 @@ export const ConnectAutoFetchPostDropDownElement = {
               @click.stop="$_ConnectAutoFetchPost_onClickRemoveOption(index)" @click.prevent
               class="close">&times;</button></a>
           <li class="dropdown-divider"></li>
-          <a href="#" class="dropdown-item" data-toggle="collapse" data-target="#manualinputarea" @click.prevent>新增其他選項</a>
+          <a href="#" class="dropdown-item" data-toggle="collapse" data-target="#manualinputarea"
+            @click.prevent>新增其他選項</a>
         </ul>
       </div>
     </div>
   </div>
-  <div class="form-row collapse" id="manualinputarea">
-    <div class="col-3"></div>
-    <div class="col" v-on:keyup.13="addAndSearch">
-      <input type="text" class="form-control mb-1" v-model="connectAutoFetchPost_manualBoard" placeholder="看板：">
-      <input type="text" class="form-control mt-1" v-model="connectAutoFetchPost_manualTitle" placeholder="標題：">
-    </div>
-    <div class="col-2 px-0">
-      <button class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="addAndSearch()">新增</button>
+  <div class="collapse" id="manualinputarea">
+    <div class="form-row">
+      <div class="col-3"></div>
+      <div class="col" v-on:keyup.13="addAndSearch">
+        <input type="text" class="form-control mb-1" v-model="connectAutoFetchPost_manualBoard" placeholder="看板：">
+        <input type="text" class="form-control mt-1" v-model="connectAutoFetchPost_manualTitle" placeholder="標題：">
+      </div>
+      <div class="col-2 px-0">
+        <button class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="addAndSearch()">新增</button>
+      </div>
     </div>
   </div>
-  <div class="form-row my-3 collapse" id="previewForm">
-    <div class="col-3">
-      <label class="col-form-label">標題預覽</label>
-    </div>
-    <div class="col ml-2" style="border:1px solid;">
-      <div class="my-2">{{SetingValue_previewTitle}}</div>
+  <div class="my-3 collapse" id="previewForm">
+    <div class="form-row">
+      <div class="col-3">
+        <label class="col-form-label">標題預覽</label>
+      </div>
+      <div class="col ml-2" style="border:1px solid;">
+        <div class="my-2">{{SetingValue_previewTitle}}</div>
+      </div>
     </div>
   </div>
 </div>`
