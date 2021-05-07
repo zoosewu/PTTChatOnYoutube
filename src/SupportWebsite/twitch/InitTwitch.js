@@ -2,7 +2,7 @@
 import { InitApp } from '../../app/appindex.js'
 import { ThemeCheck } from '../../library.js'
 
-export function InitTwitch(messageposter) {
+export function InitTwitch (messageposter) {
   // Check Theme
   const WhiteTheme = ThemeCheck('body', 'rgb(247, 247, 248)');
 
