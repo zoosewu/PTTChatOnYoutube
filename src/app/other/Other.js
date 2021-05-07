@@ -1,12 +1,11 @@
-export let Other = {
+export const Other = {
   inject: ['nowPluginWidth'],
   computed: {
     Classes: function () {
-      let classes = ["container" ];
-      if (this.nowPluginWidth < 399) { classes.push("px-0"); }
-      else { classes.push("px-5"); }
-      return classes.join(' ');
-    },
+      const classes = ['container']
+      if (this.nowPluginWidth < 399) { classes.push('px-0') } else { classes.push('px-5') }
+      return classes.join(' ')
+    }
   },
   template: `<div id="PTTChat-contents-other-main" :class="Classes">
   <h4 class="text-center mt-3 mb-1">使用教學</h4>
@@ -54,5 +53,5 @@ export let Other = {
   <p class="text-center mt-1 mb-0">本人一概不負責</p>
   <p class="text-center mt-1 mb-0">&nbsp;</p>
   <p class="text-center mt-1 mb-0">Zoosewu</p>
-</div>`,
+</div>`
 }

@@ -1,45 +1,45 @@
-export let ChatSetNewPush = {
+export const ChatSetNewPush = {
   inject: ['msg', 'isStream'],
-  data() {
+  data () {
     return {
-      pushtext: "",
+      pushtext: ''
     }
   },
   methods: {
     setPush: function () {
-      const result = /.+/.exec(this.pushtext);
-      if (!result) this.$store.dispatch('Alert', { type: 0, msg: "請輸入文字。" });
-      else if (this.PTTState < 1) this.$store.dispatch('Alert', { type: 0, msg: "PTT尚未登入，請先登入。" });
-      else if (!this.post.gettedpost) this.$store.dispatch('Alert', { type: 0, msg: "尚未獲取文章，請先獲取文章。" });
-      else this.msg.PostMessage("setNewPush", this.pushtext);
+      const result = /.+/.exec(this.pushtext)
+      if (!result) this.$store.dispatch('Alert', { type: 0, msg: '請輸入文字。' })
+      else if (this.PTTState < 1) this.$store.dispatch('Alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
+      else if (!this.post.gettedpost) this.$store.dispatch('Alert', { type: 0, msg: '尚未獲取文章，請先獲取文章。' })
+      else this.msg.PostMessage('setNewPush', this.pushtext)
     },
-    removePushedText(text) {
-      if (this.pushtext.indexOf(text) === 0) this.pushtext = this.pushtext.substring(text.length, this.pushtext.length);
-      console.log(this.pushtext);
-      /*const reg = "(" + text + ")(.*)";
+    removePushedText (text) {
+      if (this.pushtext.indexOf(text) === 0) this.pushtext = this.pushtext.substring(text.length, this.pushtext.length)
+      console.log(this.pushtext)
+      /* const reg = "(" + text + ")(.*)";
       const result = new RegExp(reg).exec(this.pushtext);
       if (reportmode) console.log("removePushedText", text, this.pushtext, result);
-      this.pushtext = result[2];*/
+      this.pushtext = result[2]; */
     }
   },
   computed: {
     placeholder: function () {
-      if (this.getEnableSetNewPush) return "輸入文字以推文...";
-      else return "請到連線設定開啟測試版推文功能";
+      if (this.getEnableSetNewPush) return '輸入文字以推文...'
+      else return '請到連線設定開啟測試版推文功能'
     },
     className: function () {
-      let classes = ["form-row", "my-2"];
-      if (!this.isStream) { classes.push("d-none"); }
-      return classes.join(' ');
+      const classes = ['form-row', 'my-2']
+      if (!this.isStream) { classes.push('d-none') }
+      return classes.join(' ')
     },
     ...Vuex.mapGetters([
       'post',
       'PTTState',
-      'getEnableSetNewPush',
+      'getEnableSetNewPush'
     ])
   },
-  mounted() {
-    this.msg["pushedText"] = data => this.removePushedText(data);
+  mounted () {
+    this.msg.pushedText = data => this.removePushedText(data)
   },
   template: `<div class="container">
   <div :class="className">
@@ -51,5 +51,5 @@ export let ChatSetNewPush = {
       <button id="setnewpushbtn" class="btn ptt-btnoutline w-100 px-2" type="button" @click.self="setPush()">推文</button>
     </div>
   </div>
-</div>`,
+</div>`
 }

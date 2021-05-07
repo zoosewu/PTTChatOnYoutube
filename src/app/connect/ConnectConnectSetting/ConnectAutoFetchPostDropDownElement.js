@@ -1,10 +1,10 @@
-export let ConnectAutoFetchPostDropDownElement = {
+export const ConnectAutoFetchPostDropDownElement = {
   inject: ['msg'],
   props: {
     settingName: { type: String, required: true },
-    description: { type: String, required: true },
+    description: { type: String, required: true }
   },
-  data() {
+  data () {
     return {
       optionGroup: this.checkOptionGroup(),
       dropdownPreview: null,
@@ -12,74 +12,72 @@ export let ConnectAutoFetchPostDropDownElement = {
       title: null,
       connectAutoFetchPost_manualBoard: null,
       connectAutoFetchPost_manualTitle: null,
-      SetingValue_previewTitle: null,
+      SetingValue_previewTitle: null
     }
   },
   watch: {
     SetingValue_previewTitle: function () {
-      $("#previewForm").collapse("show");
-      $("#manualinputarea").collapse("hide");
-      this.getPost();
+      $('#previewForm').collapse('show')
+      $('#manualinputarea').collapse('hide')
+      this.getPost()
     }
   },
-  mounted() {
-    this.msg["getAutoFetchedPostTitle"] = data => {
-      this.SetingValue_previewTitle = data;
-      //if (reportmode) console.log("gettitle" + this.title);
-    };
+  mounted () {
+    this.msg.getAutoFetchedPostTitle = data => {
+      this.SetingValue_previewTitle = data
+      // if (reportmode) console.log("gettitle" + this.title);
+    }
   },
   methods: {
-    $_ConnectAutoFetchPost_onClickRemoveOption(_index) {
-      this.optionGroup.splice(_index, 1);
-      this.$store.dispatch("setSearchTitle", this.optionGroup);
+    $_ConnectAutoFetchPost_onClickRemoveOption (_index) {
+      this.optionGroup.splice(_index, 1)
+      this.$store.dispatch('setSearchTitle', this.optionGroup)
     },
-    $_ConnectAutoFetchPost_onClickDropdownItem(_item, _index) {
-      $("#manualinputarea").collapse("hide");
-      const result = /(.+) \((.+)\)/.exec(_item);
-      this.board = result[2];
-      this.title = result[1];
-      this.dropdownPreview = result[1] + " (" + result[2] + ")";
-      this.optionGroup.splice(0, 0, this.optionGroup.splice(_index, 1)[0]);
-      this.$store.dispatch("setSearchTitle", this.optionGroup);
-      this.msg.PostMessage("getPostTitle", { boardforsearch: this.board, titleforsearch: this.title });
+    $_ConnectAutoFetchPost_onClickDropdownItem (_item, _index) {
+      $('#manualinputarea').collapse('hide')
+      const result = /(.+) \((.+)\)/.exec(_item)
+      this.board = result[2]
+      this.title = result[1]
+      this.dropdownPreview = result[1] + ' (' + result[2] + ')'
+      this.optionGroup.splice(0, 0, this.optionGroup.splice(_index, 1)[0])
+      this.$store.dispatch('setSearchTitle', this.optionGroup)
+      this.msg.PostMessage('getPostTitle', { boardforsearch: this.board, titleforsearch: this.title })
     },
     addAndSearch: function () {
       if (this.connectAutoFetchPost_manualBoard !== null && this.connectAutoFetchPost_manualTitle !== null) {
-        console.log(this.optionGroup);
-        this.optionGroup.unshift(this.connectAutoFetchPost_manualTitle + " (" + this.connectAutoFetchPost_manualBoard + ")");
-      }
-      else {
-        this.$store.dispatch('Alert', { type: 0, msg: "看板名稱及標題不得為空。" });
-        return;
+        console.log(this.optionGroup)
+        this.optionGroup.unshift(this.connectAutoFetchPost_manualTitle + ' (' + this.connectAutoFetchPost_manualBoard + ')')
+      } else {
+        this.$store.dispatch('Alert', { type: 0, msg: '看板名稱及標題不得為空。' })
+        return
       }
       if (this.PTTState < 1) {
-        this.$store.dispatch('Alert', { type: 0, msg: "PTT尚未登入，請先登入。" });
-        return;
+        this.$store.dispatch('Alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
+        return
       }
-      this.$_ConnectAutoFetchPost_onClickDropdownItem(this.optionGroup[0]);
+      this.$_ConnectAutoFetchPost_onClickDropdownItem(this.optionGroup[0])
     },
     getPost: function () {
-      //if (reportmode) console.log("click AutoFetchPostBtn" + this.board + " " + this.title + " " + this.SetingValue_previewTitle);
+      // if (reportmode) console.log("click AutoFetchPostBtn" + this.board + " " + this.title + " " + this.SetingValue_previewTitle);
       if (this.PTTState < 1) {
-        this.$store.dispatch('Alert', { type: 0, msg: "PTT尚未登入，請先登入。" });
-        return;
+        this.$store.dispatch('Alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
+        return
       }
-      this.msg.PostMessage("getPushByRecent", { boardforsearch: this.board, titleforsearch: this.title, recent: 200 });
-      this.$store.dispatch("gotoChat", true);
+      this.msg.PostMessage('getPushByRecent', { boardforsearch: this.board, titleforsearch: this.title, recent: 200 })
+      this.$store.dispatch('gotoChat', true)
     },
     checkOptionGroup: function () {
-      let option = this.$store.getters["getSearchTitle"];
-      if (option === null || option.length === 0)
+      const option = this.$store.getters.getSearchTitle
+      if (option === null || option.length === 0) {
         return [
-          "直播單 (C_Chat)",
-          "彩虹直播 (Vtuber)"
-        ];
-      else
-        return option;
-    },
+          '直播單 (C_Chat)',
+          '彩虹直播 (Vtuber)'
+        ]
+      } else { return option }
+    }
   },
   computed: {
-    DisplayOption() { return this.dropdownPreview === null ? "請選擇...." : this.dropdownPreview },
+    DisplayOption () { return this.dropdownPreview === null ? '請選擇....' : this.dropdownPreview },
     ...Vuex.mapGetters(['PTTState'])
   },
   template: `<div class="form-group my-3">
@@ -120,5 +118,5 @@ export let ConnectAutoFetchPostDropDownElement = {
       <div class="my-2">{{SetingValue_previewTitle}}</div>
     </div>
   </div>
-</div>`,
+</div>`
 }

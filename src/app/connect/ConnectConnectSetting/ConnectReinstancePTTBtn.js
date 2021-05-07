@@ -1,8 +1,8 @@
-export let ConnectReinstancePTTBtn = {
+export const ConnectReinstancePTTBtn = {
   methods: {
     ...Vuex.mapActions([
-      'reInstancePTT', // 将 `this.reInstancePTT()` 映射为 `this.$store.dispatch('reInstancePTT')`
-    ]),
+      'reInstancePTT' // 将 `this.reInstancePTT()` 映射为 `this.$store.dispatch('reInstancePTT')`
+    ])
   },
   template: `<div class="form-row my-3">
   <label class="col-3 col-form-label">重啟PTT</label>
@@ -11,5 +11,5 @@ export let ConnectReinstancePTTBtn = {
   </div>
   <label class="col-6 col-form-label pr-0">PTT跑到奇怪的畫面壞掉時使用</label>
 </div>
-`,
+`
 }

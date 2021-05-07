@@ -1,17 +1,17 @@
-export let PTTAppNav = {
+export const PTTAppNav = {
   computed: {
     isGotoChat: function () {
-      const go = this.gotoChat;
-      if (reportmode) console.log("isGotoChat", go);
+      const go = this.gotoChat
+      if (reportmode) console.log('isGotoChat', go)
       if (go) {
-        this.$store.dispatch('gotoChat', false);
-        this.$refs.chatbtn.click();
-        if (reportmode) console.log("gotoChat");
+        this.$store.dispatch('gotoChat', false)
+        this.$refs.chatbtn.click()
+        if (reportmode) console.log('gotoChat')
       }
-      return go;
+      return go
     },
     ...Vuex.mapGetters([
-      'gotoChat',
+      'gotoChat'
     ])
   },
   template: `<ul id="PTTChat-navbar" class="nav nav-tabs justify-content-center" role="tablist">
@@ -39,5 +39,5 @@ export let PTTAppNav = {
     <button class="nav-link ptt-text bg-transparent d-none" id="nav-item-TimeSet" type="button" data-toggle="collapse"
       data-target="#PTTChat-Time" aria-controls="PTTChat-Time" aria-expanded="false">時間</button>
   </li>
-</ul>`,
+</ul>`
 }

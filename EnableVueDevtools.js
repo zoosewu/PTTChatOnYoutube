@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Enable Vue.js devtools
-// @namespace    http://tampermonkey.net/ 
+// @namespace    http://tampermonkey.net/
 // @version      1.0.0
 // @description  强制启用 Vue.js devtools 开发者工具
 // @author       楼教主,zoosewu
@@ -10,59 +10,58 @@
 // ==/UserScript==
 
 (function () {
-  const showlog = true;
+  const showlog = true
   if (!window.__VUE_DEVTOOLS_GLOBAL_HOOK__) {
-    setTimeout(enableDevtools, 2000);
-    if (showlog) console.log("no __VUE_DEVTOOLS_GLOBAL_HOOK__");
-    return;
+    setTimeout(enableDevtools, 2000)
+    if (showlog) console.log('no __VUE_DEVTOOLS_GLOBAL_HOOK__')
+    return
   }
 
-  let isActivated = false;
+  let isActivated = false
 
   const getConstructor = el => {
-    const vm = (el || 0).__vue__;
+    const vm = (el || 0).__vue__
     if (vm) {
-      return vm.constructor.super ? vm.constructor.super : vm.constructor;
+      return vm.constructor.super ? vm.constructor.super : vm.constructor
     }
-  };
+  }
 
   const getVue = () => {
-    let Vue = window.Vue;
+    let Vue = window.Vue
 
     if (!Vue) {
-      Vue = getConstructor(document.getElementById('app'));
+      Vue = getConstructor(document.getElementById('app'))
     }
 
     if (!Vue) {
       // 遍历 dom 读取可能的 vue 实例
-      Vue = getConstructor([...document.body.querySelectorAll('div')].find(el => el.__vue__));
+      Vue = getConstructor([...document.body.querySelectorAll('div')].find(el => el.__vue__))
     }
 
-    return Vue;
-  };
+    return Vue
+  }
 
-  function enableDevtools() {
+  function enableDevtools () {
     if (isActivated) {
-      //console.log("isActivated");
-      return;
+      // console.log("isActivated");
+      return
     }
 
-    const Vue = getVue();
+    const Vue = getVue()
 
     if (!Vue) {
-      if (showlog) console.log("No Vue instance.");
-      setTimeout(enableDevtools, 2000);
-      return;
+      if (showlog) console.log('No Vue instance.')
+      setTimeout(enableDevtools, 2000)
+      return
     }
 
-    isActivated = true;
+    isActivated = true
 
-    Vue.config.devtools = true;
-    window.__VUE_DEVTOOLS_GLOBAL_HOOK__.emit('init', Vue);
-    if (showlog) console.log("Hook devtool!", [Vue]);
-
+    Vue.config.devtools = true
+    window.__VUE_DEVTOOLS_GLOBAL_HOOK__.emit('init', Vue)
+    if (showlog) console.log('Hook devtool!', [Vue])
   };
 
   // enableDevtools();
-  setTimeout(enableDevtools, 2000);
-})();
+  setTimeout(enableDevtools, 2000)
+})()

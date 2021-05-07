@@ -1,40 +1,42 @@
-import { ConnectPluginSettingInputElement } from './PluginSettings/ConnectPluginSettingInputElement.js';
-import { ConnectOtherSetting } from './PluginSettings/ConnectOtherSetting.js';
-import { ConnectNewVersion } from './PluginSettings/ConnectNewVersion.js';
-import { ConnectDropdownElement } from './PluginSettings/ConnectDropdownElement.js';
-export let ConnectPluginSetting = {
+/* eslint-disable no-unused-vars */
+import { ConnectPluginSettingInputElement } from './PluginSettings/ConnectPluginSettingInputElement.js'
+/* eslint-enable no-unused-vars */
+import { ConnectOtherSetting } from './PluginSettings/ConnectOtherSetting.js'
+import { ConnectNewVersion } from './PluginSettings/ConnectNewVersion.js'
+import { ConnectDropdownElement } from './PluginSettings/ConnectDropdownElement.js'
+export const ConnectPluginSetting = {
   inject: ['dynamicPlugin'],
-  data() {
+  data () {
     return {
-      ThemeOptions: ["與網站相同", "淺色主題", "深色主題", "使用者自訂"],
+      ThemeOptions: ['與網站相同', '淺色主題', '深色主題', '使用者自訂']
     }
   },
   computed: {
     ThemeColorBGOptions: function () {
-      const array = ["黑色"];
-      for (let i = 1; i < 20; i++) array.push((i * 5) + "%");
-      array.push("白色");
-      return array;
+      const array = ['黑色']
+      for (let i = 1; i < 20; i++) array.push((i * 5) + '%')
+      array.push('白色')
+      return array
     },
     ThemeColorBorderOptions: function () {
-      const array = ["黑色"];
-      for (let i = 1; i < 10; i++) array.push((i * 10) + "%");
-      array.push("白色");
-      return array;
+      const array = ['黑色']
+      for (let i = 1; i < 10; i++) array.push((i * 10) + '%')
+      array.push('白色')
+      return array
     },
     showThemeColorOption: function () {
       // console.log("showThemeColorOption", (+this.getTheme == 3));
-      return (+this.getTheme == 3);
+      return (+this.getTheme === 3)
     },
     ...Vuex.mapGetters([
-      'getTheme',
-    ]),
+      'getTheme'
+    ])
   },
   components: {
-    //"connect-plugin-height": ConnectPluginHeight,
-    "connect-other-setting": ConnectOtherSetting,
-    "connect-new-version": ConnectNewVersion,
-    "connect-dropdown": ConnectDropdownElement,
+    // "connect-plugin-height": ConnectPluginHeight,
+    'connect-other-setting': ConnectOtherSetting,
+    'connect-new-version': ConnectNewVersion,
+    'connect-dropdown': ConnectDropdownElement
   },
   template: `<div class="mt-4 mb-1">
   <div class="text-center mb-2">
@@ -74,5 +76,5 @@ export let ConnectPluginSetting = {
   <div class="form-row px-2">
     <connect-new-version></connect-new-version>
   </div>
-</div>`,
+</div>`
 }

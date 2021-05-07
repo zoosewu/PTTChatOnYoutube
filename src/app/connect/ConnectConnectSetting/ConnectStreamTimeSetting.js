@@ -1,40 +1,39 @@
-export let ConnectStreamTimeSetting = {
+export const ConnectStreamTimeSetting = {
   inject: ['isStream'],
-  data() {
+  data () {
     return {
-      VideoTime: "18:00:00",
-      isbeforpost: false,
+      VideoTime: '18:00:00',
+      isbeforpost: false
     }
   },
   methods: {
     timeChange: function () {
-      let videotime = [];
-      let result = /(\d\d)\:(\d\d)/.exec(this.VideoTime);
-      let secresult = /\d\d\:\d\d\:(\d\d)/.exec(this.VideoTime);
+      const videotime = []
+      const result = /(\d\d):(\d\d)/.exec(this.VideoTime)
+      const secresult = /\d\d:\d\d:(\d\d)/.exec(this.VideoTime)
       if (result) {
-        videotime.push(result[1]);
-        videotime.push(result[2]);
+        videotime.push(result[1])
+        videotime.push(result[2])
+      } else {
+        videotime.push('18')
+        videotime.push('00')
       }
-      else {
-        videotime.push("18");
-        videotime.push("00");
-      }
-      if (secresult) videotime.push(secresult[1]);
-      else videotime.push("00");
-      videotime.push(this.isbeforpost);
-      console.log("timeChange", this.VideoTime, videotime);
-      this.$store.dispatch('updateVideoStartTime', videotime);
+      if (secresult) videotime.push(secresult[1])
+      else videotime.push('00')
+      videotime.push(this.isbeforpost)
+      console.log('timeChange', this.VideoTime, videotime)
+      this.$store.dispatch('updateVideoStartTime', videotime)
     }
   },
   computed: {
     className: function () {
-      let classes = ["form-row", "mb-2"];
-      if (this.isStream) { classes.push("d-none"); }
-      return classes.join(' ');
+      const classes = ['form-row', 'mb-2']
+      if (this.isStream) { classes.push('d-none') }
+      return classes.join(' ')
     }
   },
-  mounted() {
-    //this.$store.dispatch('updateVideoStartTime', ["18", "00", "00", false]);
+  mounted () {
+    // this.$store.dispatch('updateVideoStartTime', ["18", "00", "00", false]);
   },
   template: `<div id="PTTConnect-Time-Setting" :class="className">
   <div class="form-group col-8">
@@ -45,5 +44,5 @@ export let ConnectStreamTimeSetting = {
     <input type="checkbox" class="form-check-input" id="streambeforepost" :value="isbeforpost" @change="timeChange">
     <label class="form-check-label ml-2" for="streambeforepost">發文前已開台</label>
   </div>
-</div>`,
+</div>`
 }

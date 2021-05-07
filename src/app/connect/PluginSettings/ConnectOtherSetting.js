@@ -1,9 +1,12 @@
 
-import { ConnectPluginSettingCheckboxElement } from './ConnectPluginSettingCheckboxElement.js';
-//import { ConnectEnableSetNewChat } from './ConnectEnableSetNewChat.js';
-//import { ConnectDisablePushGray } from './ConnectPluginSettingCheckboxElement.js';
-import { ConnectPluginSettingBlacklistElement} from './ConnectPluginSettingBlacklistElement.js';
-export let ConnectOtherSetting = {
+/* eslint-disable no-unused-vars */
+import { ConnectPluginSettingCheckboxElement } from './ConnectPluginSettingCheckboxElement.js'
+/* eslint-enable no-unused-vars */
+import { ConnectPluginSettingBlacklist } from './ConnectPluginSettingBlacklist.js'
+export const ConnectOtherSetting = {
+  components: {
+    'plugin-setting-blacklist': ConnectPluginSettingBlacklist
+  },
   // mounted() { },
   template: `<div id="PTTConnect-OtherSetting" class="form-row px-0 mx-0 col-12 my-2">
   <legend class="col-form-label col-3 pt-0">其他設定</legend>
@@ -17,5 +20,5 @@ export let ConnectOtherSetting = {
       </div>
     </div>
   </div>
-</div>`,
+</div>`
 }
