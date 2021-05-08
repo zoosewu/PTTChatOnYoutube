@@ -1,12 +1,51 @@
 module.exports = {
+  root: true,
+  env: {
+    node: true
+  },
   extends: [
     // add more generic rulesets here, such as:
-    // 'eslint:recommended',
-    // 'plugin:vue/vue3-recommended',
-    'plugin:vue/recommended' // Use this if you are using Vue.js 2.x.
+    'plugin:vue/recommended',
+    'standard'
   ],
   rules: {
-    // override/add rules settings here, such as:
-    // 'vue/no-unused-vars': 'error'
-  }
+    "no-global-assign": [
+      "error",
+      {
+        "exceptions": [
+          "appinscount"
+        ]
+      }
+    ]
+  },
+  globals: {
+    "$": "readonly",
+    "Vue": "readonly",
+    "Vuex": "readonly",
+    "VueVirtualScroller": "readonly",
+    "CryptoJS": "readonly",
+    "filterXSS": "readonly",
+    "unsafeWindow": "readonly",
+    "top": "readonly",
+    "GM_setValue": "readonly",
+    "GM_getValue": "readonly",
+    "CustomEvent": "readonly",
+    "getComputedStyle": "readonly",
+    "reportmode": "readonly",
+    "showalllog": "readonly",
+    "showPTTscreen": "readonly",
+    "showcommand": "readonly",
+    "showPostMessage": "readonly",
+    "showonMessage": "readonly",
+    "showalertmsg": "readonly",
+    "defaultopen": "readonly",
+    "disablepttframe": "readonly",
+    "simulateisstreaming": "readonly",
+    "appinscount": "readonly",
+    "cryptkey": "readonly"
+  },
+  "ignorePatterns": [
+    "src/logsetting.js",
+    "src/SupportWebsite/lineTV/InitlineTV.js"
+  ]
 }

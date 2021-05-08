@@ -10,7 +10,16 @@ Vue.component('PluginSettingInput', {
     confirmBtn: { type: Boolean, required: false },
     column: { type: Number, required: false, default: 12 }
   },
-
+  data () {
+    return {
+      SettingValue: this.$store.getters['get' + this.settingName],
+      ValueMax: +GM_getValue('A-custom-' + this.settingName + 'Max', -1),
+      ValueMin: +GM_getValue('A-custom-' + this.settingName + 'Min', -1),
+      Btn: this.confirmBtn ? this.confirmBtn : false,
+      BtnID: this.settingName + '-btn',
+      Col: this.column
+    }
+  },
   computed: {
     Classes: function () {
       let c = this.Col
@@ -28,16 +37,6 @@ Vue.component('PluginSettingInput', {
       else classes.push('col-' + col)
       if (reportmode) console.log('LabelClasses', this.description, classes, col)
       return classes.join(' ')
-    }
-  },
-  data () {
-    return {
-      SettingValue: this.$store.getters['get' + this.settingName],
-      ValueMax: +GM_getValue('A-custom-' + this.settingName + 'Max', -1),
-      ValueMin: +GM_getValue('A-custom-' + this.settingName + 'Min', -1),
-      Btn: this.confirmBtn ? this.confirmBtn : false,
-      BtnID: this.settingName + '-btn',
-      Col: this.column
     }
   },
   mounted () {
