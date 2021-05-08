@@ -3,8 +3,8 @@ import { ChatScrollBtn } from './ChatScrollBtn.js'
 import { ChatElement } from './ChatElement.js'
 import { ChatSetNewPush } from './ChatSetNewPush.js'
 
-Vue.component('dynamic-scroller', VueVirtualScroller.DynamicScroller)
-Vue.component('dynamic-scroller-item', VueVirtualScroller.DynamicScrollerItem)
+Vue.component('DynamicScroller', VueVirtualScroller.DynamicScroller)
+Vue.component('DynamicScrollerItem', VueVirtualScroller.DynamicScrollerItem)
 // Vue.component('RecycleScroller', VueVirtualScroller.RecycleScroller)
 export const Chat = {
   inject: ['msg', 'isStream'],

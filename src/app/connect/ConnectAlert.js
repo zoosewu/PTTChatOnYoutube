@@ -41,7 +41,7 @@ export const ConnectAlert = {
 </div>`
 }
 
-Vue.component('alert-item', {
+Vue.component('AlertItem', {
   props: { alert: { type: Object, required: true } },
   data () {
     return {
@@ -56,6 +56,12 @@ Vue.component('alert-item', {
       return classes.join(' ')
     }
   },
+  mounted () {
+    this.timerInterval = setTimeout(this.destroy, this.dismissCount * 1000)
+  },
+  beforeDestroy () {
+    // clearInterval(this.timerInterval);
+  },
   methods: {
     CountDown: function () {
       this.dismissCount--
@@ -64,12 +70,6 @@ Vue.component('alert-item', {
     destroy: function () {
       this.$emit('destroyalert')
     }
-  },
-  mounted () {
-    this.timerInterval = setTimeout(this.destroy, this.dismissCount * 1000)
-  },
-  beforeDestroy () {
-    // clearInterval(this.timerInterval);
   },
   template: '<div :class="className" role="alert" style="pointer-events: none;" :count="this.dismissCount"> {{this.alert.msg}}</div>'
 })

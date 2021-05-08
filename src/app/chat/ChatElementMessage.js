@@ -1,5 +1,4 @@
-
-Vue.component('chat-item-msg', {
+Vue.component('ChatItemMsg', {
   props: { msgs: { type: String, required: true }, style: { type: Object, required: true } },
   data () {
     return {

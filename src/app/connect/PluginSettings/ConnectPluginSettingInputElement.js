@@ -1,5 +1,6 @@
-Vue.component('plugin-setting-input', {
+Vue.component('PluginSettingInput', {
   inject: ['nowPluginWidth'],
+
   props: {
     settingName: { type: String, required: true },
     description: { type: String, required: true },
@@ -7,7 +8,7 @@ Vue.component('plugin-setting-input', {
     max: { type: Number, required: true },
     min: { type: Number, required: true },
     confirmBtn: { type: Boolean, required: false },
-    column: { type: Number, required: false }
+    column: { type: Number, required: false, default: 12 }
   },
   data () {
     return {
@@ -16,32 +17,7 @@ Vue.component('plugin-setting-input', {
       ValueMin: +GM_getValue('A-custom-' + this.settingName + 'Min', -1),
       Btn: this.confirmBtn ? this.confirmBtn : false,
       BtnID: this.settingName + '-btn',
-      Col: this.column ? this.column : 12
-
-    }
-  },
-  methods: {
-    $_PluginSetting_update: function () {
-      if (reportmode) console.log('$_PluginSetting_update', this.SettingValue)
-      if (+this.SettingValue > this.ValueMax) { this.SettingValue = this.ValueMax } else if (+this.SettingValue < this.ValueMin) { this.SettingValue = this.ValueMin }
-
-      this.$store.dispatch('set' + this.settingName, this.SettingValue)
-    },
-    $_PluginSetting_MaxCheck: function () {
-      if (this.ValueMax < 0) {
-        this.ValueMax = this.max
-        GM_setValue('A-custom-' + this.settingName + 'Max', this.max)
-      }
-    },
-    $_PluginSetting_MinCheck: function () {
-      if (this.ValueMin < 0) {
-        this.ValueMin = this.min
-        GM_setValue('A-custom-' + this.settingName + 'Min', this.min)
-      }
-    },
-    $_PluginSetting_ValueCheck: function () {
-      if (this.SettingValue < 0) this.SettingValue = this.defaultValue
-      this.$_PluginSetting_update()
+      Col: this.column
     }
   },
   computed: {
@@ -68,6 +44,32 @@ Vue.component('plugin-setting-input', {
     this.$_PluginSetting_MinCheck()
     this.$_PluginSetting_ValueCheck()
   },
+
+  methods: {
+    $_PluginSetting_update: function () {
+      if (reportmode) console.log('$_PluginSetting_update', this.SettingValue)
+      if (+this.SettingValue > this.ValueMax) { this.SettingValue = this.ValueMax } else if (+this.SettingValue < this.ValueMin) { this.SettingValue = this.ValueMin }
+
+      this.$store.dispatch('set' + this.settingName, this.SettingValue)
+    },
+    $_PluginSetting_MaxCheck: function () {
+      if (this.ValueMax < 0) {
+        this.ValueMax = this.max
+        GM_setValue('A-custom-' + this.settingName + 'Max', this.max)
+      }
+    },
+    $_PluginSetting_MinCheck: function () {
+      if (this.ValueMin < 0) {
+        this.ValueMin = this.min
+        GM_setValue('A-custom-' + this.settingName + 'Min', this.min)
+      }
+    },
+    $_PluginSetting_ValueCheck: function () {
+      if (this.SettingValue < 0) this.SettingValue = this.defaultValue
+      this.$_PluginSetting_update()
+    }
+  },
+
   template:
     `<div :class="Classes">
     <label :for="settingName" :class="LabelClasses">{{this.description}}</label>

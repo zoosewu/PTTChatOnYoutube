@@ -1,4 +1,4 @@
-Vue.component('plugin-setting-checkbox', {
+Vue.component('PluginSettingCheckbox', {
   props: {
     settingName: { type: String, required: true },
     description: { type: String, required: true },
