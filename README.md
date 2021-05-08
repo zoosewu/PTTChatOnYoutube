@@ -24,11 +24,17 @@
 
 在腳本更新網址輸入伺服器腳本位置```http://127.0.0.1:8889/publish/PTTChatOnYt.user.js```
 
-#### Standard: 
+### Coding Style:
+#### StandardJS
 [![Standard - JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+
 請依照提示安裝StandardJS，並用pre-commit確保程式碼遵循風格。
 
 VSCode設定請開啟 ```"javascript.format.insertSpaceBeforeFunctionParenthesis": true```
+
+#### eslint-plugin-vue
+
+安裝eslint以在pre-commit前檢查```npm i -g eslint```
 
 ## 建議及回報
 

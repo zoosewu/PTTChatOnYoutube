@@ -24,6 +24,14 @@ export function InitApp (chatcon, whitetheme, isstreaming, messageposter, dynami
         PTTAppBtn: PTTAppBtn,
         PTTApp: PTTApp
       },
+      provide: function () {
+        return {
+          msg: this.rootmsg,
+          isStream: isstreaming,
+          nowPluginWidth: cn[0].offsetWidth,
+          dynamicPlugin: dynamicPlugin
+        }
+      },
       data () {
         return {
           index: appinscount,
@@ -63,14 +71,7 @@ export function InitApp (chatcon, whitetheme, isstreaming, messageposter, dynami
           'getThemeColorBorder'
         ])
       },
-      provide: function () {
-        return {
-          msg: this.rootmsg,
-          isStream: isstreaming,
-          nowPluginWidth: cn[0].offsetWidth,
-          dynamicPlugin: dynamicPlugin
-        }
-      },
+
       mounted () {
         /* eslint-disable no-global-assign */
         appinscount++

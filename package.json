@@ -1,6 +1,8 @@
 {
   "devDependencies": {
-    "@zoosewu/userscript-builder": "^0.3.0"
+    "@zoosewu/userscript-builder": "^0.3.0",
+    "eslint": "^7.26.0",
+    "eslint-plugin-vue": "^7.9.0"
   },
   "dependencies": {
     "bootstrap": "^4.5.3",
@@ -22,6 +24,51 @@
       "extensions": "js,css"
     }
   },
+  "standard": {
+    "globals": [
+      "$",
+      "Vue",
+      "Vuex",
+      "VueVirtualScroller",
+      "CryptoJS",
+      "filterXSS",
+      "unsafeWindow",
+      "top",
+      "GM_setValue",
+      "GM_getValue",
+      "CustomEvent",
+      "getComputedStyle",
+      "reportmode",
+      "showalllog",
+      "showPTTscreen",
+      "showcommand",
+      "showPostMessage",
+      "showonMessage",
+      "showalertmsg",
+      "defaultopen",
+      "disablepttframe",
+      "simulateisstreaming",
+      "appinscount",
+      "cryptkey"
+    ],
+    "ignore": [
+      "src/logsetting.js",
+      "src/SupportWebsite/lineTV/InitlineTV.js"
+    ],
+    "rules": {
+      "no-global-assign": [
+        "error",
+        {
+          "exceptions": [
+            "appinscount"
+          ]
+        }
+      ]
+    }
+  },
+  "pre-commit": [
+    "lint"
+  ],
   "scripts": {
     "watch-dev": "npm-watch release:bugfix",
     "watch-scss-map": "node-sass --source-map map --watch scss/index.scss -o css",
@@ -32,10 +79,11 @@
     "build": "userscript-builder --mode dev",
     "release:bugfix": "userscript-builder --mode bugfix",
     "release:major": "userscript-builder --mode major",
+    "lint": "eslint --ext .js,.vue src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "name": "pttchatonyoutube",
-  "version": "2.6.74",
+  "version": "2.6.75",
   "description": "Connect ptt pushes to youtube chatroom",
   "author": "Zoosewu, crimsonmoon9",
   "license": "MIT",
@@ -81,48 +129,6 @@
       ],
       "homepageURL": "https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage",
       "//downloadURL": "https://greasyfork.org/scripts/418469-pttchatonyt/code/PttChatOnYt.user.js"
-    }
-  },
-  "standard": {
-    "globals": [
-      "$",
-      "Vue",
-      "Vuex",
-      "VueVirtualScroller",
-      "CryptoJS",
-      "filterXSS",
-      "unsafeWindow",
-      "top",
-      "GM_setValue",
-      "GM_getValue",
-      "CustomEvent",
-      "getComputedStyle",
-      "reportmode",
-      "showalllog",
-      "showPTTscreen",
-      "showcommand",
-      "showPostMessage",
-      "showonMessage",
-      "showalertmsg",
-      "defaultopen",
-      "disablepttframe",
-      "simulateisstreaming",
-      "appinscount",
-      "cryptkey"
-    ],
-    "ignore": [
-      "src/logsetting.js",
-      "src/SupportWebsite/lineTV/InitlineTV.js"
-    ],
-    "rules": {
-      "no-global-assign": [
-        "error",
-        {
-          "exceptions": [
-            "appinscount"
-          ]
-        }
-      ]
     }
   }
 }

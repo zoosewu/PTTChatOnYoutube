@@ -1,5 +1,6 @@
-Vue.component('plugin-setting-input', {
+Vue.component('PluginSettingInput', {
   inject: ['nowPluginWidth'],
+
   props: {
     settingName: { type: String, required: true },
     description: { type: String, required: true },
@@ -7,7 +8,27 @@ Vue.component('plugin-setting-input', {
     max: { type: Number, required: true },
     min: { type: Number, required: true },
     confirmBtn: { type: Boolean, required: false },
-    column: { type: Number, required: false }
+    column: { type: Number, required: false, default: 12 }
+  },
+
+  computed: {
+    Classes: function () {
+      let c = this.Col
+      if (this.nowPluginWidth < 399) c = Math.min(this.Col * 2, 12)
+      if (reportmode) console.log('Classes', this.Col, c)
+      const classes = ['form-row', 'px-0', 'mx-0', 'my-2']
+      if (this.nowPluginWidth < 399) classes.push('col-' + Math.min(this.Col * 2, 12))
+      else classes.push('col-' + Math.min(this.Col, 12))
+      return classes.join(' ')
+    },
+    LabelClasses: function () {
+      const col = parseInt(12 / this.Col) * 3
+      const classes = ['col-form-label']
+      if (this.nowPluginWidth < 399) classes.push('col-12')
+      else classes.push('col-' + col)
+      if (reportmode) console.log('LabelClasses', this.description, classes, col)
+      return classes.join(' ')
+    }
   },
   data () {
     return {
@@ -16,10 +37,15 @@ Vue.component('plugin-setting-input', {
       ValueMin: +GM_getValue('A-custom-' + this.settingName + 'Min', -1),
       Btn: this.confirmBtn ? this.confirmBtn : false,
       BtnID: this.settingName + '-btn',
-      Col: this.column ? this.column : 12
-
+      Col: this.column
     }
   },
+  mounted () {
+    this.$_PluginSetting_MaxCheck()
+    this.$_PluginSetting_MinCheck()
+    this.$_PluginSetting_ValueCheck()
+  },
+
   methods: {
     $_PluginSetting_update: function () {
       if (reportmode) console.log('$_PluginSetting_update', this.SettingValue)
@@ -44,30 +70,7 @@ Vue.component('plugin-setting-input', {
       this.$_PluginSetting_update()
     }
   },
-  computed: {
-    Classes: function () {
-      let c = this.Col
-      if (this.nowPluginWidth < 399) c = Math.min(this.Col * 2, 12)
-      if (reportmode) console.log('Classes', this.Col, c)
-      const classes = ['form-row', 'px-0', 'mx-0', 'my-2']
-      if (this.nowPluginWidth < 399) classes.push('col-' + Math.min(this.Col * 2, 12))
-      else classes.push('col-' + Math.min(this.Col, 12))
-      return classes.join(' ')
-    },
-    LabelClasses: function () {
-      const col = parseInt(12 / this.Col) * 3
-      const classes = ['col-form-label']
-      if (this.nowPluginWidth < 399) classes.push('col-12')
-      else classes.push('col-' + col)
-      if (reportmode) console.log('LabelClasses', this.description, classes, col)
-      return classes.join(' ')
-    }
-  },
-  mounted () {
-    this.$_PluginSetting_MaxCheck()
-    this.$_PluginSetting_MinCheck()
-    this.$_PluginSetting_ValueCheck()
-  },
+
   template:
     `<div :class="Classes">
     <label :for="settingName" :class="LabelClasses">{{this.description}}</label>
