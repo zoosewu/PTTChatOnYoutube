@@ -6,6 +6,9 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-vue": "^7.9.0",
+    "husky": "^3.0.2",
+    "lint-staged": "^10.3.0",
+    "node-sass": "^5.0.0",
     "pre-commit": "^1.2.2"
   },
   "dependencies": {
@@ -71,9 +74,16 @@
       ]
     }
   },
-  "pre-commit": [
-    "lint"
-  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,vue}": [
+      "eslint --fix"
+    ]
+  },
   "scripts": {
     "watch-dev": "npm-watch release:bugfix",
     "watch-scss-map": "node-sass --source-map map --watch scss/index.scss -o css",
@@ -85,6 +95,7 @@
     "release:bugfix": "userscript-builder --mode bugfix",
     "release:major": "userscript-builder --mode major",
     "lint": "eslint --ext .js,.vue src",
+    "lint-fix": "eslint --fix --ext .js,.vue src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "name": "pttchatonyoutube",
