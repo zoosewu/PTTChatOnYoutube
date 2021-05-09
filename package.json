@@ -8,8 +8,7 @@
     "eslint-plugin-vue": "^7.9.0",
     "husky": "^3.0.2",
     "lint-staged": "^10.3.0",
-    "node-sass": "^5.0.0",
-    "pre-commit": "^1.2.2"
+    "node-sass": "^5.0.0"
   },
   "dependencies": {
     "bootstrap": "^4.5.3",
@@ -29,49 +28,6 @@
         "css"
       ],
       "extensions": "js,css"
-    }
-  },
-  "standard": {
-    "globals": [
-      "$",
-      "Vue",
-      "Vuex",
-      "VueVirtualScroller",
-      "CryptoJS",
-      "filterXSS",
-      "unsafeWindow",
-      "top",
-      "GM_setValue",
-      "GM_getValue",
-      "CustomEvent",
-      "getComputedStyle",
-      "reportmode",
-      "showalllog",
-      "showPTTscreen",
-      "showcommand",
-      "showPostMessage",
-      "showonMessage",
-      "showalertmsg",
-      "defaultopen",
-      "disablepttframe",
-      "simulateisstreaming",
-      "appinscount",
-      "cryptkey"
-    ],
-    "ignore": [
-      "src/logsetting.js",
-      "src/SupportWebsite/lineTV/InitlineTV.js",
-      ".eslintrc.js"
-    ],
-    "rules": {
-      "no-global-assign": [
-        "error",
-        {
-          "exceptions": [
-            "appinscount"
-          ]
-        }
-      ]
     }
   },
   "husky": {
