@@ -102,5 +102,48 @@
       "homepageURL": "https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage",
       "//downloadURL": "https://greasyfork.org/scripts/418469-pttchatonyt/code/PttChatOnYt.user.js"
     }
+  },
+  "standard": {
+    "globals": [
+      "$",
+      "Vue",
+      "Vuex",
+      "VueVirtualScroller",
+      "CryptoJS",
+      "filterXSS",
+      "unsafeWindow",
+      "top",
+      "GM_setValue",
+      "GM_getValue",
+      "CustomEvent",
+      "getComputedStyle",
+      "reportmode",
+      "showalllog",
+      "showPTTscreen",
+      "showcommand",
+      "showPostMessage",
+      "showonMessage",
+      "showalertmsg",
+      "defaultopen",
+      "disablepttframe",
+      "simulateisstreaming",
+      "appinscount",
+      "cryptkey"
+    ],
+    "ignore": [
+      "src/logsetting.js",
+      "src/SupportWebsite/lineTV/InitlineTV.js",
+      ".eslintrc.js"
+    ],
+    "rules": {
+      "no-global-assign": [
+        "error",
+        {
+          "exceptions": [
+            "appinscount"
+          ]
+        }
+      ]
+    }
   }
 }
