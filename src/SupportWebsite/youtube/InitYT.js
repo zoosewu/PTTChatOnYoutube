@@ -1,4 +1,5 @@
 import { InitApp } from '../../app/appindex.js'
+import { ChangeLog } from '../../ChangeLog.js'
 import { ThemeCheck } from '../../library.js'
 
 export function InitYT (messageposter) {
@@ -25,6 +26,7 @@ export function InitYT (messageposter) {
       // 生出套件
       const isstream = checkvideotype()
       InitApp(ChatContainer, WhiteTheme, isstream, msg)
+      ChangeLog()
       setTimeout(CheckChatInstanced, 5000)
     } else {
       if (showalllog) console.log('watching video without chatroom.')

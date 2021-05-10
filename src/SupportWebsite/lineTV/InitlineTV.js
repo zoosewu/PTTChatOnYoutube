@@ -1,4 +1,5 @@
 import { InitApp } from '../../app/appindex.js'
+import { ChangeLog } from '../../ChangeLog.js'
 
 export function InitlineTV (messageposter) {
   const WhiteTheme = true
@@ -60,6 +61,7 @@ export function InitlineTV (messageposter) {
       defaultVideoHandler.append(defaultVideo)
       fakeparent.append(PTTChatHandler)
       InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true)
+      ChangeLog()
       tryinsholotools = -10
     } else {
       tryinsholotools--
