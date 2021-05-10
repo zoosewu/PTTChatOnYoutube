@@ -1,7 +1,13 @@
+<p>
+  <a href="https://standardjs.com"><img src="https://img.shields.io/badge/code_style-standard-brightgreen.svg" alt="Standard - JavaScript Style Guide"></a>
+</p>
+
 # PTTChatOnYoutube
 在Youtube上面顯示PTT推文
 
 ## 如何開始開發
+
+在專案底下輸入 ```npm install``` 安裝開發環境，VSCode設定請開啟 ```"javascript.format.insertSpaceBeforeFunctionParenthesis": true```
 
 推薦使用violentmonkey，並使用chrome開發，Firefox無法載入本地檔案
 
@@ -24,17 +30,6 @@
 
 在腳本更新網址輸入伺服器腳本位置```http://127.0.0.1:8889/publish/PTTChatOnYt.user.js```
 
-### Coding Style:
-#### StandardJS
-[![Standard - JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
-
-請依照提示安裝StandardJS，並用pre-commit確保程式碼遵循風格。
-
-VSCode設定請開啟 ```"javascript.format.insertSpaceBeforeFunctionParenthesis": true```
-
-#### eslint-plugin-vue
-
-安裝eslint以在pre-commit前檢查```npm i -g eslint```
 
 ## 建議及回報
 
