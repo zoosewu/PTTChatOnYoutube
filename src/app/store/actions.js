@@ -163,6 +163,7 @@ export const actions = {
   setChatSpace: ({ commit }, value) => { commit(types.CHATSPACE, value) },
   setPushInterval: ({ commit }, value) => { commit(types.PUSHINTERVAL, value) },
   setPluginWidth: ({ commit }, value) => { commit(types.PLUGINWIDTH, value) },
+  setPluginPortraitHeight: ({ commit }, value) => { commit(types.PLUGINPORTRAITHEIGHT, value) },
   setBlacklist: ({ commit }, value) => { commit(types.BLACKLIST, value) },
   // dropdown
   setTheme: ({ commit }, value) => { commit(types.THEME, value) },

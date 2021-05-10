@@ -55,7 +55,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "name": "pttchatonyoutube",
-  "version": "2.6.75",
+  "version": "2.6.76",
   "description": "Connect ptt pushes to youtube chatroom",
   "author": "Zoosewu, crimsonmoon9",
   "license": "MIT",
