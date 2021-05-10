@@ -1,4 +1,5 @@
 import { InitApp } from '../../app/appindex.js'
+import { ChangeLog } from '../../ChangeLog.js'
 
 export function Initblank (messageposter) {
   const WhiteTheme = true
@@ -13,4 +14,5 @@ export function Initblank (messageposter) {
   Body.prepend(container)
   // const blankcontainer = document.getElementById(`container`);
   InitApp([container], WhiteTheme, true, messageposter, true)
+  ChangeLog()
 }

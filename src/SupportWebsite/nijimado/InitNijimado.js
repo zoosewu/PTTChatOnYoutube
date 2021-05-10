@@ -1,4 +1,5 @@
 import { InitApp } from '../../app/appindex.js'
+import { ChangeLog } from '../../ChangeLog.js'
 import { ThemeCheck } from '../../library.js'
 
 export function InitNijimado (messageposter) {
@@ -27,6 +28,7 @@ export function InitNijimado (messageposter) {
       fakeparent.append(PTTChatHandler)
       $('.reopen-toolbar').css({ 'z-index': '302' })
       InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true)
+      ChangeLog()
       tryinsholotools = -10
     } else {
       tryinsholotools--
