@@ -26,7 +26,7 @@
 
 ### Coding Style:
 
-程式碼使用StandardJS及eslint-plugin-vue確保程式碼風格，並且會在commit之前做檢查，請在commit之前執行```npm run lint```確保沒有錯誤及警告。
+程式碼使用StandardJS及eslint-plugin-vue確保程式碼風格，並且會在commit之前做檢查，可以手動執行```npm run lint```確認有沒有錯誤及警告。
 
 安裝eslint以在pre-commit前檢查```npm i -g eslint```
 
