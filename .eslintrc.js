@@ -27,6 +27,7 @@ module.exports = {
     "filterXSS": "readonly",
     "unsafeWindow": "readonly",
     "top": "readonly",
+    "GM_info": "readonly",
     "GM_setValue": "readonly",
     "GM_getValue": "readonly",
     "CustomEvent": "readonly",
@@ -45,6 +46,7 @@ module.exports = {
     "cryptkey": "readonly"
   },
   "ignorePatterns": [
+    ".eslintrc.js",
     "src/logsetting.js",
     "src/SupportWebsite/lineTV/InitlineTV.js"
   ]
