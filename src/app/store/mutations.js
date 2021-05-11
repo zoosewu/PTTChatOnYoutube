@@ -30,6 +30,7 @@ export const state = {
   chatFontsize: GM_getValue(types.CHATFONTSIZE, -1),
   chatSpace: GM_getValue(types.CHATSPACE, -1),
   pluginWidth: GM_getValue(types.PLUGINWIDTH, -1),
+  pluginPortraitHeight: GM_getValue(types.PLUGINPORTRAITHEIGHT, -1),
   blacklist: GM_getValue(types.BLACKLIST, null),
   // dropdown
   theme: GM_getValue(types.THEME, -1),
@@ -131,6 +132,10 @@ export const mutations = {
   [types.PLUGINWIDTH] (state, width) {
     GM_setValue(types.PLUGINWIDTH, width)
     state.pluginWidth = width
+  },
+  [types.PLUGINPORTRAITHEIGHT] (state, portraitHeight) {
+    GM_setValue(types.PLUGINPORTRAITHEIGHT, portraitHeight)
+    state.pluginPortraitHeight = portraitHeight
   },
   [types.BLACKLIST] (state, list) {
     const l = list.toLowerCase()

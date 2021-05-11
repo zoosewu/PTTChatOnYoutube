@@ -11,7 +11,9 @@ export function ChangeLog () {
         '支援HoloDex。'
       ],
       HoloTools: [
-        '新增按鈕在右上方控制列中，可以關閉聊天室讓出空間(限舊版)。'
+        `(舊版)在右上方控制列中新增<strong>PTT聊天室開關</strong>與<strong>切換顯示佈局按鈕</strong>。<br>
+        <p><b>PTT聊天室開關</b>：<br>&emsp;&emsp;現在可以在不用時完全隱藏PTT聊天室，回復佔用的空間。</p>
+        <p><b>切換顯示佈局按鈕</b>：<br>&emsp;&emsp;支援直立式螢幕顯示，將聊天室移到底部。</p>`
       ],
       Twitch: [],
       Nijimado: [],

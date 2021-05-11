@@ -22,6 +22,7 @@ export const getters = {
   getChatSpace: state => { return state.chatSpace },
   getPushInterval: state => { return state.pushInterval },
   getPluginWidth: state => { return state.pluginWidth },
+  getPluginPortraitHeight: state => { return state.pluginPortraitHeight },
   getBlacklist: state => { return state.blacklist },
   // dropdown
   getTheme: state => { return state.theme },
