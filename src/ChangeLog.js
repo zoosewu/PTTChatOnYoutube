@@ -3,7 +3,6 @@ export function ChangeLog () {
     const changeLogInfo = {}
 
     changeLogInfo.v_2_7 = new Info()
-    changeLogInfo.v_2_7.版本.push('2.7')
 
     changeLogInfo.v_2_6 = new Info()
     changeLogInfo.v_2_6.版本.push('新增黑名單功能。')
@@ -12,19 +11,19 @@ export function ChangeLog () {
     changeLogInfo.v_2_6.HoloTools.push('新增按鈕在右上方控制列中，可以關閉聊天室讓出空間(限舊版)。')
     return changeLogInfo
   }
+  function GetPTTChangeLogURL () {
+    return 'https://www.ptt.cc/bbs/C_Chat/M.1620568738.A.4C7.html'
+  }
 
   const previousVersion = GM_getValue('previousVersion', '2.5.0').split('.')
   const nowVerion = GM_info.script.version.split('.')
   if (nowVerion[0] === previousVersion[0] && nowVerion[1] === previousVersion[1]) return
   class Info { constructor () { this.版本 = []; this.HoloDex = []; this.HoloTools = []; this.Twitch = []; this.Nijimado = []; this.Youtube = [] } }
-  const ChangeLogInfo = AddChangeLogInfo()
+  const allChangeLogInfo = AddChangeLogInfo()
+  const changeLogInfo = GetChangeLogInfo(new Info(), +previousVersion[0], +previousVersion[1] + 1)
+  const changeLogHTML = EncodeChangeLog(changeLogInfo)
+  const PTTChangeLogURL = GetPTTChangeLogURL()
 
-  const changeLog = GetChangeLogInfo(new Info(), +previousVersion[0], +previousVersion[1] + 1)
-  const changeLogHTML = EncodeChangeLog(changeLog)
-  console.log('Version', previousVersion, nowVerion)
-  console.log(ChangeLogInfo)
-  console.log(changeLog)
-  console.log(changeLogHTML)
   const modal = $(`
     <div id="PTTChangeLog" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-hidden="true" style="color: #000">
       <div class="modal-dialog modal-dialog-centered">
@@ -36,6 +35,7 @@ export function ChangeLog () {
               ${changeLogHTML}
           </div>
           <div class="modal-footer">
+          <a href="${PTTChangeLogURL}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" type="button">閱讀更多</a>
             <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
           </div>
         </div>
@@ -46,8 +46,7 @@ export function ChangeLog () {
   GM_setValue('previousVersion', GM_info.script.version)
 
   function GetChangeLogInfo (info, major, minor) {
-    const newInfo = ChangeLogInfo['v_' + major + '_' + minor]
-    console.log('GetChangeLogInfo', info, major, minor, newInfo)
+    const newInfo = allChangeLogInfo['v_' + major + '_' + minor]
     if (+minor > nowVerion[1] && +major > nowVerion[0]) return info
     if (newInfo !== undefined) {
       for (const key in newInfo) {
