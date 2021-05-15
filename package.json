@@ -55,7 +55,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "name": "pttchatonyoutube",
-  "version": "2.6.76",
+  "version": "2.7.0",
   "description": "Connect ptt pushes to youtube chatroom",
   "author": "Zoosewu, crimsonmoon9",
   "license": "MIT",
@@ -101,6 +101,50 @@
       ],
       "homepageURL": "https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage",
       "//downloadURL": "https://greasyfork.org/scripts/418469-pttchatonyt/code/PttChatOnYt.user.js"
+    }
+  },
+  "standard": {
+    "globals": [
+      "$",
+      "Vue",
+      "Vuex",
+      "VueVirtualScroller",
+      "CryptoJS",
+      "filterXSS",
+      "unsafeWindow",
+      "top",
+      "GM_info",
+      "GM_setValue",
+      "GM_getValue",
+      "CustomEvent",
+      "getComputedStyle",
+      "reportmode",
+      "showalllog",
+      "showPTTscreen",
+      "showcommand",
+      "showPostMessage",
+      "showonMessage",
+      "showalertmsg",
+      "defaultopen",
+      "disablepttframe",
+      "simulateisstreaming",
+      "appinscount",
+      "cryptkey"
+    ],
+    "ignore": [
+      "src/logsetting.js",
+      "src/SupportWebsite/lineTV/InitlineTV.js",
+      ".eslintrc.js"
+    ],
+    "rules": {
+      "no-global-assign": [
+        "error",
+        {
+          "exceptions": [
+            "appinscount"
+          ]
+        }
+      ]
     }
   }
 }
