@@ -60,6 +60,11 @@ export const ConnectPluginSetting = {
       column="12"> </plugin-setting-input>
     <p class="my-0 px-2">僅Holotools、niji-mado可用，需重新整理</p>
   </div>
+  <div class="form-row px-2" v-if="dynamicPlugin">
+    <plugin-setting-input setting-name="PluginPortraitHeight" description="直立顯示時的套件高度" default-value="400" max="800" min="290"
+      column="12"> </plugin-setting-input>
+    <p class="my-0 px-2">僅舊版Holotools可用，需重新整理</p>
+  </div>
   <div class="form-row px-2">
     <connect-dropdown setting-name="Theme" description="主題顏色" :option-group="ThemeOptions" default-value="0">
     </connect-dropdown>

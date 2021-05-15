@@ -29,6 +29,7 @@ export const types = {
   CHATSPACE: 'ChatSpace',
   PUSHINTERVAL: 'PushInterval',
   PLUGINWIDTH: 'PluginWidth',
+  PLUGINPORTRAITHEIGHT: 'PluginPortraitHeight',
   BLACKLIST: 'Blacklist',
   // dropdown
   THEME: 'Theme',

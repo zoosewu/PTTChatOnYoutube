@@ -3,12 +3,16 @@ export function ChangeLog () {
     const changeLogInfo = {}
 
     changeLogInfo.v_2_7 = new Info()
-
+    changeLogInfo.v_2_7.HoloTools.push(
+        `(舊版)在右上方控制列中新增<strong>PTT聊天室開關</strong>與<strong>切換顯示佈局按鈕</strong>。<br>
+        <p><b>PTT聊天室開關</b>：<br>&emsp;&emsp;現在可以在不用時完全隱藏PTT聊天室，回復佔用的空間。</p>
+        <p><b>切換顯示佈局按鈕</b>：<br>&emsp;&emsp;支援直立式螢幕顯示，將聊天室移到底部。</p>`)
+    
     changeLogInfo.v_2_6 = new Info()
     changeLogInfo.v_2_6.版本.push('新增黑名單功能。')
     changeLogInfo.v_2_6.版本.push('新增標題搜尋功能。')
     changeLogInfo.v_2_6.HoloDex.push('支援HoloDex。')
-    changeLogInfo.v_2_6.HoloTools.push('新增按鈕在右上方控制列中，可以關閉聊天室讓出空間(限舊版)。')
+    
     return changeLogInfo
   }
   function GetPTTChangeLogURL () {
@@ -25,6 +29,7 @@ export function ChangeLog () {
   const PTTChangeLogURL = GetPTTChangeLogURL()
 
   const modal = $(`
+
     <div id="PTTChangeLog" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-hidden="true" style="color: #000">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
