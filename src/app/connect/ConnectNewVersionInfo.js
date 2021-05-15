@@ -14,6 +14,12 @@ export const ConnectNewVersionInfo = {
   mounted () {
     let info
     info = [
+      '新增更新日誌。',
+      '新增切換顯示佈局。(holotools)',
+      '新增PTT聊天室開關。(holotools)'
+    ]
+    this.versionInfos.push(info)
+    info = [
       '支援Holodex。',
       '新增標題搜尋功能。',
       '改善holotools嵌入方式，現在可以點全部暫停上面的P隱藏套件並讓出占用的空間。',
@@ -39,12 +45,6 @@ export const ConnectNewVersionInfo = {
       '減少推文造成的卡頓問題。'
     ]
     this.versionInfos.push(info)
-    info = [
-      '修正效能，現在不會越來越卡了。',
-      '新增使用者自訂主題。',
-      '修正holotools主題偵測失敗的問題。',
-      '偵測到imgur連結會自動補.png預覽。'
-    ]
   },
   template: `<div class="mt-4 mb-1">
   <div :class="Classes">
