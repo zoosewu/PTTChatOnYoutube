@@ -79,8 +79,7 @@ export function InitHT (messageposter) {
               defaultVideo.height(containerHeight - pluginportraitheight)
               parent.css('overflow', 'visible')
               $('#PTTChat-contents').height(pluginportraitheight - 35)
-            }
-            else {
+            } else {
               $('#fakeparent').removeClass('flex-column').addClass('flex-row')
               defaultVideo.height('')
               $('#PTTChat-contents').height(pluginheight)
@@ -97,6 +96,7 @@ export function InitHT (messageposter) {
       defaultVideoHandler.append(defaultVideo)
       fakeparent.append(PTTChatHandler)
       $('.reopen-toolbar').css({ 'z-index': '302' })
+      $('.md-layout.live-videos').css({ 'margin-right': '-40px', 'padding-right': '40px' })
       InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true)
       ChangeLog()
       tryinsholotools = -10
