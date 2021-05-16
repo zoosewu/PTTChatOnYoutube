@@ -1,6 +1,6 @@
 export function ChangeLog () {
   function GetPTTChangeLogURL () {
-    return 'https://www.ptt.cc/bbs/C_Chat/M.1620568738.A.4C7.html'
+    return 'https://www.ptt.cc/bbs/C_Chat/M.1621163470.A.1DD.html'
   }
 
   function AddChangeLogInfo () {
