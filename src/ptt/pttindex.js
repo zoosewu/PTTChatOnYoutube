@@ -151,7 +151,11 @@ export function InitPTT (messageposter) {
       boardforsearch: '',
       titleforsearch: '',
       titlefetched: '',
-      enteredsearchtitle: false
+      enteredsearchtitle: false,
+      isend: {
+        insertP: true,
+        insert$: true
+      }
     },
     enteredTitle: false,
     enableautofetchpost: false,
@@ -315,7 +319,7 @@ export function InitPTT (messageposter) {
       }
     } else {
       if (!PTTPost.enteredTitle) {
-        insertText('$/' + PTTPost.searchingTitle.titleforsearch + '\n')
+        insertText('/' + PTTPost.searchingTitle.titleforsearch + '\n')
         PTTPost.enteredTitle = true
       } else {
         insertText('$r')
@@ -384,7 +388,6 @@ export function InitPTT (messageposter) {
       insertText('NPP/' + PTTPost.searchingTitle.titleforsearch + '\n')
       PTTPost.searchingTitle.enteredsearchtitle = true
     }
-    // else insertText("$r");
   }
   function istitleexistcheck () {
     const res = { pass: true, callback: searchfortitle }
@@ -397,31 +400,28 @@ export function InitPTT (messageposter) {
           PTT.unlock()
           return
         }
-        // else res.pass = false;
       }
     }
-    // else if (PTT.pagestate === 1) console.log("==searchfortitle error, PTT.pagestate == 1.");
-    // else if (PTT.pagestate === 3) console.log("==searchfortitle error, PTT.pagestate == 3.");
-    // else if (PTT.pagestate === 4) console.log("==searchfortitle error, PTT.pagestate == 4.");
     return res
   }
   function newesttitlecheck () {
-    const res = { pass: true, callback: () => { } }
+    const res = { pass: true, callback: gotoend }
     if (PTT.pagestate === 2) {
-      const reg = /^(> |●).+□/
-      const posttitle = PTT.screenHaveText(reg)
-      let title = ''
-      if (posttitle) {
-        PTTPost.haveNormalTitle = true
-        if (reportmode) console.log('==set haveNormalTitle true', posttitle)
-        title = posttitle.input.replace(/\s+$/g, '').substr(31)
+      if (!PTTPost.searchingTitle.isend.insertP || !PTTPost.searchingTitle.isend.insert$) res.pass = false
+      else {
+        const reg = /^(>|●).+(□|R:|轉)/
+        const posttitle = PTT.screenHaveText(reg)
+        let title = ''
+        if (posttitle) {
+          PTTPost.haveNormalTitle = true
+          if (reportmode) console.log('==set haveNormalTitle true', posttitle)
+          title = posttitle.input.replace(/\s+$/g, '').substr(30)
+          if (title[0] === '□') title = title.substr(1)
+        }
+        if (title === '' || title === null) res.pass = false
+        else PTTPost.searchingTitle.titlefetched = title
       }
-      if (title === '' || title === null) res.pass = false
-      else PTTPost.searchingTitle.titlefetched = title
     }
-    // else if (PTT.pagestate === 1) console.log("==newesttitlecheck error, PTT.pagestate == 1.");
-    // else if (PTT.pagestate === 2) console.log("==newesttitlecheck error, PTT.pagestate == 2.");
-    // else if (PTT.pagestate === 4) console.log("==newesttitlecheck error, PTT.pagestate == 4.");
     return res
   }
   function receiveTitle () {
@@ -482,7 +482,17 @@ export function InitPTT (messageposter) {
     return res
   }
   // -----------------------task getpostbyrecent --------------------
-  function gotoend () { insertText('G') }
+  function gotoend () {
+    if (!PTTPost.searchingTitle.isend.insertP || !PTTPost.searchingTitle.isend.insert$) {
+      if (!PTTPost.searchingTitle.isend.insertP) {
+        insertText('P')
+        PTTPost.searchingTitle.isend.insertP = true
+      } else if (!PTTPost.searchingTitle.isend.insert$) {
+        insertText('$')
+        PTTPost.searchingTitle.isend.insert$ = true
+      }
+    } else insertText('G')
+  }
   function GetRecentLine () {
     const res = { pass: false, callback: gotoend }
     if (PTT.pagestate === 4 || PTT.pagestate === 3) {
@@ -601,6 +611,8 @@ export function InitPTT (messageposter) {
     PTTPost.searchingTitle.boardforsearch = _boardforsearch
     PTTPost.searchingTitle.titleforsearch = _titleforsearch
     PTTPost.searchingTitle.enteredsearchtitle = false
+    PTTPost.searchingTitle.isend.insertP = false
+    PTTPost.searchingTitle.isend.insert$ = false
     PTTPost.buffer.autofetch = false
     if (PTTPost.enableautofetchpost) PTTPost.buffer.autofetch = true
     PTTPost.enableautofetchpost = true
@@ -661,7 +673,11 @@ export function InitPTT (messageposter) {
           boardforsearch: (pboardforsearch === undefined ? '' : pboardforsearch),
           titleforsearch: (ptitleforsearch === undefined ? '' : ptitleforsearch),
           titlefetched: '',
-          enteredsearchtitle: false
+          enteredsearchtitle: false,
+          isend: {
+            insertP: true,
+            insert$: true
+          }
         },
         enteredTitle: false,
         enableautofetchpost: (ptitleforsearch !== undefined),
