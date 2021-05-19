@@ -38,65 +38,79 @@ export function InitHT (messageposter) {
       const pluginheight = GM_getValue('PluginHeight', 400)
       const pluginportraitheight = GM_getValue('PluginPortraitHeight', 400)
       const pluginwidth0 = '0'
+      const liveControls = $('.live-controls')
+      liveControls.css('width', 'auto')
+      const datahash = Object.keys(liveControls.data())[0]
+      const iconParent = $(`<div data-${datahash} class="live-control live-control-double bg-300" type="button"></div>`)
+      const iconFlex = $(`<div data-${datahash} class="live-control-button"><i data-${datahash} class="md-icon md-icon-font md-theme-${theme}" title="切換PTT顯示佈局">library_books</i></div>`)
+      const iconPTT = $(`<div data-${datahash} class="live-control-button"><i data-${datahash} class="md-icon md-icon-font md-theme-${theme}" title="PTT">local_parking</i></div>`)
+      iconParent.append(iconFlex, iconPTT)
+      liveControls.prepend(iconParent)
       if (/https:\/\/hololive\.jetri\.co\/#\/watch/.exec(iswatch)) {
-        const liveControls = $('.live-controls')
-        liveControls.css('width', 'auto')
-        const datahash = Object.keys(liveControls.data())[0]
-        const iconParent = $(`<div data-${datahash} class="live-control live-control-double bg-300" type="button"></div>`)
-        const iconFlex = $(`<div data-${datahash} class="live-control-button"><i data-${datahash} class="md-icon md-icon-font md-theme-${theme}" title="切換PTT顯示佈局">library_books</i></div>`)
-        const iconPTT = $(`<div data-${datahash} class="live-control-button"><i data-${datahash} class="md-icon md-icon-font md-theme-${theme}" title="PTT">local_parking</i></div>`)
-        iconParent.append(iconFlex, iconPTT)
-        liveControls.prepend(iconParent)
-        let now = pluginwidth0
-        let collapseStart = false
-        let collapseEnd = true
-        let isChatOnen = false
-        let enablePortaitMode = false
-        const containerHeight = defaultVideo.height()
-        const defaultHTDisplaySettingBtn = $(`.md-icon.md-icon-font:eq(${$('.md-icon.md-icon-font').length - 6})`)
-        iconPTT.on('click', function () {
-          if (collapseEnd || !collapseStart) {
-            if (now === '0') $('#PTTMain').collapse('show')
-            else {
-              parent.css('overflow', 'hidden')
-              $('#PTTMain').collapse('hide')
-            }
-            now = (now === pluginwidth0 ? pluginwidth : pluginwidth0)
-            $('#pttchatparent').css('flex', '0 0 ' + now + 'px')
-            if (enablePortaitMode && isChatOnen) defaultVideo.height('')
-            else if (enablePortaitMode) {
-              parent.css('overflow', 'visible')
-              defaultVideo.height(containerHeight - pluginportraitheight)
-            }
-            defaultHTDisplaySettingBtn.trigger('click')
-            isChatOnen = !isChatOnen
-          }
-        })
-        iconFlex.on('click', function () {
-          if (isChatOnen) {
-            if ($('#fakeparent').hasClass('flex-row')) {
-              $('#fakeparent').removeClass('flex-row').addClass('flex-column')
-              defaultVideo.height(containerHeight - pluginportraitheight)
-              parent.css('overflow', 'visible')
-              $('#PTTChat-contents').height(pluginportraitheight - 35)
-            } else {
-              $('#fakeparent').removeClass('flex-column').addClass('flex-row')
-              defaultVideo.height('')
-              $('#PTTChat-contents').height(pluginheight)
-            }
-            enablePortaitMode = !enablePortaitMode
-            defaultHTDisplaySettingBtn.trigger('click')
-          }
-        })
-        $(document).on('show.bs.collapse hide.bs.collapse', '#PTTMain', function () { collapseStart = true; collapseEnd = false })
-        $(document).on('shown.bs.collapse hidden.bs.collapse', '#PTTMain', function () { collapseStart = false; collapseEnd = true })
+        $('.md-layout.live-videos').css({ 'margin-right': '-40px', 'padding-right': '40px' })
+      } else if ((/https:\/\/hololive\.jetri\.co\/#\/ameliawatchon/.exec(iswatch))) {
+        $('.md-layout.live-videos').css({ 'max-width': 'calc(100% - 385px)' })
       }
+      let now = pluginwidth0
+      let collapseStart = false
+      let collapseEnd = true
+      let isChatOnen = false
+      let enablePortaitMode = false
+      const containerHeight = defaultVideo.height()
+      function defaultSetting () {
+        if (/https:\/\/hololive\.jetri\.co\/#\/watch/.exec(iswatch)) {
+          const defaultHTDisplaySettingBtn = $(`.md-icon.md-icon-font:eq(${$('.md-icon.md-icon-font').length - 6})`)
+          defaultHTDisplaySettingBtn.trigger('click')
+        } else if ((/https:\/\/hololive\.jetri\.co\/#\/ameliawatchon/.exec(iswatch))) {
+          const defaultHTDisplaySettingList = $(`.md-icon.md-icon-font:eq(${$('.md-icon.md-icon-font').length - 6})`)
+          defaultHTDisplaySettingList.trigger('click')
+          setTimeout(() => {
+            const defaultHTDisplaySettingBtn = $('.preset-preview').eq(0)
+            defaultHTDisplaySettingBtn.trigger('click')
+          }, 100)
+        }
+      }
+      iconPTT.on('click', function () {
+        if (collapseEnd || !collapseStart) {
+          if (now === '0') $('#PTTMain').collapse('show')
+          else {
+            parent.css('overflow', 'hidden')
+            $('#PTTMain').collapse('hide')
+          }
+          now = (now === pluginwidth0 ? pluginwidth : pluginwidth0)
+          $('#pttchatparent').css('flex', '0 0 ' + now + 'px')
+          if (enablePortaitMode && isChatOnen) defaultVideo.height('')
+          else if (enablePortaitMode) {
+            parent.css('overflow', 'visible')
+            defaultVideo.height(containerHeight - pluginportraitheight)
+          }
+          defaultSetting()
+          isChatOnen = !isChatOnen
+        }
+      })
+      iconFlex.on('click', function () {
+        if (isChatOnen) {
+          if ($('#fakeparent').hasClass('flex-row')) {
+            $('#fakeparent').removeClass('flex-row').addClass('flex-column')
+            defaultVideo.height(containerHeight - pluginportraitheight)
+            parent.css('overflow', 'visible')
+            $('#PTTChat-contents').height(pluginportraitheight - 35)
+          } else {
+            $('#fakeparent').removeClass('flex-column').addClass('flex-row')
+            defaultVideo.height('')
+            $('#PTTChat-contents').height(pluginheight)
+          }
+          enablePortaitMode = !enablePortaitMode
+          defaultSetting()
+        }
+      })
+      $(document).on('show.bs.collapse hide.bs.collapse', '#PTTMain', function () { collapseStart = true; collapseEnd = false })
+      $(document).on('shown.bs.collapse hidden.bs.collapse', '#PTTMain', function () { collapseStart = false; collapseEnd = true })
       parent.append(fakeparent)
       fakeparent.append(defaultVideoHandler)
       defaultVideoHandler.append(defaultVideo)
       fakeparent.append(PTTChatHandler)
       $('.reopen-toolbar').css({ 'z-index': '302' })
-      $('.md-layout.live-videos').css({ 'margin-right': '-40px', 'padding-right': '40px' })
       InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true)
       ChangeLog()
       tryinsholotools = -10
