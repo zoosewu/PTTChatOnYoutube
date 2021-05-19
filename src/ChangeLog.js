@@ -6,6 +6,11 @@ export function ChangeLog () {
   function AddChangeLogInfo () {
     const changeLogInfo = {}
 
+    changeLogInfo.v_2_8 = new Info()
+    changeLogInfo.v_2_8.HoloTools.push('修復在新版HoloTools中無法使用的問題。')
+    changeLogInfo.v_2_8.HoloTools.push('已支援新版HoloTools聊天室開關、佈局切換。')
+    changeLogInfo.v_2_8.HoloTools.push('修正開台數多時會擋住增加指定影片按鈕的問題。')
+
     changeLogInfo.v_2_7 = new Info()
     changeLogInfo.v_2_7.HoloTools.push('(舊版)在右上方控制列中新增<strong>PTT聊天室開關</strong>與<strong>切換顯示佈局按鈕</strong>。<br>')
     changeLogInfo.v_2_7.HoloTools.push('<p><b>PTT聊天室開關</b>：<br>&emsp;&emsp;現在可以在不用時完全隱藏PTT聊天室，回復佔用的空間。</p>')
