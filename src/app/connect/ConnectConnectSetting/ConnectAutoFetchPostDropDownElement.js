@@ -24,8 +24,12 @@ export const ConnectAutoFetchPostDropDownElement = {
   },
   mounted () {
     this.msg.getAutoFetchedPostTitle = data => {
-      this.SetingValue_previewTitle = data
+      if (this.SetingValue_previewTitle === data) {
+        this.getPost()
+      } else {
+        this.SetingValue_previewTitle = data
       // if (reportmode) console.log("gettitle" + this.title);
+      }
     }
   },
   methods: {
