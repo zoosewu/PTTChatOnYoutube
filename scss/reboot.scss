@@ -35,8 +35,7 @@ section {
 // 3. Set an explicit initial text-align value so that we can later use
 //    the `inherit` value on things like `<th>` elements.
 
-#PTTChat,
-table {
+#PTTChat table {
   margin: 0; // 1
   font-family: $font-family-base;
   @include font-size($font-size-base);
