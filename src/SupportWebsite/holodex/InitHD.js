@@ -84,8 +84,8 @@ export function InitHD (messageposter) {
       parent.append(fakeparent)
       fakeparent.append(defaultVideoHandler)
       defaultVideoHandler.append(defaultVideo)
+      PTTChatHandler.css('z-index', '5')
       fakeparent.append(PTTChatHandler)
-      $('.reopen-toolbar').css({ 'z-index': '302' })
       InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true)
       ChangeLog()
       tryinsholotools = -10
