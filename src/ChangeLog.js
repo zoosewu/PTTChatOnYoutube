@@ -14,7 +14,9 @@ export function ChangeLog () {
     changeLogInfo.v_2_8.版本.push('修復在同看板使用同標題搜尋時不會更新標題預覽及跳轉至聊天室的問題。')
     // changeLogInfo.v_2_8.版本.push('修復在PTT卡住後無法再使用標題搜尋功能的問題。')
     changeLogInfo.v_2_8.版本.push('支援回文、轉文的搜尋。')
+    changeLogInfo.v_2_8.版本.push('修正若干css問題。')
     changeLogInfo.v_2_8.HoloDex.push('支援PTT聊天室開關、佈局切換。(註：切換至直向模式時需手動對分割排版)')
+
 
     changeLogInfo.v_2_7 = new Info()
     changeLogInfo.v_2_7.HoloTools.push('(舊版)在右上方控制列中新增<strong>PTT聊天室開關</strong>與<strong>切換顯示佈局按鈕</strong>。<br>')
