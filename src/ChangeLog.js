@@ -15,6 +15,7 @@ export function ChangeLog () {
     // changeLogInfo.v_2_8.版本.push('修復在PTT卡住後無法再使用標題搜尋功能的問題。')
     changeLogInfo.v_2_8.版本.push('支援回文、轉文的搜尋。')
     changeLogInfo.v_2_8.版本.push('修正若干css問題。')
+    changeLogInfo.v_2_8.版本.push('修正網站原生對話框(如結帳頁面)會錯誤的問題。')
 
     changeLogInfo.v_2_7 = new Info()
     changeLogInfo.v_2_7.HoloTools.push('(舊版)在右上方控制列中新增<strong>PTT聊天室開關</strong>與<strong>切換顯示佈局按鈕</strong>。<br>')
@@ -40,18 +41,18 @@ export function ChangeLog () {
   const PTTChangeLogURL = GetPTTChangeLogURL()
 
   const modal = $(`
-    <div id="PTTChangeLog" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-hidden="true" style="color: #000">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">PTTChatOnYoutube更新日誌</h4>
+    <div id="PTTChangeLog" class="pttmodal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-hidden="true" style="color: #000">
+      <div class="pttmodal-dialog modal-dialog pttmodal-dialog-centered">
+        <div class="pttmodal-content">
+          <div class="pttmodal-header">
+            <h4 class="pttmodal-title">PTTChatOnYoutube更新日誌</h4>
           </div>
-          <div class="modal-body">
+          <div class="pttmodal-body">
               ${changeLogHTML}
           </div>
-          <div class="modal-footer">
+          <div class="pttmodal-footer">
           <a href="${PTTChangeLogURL}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" type="button">閱讀更多</a>
-            <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
           </div>
         </div>
       </div>
