@@ -317,6 +317,9 @@ $font-size-base: 12px;
 #fakeparent.flex-row {
   flex-direction: row !important;
 }
+#fakeparent.flex-column {
+  flex-direction: column !important;
+}
 
 #PTTChat {
   .blockquote-footer::before {
