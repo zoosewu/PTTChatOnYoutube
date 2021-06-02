@@ -41,23 +41,23 @@ export function ChangeLog () {
   const PTTChangeLogURL = GetPTTChangeLogURL()
 
   const modal = $(`
-    <div id="PTTChangeLog" class="pttmodal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-hidden="true" style="color: #000">
-      <div class="pttmodal-dialog modal-dialog pttmodal-dialog-centered">
-        <div class="pttmodal-content">
-          <div class="pttmodal-header">
-            <h4 class="pttmodal-title">PTTChatOnYoutube更新日誌</h4>
+    <div id="PTTChangeLog" class="modal fade" data-backdrop="" data-keyboard="false" tabindex="-1" aria-hidden="true" style="color: #000">
+      <div class="modal-dialog modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">PTTChatOnYoutube更新日誌</h4>
           </div>
-          <div class="pttmodal-body">
+          <div class="modal-body">
               ${changeLogHTML}
           </div>
-          <div class="pttmodal-footer">
+          <div class="modal-footer">
           <a href="${PTTChangeLogURL}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" type="button">閱讀更多</a>
           <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
           </div>
         </div>
       </div>
     </div>`)
-  $('body').append(modal)
+  $('#PTTChat').append(modal)
   $('#PTTChangeLog').modal('show')
   GM_setValue('previousVersion', GM_info.script.version)
 
