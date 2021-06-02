@@ -40,6 +40,7 @@ export function ChangeLog () {
   const changeLogHTML = EncodeChangeLog(changeLogInfo)
   const PTTChangeLogURL = GetPTTChangeLogURL()
 
+  // data-backdrop should be empty
   const modal = $(`
     <div id="PTTChangeLog" class="modal fade" data-backdrop="" data-keyboard="false" tabindex="-1" aria-hidden="true" style="color: #000">
       <div class="modal-dialog modal-dialog modal-dialog-centered">

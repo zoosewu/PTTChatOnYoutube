@@ -10,11 +10,11 @@ export const Other = {
   template: `<div id="PTTChat-contents-other-main" :class="Classes">
   <h4 class="text-center mt-3 mb-1">使用教學</h4>
   <hr class="mt-1 mb-2">
-  <p class="mt-1 mb-0">1.設定紀錄檔開始的時間(實況無須設定)</p>
-  <p class="mt-1 mb-0">2.輸入帳號與密碼登入PTT</p>
-  <p class="mt-1 mb-0">3.在你自己的PTT找到想要同步的文章</p>
-  <p class="mt-1 mb-0">4.鍵入大寫Q複製文章完整AID(例#1W0MaOkF (C_Chat))</p>
-  <p class="mt-1 mb-0">5.將複製的AID貼上並讀取文章</p>
+  <p class="mt-1 mb-0 ml-5">1.設定紀錄檔開始的時間(實況無須設定)</p>
+  <p class="mt-1 mb-0 ml-5">2.輸入帳號與密碼登入PTT</p>
+  <p class="mt-1 mb-0 ml-5">3.在你自己的PTT找到想要同步的文章</p>
+  <p class="mt-1 mb-0 ml-5">4.鍵入大寫Q複製文章完整AID(例#1W0MaOkF (C_Chat))</p>
+  <p class="mt-1 mb-0 ml-5">5.將複製的AID貼上並讀取文章</p>
   <h4 class="text-center mt-5 mb-1">相關連結</h4>
   <hr class="mt-1 mb-2">
   <div class="text-center">
