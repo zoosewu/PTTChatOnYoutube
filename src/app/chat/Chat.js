@@ -191,7 +191,7 @@ export const Chat = {
   },
   template: `<div id="PTTChat-contents-Chat-main" class="h-100 d-flex flex-column">
   <dynamic-scroller ref="chatmain"
-    style="overscroll-behavior: none;overflow-y: scroll;height: 100%;"
+    style="overscroll-behavior: none;overflow-y: scroll;overflow-x:hidden;height: 100%;"
     @hook:mounted="AddEventHandler" :items="allchats" :min-item-size="defaultElClientHeight" class="scroller"
     key-field="uid">
     <template v-slot="{ item, index, active }">

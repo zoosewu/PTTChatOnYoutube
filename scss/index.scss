@@ -44,7 +44,9 @@ $font-size-base: 12px;
 );*/
 
 #PTTChat {
-  all: revert;
+  * {
+      all: revert;
+  }
 }
 
 // Custom.scss
@@ -55,22 +57,33 @@ $font-size-base: 12px;
   @import "variables";
   @import "node_modules/bootstrap/scss/functions";
   @import "node_modules/bootstrap/scss/variables";
-  // @import "mixins";
   @import "node_modules/bootstrap/scss/mixins";
   @import "fontsize";
-  //@import "reboot";
-  // @import "node_modules/bootstrap/scss/mixins";
   @import "node_modules/bootstrap/scss/root";
   @import "node_modules/bootstrap/scss/reboot";
-  //@import "node_modules/bootstrap/scss/reboot";
-  @import "type";
-  //@import "node_modules/bootstrap/scss/type";
+  // reboot.scss html
+  & {
+    font-family: sans-serif;
+    line-height: 1.15;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+  // reboot.scss body
+  & {
+    margin: 0; // 1
+    font-family: $font-family-base;
+    @include font-size($font-size-base);
+    font-weight: $font-weight-base;
+    line-height: $line-height-base;
+    color: $body-color;
+    text-align: left; // 3
+    background-color: $body-bg; // 2
+  }
+  @import "node_modules/bootstrap/scss/type";
   // @import "node_modules/bootstrap/scss/images";
   // @import "node_modules/bootstrap/scss/code";
   @import "node_modules/bootstrap/scss/grid";
-  // @import "node_modules/bootstrap/scss/grid";
   @import "node_modules/bootstrap/scss/tables";
-  // @import "node_modules/bootstrap/scss/forms";
   @import "node_modules/bootstrap/scss/forms";
   @import "node_modules/bootstrap/scss/buttons";
   @import "node_modules/bootstrap/scss/transitions";
@@ -94,13 +107,13 @@ $font-size-base: 12px;
   @import "node_modules/bootstrap/scss/modal";
   // @import "node_modules/bootstrap/scss/tooltip";
   // @import "node_modules/bootstrap/scss/popover";
-  // @import "node_modules/bootstrap/scss/carousel";
+  // @import "node_modules/bootstra/carousep/scssl";
   // @import "node_modules/bootstrap/scss/spinners";
   @import "node_modules/bootstrap/scss/utilities";
   @import "node_modules/bootstrap/scss/print";
   @import "vueanimation";
 
-  &, table {
+  table {
     margin: 0; // 1
     font-family: $font-family-base;
     @include font-size($font-size-base);
@@ -176,15 +189,19 @@ $font-size-base: 12px;
   }
 }
 
-#PTTChat.position-absolute {
-  position: absolute !important;
-}
-#PTTChat.w-100 {
-  width: 100% !important;
-}
-
-.position-relative {
-  position: relative !important;
+#PTTChat {
+  &.position-absolute {
+    position: absolute !important;
+  }
+  .position-absolute {
+    position: absolute !important;
+  }
+  .position-relative {
+    position: relative !important;
+  }
+  &.w-100 {
+    width: 100% !important;
+  }
 }
 
 #PTTChat {
@@ -235,82 +252,12 @@ $font-size-base: 12px;
     font-size: inherit;
     line-height: 1.5;
   }
-  .container,
-  .col,
-  .col-1,
-  .col-2,
-  .col-3,
-  .col-4,
-  .col-5,
-  .col-6,
-  .col-7,
-  .col-8,
-  .col-9,
-  .col-10,
-  .col-11,
-  .col-12,
-  .col-auto,
-  .col-lg,
-  .col-lg-1,
-  .col-lg-2,
-  .col-lg-3,
-  .col-lg-4,
-  .col-lg-5,
-  .col-lg-6,
-  .col-lg-7,
-  .col-lg-8,
-  .col-lg-9,
-  .col-lg-10,
-  .col-lg-11,
-  .col-lg-12,
-  .col-lg-auto,
-  .col-md,
-  .col-md-1,
-  .col-md-2,
-  .col-md-3,
-  .col-md-4,
-  .col-md-5,
-  .col-md-6,
-  .col-md-7,
-  .col-md-8,
-  .col-md-9,
-  .col-md-10,
-  .col-md-11,
-  .col-md-12,
-  .col-md-auto,
-  .col-sm,
-  .col-sm-1,
-  .col-sm-2,
-  .col-sm-3,
-  .col-sm-4,
-  .col-sm-5,
-  .col-sm-6,
-  .col-sm-7,
-  .col-sm-8,
-  .col-sm-9,
-  .col-sm-10,
-  .col-sm-11,
-  .col-sm-12,
-  .col-sm-auto,
-  .col-xl,
-  .col-xl-1,
-  .col-xl-2,
-  .col-xl-3,
-  .col-xl-4,
-  .col-xl-5,
-  .col-xl-6,
-  .col-xl-7,
-  .col-xl-8,
-  .col-xl-9,
-  .col-xl-10,
-  .col-xl-11,
-  .col-xl-12,
-  .col-xl-auto {
-    padding-top: 0px;
-    padding-bottom: 0px;
-  }
 }
 
+// external of id='PTTChat'
+#container.position-relative {
+  position: relative !important;
+}
 #pttchatparent.d-flex, #fakeparent.d-flex {
   display: flex !important;
 }
@@ -319,28 +266,4 @@ $font-size-base: 12px;
 }
 #fakeparent.flex-column {
   flex-direction: column !important;
-}
-
-#PTTChat {
-  .blockquote-footer::before {
-    content: "";
-  }
-}
-
-#PTTChat {
-  font-family: sans-serif;
-  line-height: 1.15;
-  -webkit-text-size-adjust: 100%;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-
-#PTTChat  {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #212529;
-  text-align: left;
-  background-color: #fff;
 }
