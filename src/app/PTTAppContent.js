@@ -14,14 +14,14 @@ export const PTTAppContent = {
     'PTTApp-PTT': PTTScreen,
     'PTTApp-Log': Log
   },
-  computed: {
-    updateheight () {
-      return {
-        height: this.$store.getters.getPluginHeight + 'px'
-      }
-    }
-  },
-  template: `<div id="PTTChat-contents" class="tab-content ptt-text" v-bind:style="updateheight">
+  // computed: {
+  //   updateheight () {
+  //     return {
+  //       height: this.$store.getters.getPluginHeight + 'px'
+  //     }
+  //   }
+  // },
+  template: `<div id="PTTChat-contents" class="tab-content ptt-text flex-grow-1 overflow-auto">
   <!-------- 聊天室 -------->
   <div class="tab-pane h-100 w-100 mx-0 position-relative fade" id="PTTChat-contents-Chat" role="tabpanel"
     aria-labelledby="nav-item-Chat">

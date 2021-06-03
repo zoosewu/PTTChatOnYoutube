@@ -65,11 +65,18 @@ export function InitApp (chatcon, whitetheme, isstreaming, messageposter, dynami
           }
           return classes.join(' ')
         },
+        updateheight () {
+          return {
+            height: this.getPluginHeight + 'px'
+          }
+        },
         ...Vuex.mapGetters([
           'getTheme',
           'getThemeColorBG',
-          'getThemeColorBorder'
+          'getThemeColorBorder',
+          'getPluginHeight'
         ])
+
       },
 
       mounted () {
@@ -108,7 +115,7 @@ export function InitApp (chatcon, whitetheme, isstreaming, messageposter, dynami
         clearInterval(this.playertime)
         clearInterval(this.exist)
       },
-      template: `<div id="PTTChat" :class="classes" :ins="index">
+      template: `<div id="PTTChat" :class="classes" :ins="index" :style="updateheight">
       <PTTAppBtn></PTTAppBtn>
       <PTTApp></PTTApp>
     </div>`
