@@ -8,59 +8,62 @@
 // @run-at       document-end
 // @grant        none
 // ==/UserScript==
+const isTopframe = (window.top === window.self)
+// eslint-disable-next-line no-throw-literal
+if (!isTopframe) throw '[Script Stopped: Vue.js devtools should run in top frame only.]'
 
-(function () {
-  const showlog = true
-  if (!window.__VUE_DEVTOOLS_GLOBAL_HOOK__) {
-    setTimeout(enableDevtools, 2000)
-    if (showlog) console.log('no __VUE_DEVTOOLS_GLOBAL_HOOK__')
+const showlog = true
+let isActivated = false
+
+const getConstructor = el => {
+  const vm = (el || 0).__vue__
+  if (vm) {
+    return vm.constructor.super ? vm.constructor.super : vm.constructor
+  }
+}
+
+const getVue = () => {
+  let Vue = window.Vue
+
+  if (!Vue) {
+    const tmpVue = getConstructor(document.getElementById('app'))
+    if (tmpVue && tmpVue.config) Vue = tmpVue
+    if (showlog && Vue) console.log('get Vue by app', Vue)
+  }
+
+  if (!Vue) {
+    // 遍历 dom 读取可能的 vue 实例
+    const tmpVue = getConstructor([...document.body.querySelectorAll('div')].find(el => el.__vue__))
+    if (tmpVue && tmpVue.config) Vue = tmpVue
+    if (showlog && Vue) console.log('get Vue by __vue__', Vue)
+  }
+  return Vue
+}
+function enableDevtools () {
+  if (isActivated) {
+    // console.log("isActivated");
     return
   }
 
-  let isActivated = false
+  const Vue = getVue()
 
-  const getConstructor = el => {
-    const vm = (el || 0).__vue__
-    if (vm) {
-      return vm.constructor.super ? vm.constructor.super : vm.constructor
-    }
+  if (!Vue) {
+    if (showlog) console.log('No Vue instance.')
+    setTimeout(enableDevtools, 2000)
+    return
   }
 
-  const getVue = () => {
-    let Vue = window.Vue
+  console.log({ Vue })
+  Vue.config.devtools = true
+  window.__VUE_DEVTOOLS_GLOBAL_HOOK__.emit('init', Vue)
+  isActivated = true
+  if (showlog) console.log('Hook devtool!', [Vue])
+};
 
-    if (!Vue) {
-      Vue = getConstructor(document.getElementById('app'))
-    }
-
-    if (!Vue) {
-      // 遍历 dom 读取可能的 vue 实例
-      Vue = getConstructor([...document.body.querySelectorAll('div')].find(el => el.__vue__))
-    }
-
-    return Vue
+(function () {
+  if (!window.__VUE_DEVTOOLS_GLOBAL_HOOK__) {
+    if (showlog) console.log('no __VUE_DEVTOOLS_GLOBAL_HOOK__')
   }
-
-  function enableDevtools () {
-    if (isActivated) {
-      // console.log("isActivated");
-      return
-    }
-
-    const Vue = getVue()
-
-    if (!Vue) {
-      if (showlog) console.log('No Vue instance.')
-      setTimeout(enableDevtools, 2000)
-      return
-    }
-
-    isActivated = true
-
-    Vue.config.devtools = true
-    window.__VUE_DEVTOOLS_GLOBAL_HOOK__.emit('init', Vue)
-    if (showlog) console.log('Hook devtool!', [Vue])
-  };
 
   // enableDevtools();
   setTimeout(enableDevtools, 2000)

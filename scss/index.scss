@@ -45,15 +45,18 @@ $font-size-base: 12px;
 
 #PTTChat {
   * {
-      all: revert;
+    all: revert;
   }
 }
 
 // Custom.scss
 // Option B: Include parts of Bootstrap
 
-// Required
 #PTTChat {
+  // virtual-scroller
+  @import "../node_modules/vue-virtual-scroller/dist/vue-virtual-scroller";
+
+  // Required
   @import "variables";
   @import "node_modules/bootstrap/scss/functions";
   @import "node_modules/bootstrap/scss/variables";
@@ -140,11 +143,11 @@ $font-size-base: 12px;
     }
     @return $newcolor;
   }
-  
+
   @each $name, $color in $ptt-theme-colors {
     //@warn $name;
-      &.#{$name} {
-        .ptt-bg {
+    &.#{$name} {
+      .ptt-bg {
         background-color: $color;
       }
 
@@ -166,7 +169,7 @@ $font-size-base: 12px;
       }
     }
   }
-    
+
   @each $name, $color in $ptt-theme-reversecolor {
     &.#{$name} {
       .ptt-border {
@@ -221,24 +224,24 @@ $font-size-base: 12px;
   .dropdown-submenu {
     position: relative;
   }
-  .dropdown-submenu>.dropdown-menu {
-      top: 0;
-      left: 50%;
-      margin-top: -6px;
+  .dropdown-submenu > .dropdown-menu {
+    top: 0;
+    left: 50%;
+    margin-top: -6px;
   }
-  .dropdown-submenu:hover>.dropdown-menu {
-      display: block;
+  .dropdown-submenu:hover > .dropdown-menu {
+    display: block;
   }
-  .dropdown-submenu>a:after {
-      display: block;
-      content: " ";
-      float: right;
-      border-color: transparent;
-      border-style: solid;
-      border-width: 5px 0 5px 5px;
-      border-left-color: #ccc;
-      margin-top: 5px;
-      margin-right: -10px;
+  .dropdown-submenu > a:after {
+    display: block;
+    content: " ";
+    float: right;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #ccc;
+    margin-top: 5px;
+    margin-right: -10px;
   }
   .transition-smooth {
     height: 0;
@@ -258,7 +261,8 @@ $font-size-base: 12px;
 #container.position-relative {
   position: relative !important;
 }
-#pttchatparent.d-flex, #fakeparent.d-flex {
+#pttchatparent.d-flex,
+#fakeparent.d-flex {
   display: flex !important;
 }
 #fakeparent.flex-row {
