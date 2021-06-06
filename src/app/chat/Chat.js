@@ -2,7 +2,7 @@ import { ChatPreviewImage } from './ChatPreviewImage.js'
 import { ChatScrollBtn } from './ChatScrollBtn.js'
 import { ChatElement } from './ChatElement.js'
 import { ChatSetNewPush } from './ChatSetNewPush.js'
-
+import VueVirtualScroller from '../../../node_modules/vue-virtual-scroller/dist/vue-virtual-scroller.min.js'
 Vue.component('DynamicScroller', VueVirtualScroller.DynamicScroller)
 Vue.component('DynamicScrollerItem', VueVirtualScroller.DynamicScrollerItem)
 // Vue.component('RecycleScroller', VueVirtualScroller.RecycleScroller)
@@ -38,7 +38,14 @@ export const Chat = {
       setTimeout(() => this.autoScrollCheck(), 10)
     },
     autoScrollCheck: function () {
-      if (reportmode) console.log('scrollToChat', this.lastactiveChat, this.activeChat, this.lastactiveChat !== this.activeChat, 'this.isAutoScroll', this.isAutoScroll, this.lastautoscrolltime + 50 < Date.now())
+      if (reportmode) {
+        console.log('scrollToChat',
+          this.lastactiveChat,
+          this.activeChat,
+          this.lastactiveChat !== this.activeChat,
+          'this.isAutoScroll', this.isAutoScroll,
+          this.lastautoscrolltime + 50 < Date.now())
+      }
       if (this.lastactiveChat !== this.activeChat) { this.lastactiveChat = this.activeChat }
       if (this.isAutoScroll && this.lastautoscrolltime + 50 < Date.now()) {
         this.scrollToChat()
@@ -188,6 +195,8 @@ export const Chat = {
     'chat-scroll-btn': ChatScrollBtn,
     'chat-set-new-push': ChatSetNewPush,
     'chat-element': ChatElement
+    // 'dynamic-scroller': DynamicScroller,
+    // 'dynamic-scroller-item': DynamicScrollerItem
   },
   template: `<div id="PTTChat-contents-Chat-main" class="h-100 d-flex flex-column">
   <dynamic-scroller ref="chatmain"
