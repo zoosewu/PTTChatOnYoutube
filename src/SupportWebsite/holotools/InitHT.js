@@ -72,16 +72,17 @@ export function InitHT (messageposter) {
       }
       iconPTT.on('click', function () {
         if (collapseEnd || !collapseStart) {
-          if (now === '0') $('#PTTMain').collapse('show')
-          else {
-            parent.css('overflow', 'hidden')
+          if (now === '0') {
+            $('#PTTMainBtn').css('display', 'block')
+            $('#PTTMain').collapse('show')
+          } else {
+            $('#PTTMainBtn').css('display', 'none')
             $('#PTTMain').collapse('hide')
           }
           now = (now === pluginwidth0 ? pluginwidth : pluginwidth0)
           $('#pttchatparent').css('flex', '0 0 ' + now + 'px')
-          if (enablePortaitMode && isChatOnen) defaultVideo.height('')
+          if (enablePortaitMode && isChatOnen) defaultVideo.height(containerHeight)
           else if (enablePortaitMode) {
-            parent.css('overflow', 'visible')
             defaultVideo.height(containerHeight - pluginportraitheight)
           }
           defaultSetting()
@@ -93,11 +94,10 @@ export function InitHT (messageposter) {
           if ($('#fakeparent').hasClass('flex-row')) {
             $('#fakeparent').removeClass('flex-row').addClass('flex-column')
             defaultVideo.height(containerHeight - pluginportraitheight)
-            parent.css('overflow', 'visible')
             $('#PTTChat-contents').height(pluginportraitheight - 35)
           } else {
             $('#fakeparent').removeClass('flex-column').addClass('flex-row')
-            defaultVideo.height('')
+            defaultVideo.height(containerHeight)
             $('#PTTChat-contents').height(pluginheight)
           }
           enablePortaitMode = !enablePortaitMode

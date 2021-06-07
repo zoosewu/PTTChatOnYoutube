@@ -17,7 +17,8 @@ export const PTTAppContent = {
   computed: {
     updateheight () {
       return {
-        height: this.$store.getters.getPluginHeight + 'px'
+        height: this.$store.getters.getPluginHeight + 'px',
+        overflow: 'hidden overlay'
       }
     }
   },

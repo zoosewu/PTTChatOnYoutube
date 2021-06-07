@@ -8,7 +8,7 @@ export function ChangeLog () {
 
     changeLogInfo.v_2_8 = new Info()
     changeLogInfo.v_2_8.HoloTools.push('修復在新版HoloTools中無法使用的問題。')
-    changeLogInfo.v_2_8.HoloTools.push('已支援新版HoloTools聊天室開關、佈局切換。')
+    changeLogInfo.v_2_8.HoloTools.push('支援新版HoloTools聊天室開關、佈局切換。')
     changeLogInfo.v_2_8.HoloTools.push('修正開台數多時會擋住增加指定影片按鈕的問題。')
     changeLogInfo.v_2_8.版本.push('修復PTT新式游標在搜尋超過五位數文章數時會發生錯誤的問題。')
     changeLogInfo.v_2_8.版本.push('修復在同看板使用同標題搜尋時不會更新標題預覽及跳轉至聊天室的問題。')
@@ -42,7 +42,7 @@ export function ChangeLog () {
 
   // data-backdrop should be empty
   const modal = $(`
-    <div id="PTTChangeLog" class="modal fade" data-backdrop="" data-keyboard="false" tabindex="-1" aria-hidden="true" style="color: #000">
+    <div id="PTTChangeLog" class="modal fade" data-backdrop="" data-keyboard="false" tabindex="-1" aria-hidden="true" style="color: #000; overflow: overlay;">
       <div class="modal-dialog modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
