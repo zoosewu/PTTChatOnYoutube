@@ -1,10 +1,11 @@
-<p>
-  <a href="https://standardjs.com"><img src="https://img.shields.io/badge/code_style-standard-brightgreen.svg" alt="Standard - JavaScript Style Guide"></a>
-</p>
+PTTChatOnYoutube - 在Youtube上顯示PTT推文
+========================================
+![GitHub license](https://img.shields.io/github/license/zoosewu/pttchatonyoutube)
+[![Code style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/zoosewu/pttchatonyoutube?style=plastic)
 
-# PTTChatOnYoutube
-在Youtube上面顯示PTT推文
-
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/zoosewu/pttchatonyoutube?sort=semver)](https://greasyfork.org/zh-TW/scripts/418469-pttchatonyoutube)
+![GitHub Release Date](https://img.shields.io/github/release-date/zoosewu/pttchatonyoutube)
 ## 如何開始開發
 
 在專案底下輸入 ```npm install``` 安裝開發環境，VSCode設定請開啟 ```"javascript.format.insertSpaceBeforeFunctionParenthesis": true```
