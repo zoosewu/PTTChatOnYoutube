@@ -6,16 +6,17 @@ import { paddingLeft } from '../../library.js'
 export const ChatElement = {
   props: {
     item: { type: Object, required: true },
+    index: { type: Number, required: true },
     msgStyle: { type: Object, required: true },
     infoStyle: { type: Object, required: true },
     spaceStyle: { type: Object, required: true },
-    activeChat: { type: Boolean, required: true }
+    activeChat: { type: Number, required: true }
   },
   methods: {
     $_ChatElementMessage_GrayCheck () {
-      if (reportmode) console.log('GrayCheck', this.item, 'id', this.item.id, 'activeChat', this.activeChat, this.item, 'id>activeChat', this.item.id > this.activeChat, '->', this.item.gray, 'getDisablePushGray', this.getDisablePushGray)
-      if (this.item.id > this.activeChat && !this.item.gray) this.$emit('updategray', this.item.id, true)
-      else if (this.item.id <= this.activeChat && this.item.gray) this.$emit('updategray', this.item.id, false)
+      if (reportmode) console.log('GrayCheck', this.item, 'id', this.item.id, 'index', this.index, 'activeChat', this.activeChat, this.item, 'id>activeChat', this.item.id > this.activeChat, '->', this.item.gray, 'getDisablePushGray', this.getDisablePushGray)
+      if (this.index > this.activeChat && !this.item.gray) this.$emit('updategray', this.index, true)
+      else if (this.index <= this.activeChat && this.item.gray) this.$emit('updategray', this.index, false)
     },
     $_ChatElementMessage_MoueseEnter (url) {
       this.$store.dispatch('previewImage', url)
