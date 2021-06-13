@@ -10,7 +10,57 @@ export function InitHD (messageposter) {
   // run app instance loop
   const watchcheck = /https:\/\/holodex\.net\/multiview/.exec(window.location.href)
   let pttBootBtnCount = 0; let count = 0
+  let isPTTInstalled = false
   if (watchcheck) {
+    const t = setInterval(() => {
+      if ($('#PTTSwitch').length === 1) {
+        clearInterval(t)
+      } else {
+        const parent = $('.vue-grid-layout').parent()
+        const pluginwidth = GM_getValue('PluginWidth', 400)
+        const pluginwidth0 = '0'
+        const liveControls = $('.flex-grow-1.justify-end.d-flex.mv-toolbar-btn.align-center.no-btn-text')
+        const fakeparent = $('<div id="fakeparent" class="d-flex flex-row"></div>')
+        const defaultVideoHandler = $('<div id="holotoolsvideohandler" style="flex:1 1 auto;"></div>')
+        const PTTChatHandler = $('<div id="pttchatparent" class="p-0 d-flex" style="flex:0 0 0px;position:relative;"></div>')
+        // const defaultVideo = $(`.vue-grid-layout`).parent();
+        const defaultVideo = $('.vue-grid-layout')
+        const iconPTT = $('<button type="button" id="PTTSwitch" title="切換為舊版PTT顯示模式\n(嵌入模式故障時可使用，使用前請先重新整理)" style="height: 36px; width: 36px; margin: 0px 4px 0px 4px; font-size: 21px;">P</button>')
+        liveControls.prepend(iconPTT)
+        let now = pluginwidth0
+        let collapseStart = false
+        let collapseEnd = true
+        let isChatOnen = false
+        iconPTT.on('click', function () {
+          if ($('#PTTChat').length === 0) {
+            InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true)
+            ChangeLog()
+          }
+          if (!isPTTInstalled) {
+            if (collapseEnd || !collapseStart) {
+              if (now === '0') {
+                $('#PTTMainBtn').css('display', 'block')
+                $('#PTTMain').collapse('show')
+              } else {
+                $('#PTTMainBtn').css('display', 'none')
+                $('#PTTMain').collapse('hide')
+              }
+              now = (now === pluginwidth0 ? pluginwidth : pluginwidth0)
+              $('#pttchatparent').css('flex', '0 0 ' + now + 'px')
+              isChatOnen = !isChatOnen
+            }
+          }
+        })
+        $(document).on('show.bs.collapse hide.bs.collapse', '#PTTMain', function () { collapseStart = true; collapseEnd = false })
+        $(document).on('shown.bs.collapse hidden.bs.collapse', '#PTTMain', function () { collapseStart = false; collapseEnd = true })
+        parent.append(fakeparent)
+        fakeparent.append(defaultVideoHandler)
+        defaultVideoHandler.append(defaultVideo)
+        PTTChatHandler.css('z-index', '5')
+        fakeparent.append(PTTChatHandler)
+      }
+    }, 200)
+
     setInterval(() => {
       const btnParentSet = $('.px-0.d-flex.flex-grow-1.align-stretch.mb-1')
       if (btnParentSet.length > pttBootBtnCount) {
@@ -46,6 +96,7 @@ export function InitHD (messageposter) {
           gridParent.children().children().eq(1).css('position', 'relative').prepend($('<div style="height: 100%; width: 100%; position: absolute;"></div>'))
           InitApp(gridParent.children().children().eq(1).children().eq(0), WhiteTheme, true, messageposter, true)
           ChangeLog()
+          isPTTInstalled = true
           const chatBtn = gridParent.find($('span:contains("Chat")')).parent()
           $('#PTTChat').addClass('h-100').css('background', 'transparent')
           $('#PTTMain').removeClass('position-absolute')
