@@ -43,8 +43,8 @@ export function InitHD (messageposter) {
       if ($('#PTTChat').length === 0) {
         const gridParent = $('.vue-grid-layout').children().eq(gridIndex)
         if (gridParent.has($('.cell-content'))) {
-          gridParent.children().children().css('position', 'relative').prepend($('<div style="height: 100%; width: 100%; position: absolute;"></div>'))
-          InitApp(gridParent.children().children().eq(0).children().eq(0), WhiteTheme, true, messageposter, true)
+          gridParent.children().children().eq(1).css('position', 'relative').prepend($('<div style="height: 100%; width: 100%; position: absolute;"></div>'))
+          InitApp(gridParent.children().children().eq(1).children().eq(0), WhiteTheme, true, messageposter, true)
           ChangeLog()
           const chatBtn = gridParent.find($('span:contains("Chat")')).parent()
           $('#PTTChat').addClass('h-100').css('background', 'transparent')
@@ -54,7 +54,7 @@ export function InitHD (messageposter) {
             chatBtn.trigger('click')
           }
           $('#PTTMainBtn').on('click', function () {
-            const originChat = gridParent.children().children().eq(0).children().eq(1)
+            const originChat = gridParent.children().children().eq(1).children().eq(1)
             const h = $('#PTTChat').parent().height()
             if (originChat.css('z-index') === '-1') {
               $('#PTTMain').removeClass('h-100').css('max-height', h + 'px')
@@ -82,7 +82,7 @@ export function InitHD (messageposter) {
       const editBtn = gridParent.find($('path[d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"]')).parents().eq(3)
       if (editBtn) {
         editBtn.on('click', function () {
-          const cellContent = gridParent.children().children().eq(0)
+          const cellContent = gridParent.children().children().eq(1)
           const px = cellContent.css('padding-left')
           const pt = cellContent.css('padding-top')
           const pb = cellContent.css('padding-bottom')
@@ -99,7 +99,7 @@ export function InitHD (messageposter) {
       if (btnParent) {
         btnParent.children().eq(0).attr({ disabled: 'true', title: '鎖定：PTT運行中', style: 'background-color: rgb(150, 150, 150) !important' })
         btnParent.children().eq(1).on('click', function () {
-          gridParent.children().children().eq(0).children().eq(0).css({ height: '100%', width: '100%' })
+          gridParent.children().children().eq(1).children().eq(0).css({ height: '100%', width: '100%' })
           listenEditBtn(gridParent)
         })
         clearInterval(t)
