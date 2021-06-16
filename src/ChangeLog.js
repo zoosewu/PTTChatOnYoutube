@@ -16,6 +16,7 @@ export function ChangeLog () {
     changeLogInfo.v_2_8.版本.push('支援回文、轉文的搜尋。')
     changeLogInfo.v_2_8.版本.push('修正若干css問題。')
     changeLogInfo.v_2_8.版本.push('修正網站原生對話框(如結帳頁面)會錯誤的問題。')
+    changeLogInfo.v_2_8.版本.push('現在會完全隱藏被黑名單ID的推文了。')
 
     changeLogInfo.v_2_7 = new Info()
     changeLogInfo.v_2_7.HoloTools.push('(舊版)在右上方控制列中新增<strong>PTT聊天室開關</strong>與<strong>切換顯示佈局按鈕</strong>。<br>')

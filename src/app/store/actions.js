@@ -106,18 +106,19 @@ export const actions = {
       chat.id = existpush + index
       chat.uid = state.post.AID + '_' + chat.id
       chat.gray = !state.disablepushgray
+      let isMatch = false
       if (state.enableblacklist) {
         const list = state.blacklist.split('\n')
         const id = chat.pttid.toLowerCase()
         for (let index = 0; index < list.length; index++) {
           if (id === list[index]) {
-            chat.pttid = '隱藏的使用者'
-            chat.msg = ''
-            chat.type = '→ '
+            isMatch = true
           }
         }
       }
-      chatlist.push(chat)
+      if (!isMatch) {
+        chatlist.push(chat)
+      }
       if (reportmode) console.log('new Chat', chat, currpush)
     }
     // console.log("chatlist actions", chatlist);
