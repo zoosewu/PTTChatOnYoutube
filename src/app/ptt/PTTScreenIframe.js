@@ -10,7 +10,11 @@ export const PTTScreenIframe = {
   },
   methods: {
     removeiframe: function (event) {
-      this.$el.parentNode.removeChild(this.$el)
+      if (this.msg.ownerorigin === 'https://holodex.net') {
+        document.getElementById('PTTframe').parentElement.remove()
+      } else {
+        this.$el.parentNode.removeChild(this.$el)
+      }
     }
   },
   beforeCreate () {

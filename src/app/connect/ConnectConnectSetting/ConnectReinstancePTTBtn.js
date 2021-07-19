@@ -3,7 +3,10 @@ export const ConnectReinstancePTTBtn = {
   methods: {
     reLaunchPtt: function () {
       if (this.msg.ownerorigin === 'https://holodex.net') {
-        $('#PTTframe').attr('src', $('#PTTframe').attr('src'))
+        const p = $('#PTTframe').clone()
+        $('#PTTframe').remove()
+        p.appendTo($('#ptt-frame-parent'))
+        this.msg.targetWindow = document.getElementById('PTTframe').contentWindow
       } else {
         this.reInstancePTT()
       }
