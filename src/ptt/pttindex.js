@@ -105,7 +105,7 @@ export function InitPTT (messageposter) {
         reg: /系統過載, 請稍後再來\.\.\./,
         input: '',
         callback: () => {
-          serverfull = true
+          PTT.serverResponse.serverFull = true
           if (PTT.controlstate === 1) {
             PTT.unlock()
             msg.PostMessage('alert', { type: 0, msg: '系統過載, 請稍後再來...' })
@@ -132,7 +132,20 @@ export function InitPTT (messageposter) {
       { reg: /【網路遊樂場】/, input: 'e' },
       { reg: /您確定要離開【 批踢踢實業坊 】嗎\(Y\/N\)？/, input: 'n\n' }
 
-    ]
+    ],
+    serverResponse: {
+      serverFull: false,
+      isResponded: false,
+      cb: undefined,
+      set isRespondedFromPtt (val) {
+        if (typeof this.cb === 'function' && this.isResponded === false) this.cb()
+        if (val) this.serverFull = false
+        this.isResponded = val
+      },
+      get isRespondedFromPtt () {
+        return this.isResponded
+      }
+    }
   }
   PTT.wind = window
   let PTTPost = {
@@ -165,18 +178,22 @@ export function InitPTT (messageposter) {
       autofetch: false
     }
   }
-  let serverfull = false
-  const insertText = (() => {
-    let t = PTT.wind.document.querySelector('#t')
-    return str => {
-      if (!t) t = PTT.wind.document.querySelector('#t')
+  const insertText = str => {
+    if (!str) return
+    const promise = new Promise((resolve, reject) => {
+      PTT.serverResponse.cb = resolve
+      PTT.serverResponse.isResponded = false
       const e = new CustomEvent('paste')
-      // debug用
-      if (reportmode) console.log('insertText : "' + str + '"')
       e.clipboardData = { getData: () => str }
-      t.dispatchEvent(e)
-    }
-  })()
+      document.querySelector('#t').dispatchEvent(e)
+      if (reportmode) console.log(`insertText: "${str}"`)
+      setTimeout(reject, 3000)
+    })
+    promise.catch(() => {
+      PTT.unlock()
+      console.error(`PTT No Response! Last Inserted Text: "${str}"`)
+    })
+  }
   function ComLog (cmd) {
     if (showcommand) console.log('==execute command:', [cmd])
   }
@@ -248,14 +265,10 @@ export function InitPTT (messageposter) {
     }
   }
   hook(unsafeWindow.console, 'log', t => {
-    if (typeof t === 'string') {
-      if (t.indexOf('page state:') >= 0) {
-        /* const newstate = /->(\d)/.exec(t)[1]; */
-      } else if (t === 'view update') {
-        PTT.lastviewupdate = Date.now()
-        serverfull = false
-        OnUpdate()
-      }
+    if (t === 'view update') {
+      PTT.serverResponse.isRespondedFromPtt = true
+      PTT.lastviewupdate = Date.now()
+      OnUpdate()
     }
   })
   // hook end
@@ -265,7 +278,7 @@ export function InitPTT (messageposter) {
       msg.PostMessage('alert', { type: 0, msg: 'PTT已斷線，請重新登入。' })
       PTT.login = false
       disbtn[0].click()
-      serverfull = false
+      PTT.serverResponse.serverFull = false
       PTT.screenstate = -1
       PTT.unlock()
       reconnecttrytimes--
@@ -764,10 +777,10 @@ export function InitPTT (messageposter) {
     if (!Reconnect()) {
       if (PTT.controlstate === 1) {
         msg.PostMessage('alert', { type: 0, msg: '指令執行中，請稍後再試。' })
-      } else if (serverfull) {
+      } else if (PTT.serverResponse.serverFull) {
         msg.PostMessage('alert', { type: 0, msg: '系統過載, 請稍後再來...' })
         PTT.unlock()
-      } else if (!serverfull) {
+      } else if (!PTT.serverResponse.serverFull) {
         PTT.lastviewupdate = Date.now()
         PTT.lock()
         if (reportmode) console.log('PTTLockCheck', ...args)
