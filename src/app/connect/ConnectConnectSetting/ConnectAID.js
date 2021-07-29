@@ -1,3 +1,5 @@
+import { reportmode } from '../../../logsetting.js'
+
 export const ConnectAID = {
   inject: ['msg', 'isStream'],
   data () {

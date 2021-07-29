@@ -1,4 +1,5 @@
 import { types } from './mutations_type.js'
+import { reportmode } from '../../logsetting.js'
 
 export const actions = {
   actionIncrease: ({ commit }) => { console.log('actionIncrease'); commit(types.INCREASE) },
@@ -39,7 +40,8 @@ export const actions = {
       }
       const t = newpost.date
       dispatch('updateLog', { type: 'postAID', data: newpost.AID })
-      dispatch('updateLog', [{ type: 'postBoard', data: newpost.board },
+      dispatch('updateLog', [
+        { type: 'postBoard', data: newpost.board },
         { type: 'postTitle', data: newpost.title },
         { type: 'postDate', data: t.toLocaleDateString() + ' ' + t.toLocaleTimeString() },
         { type: 'postEndline', data: newpost.lastendline }])

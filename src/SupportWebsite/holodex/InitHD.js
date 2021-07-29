@@ -2,6 +2,7 @@
 import { InitApp } from '../../app/appindex.js'
 import { ChangeLog } from '../../ChangeLog.js'
 import { ThemeCheck } from '../../library.js'
+import { reportmode } from '../../logsetting.js'
 
 export function InitHD (messageposter) {
   // Check Theme

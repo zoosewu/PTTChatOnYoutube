@@ -1,3 +1,5 @@
+import { showalertmsg } from '../../logsetting.js'
+
 export const ConnectAlert = {
   inject: ['msg'],
   data () {

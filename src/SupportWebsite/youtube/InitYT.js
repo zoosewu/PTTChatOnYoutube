@@ -1,6 +1,7 @@
 import { InitApp } from '../../app/appindex.js'
 import { ChangeLog } from '../../ChangeLog.js'
 import { ThemeCheck } from '../../library.js'
+import { showalllog } from '../../logsetting.js'
 
 export function InitYT (messageposter) {
   const msg = messageposter

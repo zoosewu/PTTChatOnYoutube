@@ -1,3 +1,5 @@
+import { reportmode, showalllog } from '../../logsetting.js'
+
 export const LogItem = {
   props: {
     itemTitle: { type: String, required: true },

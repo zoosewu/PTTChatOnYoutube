@@ -1,3 +1,5 @@
+import { showPostMessage, showonMessage, reportmode } from './logsetting.js'
+
 export function MessagePoster () {
   this.targetorigin = ''
   this.ownerorigin = ''
@@ -14,7 +16,7 @@ export function MessagePoster () {
     if (event.origin !== this.targetorigin) return
 
     const data = event.data
-    console.log('typeof (this[data.m])', typeof (this[data.m]))
+    // console.log('typeof (this[data.m])', typeof (this[data.m]))
     if (typeof (this[data.m]) === 'function') {
       this[data.m].call(null, data.d)
     }

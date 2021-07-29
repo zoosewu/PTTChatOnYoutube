@@ -1,3 +1,4 @@
+import { reportmode } from '../logsetting.js'
 export const PTTAppNav = {
   computed: {
     isGotoChat: function () {

@@ -1,3 +1,4 @@
+import { reportmode } from '../../logsetting.js'
 
 /* eslint-disable no-unused-vars */
 import ChatElementMessage from './ChatElementMessage.js'

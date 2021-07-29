@@ -1,3 +1,5 @@
+import { reportmode } from '../../logsetting.js'
+
 export const ChatPreviewImage = {
   data () {
     return {

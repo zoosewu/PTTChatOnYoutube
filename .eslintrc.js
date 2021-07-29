@@ -1,7 +1,9 @@
 module.exports = {
   root: true,
   env: {
-    node: true
+    node: true,
+    jest: true,
+    browser: true
   },
   extends: [
     // add more generic rulesets here, such as:
@@ -32,13 +34,6 @@ module.exports = {
     "GM_getValue": "readonly",
     "CustomEvent": "readonly",
     "getComputedStyle": "readonly",
-    "reportmode": "readonly",
-    "showalllog": "readonly",
-    "showPTTscreen": "readonly",
-    "showcommand": "readonly",
-    "showPostMessage": "readonly",
-    "showonMessage": "readonly",
-    "showalertmsg": "readonly",
     "defaultopen": "readonly",
     "disablepttframe": "readonly",
     "simulateisstreaming": "readonly",

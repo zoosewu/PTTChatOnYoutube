@@ -1,3 +1,4 @@
+import { showalllog, showPTTscreen, showcommand, reportmode } from '../logsetting.js'
 
 export function InitPTT (messageposter) {
   const SkipCommand = true

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { logsetting } from './logsetting.js'
+import { reportmode } from './logsetting.js'
 /* eslint-enable no-unused-vars */
 import { MessagePoster } from './MessagePoster.js'
 import { HerfFilter } from './filter/HerfFilter.js'

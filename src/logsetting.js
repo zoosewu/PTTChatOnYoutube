@@ -1,11 +1,10 @@
-/* eslint-disable no-unused-vars */
 // user log
-const reportmode = false
+export const reportmode = false
 // all log
-const showalllog = false
+export const showalllog = false
 // dev log
-const showPTTscreen = (false || reportmode || showalllog)
-const showcommand = (false || reportmode || showalllog)
-const showPostMessage = (false || reportmode || showalllog)
-const showonMessage = (false || reportmode || showalllog)
-const showalertmsg = false || showalllog
+export const showPTTscreen = (false || reportmode || showalllog)
+export const showcommand = (false || reportmode || showalllog)
+export const showPostMessage = (false || reportmode || showalllog)
+export const showonMessage = (false || reportmode || showalllog)
+export const showalertmsg = false || showalllog

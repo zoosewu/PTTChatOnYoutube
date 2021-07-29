@@ -1,3 +1,5 @@
+import { reportmode } from '../logsetting.js'
+
 import { PTTApp } from './PTTApp.js'
 import { PTTAppBtn } from './PTTAppBtn.js'
 import { store } from './store/store.js'

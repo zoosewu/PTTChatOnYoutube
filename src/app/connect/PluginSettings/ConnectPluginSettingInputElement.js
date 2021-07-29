@@ -1,3 +1,5 @@
+import { reportmode } from '../../../logsetting.js'
+
 Vue.component('PluginSettingInput', {
   inject: ['nowPluginWidth'],
 

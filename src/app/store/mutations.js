@@ -1,4 +1,5 @@
 import { types } from './mutations_type.js'
+import { reportmode } from '../../logsetting.js'
 
 // state
 export const state = {

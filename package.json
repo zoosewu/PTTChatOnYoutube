@@ -1,5 +1,32 @@
 {
+  "name": "pttchatonyoutube",
+  "version": "2.7.117",
+  "description": "Connect ptt pushes to youtube chatroom",
+  "author": "Zoosewu, crimsonmoon9",
+  "scripts": {
+    "build": "userscript-builder --mode dev",
+    "test:unit": "vue-cli-service test:unit",
+    "lint": "eslint --ext .js,.vue src",
+    "http": "http-server ./ --cors -c-1 -p 8889",
+    "lint-fix": "eslint --fix --ext .js,.vue src",
+    "release": "userscript-builder --mode minor",
+    "release:bugfix": "userscript-builder --mode bugfix",
+    "release:major": "userscript-builder --mode major",
+    "test": "jest",
+    "watch-dev": "npm-watch release:bugfix",
+    "watch-dev-n": "npm-watch build",
+    "watch-scss": "node-sass --watch scss/index.scss -o css",
+    "watch-scss-map": "node-sass --source-map map --watch scss/index.scss -o css"
+  },
+  "dependencies": {
+    "bootstrap": "^4.5.3",
+    "npm-watch": "^0.7.0",
+    "vue-virtual-scroller": "^1.0.10",
+    "vuex": "^3.6.2"
+  },
   "devDependencies": {
+    "@vue/cli-plugin-unit-jest": "~4.5.0",
+    "@vue/test-utils": "^1.0.3",
     "@zoosewu/userscript-builder": "^0.3.0",
     "eslint": "^7.26.0",
     "eslint-config-standard": "^16.0.2",
@@ -8,58 +35,62 @@
     "eslint-plugin-vue": "^7.9.0",
     "husky": "^3.0.2",
     "lint-staged": "^10.3.0",
-    "node-sass": "^5.0.0"
-  },
-  "dependencies": {
-    "bootstrap": "^4.5.3",
-    "npm-watch": "^0.7.0",
-    "vue-virtual-scroller": "^1.0.10"
-  },
-  "watch": {
-    "build": {
-      "patterns": [
-        "src",
-        "css"
-      ],
-      "extensions": "js,css"
-    },
-    "release:bugfix": {
-      "patterns": [
-        "src",
-        "css"
-      ],
-      "extensions": "js,css"
-    }
+    "node-sass": "^5.0.0",
+    "vue": "^2.6.14"
   },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
     }
   },
+  "license": "MIT",
   "lint-staged": {
     "*.{js,vue}": [
       "eslint --fix"
     ]
   },
-  "scripts": {
-    "watch-dev": "npm-watch release:bugfix",
-    "watch-scss-map": "node-sass --source-map map --watch scss/index.scss -o css",
-    "http": "http-server ./ --cors -c-1 -p 8889",
-    "watch-scss": "node-sass --watch scss/index.scss -o css",
-    "release": "userscript-builder --mode minor",
-    "watch-dev-n": "npm-watch build",
-    "build": "userscript-builder --mode dev",
-    "release:bugfix": "userscript-builder --mode bugfix",
-    "release:major": "userscript-builder --mode major",
-    "lint": "eslint --ext .js,.vue src",
-    "lint-fix": "eslint --fix --ext .js,.vue src",
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "standard": {
+    "env": {
+      "node": true,
+      "jest": true,
+      "browser": true
+    },
+    "globals": [
+      "$",
+      "Vue",
+      "Vuex",
+      "VueVirtualScroller",
+      "CryptoJS",
+      "filterXSS",
+      "unsafeWindow",
+      "top",
+      "GM_info",
+      "GM_setValue",
+      "GM_getValue",
+      "CustomEvent",
+      "getComputedStyle",
+      "defaultopen",
+      "disablepttframe",
+      "simulateisstreaming",
+      "appinscount",
+      "cryptkey"
+    ],
+    "ignore": [
+      "src/logsetting.js",
+      "src/SupportWebsite/lineTV/InitlineTV.js",
+      ".eslintrc.js"
+    ],
+    "rules": {
+      "no-global-assign": [
+        "error",
+        {
+          "exceptions": [
+            "appinscount"
+          ]
+        }
+      ]
+    }
   },
-  "name": "pttchatonyoutube",
-  "version": "2.7.47",
-  "description": "Connect ptt pushes to youtube chatroom",
-  "author": "Zoosewu, crimsonmoon9",
-  "license": "MIT",
   "userscript": {
     "entry": "./src/index.js",
     "dev": "./publish",
@@ -103,48 +134,20 @@
       "//downloadURL": "https://greasyfork.org/scripts/418469-pttchatonyt/code/PttChatOnYt.user.js"
     }
   },
-  "standard": {
-    "globals": [
-      "$",
-      "Vue",
-      "Vuex",
-      "VueVirtualScroller",
-      "CryptoJS",
-      "filterXSS",
-      "unsafeWindow",
-      "top",
-      "GM_info",
-      "GM_setValue",
-      "GM_getValue",
-      "CustomEvent",
-      "getComputedStyle",
-      "reportmode",
-      "showalllog",
-      "showPTTscreen",
-      "showcommand",
-      "showPostMessage",
-      "showonMessage",
-      "showalertmsg",
-      "defaultopen",
-      "disablepttframe",
-      "simulateisstreaming",
-      "appinscount",
-      "cryptkey"
-    ],
-    "ignore": [
-      "src/logsetting.js",
-      "src/SupportWebsite/lineTV/InitlineTV.js",
-      ".eslintrc.js"
-    ],
-    "rules": {
-      "no-global-assign": [
-        "error",
-        {
-          "exceptions": [
-            "appinscount"
-          ]
-        }
-      ]
+  "watch": {
+    "build": {
+      "patterns": [
+        "src",
+        "css"
+      ],
+      "extensions": "js,css"
+    },
+    "release:bugfix": {
+      "patterns": [
+        "src",
+        "css"
+      ],
+      "extensions": "js,css"
     }
   }
 }
