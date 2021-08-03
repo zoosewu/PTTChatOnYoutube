@@ -67,17 +67,27 @@ export function InitHD (messageposter) {
         const iconSwitch = $(`<button type="button" id="ptt-switch-btn" title="切換PTT顯示模式" style="width: 36px; margin: 4px; padding-top: 6px"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="${holodexStyle}"><path d="M0 0h24v24H0z" fill="none"/><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg></button>`)
         const iconPTT = $('<button type="button" id="ptt-collapse-btn" title="展開/隱藏PTT聊天室" style="height: 36px; width: 36px; margin: 4px; font-size: 21px;">P</button>')
         liveControls.prepend(iconPTT, iconSwitch)
+        parent.append(fakeparent)
+        fakeparent.append(defaultVideoHandler)
+        defaultVideoHandler.append(defaultVideo)
+        PTTChatHandler.css('z-index', '5')
+        fakeparent.append(PTTChatHandler)
 
         // 0: new; 1: old;
-        if (GM_getValue('PluginTypeHolodex', '0') === '0') {
+        if (GM_getValue('PluginTypeHolodex', '1') === '0') {
           iconPTT.css('display', 'none')
+        } else {
+          // assure first-time-use changelog
+          InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true)
+          ChangeLog()
+          $('<div id="ptt-frame-parent" style="position: absolute;"><iframe id="PTTframe" src="//term.ptt.cc/?url=https://holodex.net" style="display: none;width: 340px;height: 190px;">你的瀏覽器不支援 iframe</iframe></div>').appendTo($('#holotoolsvideohandler').children().eq(0))
         }
 
         let nowWidth = 0
         let collapseStart = false
         let collapseEnd = true
         iconPTT.on('click', () => {
-          if (GM_getValue('PluginTypeHolodex', '0') === '1') {
+          if (GM_getValue('PluginTypeHolodex', '1') === '1') {
             if ($('#PTTChat').length === 0) {
               InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true)
               ChangeLog()
@@ -96,8 +106,8 @@ export function InitHD (messageposter) {
           }
         })
         iconSwitch.on('click', () => {
-          if (confirm(`切換為${GM_getValue('PluginTypeHolodex', '0') === '0' ? '舊' : '新'}版PTT顯示模式？`)) {
-            if (GM_getValue('PluginTypeHolodex', '0') === '0') {
+          if (confirm(`切換為${GM_getValue('PluginTypeHolodex', '1') === '0' ? '舊' : '新'}版PTT顯示模式？`)) {
+            if (GM_getValue('PluginTypeHolodex', '1') === '0') {
               clearInterval(mainTimer)
               if (resizeObserver) resizeObserver.disconnect()
               iconPTT.css('display', 'block')
@@ -130,11 +140,6 @@ export function InitHD (messageposter) {
         })
         $(document).on('show.bs.collapse hide.bs.collapse', '#PTTMain', () => { collapseStart = true; collapseEnd = false })
         $(document).on('shown.bs.collapse hidden.bs.collapse', '#PTTMain', () => { collapseStart = false; collapseEnd = true })
-        parent.append(fakeparent)
-        fakeparent.append(defaultVideoHandler)
-        defaultVideoHandler.append(defaultVideo)
-        PTTChatHandler.css('z-index', '5')
-        fakeparent.append(PTTChatHandler)
 
         // substitute origin delete button
         checkOriginDeleteBtn()
@@ -206,7 +211,7 @@ export function InitHD (messageposter) {
           })
         }
 
-        let mainTimer = GM_getValue('PluginTypeHolodex', '0') === '0'
+        let mainTimer = GM_getValue('PluginTypeHolodex', '1') === '0'
           ? setInterval(() => {
             appendPttEmbedBtn()
             checkAutoRemove()
