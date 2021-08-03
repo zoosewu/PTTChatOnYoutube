@@ -81,8 +81,7 @@ export function InitHD (messageposter) {
             if ($('#PTTChat').length === 0) {
               InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true)
               ChangeLog()
-              $('<div id="ptt-frame-parent" style="position: relative; top: 30px; width: 350px;"><iframe id="PTTframe" src="//term.ptt.cc/?url=https://holodex.net" style="display: none;width: 340px;height: 190px;">你的瀏覽器不支援 iframe</iframe></div>').appendTo($('#holotoolsvideohandler').children().eq(0))
-              listenPttFrameBtn()
+              $('<div id="ptt-frame-parent" style="position: absolute;"><iframe id="PTTframe" src="//term.ptt.cc/?url=https://holodex.net" style="display: none;width: 340px;height: 190px;">你的瀏覽器不支援 iframe</iframe></div>').appendTo($('#holotoolsvideohandler').children().eq(0))
             }
             if (collapseEnd || !collapseStart) {
               if (nowWidth === 0) {
@@ -111,6 +110,7 @@ export function InitHD (messageposter) {
               }
               $('[name="ptt-boot-btn"]').remove()
               GM_setValue('PluginTypeHolodex', '1')
+              listenPttFrameBtn()
             } else {
               iconPTT.css('display', 'none')
               $('#pttchatparent').css('flex', '0 0 0px')
@@ -126,7 +126,6 @@ export function InitHD (messageposter) {
                 if (overrideSetting.length === 0) checkOverrideSetting()
               }, 1000)
             }
-            listenPttFrameBtn()
           }
         })
         $(document).on('show.bs.collapse hide.bs.collapse', '#PTTMain', () => { collapseStart = true; collapseEnd = false })
@@ -228,7 +227,7 @@ export function InitHD (messageposter) {
         if ($('#PTTChat').length === 0) {
           InitApp(gridParent.children().eq(0).children().eq(1).children().eq(0), WhiteTheme, true, messageposter, true)
           ChangeLog()
-          $('<div id="ptt-frame-parent" style="position: relative; top: 30px; width: 350px;"><iframe id="PTTframe" src="//term.ptt.cc/?url=https://holodex.net" style="display: none;width: 340px;height: 190px;">你的瀏覽器不支援 iframe</iframe></div>').appendTo($('#holotoolsvideohandler').children().eq(0))
+          $('<div id="ptt-frame-parent" style="position: absolute;"><iframe id="PTTframe" src="//term.ptt.cc/?url=https://holodex.net" style="display: none;width: 340px;height: 190px;">你的瀏覽器不支援 iframe</iframe></div>').appendTo($('#holotoolsvideohandler').children().eq(0))
         } else {
           const pttChatParent = $('#PTTChat').parent('[name="pttchat-parent"]')
           $('#PTTChat').appendTo(gridParent.children().eq(0).children().eq(1).children().eq(0)).css('display', 'block')
@@ -266,12 +265,29 @@ export function InitHD (messageposter) {
   function listenPttFrameBtn () {
     const t = setInterval(() => {
       if ($('#nav-item-PTT').length !== 0) {
-        $('#nav-item-PTT').off('click').on('click', function () {
-          if ($('#PTTframe').css('display') === 'none') {
-            $('#PTTframe').css('display', 'block')
-          } else {
-            $('#PTTframe').css('display', 'none')
+        $('#nav-item-PTT').off('click').on('click', () => {
+          let el = $('#PTTMainBtn')[0]
+          let x = 0; let y = 0
+          while (el) {
+            x += el.offsetLeft - el.scrollLeft + el.clientLeft
+            y += el.offsetTop - el.scrollLeft + el.clientTop
+            el = el.offsetParent
           }
+          y -= 35
+          const height = $('#PTTChat-app').height() - 30
+          const width = $('#PTTChat-app').width()
+          $('#ptt-frame-parent').css('margin', `${y}px 0px 0px ${x}px`).css('z-index', 6)
+          $('#PTTframe').css('display', 'block').css({ height: `${height}px`, width: `${width}px` })
+          const t = () => {
+            setTimeout(() => {
+              if ($('#PTTChat-contents-PTT').width() !== 0) setTimeout(t, 200)
+              else {
+                $('#ptt-frame-parent').css('z-index', -1)
+                $('#PTTframe').css('display', 'none')
+              }
+            }, 200)
+          }
+          t()
         })
         clearInterval(t)
       }
@@ -284,6 +300,11 @@ export function InitHD (messageposter) {
       if (editBtn) {
         editBtn.off('click').on('click', () => {
           if (gridParent.find($('#PTTChat')).length !== 0) {
+            if ($('#nav-item-PTT').hasClass('active')) {
+              $('#ptt-frame-parent').css('z-index', -1)
+              $('#PTTframe').css('display', 'none')
+              $('#nav-item-Connect').trigger('click')
+            }
             const cellContent = gridParent.children().eq(0).children().eq(1)
             const px = cellContent.css('padding-left')
             const pt = cellContent.css('padding-top')

@@ -10,7 +10,7 @@ export function ChangeLog () {
     changeLogInfo.v_2_8.HoloTools.push('修復在新版HoloTools中無法使用的問題。')
     changeLogInfo.v_2_8.HoloTools.push('支援新版HoloTools聊天室開關、佈局切換。')
     changeLogInfo.v_2_8.HoloTools.push('修正開台數多時會擋住增加指定影片按鈕的問題。')
-    changeLogInfo.v_2_8.HoloDex.push('支援嵌入式顯示模式，可以在分割中使用PTT聊天室並自訂大小、位置了。<br>詳細說明：<a href="https://github.com/crimsonmoon9/PTTChatOnYoutube/tree/feature/guide/homepage#holodex">github</a>')
+    changeLogInfo.v_2_8.HoloDex.push('支援嵌入式顯示模式，可以在分割中使用PTT聊天室並自訂大小、位置了。<br>詳細說明：<a href="https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage#holodex">github</a>')
     changeLogInfo.v_2_8.HoloDex.push('在右上方控制列中新增新舊版PTT聊天室切換開關。')
     changeLogInfo.v_2_8.版本.push('修復PTT新式游標在搜尋超過五位數文章數時會發生錯誤的問題。')
     changeLogInfo.v_2_8.版本.push('修復在同看板使用同標題搜尋時不會更新標題預覽及跳轉至聊天室的問題。')
