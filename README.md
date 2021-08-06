@@ -4,8 +4,8 @@ PTTChatOnYoutube - 在Youtube上顯示PTT推文
 [![Code style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/zoosewu/pttchatonyoutube?style=plastic)
 
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/zoosewu/pttchatonyoutube?sort=semver)](https://greasyfork.org/zh-TW/scripts/418469-pttchatonyoutube)
-![GitHub Release Date](https://img.shields.io/github/release-date/zoosewu/pttchatonyoutube)
+<!--[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/zoosewu/pttchatonyoutube?sort=semver)](https://greasyfork.org/zh-TW/scripts/418469-pttchatonyoutube)
+![GitHub Release Date](https://img.shields.io/github/release-date/zoosewu/pttchatonyoutube)-->
 ## 如何開始開發
 
 在專案底下輸入 ```npm install``` 安裝開發環境，VSCode設定請開啟 ```"javascript.format.insertSpaceBeforeFunctionParenthesis": true```
