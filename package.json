@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "@zoosewu/userscript-builder": "^0.3.0",
+    "@zoosewu/userscript-builder": "^0.3.3",
     "eslint": "^7.26.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
@@ -100,7 +100,7 @@
         "https://cdn.jsdelivr.net/npm/xss@1.0.8/dist/xss.js"
       ],
       "homepageURL": "https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage",
-      "//downloadURL": "https://greasyfork.org/scripts/418469-pttchatonyt/code/PttChatOnYt.user.js"
+      "downloadURL": "https://greasyfork.org/scripts/418469-pttchatonyt/code/PttChatOnYt.user.js"
     }
   },
   "standard": {
