@@ -1,4 +1,4 @@
-import { reportmode, showalllog } from '../../logsetting.js'
+import { ReportMode, ShowAllLog } from '../../logsetting.js'
 
 export const LogItem = {
   props: {
@@ -28,7 +28,7 @@ export const LogItem = {
     item1Data: function () {
       if (this.lastlog1 !== this.log) {
         this.lastlog1 = this.log
-        if (reportmode && showalllog) console.log('item1Data', this.itemType, this.log.type, this.itemType === this.log.type)
+        if (ReportMode && ShowAllLog) console.log('item1Data', this.itemType, this.log.type, this.itemType === this.log.type)
         if (this.itemType === this.log.type) this.i1Data = this.log.data
       }
       return this.i1Data
@@ -36,7 +36,7 @@ export const LogItem = {
     item2Data: function () {
       if (this.lastlog2 !== this.log) {
         this.lastlog2 = this.log
-        if (reportmode && showalllog) console.log('item2Data', this.secondItemTitle, this.secondItemType, this.log.type, this.secondItemType === this.log.type)
+        if (ReportMode && ShowAllLog) console.log('item2Data', this.secondItemTitle, this.secondItemType, this.log.type, this.secondItemType === this.log.type)
         if (this.secondItemTitle && this.secondItemType === this.log.type) this.i2Data = this.log.data
       }
       return this.i2Data
@@ -44,7 +44,7 @@ export const LogItem = {
     ...Vuex.mapGetters(['log'])
   },
   mounted () {
-    if (reportmode && showalllog) console.log('LogItem', this.itemTitle, this.itemType, this.itemColSpan, this.secondItemTitle, this.secondItemType)
+    if (ReportMode && ShowAllLog) console.log('LogItem', this.itemTitle, this.itemType, this.itemColSpan, this.secondItemTitle, this.secondItemType)
   },
   template: `<tr>
   <th colspan="1" scope="row">{{this.item1Title}}</th>

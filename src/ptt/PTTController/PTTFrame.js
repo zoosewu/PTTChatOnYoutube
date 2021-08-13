@@ -1,8 +1,8 @@
-import { FrameState } from './PTTState'
+import { FrameState } from './PttState'
 import { MessagePoster } from '../../MessagePoster.js'
-import { reportmode } from '../../logsetting.js'
+import { ReportMode } from '../../logsetting.js'
 
-export const PTTFrame = {
+export const PttFrame = {
   filters: [
     { reg: /請輸入代號，或以 guest 參觀，或以 new 註冊/, state: FrameState.login },
     { reg: /上方為使用者心情點播留言區|【 精華公佈欄 】/, state: FrameState.main },
@@ -16,7 +16,7 @@ export const PTTFrame = {
       const filter = this.frame.filters[i]
       const result = this.match(filter.reg)
       if (result != null) {
-        if (reportmode) console.log('==page state:' + this.state.frame + '->' + filter.state, result)
+        if (ReportMode) console.log('==page state:' + this.state.frame + '->' + filter.state, result)
         this.state.frame = filter.state
         if (this.state.frame > 1) this.state.ReconnectTime = 10
         MessagePoster.PostMessage('PTTState', this.state.frame)

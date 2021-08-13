@@ -1,4 +1,4 @@
-import { reportmode } from '../../logsetting.js'
+import { ReportMode } from '../../logsetting.js'
 
 /* eslint-disable no-unused-vars */
 import ChatElementMessage from './ChatElementMessage.js'
@@ -14,7 +14,7 @@ export const ChatElement = {
   },
   methods: {
     $_ChatElementMessage_GrayCheck () {
-      if (reportmode) console.log('GrayCheck', this.item, 'id', this.item.id, 'activeChat', this.activeChat, this.item, 'id>activeChat', this.item.id > this.activeChat, '->', this.item.gray, 'getDisablePushGray', this.getDisablePushGray)
+      if (ReportMode) console.log('GrayCheck', this.item, 'id', this.item.id, 'activeChat', this.activeChat, this.item, 'id>activeChat', this.item.id > this.activeChat, '->', this.item.gray, 'getDisablePushGray', this.getDisablePushGray)
       if (this.item.id > this.activeChat && !this.item.gray) this.$emit('updategray', this.item.id, true)
       else if (this.item.id <= this.activeChat && this.item.gray) this.$emit('updategray', this.item.id, false)
     },
@@ -53,10 +53,10 @@ export const ChatElement = {
       this.$refs.p.mouseEnter = this.$_ChatElementMessage_MoueseEnter
       this.$refs.p.mouseLeave = this.$_ChatElementMessage_MoueseLeave
       this.$refs.p.gotoPost = this.$_ChatElementMessage_GotoPost
-      if (reportmode) console.log('mounted', this, this.$refs)
+      if (ReportMode) console.log('mounted', this, this.$refs)
     })
   },
-  updated () { if (reportmode) console.log('updated, listIndex, chatIndex, msg', this.item.id, this.item.msg) },
+  updated () { if (ReportMode) console.log('updated, listIndex, chatIndex, msg', this.item.id, this.item.msg) },
   template: `<div class="ptt-chat media px-3" :style="bgc">
   <div class="media-body mw-100">
     <div class="ptt-chat-info d-flex flex-row" :style="infoStyle">

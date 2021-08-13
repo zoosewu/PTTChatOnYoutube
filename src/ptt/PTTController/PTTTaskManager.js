@@ -1,4 +1,4 @@
-export const PTTTaskManager = {
+export const PttTaskManager = {
   lock: false,
   taskList: [],
   addTask: function (newTask) {

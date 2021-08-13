@@ -1,4 +1,4 @@
-export const PTTState = {
+export const PttState = {
   connection: true, // 自動 連線狀態
   login: false, // 自動 登入狀態
   lock: false, // 手動 任務是否執行中

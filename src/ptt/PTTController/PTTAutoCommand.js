@@ -1,8 +1,8 @@
 import { MessagePoster } from '../../MessagePoster.js'
-import { showcommand } from '../../logsetting.js'
+import { ShowCommand } from '../../logsetting.js'
 
 export const ThisFrame = Object.freeze({ skip: true, notSkip: false })
-export const PTTAutoCommand = {
+export const PttAutoCommand = {
   list: [
     {
       reg: /您想刪除其他重複登入的連線嗎/,
@@ -65,7 +65,7 @@ export const PTTAutoCommand = {
       const cmd = commands[i]
       const result = this.match(cmd.reg)
       if (result != null) {
-        if (showcommand) console.log('==execute AutoCommand:', [cmd])
+        if (ShowCommand) console.log('==execute AutoCommand:', [cmd])
         this.insertText(cmd.input)
         if (typeof cmd.callback !== 'undefined') {
           const args = cmd.args ? cmd.args : []

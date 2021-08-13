@@ -1,6 +1,6 @@
 // import { PTTTaskManager } from './PTTTaskManager.js'
 
-// describe('PTT PTTTaskManager', () => {
+// describe('Ptt PTTTaskManager', () => {
 //   beforeEach(() => {
 //     PTTTaskManager.reset()
 //   })

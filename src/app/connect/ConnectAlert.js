@@ -1,4 +1,4 @@
-import { showalertmsg } from '../../logsetting.js'
+import { showAlertMessage } from '../../logsetting.js'
 
 export const ConnectAlert = {
   inject: ['msg'],
@@ -30,7 +30,7 @@ export const ConnectAlert = {
   mounted () {
     this.msg.alert = data => {
       this.$store.dispatch('Alert', { type: data.type, msg: data.msg })
-      if (showalertmsg) console.log('Alert,type: ' + data.type + ', msg: ' + data.msg)
+      if (showAlertMessage) console.log('Alert,type: ' + data.type + ', msg: ' + data.msg)
     }
     this.lastAlert = this.newAlert
     this.al = []

@@ -1,7 +1,7 @@
-import { InitApp } from '../../app/appindex.js'
+import { InitApp } from '../../app/AppIndex.js'
 import { ChangeLog } from '../../ChangeLog.js'
 import { ThemeCheck } from '../../library.js'
-import { showalllog } from '../../logsetting.js'
+import { ShowAllLog } from '../../logsetting.js'
 
 export function InitYT (messageposter) {
   const msg = messageposter
@@ -10,7 +10,7 @@ export function InitYT (messageposter) {
 
   (function CheckChatInstanced () {
     if (/www\.youtube\.com\/watch\?v=/.exec(window.location.href) === null) {
-      if (showalllog) console.log('not watch video.')
+      if (ShowAllLog) console.log('not watch video.')
       setTimeout(CheckChatInstanced, 2000)
       return
     }
@@ -18,10 +18,10 @@ export function InitYT (messageposter) {
     const defaultChat = $('iframe', ChatContainer)
     const PTTApp = $('#PTTChat', ChatContainer)
     if (PTTApp.length > 0) {
-      if (showalllog) console.log('PTTApp already instanced.')
+      if (ShowAllLog) console.log('PTTApp already instanced.')
       setTimeout(CheckChatInstanced, 5000)
     } else if (defaultChat.length > 0) {
-      if (showalllog) console.log('PTTApp frame instance!')
+      if (ShowAllLog) console.log('PTTApp frame instance!')
       ChatContainer.css({ position: 'relative' })
 
       // 生出套件
@@ -30,7 +30,7 @@ export function InitYT (messageposter) {
       ChangeLog()
       setTimeout(CheckChatInstanced, 5000)
     } else {
-      if (showalllog) console.log('watching video without chatroom.')
+      if (ShowAllLog) console.log('watching video without chatroom.')
       setTimeout(CheckChatInstanced, 5000)
     }
   })()

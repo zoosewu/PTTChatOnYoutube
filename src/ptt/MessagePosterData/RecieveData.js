@@ -5,5 +5,6 @@ export const RecieveData = {
   title: '',
   date: '',
   endLine: '',
-  comments: []
+  comments: [],
+  pushedText: ''
 }

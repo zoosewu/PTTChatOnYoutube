@@ -28,7 +28,7 @@ export const ConnectAutoFetchPostDropDownElement = {
         this.getPost()
       } else {
         this.SetingValue_previewTitle = data
-      // if (reportmode) console.log("gettitle" + this.title);
+      // if (ReportMode) console.log("gettitle" + this.title);
       }
     }
   },
@@ -62,7 +62,7 @@ export const ConnectAutoFetchPostDropDownElement = {
       this.$_ConnectAutoFetchPost_onClickDropdownItem(this.optionGroup[0])
     },
     getPost: function () {
-      // if (reportmode) console.log("click AutoFetchPostBtn" + this.board + " " + this.title + " " + this.SetingValue_previewTitle);
+      // if (ReportMode) console.log("click AutoFetchPostBtn" + this.board + " " + this.title + " " + this.SetingValue_previewTitle);
       if (this.PTTState < 1) {
         this.$store.dispatch('Alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
         return

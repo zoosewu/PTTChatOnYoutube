@@ -1,4 +1,4 @@
-import { reportmode } from '../../logsetting.js'
+import { ReportMode } from '../../logsetting.js'
 
 export const ChatPreviewImage = {
   data () {
@@ -84,7 +84,7 @@ export const ChatPreviewImage = {
         top: t + 'px'
       }
       if (this.preview) {
-        if (reportmode) console.log('W,H,', this.mousex, this.getWidth(), l, this.mousey, this.getHeight(), t)
+        if (ReportMode) console.log('W,H,', this.mousex, this.getWidth(), l, this.mousey, this.getHeight(), t)
         styles = {
           maxHeight: '400px',
           maxWidth: '400px',

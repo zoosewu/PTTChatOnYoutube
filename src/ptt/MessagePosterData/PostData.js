@@ -12,29 +12,32 @@ const PostDataOriginal = {
   searchType: SearchType.none,
   isSamePost: false,
   isPostChecked: false,
-  isBoadCheckerd: false
+  isBoadChecked: false,
+  TrySetNewComment: 0,
+  pushedComment: ''
 }
-
 export const PostData = {
-  reset: {
-    newPost: () => {
-      this.board = PostDataOriginal.board
-      this.key = PostDataOriginal.key
-      this.outsideTitle = PostDataOriginal.outsideTitle
-      this.insideTitle = PostDataOriginal.insideTitle
-      this.postTime = PostDataOriginal.postTime
-      this.startline = PostDataOriginal.startline
-      this.endline = PostDataOriginal.endline
-      this.searchType = PostDataOriginal.searchType
-      this.isSamePost = PostDataOriginal.isSamePost
-      this.isPostChecked = PostDataOriginal.isPostChecked
-      this.isBoadCheckerd = PostDataOriginal.isBoadCheckerd
-    },
-    samePost: () => {
-      this.isSamePost = true
-      this.isPostChecked = false
-      this.isBoadCheckerd = false
-    }
-  },
   ...PostDataOriginal
+}
+export const SetPostDataSamePost = () => {
+  PostData.isSamePost = true
+  PostData.isPostChecked = false
+  PostData.isBoadChecked = false
+  PostData.TrySetNewComment = 0
+  PostData.pushedComment = ''
+}
+export const ResetPostData = () => {
+  PostData.board = PostDataOriginal.board
+  PostData.key = PostDataOriginal.key
+  PostData.outsideTitle = PostDataOriginal.outsideTitle
+  PostData.insideTitle = PostDataOriginal.insideTitle
+  PostData.postTime = PostDataOriginal.postTime
+  PostData.startline = PostDataOriginal.startline
+  PostData.endline = PostDataOriginal.endline
+  PostData.searchType = PostDataOriginal.searchType
+  PostData.isSamePost = PostDataOriginal.isSamePost
+  PostData.isPostChecked = PostDataOriginal.isPostChecked
+  PostData.isBoadChecked = PostDataOriginal.isBoadChecked
+  PostData.TrySetNewComment = PostDataOriginal.TrySetNewComment
+  PostData.pushedComment = PostDataOriginal.pushedComment
 }

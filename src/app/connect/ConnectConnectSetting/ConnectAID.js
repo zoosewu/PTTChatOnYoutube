@@ -1,4 +1,4 @@
-import { reportmode } from '../../../logsetting.js'
+import { ReportMode } from '../../../logsetting.js'
 
 export const ConnectAID = {
   inject: ['msg', 'isStream'],
@@ -11,20 +11,20 @@ export const ConnectAID = {
   },
   methods: {
     $_ConnectAID_SubmitSearch: function () {
-      if (reportmode) console.log('submitAID', this.aid)
+      if (ReportMode) console.log('submitAID', this.aid)
       this.$store.dispatch('gotoPost', this.aid)
       this.forceSubmit = true
     },
     $_ConnectAID_SearchPushByPostAID: function (aid) {
       const result = /#(.+) \((.+)\)/.exec(this.aid)
       if (this.post.AID === result[1] && this.post.board === result[2]) { // 相同文章取最新推文
-        if (reportmode) console.log('nowAID same post', result[1], result[2], this.post.lastendline)
+        if (ReportMode) console.log('nowAID same post', result[1], result[2], this.post.lastendline)
         this.msg.PostMessage('getPushByLine', { AID: result[1], board: result[2], startline: this.post.lastendline })
       } else if (this.isStream) { // 實況取得最近的推文
-        if (reportmode) console.log('nowAID recent', result[1], result[2], 200)
+        if (ReportMode) console.log('nowAID recent', result[1], result[2], 200)
         this.msg.PostMessage('getPushByRecent', { AID: result[1], board: result[2], recent: 200 })
       } else { // 實況紀錄取得所有推文
-        if (reportmode) console.log('nowAID total', result[1], result[2], 0)
+        if (ReportMode) console.log('nowAID total', result[1], result[2], 0)
         this.msg.PostMessage('getPushByLine', { AID: result[1], board: result[2], startline: 0 })
       }
     }

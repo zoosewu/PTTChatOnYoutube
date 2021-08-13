@@ -1,17 +1,17 @@
-import { PTT } from '../../PTTController/PTT.js'
+import { Ptt } from '../../PTTController/Ptt.js'
 import { PostData } from '../../MessagePosterData/PostData.js'
-import { FrameState } from '../../PTTController/PTTState.js'
+import { FrameState } from '../../PttController/PttState.js'
 // import { RecieveData } from '../../MessagePosterData/RecieveData.js'
-import { reportmode } from '../../../logsetting.js'
+import { ReportMode } from '../../../logsetting.js'
 
-const backToBoard = () => PTT.insertText('qP')
+const backToBoard = () => Ptt.insertText('qP')
 
 const getTitleWithoutSpace = (result) => {
   return result[1].replace(/\s+$/g, '')
 }
 const getTheFirstThreeLine = () => {
   let s = ''
-  for (let i = 0; i < 5 && i < PTT.screen.length; i++) s += PTT.screen[i]
+  for (let i = 0; i < 5 && i < Ptt.screen.length; i++) s += Ptt.screen[i]
   return s
 }
 const isPostCurrect = (insideTitle) => {
@@ -20,15 +20,15 @@ const isPostCurrect = (insideTitle) => {
 const updatePostDate = (insideTitle, isPostHaveNormalInsideTitle) => {
   PostData.insideTitle = insideTitle
   PostData.haveNormalInsideTitle = isPostHaveNormalInsideTitle
-  const result = PTT.screenHaveText(/時間 {2}(\S{3} \S{3} ...\d{2}:\d{2}:\d{2} \d{4})/)
+  const result = Ptt.screenHaveText(/時間 {2}(\S{3} \S{3} ...\d{2}:\d{2}:\d{2} \d{4})/)
   const postTime = result ? new Date(result[1]) : new Date(Date.now())
   PostData.postTime = postTime
 }
 
-export const IsPostCurrectInsideTitle = () => {
+export const CheckIsPostCurrectInsideTitle = () => {
   const res = { pass: true, callback: backToBoard }
-  if (PTT.state.frame === FrameState.firstPageofPost) {
-    const isPostHaveNormalInsideTitle = PTT.match(/ 標題 +(.+)/)
+  if (Ptt.state.frame === FrameState.firstPageofPost) {
+    const isPostHaveNormalInsideTitle = Ptt.match(/ 標題 +(.+)/)
     let insideTitle = ''
     if (isPostHaveNormalInsideTitle) {
       insideTitle = getTitleWithoutSpace(isPostHaveNormalInsideTitle)
@@ -40,8 +40,8 @@ export const IsPostCurrectInsideTitle = () => {
     } else {
       updatePostDate(insideTitle, isPostHaveNormalInsideTitle !== null)
     }
-  } else if (PTT.state.frame === FrameState.board || PTT.state.frame === FrameState.main) {
-    if (reportmode) console.log('==IsPostCurrectInsideTitle error, PTT.pagestate:', PTT.state.frame) // 禁止出現的例外狀況
+  } else if (Ptt.state.frame === FrameState.board || Ptt.state.frame === FrameState.main) {
+    if (ReportMode) console.log('==IsPostCurrectInsideTitle error, Ptt.pagestate:', Ptt.state.frame) // 禁止出現的例外狀況
   }
   return res
 }

@@ -1,5 +1,5 @@
 import { types } from './mutations_type.js'
-import { reportmode } from '../../logsetting.js'
+import { ReportMode } from '../../logsetting.js'
 
 export const actions = {
   actionIncrease: ({ commit }) => { console.log('actionIncrease'); commit(types.INCREASE) },
@@ -120,7 +120,7 @@ export const actions = {
         }
       }
       chatlist.push(chat)
-      if (reportmode) console.log('new Chat', chat, currpush)
+      if (ReportMode) console.log('new Chat', chat, currpush)
     }
     // console.log("chatlist actions", chatlist);
     commit(types.UPDATECHAT, chatlist)
@@ -142,7 +142,7 @@ export const actions = {
     const time = state.VPlayedTime// [H,m,s,isVideoVeforePost]
     const currtime = new Date(vstart.valueOf())
     currtime.setSeconds(vstart.getSeconds() + time)
-    if (reportmode) console.log('updateVideoCurrentTime check, currtime.valueOf() < state.post.date.valueOf()', currtime.valueOf() < state.post.date.valueOf(), currtime.valueOf(), state.post.date.valueOf())
+    if (ReportMode) console.log('updateVideoCurrentTime check, currtime.valueOf() < state.post.date.valueOf()', currtime.valueOf() < state.post.date.valueOf(), currtime.valueOf(), state.post.date.valueOf())
     // console.log("updateVideoCurrentTime vstart, time, currtime", vstart, time, currtime);
     dispatch('updateLog', { type: 'videoCurrentTime', data: currtime.toLocaleDateString() + ' ' + currtime.toLocaleTimeString() })
     commit(types.VIDEOCURRENTRIME, currtime)

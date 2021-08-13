@@ -3,7 +3,7 @@ import { ChatScrollBtn } from './ChatScrollBtn.js'
 import { ChatElement } from './ChatElement.js'
 import { ChatSetNewPush } from './ChatSetNewPush.js'
 import VueVirtualScroller from '../../../node_modules/vue-virtual-scroller/dist/vue-virtual-scroller.min.js'
-import { reportmode } from '../../logsetting.js'
+import { ReportMode } from '../../logsetting.js'
 Vue.component('DynamicScroller', VueVirtualScroller.DynamicScroller)
 Vue.component('DynamicScrollerItem', VueVirtualScroller.DynamicScrollerItem)
 // Vue.component('RecycleScroller', VueVirtualScroller.RecycleScroller)
@@ -27,7 +27,7 @@ export const Chat = {
   },
   methods: {
     updateGray: function (index, isgray) {
-      if (reportmode) {
+      if (ReportMode) {
         console.log('update gray', index, this.allchats[index])
         console.log('update gray', this.allchats[index].gray, '->', isgray, this.allchats[index].msg)
       };
@@ -39,7 +39,7 @@ export const Chat = {
       setTimeout(() => this.autoScrollCheck(), 10)
     },
     autoScrollCheck: function () {
-      if (reportmode) {
+      if (ReportMode) {
         console.log('scrollToChat',
           this.lastactiveChat,
           this.activeChat,
@@ -68,8 +68,8 @@ export const Chat = {
     getCurrentChat: function () {
       const chats = this.allchats
       if (this.isStream) { this.activeChat = chats.length - 1 } else {
-        // console.log("this.activeChat && chats && reportmode", this.activeChat, chats, reportmode);
-        if (this.activeChat > -1 && chats && reportmode) {
+        // console.log("this.activeChat && chats && ReportMode", this.activeChat, chats, ReportMode);
+        if (this.activeChat > -1 && chats && ReportMode) {
           console.log('current time: ' + this.videoCurrentTime.toString(), ', activeChat', this.activeChat)
           if (chats[this.activeChat - 1]) { console.log('activeChat-1', chats[this.activeChat - 1].time.toString()) }
           if (chats[this.activeChat]) { console.log('activeChat+0', chats[this.activeChat].time.toString(), ', activeChat > CurrentTime', chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()) }
@@ -87,7 +87,7 @@ export const Chat = {
           move = move / 2
         }
       }
-      if (reportmode && this.lastactiveChat !== this.activeChat && chats[this.activeChat]) console.log('CurrentChat, ', this.lastactiveChat, '->', this.activeChat, 'chats.length-1', chats.length - 1, ' isStream', this.isStream, 'chats[this.activeChat].msg', chats[this.activeChat].msg)
+      if (ReportMode && this.lastactiveChat !== this.activeChat && chats[this.activeChat]) console.log('CurrentChat, ', this.lastactiveChat, '->', this.activeChat, 'chats.length-1', chats.length - 1, ' isStream', this.isStream, 'chats[this.activeChat].msg', chats[this.activeChat].msg)
     },
     MouseWheelHandler: function (e) {
       this.isAutoScroll = false
@@ -162,7 +162,7 @@ export const Chat = {
     ])
   },
   created () {
-    if (reportmode) this._allchats = testchat.list// test
+    if (ReportMode) this._allchats = testchat.list// test
     else this._allchats = []
     this.lastChat = []
     this.lastpostaid = this.post.AID

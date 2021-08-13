@@ -1,7 +1,7 @@
-import { PTT } from '../../PTTController/PTT.js'
+import { Ptt } from '../../PTTController/Ptt.js'
 import { PostData } from '../../MessagePosterData/PostData.js'
 import { RecieveData } from '../../MessagePosterData/RecieveData.js'
-import { reportmode } from '../../../logsetting.js'
+import { ReportMode } from '../../../logsetting.js'
 
 const getComment = (content, commentResult) => {
   const pushdata = {}
@@ -13,16 +13,16 @@ const getComment = (content, commentResult) => {
 }
 
 export const GetComment = () => {
-  const lineResult = PTT.match(/目前顯示: 第 (\d+)~(\d+) 行/)
+  const lineResult = Ptt.match(/目前顯示: 第 (\d+)~(\d+) 行/)
   const startLine = +lineResult[1]
   const endLine = +lineResult[2]
   let targetLine = PostData.endline - startLine + 1
   if (startLine < 5 && PostData.haveNormalInsideTitle) targetLine += 1
   const checkedLine = []
-  // console.log("==GetPush from " + targetline + "to " + (PTT.screen.length - 1));
+  // console.log("==GetPush from " + targetline + "to " + (Ptt.screen.length - 1));
   // console.log("==(pttstartline, pttendline, startline, endline, targetline): (" + PTTPost.startline + ", " + PTTPost.endline + ", " + startline + ", " + endline + ", " + targetline + ")");
-  for (let i = targetLine; i < PTT.screen.length; i++) {
-    const line = PTT.screen[i]
+  for (let i = targetLine; i < Ptt.screen.length; i++) {
+    const line = Ptt.screen[i]
     const commentResult = /^(→ |推 |噓 )(.+?): (.*)(\d\d)\/(\d\d) (\d\d):(\d\d)/.exec(line)
     if (commentResult != null) {
       let content = commentResult[3]
@@ -30,12 +30,12 @@ export const GetComment = () => {
       content = content.replace(reg, '')
       const comment = getComment(content, commentResult)
       RecieveData.comments.push(comment)
-      if (reportmode) checkedLine.push(i)
-      if (reportmode) console.log('GetPush at line', i, content, line)
-    } else if (reportmode) console.log('GetPush at line fail', i, line)
+      if (ReportMode) checkedLine.push(i)
+      if (ReportMode) console.log('GetPush at line', i, content, line)
+    } else if (ReportMode) console.log('GetPush at line fail', i, line)
   }
-  if (reportmode) console.log('GetPush startline,', startLine, ', endline', PostData.endLine, ', targetline', targetLine, ', checkedline', checkedLine, ', haveNormalTitle', PostData.haveNormalInsideTitle)
-  // const percentresult = PTT.match(/瀏覽 第 .+ 頁 \( *(\d+)%\)/)
+  if (ReportMode) console.log('GetPush startline,', startLine, ', endline', PostData.endLine, ', targetline', targetLine, ', checkedline', checkedLine, ', haveNormalTitle', PostData.haveNormalInsideTitle)
+  // const percentresult = Ptt.match(/瀏覽 第 .+ 頁 \( *(\d+)%\)/)
   PostData.startLine = startLine
   PostData.endLine = endLine
 }

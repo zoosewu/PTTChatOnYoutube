@@ -1,4 +1,4 @@
-import { showPostMessage, showonMessage, reportmode } from './logsetting.js'
+import { ShowPostMessage, ShowOnMessage, ReportMode } from './logsetting.js'
 
 export function MessagePoster () {
   this.targetorigin = ''
@@ -9,7 +9,7 @@ export function MessagePoster () {
 
     const d = { m: msg, d: data }
     this.targetWindow.postMessage(d, this.targetorigin)
-    if (showPostMessage && msg !== 'PlayerUpdate') { console.log(this.ownerorigin + ' message posted to ' + this.targetorigin, d) }
+    if (ShowPostMessage && msg !== 'PlayerUpdate') { console.log(this.ownerorigin + ' message posted to ' + this.targetorigin, d) }
   }
   this.onMessage = function (event) {
     // Check sender origin to be trusted
@@ -20,14 +20,14 @@ export function MessagePoster () {
     if (typeof (this[data.m]) === 'function') {
       this[data.m].call(null, data.d)
     }
-    if (showonMessage && data.m !== 'PlayerUpdate') console.log(this.ownerorigin + ' get message from ' + this.targetorigin, data)
+    if (ShowOnMessage && data.m !== 'PlayerUpdate') console.log(this.ownerorigin + ' get message from ' + this.targetorigin, data)
   }
   if (window.addEventListener) {
-    if (reportmode) console.log('addEventListener message')
+    if (ReportMode) console.log('addEventListener message')
     /* eslint-disable no-useless-call */
     window.addEventListener('message', event => { this.onMessage.call(this, event) }, false)
   } else if (window.attachEvent) {
-    if (reportmode) console.log('addEventListener onmessage')
+    if (ReportMode) console.log('addEventListener onmessage')
     window.attachEvent('onmessage', event => { this.onMessage.call(this, event) }, false)
     /* eslint-enable no-useless-call */
   }

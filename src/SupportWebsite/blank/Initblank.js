@@ -1,4 +1,4 @@
-import { InitApp } from '../../app/appindex.js'
+import { InitApp } from '../../app/AppIndex.js'
 import { ChangeLog } from '../../ChangeLog.js'
 
 export function Initblank (messageposter) {

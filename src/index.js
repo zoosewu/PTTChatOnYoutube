@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { reportmode } from './logsetting.js'
+import { ReportMode } from './logsetting.js'
 /* eslint-enable no-unused-vars */
 import { MessagePoster } from './MessagePoster.js'
 import { HerfFilter } from './filter/HerfFilter.js'
@@ -23,9 +23,9 @@ let appinscount = 0
 /* eslint-enable prefer-const */
 /* eslint-enable no-unused-vars */
 /* 關閉vue-devtools */
-Vue.config.devtools = reportmode
+Vue.config.devtools = ReportMode
 /* 關閉錯誤警告 */
-Vue.config.debug = reportmode;
+Vue.config.debug = ReportMode;
 (function () {
   const msg = new MessagePoster()
   const filters = []

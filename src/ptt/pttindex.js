@@ -1,4 +1,4 @@
-import { showalllog, showPTTscreen, showcommand, reportmode } from '../logsetting.js'
+import { ShowAllLog, ShowPttScreen, ShowCommand, ReportMode } from '../logsetting.js'
 
 export function InitPTT (messageposter) {
   const SkipCommand = true
@@ -37,7 +37,7 @@ export function InitPTT (messageposter) {
           const txt = sElement[i].textContent
           if (result == null) result = new RegExp(reg, 'i').exec(txt)
           this.screen.push(txt)
-          // if (reportmode) console.log("==screenHaveText", reg, result, txt);
+          // if (ReportMode) console.log("==screenHaveText", reg, result, txt);
         }
         this.screenstate = 1
         return result
@@ -45,7 +45,7 @@ export function InitPTT (messageposter) {
         for (let i = 0; i < this.screen.length; i++) {
           const txt = this.screen[i]
           result = new RegExp(reg, 'i').exec(txt)
-          // if (reportmode) console.log("==screenHaveText", reg, result, txt);
+          // if (ReportMode) console.log("==screenHaveText", reg, result, txt);
           if (result != null) {
             return result
           }
@@ -61,7 +61,7 @@ export function InitPTT (messageposter) {
       list: [],
       add: function (reg, input, callback, ...args) {
         const com = { reg, input, callback, args }
-        if (showcommand) console.log('==Add command ', com)
+        if (ShowCommand) console.log('==Add command ', com)
         this.list.push(com)
       },
       getfirst: function () {
@@ -173,20 +173,20 @@ export function InitPTT (messageposter) {
       if (!t) t = PTT.wind.document.querySelector('#t')
       const e = new CustomEvent('paste')
       // debug用
-      if (reportmode) console.log('insertText : "' + str + '"')
+      if (ReportMode) console.log('insertText : "' + str + '"')
       e.clipboardData = { getData: () => str }
       t.dispatchEvent(e)
     }
   })()
   function ComLog (cmd) {
-    if (showcommand) console.log('==execute command:', [cmd])
+    if (ShowCommand) console.log('==execute command:', [cmd])
   }
   function updatePagestate () {
     for (let i = 0; i < PTT.pagestatefilter.length; i++) {
       const filter = PTT.pagestatefilter[i]
       const result = PTT.screenHaveText(filter.reg)
       if (result != null) {
-        if (reportmode) console.log('==page state:' + PTT.pagestate + '->' + filter.state, result)
+        if (ReportMode) console.log('==page state:' + PTT.pagestate + '->' + filter.state, result)
         PTT.pagestate = filter.state
         if (PTT.pagestate > 1) reconnecttrytimes = 10
         msg.PostMessage('PTTState', PTT.pagestate)
@@ -225,20 +225,20 @@ export function InitPTT (messageposter) {
     }
   }
   function OnUpdate () {
-    if (showalllog) console.log('==OnUpdate start')
+    if (ShowAllLog) console.log('==OnUpdate start')
     PTT.screenclear()
-    if (showalllog) console.log('==set pagestate.')
+    if (ShowAllLog) console.log('==set pagestate.')
     updatePagestate()
-    if (showalllog) console.log('==check autocommand.')
+    if (ShowAllLog) console.log('==check autocommand.')
     if (!chechAutoCommand()) {
-      if (showalllog) console.log('==check command.')
+      if (ShowAllLog) console.log('==check command.')
       command()
     }
-    if (showPTTscreen) console.log('==PTT screen shot:', PTT.screen)
+    if (ShowPttScreen) console.log('==PTT screen shot:', PTT.screen)
     const nextcom = PTT.commands.getfirst()
-    if (showcommand && typeof nextcom !== 'undefined') console.log('==next command : reg:' + nextcom.reg + 'input:' + nextcom.input, [nextcom.callback])
-    else if (showcommand) console.log('==next command : none.')
-    if (showalllog) console.log('==OnUpdate end')
+    if (ShowCommand && typeof nextcom !== 'undefined') console.log('==next command : reg:' + nextcom.reg + 'input:' + nextcom.input, [nextcom.callback])
+    else if (ShowCommand) console.log('==next command : none.')
+    if (ShowAllLog) console.log('==OnUpdate end')
   }
   // hook start
   function hook (obj, key, cb) {
@@ -334,7 +334,7 @@ export function InitPTT (messageposter) {
       if ((!PTTPost.enableautofetchpost && PTTPost.enteredAID) || (PTTPost.enableautofetchpost && PTTPost.enteredTitle)) {
         if (PTT.screenHaveText(/找不到這個文章代碼\(AID\)，可能是文章已消失，或是你找錯看板了/)) {
           msg.PostMessage('alert', { type: 0, msg: '文章AID錯誤，文章已消失或是你找錯看板了。' })
-          if (reportmode) console.log('文章AID錯誤，文章已消失或是你找錯看板了', PTT.pagestate, PTT, PTTPost)
+          if (ReportMode) console.log('文章AID錯誤，文章已消失或是你找錯看板了', PTT.pagestate, PTT, PTTPost)
           PTT.unlock()
           return
         } else res.pass = false
@@ -351,7 +351,7 @@ export function InitPTT (messageposter) {
       let title = ''
       if (posttitle) {
         PTTPost.haveNormalTitle = true
-        if (reportmode) console.log('==set haveNormalTitle true', posttitle)
+        if (ReportMode) console.log('==set haveNormalTitle true', posttitle)
         title = posttitle[1].replace(/\s+$/g, '') // 抓一般標題
       } else for (let i = 0; i < 5 && i < PTT.screen.length; i++) title += PTT.screen[i] // 抓前幾行
       if (PTTPost.samepost) {
@@ -396,7 +396,7 @@ export function InitPTT (messageposter) {
       if (!PTTPost.searchingTitle.enteredsearchtitle) res.pass = false
       else {
         if (PTT.screenHaveText(/看板《.+》/)) {
-          if (reportmode) console.log('==searchfortitle error, title unavailable.')
+          if (ReportMode) console.log('==searchfortitle error, title unavailable.')
           msg.PostMessage('alert', { type: 0, msg: '無此標題文章' })
           PTT.unlock()
           return
@@ -415,7 +415,7 @@ export function InitPTT (messageposter) {
         let title = ''
         if (posttitle) {
           PTTPost.haveNormalTitle = true
-          if (reportmode) console.log('==set haveNormalTitle true', posttitle)
+          if (ReportMode) console.log('==set haveNormalTitle true', posttitle)
           title = posttitle.input.replace(/\s+$/g, '').substr(30)
           if (title[0] === '□') title = title.substr(1)
         }
@@ -462,11 +462,11 @@ export function InitPTT (messageposter) {
         const reg = /\s+$/g
         content = content.replace(reg, '')
         savepush(content, result)
-        if (reportmode) checkedline.push(i)
-        if (reportmode) console.log('GetPush at line', i, content, line)
-      } else if (reportmode) console.log('GetPush at line fail', i, line)
+        if (ReportMode) checkedline.push(i)
+        if (ReportMode) console.log('GetPush at line', i, content, line)
+      } else if (ReportMode) console.log('GetPush at line fail', i, line)
     }
-    if (reportmode) console.log('GetPush startline,', startline, ', endline', PTTPost.endline, ', targetline', targetline, ', checkedline', checkedline, ', haveNormalTitle', PTTPost.haveNormalTitle)
+    if (ReportMode) console.log('GetPush startline,', startline, ', endline', PTTPost.endline, ', targetline', targetline, ', checkedline', checkedline, ', haveNormalTitle', PTTPost.haveNormalTitle)
     const percentresult = PTT.screenHaveText(/瀏覽 第 .+ 頁 \( *(\d+)%\)/)
     PTTPost.percent = percentresult[1]
     PTTPost.startline = startline
@@ -559,18 +559,18 @@ export function InitPTT (messageposter) {
     return res
   }
   // ------------------------task--------------------------------
-  function RunTask (tasklist, finishBehavior) {
+  function RunTask (tasklist, finishCallback) {
     for (let i = 0; i < tasklist.length; i++) {
       const result = tasklist[i]()
-      if (result.pass === true) if (reportmode) console.log('RunTask pass, pagestate:', PTT.pagestate, ', task name:', tasklist[i].name)
+      if (result.pass === true) if (ReportMode) console.log('RunTask pass, pagestate:', PTT.pagestate, ', task name:', tasklist[i].name)
       if (result.pass === false) {
-        if (reportmode) console.log('RunTask failed, pagestate:', PTT.pagestate, ', task name:', tasklist[i].name)
+        if (ReportMode) console.log('RunTask failed, pagestate:', PTT.pagestate, ', task name:', tasklist[i].name)
         result.callback()
-        PTT.commands.add(/.*/, '', RunTask, tasklist, finishBehavior)
+        PTT.commands.add(/.*/, '', RunTask, tasklist, finishCallback)
         return
       }
     }
-    finishBehavior()
+    finishCallback()
   }
   // ------------------------tasks--------------------------------
 
@@ -592,7 +592,7 @@ export function InitPTT (messageposter) {
       const halfcount = halfchar ? halfchar.length : 0
       allowedchar = parseInt((48 - addedtext.length * 2 + halfcount) / 2)
       pushtext = result[2]
-      if (reportmode) {
+      if (ReportMode) {
         console.log('SetNewPushTask Text Reg==', addedtext.length * 2, '==', halfcount, '==', halfchar)
         console.log('SetNewPushTask Text Reg==', addedtext, '==', pushtext, '==', allowedchar, '==', result)
       }
@@ -633,7 +633,7 @@ export function InitPTT (messageposter) {
   function recieveNewPush () {
     msg.PostMessage('pushedText', PTTPost.pushedtext)
     PTTPost.pushedtext = ''
-    if (showalllog) console.log(PTTPost)
+    if (ShowAllLog) console.log(PTTPost)
     GetPush(PTTPost.AID, PTTPost.board, PTTPost.endline, GetPushTask)
   }
   function GetRecentLineTask () { RunTask(task.GetPostRecentLine, () => PTT.commands.add(/.*/, '', GetPushTask)) }
@@ -642,7 +642,7 @@ export function InitPTT (messageposter) {
     PTT.unlock()
     msg.PostMessage('alert', { type: 2, msg: '文章讀取完成。' })
     msg.PostMessage('newPush', PTTPost)
-    if (showalllog) console.log(PTTPost)
+    if (ShowAllLog) console.log(PTTPost)
   }
   // ------------------------Main Command--------------------------------
   function GetPush (pAID, bname, startline, task, pboardforsearch, ptitleforsearch) {
@@ -656,7 +656,7 @@ export function InitPTT (messageposter) {
       PTTPost.pushes = []
       PTTPost.samepost = true
       PTTPost.endline = startline
-      if (reportmode) console.log("Get same post's push.", bname, PTTPost.board, pAID, PTTPost.AID)
+      if (ReportMode) console.log("Get same post's push.", bname, PTTPost.board, pAID, PTTPost.AID)
     } else {
       PTTPost = {
         board: bname,
@@ -688,7 +688,7 @@ export function InitPTT (messageposter) {
           autofetch: false
         }
       }
-      if (reportmode) console.log("Get new post's push.", bname, PTTPost.board, pAID, PTTPost.AID)
+      if (ReportMode) console.log("Get new post's push.", bname, PTTPost.board, pAID, PTTPost.AID)
     }
     if (PTT.pagestate === 1) {
       if (PTT.screenHaveText(/(> |●)\(M\)ail {9}【 私人信件區 】/)) insertText('c')// 隨意切畫面
@@ -750,7 +750,7 @@ export function InitPTT (messageposter) {
   }
   // ------------------------Lock Check--------------------------------
   function CheckLoginState (command, ...args) {
-    if (reportmode) console.log('CheckLoginState,PTT.pagestate = ', PTT.pagestate)
+    if (ReportMode) console.log('CheckLoginState,PTT.pagestate = ', PTT.pagestate)
     if (PTT.pagestate > 0) {
       command(...args)
     } else if (PTT.pagestate === -1) {
@@ -771,7 +771,7 @@ export function InitPTT (messageposter) {
       } else if (!serverfull) {
         PTT.lastviewupdate = Date.now()
         PTT.lock()
-        if (reportmode) console.log('PTTLockCheck', ...args)
+        if (ReportMode) console.log('PTTLockCheck', ...args)
         CallBack(...args)
         setTimeout(checkscreenupdate, 3500)
       }
@@ -792,8 +792,8 @@ export function InitPTT (messageposter) {
     // console.log([i, p],cryptkey);
     PTTLockCheck(Login, i, p, data.DeleteOtherConnect)
   }
-  msg.getPushByLine = data => { if (reportmode) console.log('getPushByLine', data); PTTLockCheck(CheckLoginState, GetPush, data.AID, data.board, data.startline, GetPushTask) }
-  msg.getPushByRecent = data => { if (reportmode) console.log('getPushByRecent', data); PTTLockCheck(CheckLoginState, GetPush, data.AID, data.board, data.recent, GetRecentLineTask, data.boardforsearch, data.titleforsearch) }
-  msg.setNewPush = data => { if (reportmode) console.log('setNewPush', data); PTTLockCheck(SetNewPushTask, data) }
-  msg.getPostTitle = data => { if (reportmode) console.log('getPostTitle', data); PTTLockCheck(CheckLoginState, CheckTitleSame, data.boardforsearch, data.titleforsearch, GetPostTitleTask) }
+  msg.getPushByLine = data => { if (ReportMode) console.log('getPushByLine', data); PTTLockCheck(CheckLoginState, GetPush, data.AID, data.board, data.startline, GetPushTask) }
+  msg.getPushByRecent = data => { if (ReportMode) console.log('getPushByRecent', data); PTTLockCheck(CheckLoginState, GetPush, data.AID, data.board, data.recent, GetRecentLineTask, data.boardforsearch, data.titleforsearch) }
+  msg.setNewPush = data => { if (ReportMode) console.log('setNewPush', data); PTTLockCheck(SetNewPushTask, data) }
+  msg.getPostTitle = data => { if (ReportMode) console.log('getPostTitle', data); PTTLockCheck(CheckLoginState, CheckTitleSame, data.boardforsearch, data.titleforsearch, GetPostTitleTask) }
 }

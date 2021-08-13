@@ -1,6 +1,6 @@
-export const PTTMatch = (pattern, flags) => {
+export const PttMatch = (pattern, flags) => {
   let result = null
-  const reg = PTTMatch_GetReg(pattern, flags)
+  const reg = PttMatch_GetReg(pattern, flags)
   if (!this.state.screenUpdated) {
     const sElement = $("[data-type='bbsline']", this.window.document)
     for (let i = 0; i < sElement.length; i++) {
@@ -21,7 +21,7 @@ export const PTTMatch = (pattern, flags) => {
 }
 
 // eslint-disable-next-line camelcase
-function PTTMatch_GetReg (pattern, flags = 'i') {
+function PttMatch_GetReg (pattern, flags = 'i') {
   if (typeof pattern.exec === 'function') return pattern
   return new RegExp(pattern, flags)
 }

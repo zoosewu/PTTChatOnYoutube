@@ -1,5 +1,5 @@
 import { types } from './mutations_type.js'
-import { reportmode } from '../../logsetting.js'
+import { ReportMode } from '../../logsetting.js'
 
 // state
 export const state = {
@@ -56,15 +56,15 @@ export const mutations = {
     state.aid = aid
   },
   [types.UPDATEPOST] (state, post) {
-    if (reportmode) console.log('UPDATEPOST', post)
+    if (ReportMode) console.log('UPDATEPOST', post)
     state.post = post
   },
   [types.UPDATECHAT] (state, chatlist) {
-    if (reportmode) console.log('UPDATECHAT', chatlist)
+    if (ReportMode) console.log('UPDATECHAT', chatlist)
     state.chatlist = chatlist
   },
   [types.UPDATELOG] (state, log) {
-    if (reportmode) console.log('UPDATELOG', log)
+    if (ReportMode) console.log('UPDATELOG', log)
     state.log = log
   },
   [types.VIDEOSTARTDATE] (state, videostartdate) {

@@ -1,8 +1,8 @@
 
-import { InitApp } from '../../app/appindex.js'
+import { InitApp } from '../../app/AppIndex.js'
 import { ChangeLog } from '../../ChangeLog.js'
 import { ThemeCheck } from '../../library.js'
-import { reportmode } from '../../logsetting.js'
+import { ReportMode } from '../../logsetting.js'
 
 export function InitHD (messageposter) {
   // Check Theme
@@ -29,7 +29,7 @@ export function InitHD (messageposter) {
   function TryInsChat () {
     // const parent = $(`.v-main__wrap`);
     const parent = $('.vue-grid-layout').parent()
-    if (reportmode) console.log('parent', parent)
+    if (ReportMode) console.log('parent', parent)
     if (parent.length > 0 && iswatch) {
       const pluginwidth = GM_getValue('PluginWidth', 400)
       const fakeparent = $('<div id="fakeparent" class="d-flex flex-row"></div>')

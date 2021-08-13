@@ -1,4 +1,4 @@
-import { reportmode } from '../logsetting.js'
+import { ReportMode } from '../logsetting.js'
 
 import { PTTApp } from './PTTApp.js'
 import { PTTAppBtn } from './PTTAppBtn.js'
@@ -46,7 +46,7 @@ export function InitApp (chatcon, whitetheme, isstreaming, messageposter, dynami
       computed: {
         classes: function () {
           const classes = ['position-absolute', 'w-100']
-          if (reportmode) console.log('Appindex set theme', this.getTheme)
+          if (ReportMode) console.log('Appindex set theme', this.getTheme)
           switch (+this.getTheme) {
             case 0:
               if (whitetheme) classes.push(themewhite)
@@ -94,9 +94,9 @@ export function InitApp (chatcon, whitetheme, isstreaming, messageposter, dynami
         if (!isstreaming) {
           try {
             const videoinfo = JSON.parse(document.getElementById('scriptTag').innerHTML)
-            if (reportmode) console.log('videoinfo', videoinfo)
+            if (ReportMode) console.log('videoinfo', videoinfo)
             const startDate = new Date(videoinfo.publication[0].startDate)
-            if (reportmode) console.log('startDate', startDate)
+            if (ReportMode) console.log('startDate', startDate)
             this.$store.dispatch('updateVideoStartDate', startDate)
           } catch (e) {
             console.log(e)

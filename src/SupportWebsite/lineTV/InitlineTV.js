@@ -1,6 +1,6 @@
-import { InitApp } from '../../app/appindex.js'
+import { InitApp } from '../../app/AppIndex.js'
 import { ChangeLog } from '../../ChangeLog.js'
-
+import { ReportMode } from '../../logsetting'
 export function InitlineTV (messageposter) {
   const WhiteTheme = true
   // Check Theme
@@ -18,7 +18,7 @@ export function InitlineTV (messageposter) {
     const defaultVideo = $('.__video_screen')
     if (defaultVideo.length > 0) {
       const parent = defaultVideo[0].parentElement
-      if (reportmode) console.log('parent', parent, 'defaultVideo', defaultVideo)
+      if (ReportMode) console.log('parent', parent, 'defaultVideo', defaultVideo)
       const pluginwidth = GM_getValue('PluginWidth', 400)
       const fakeparent = $('<div id="fakeparent" class="d-flex flex-row"></div>')
       const defaultVideoHandler = $('<div id="videohandler" style="flex:1 1 auto;"></div>')
@@ -33,7 +33,7 @@ export function InitlineTV (messageposter) {
   function TryInsChat2 () {
     const parent = $('body')
     const defaultVideo = $('#article_video.wrap.video.with-gnb.article.with-hubHeader')
-    if (reportmode) console.log('parent', parent, 'defaultVideo', defaultVideo)
+    if (ReportMode) console.log('parent', parent, 'defaultVideo', defaultVideo)
     if (parent.length > 0 && defaultVideo.length > 0) {
       const pluginwidth = GM_getValue('PluginWidth', 400)
       const headerspace = $('.hubHeader.miniHub')[0].clientHeight
@@ -48,7 +48,7 @@ export function InitlineTV (messageposter) {
   function TryInsChat3 () {
     const parent = $('body')
     const defaultVideo = $('#article_video.wrap.video.with-gnb.article.with-hubHeader')
-    if (reportmode) console.log('parent', parent, 'defaultVideo', defaultVideo)
+    if (ReportMode) console.log('parent', parent, 'defaultVideo', defaultVideo)
     if (parent.length > 0 && defaultVideo.length > 0) {
       const pluginwidth = GM_getValue('PluginWidth', 400)
       const container = $('<div id="container" class="container-fluid"></div>')

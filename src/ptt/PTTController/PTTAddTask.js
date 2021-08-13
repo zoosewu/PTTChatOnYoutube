@@ -1,7 +1,7 @@
-import { PTT } from './PTT.js'
-import { FrameState } from './PTTState.js'
+import { Ptt } from './Ptt.js'
+import { FrameState } from './PttState.js'
 import { MessagePoster } from '../../MessagePoster.js'
-import { reportmode } from '../../logsetting.js'
+import { ReportMode } from '../../logsetting.js'
 
 const Reconnect = () => {
   const disbtn = $('.btn.btn-danger[type=button]')
@@ -14,15 +14,15 @@ const Reconnect = () => {
     this.state.reconnectTime--
   }
 }
-const checkPTTAlive = () => {
-  if (PTT.command === null) return
+const checkPttAlive = () => {
+  if (Ptt.command === null) return
   const now = Date.now()
-  if (now > PTT.state.lastUpdateTime + 10000) {
-    MessagePoster.PostMessage('alert', { type: 0, msg: 'PTT無回應，請稍後再試，或重新整理頁面。' })
-    PTT.unlock()
+  if (now > Ptt.state.lastUpdateTime + 10000) {
+    MessagePoster.PostMessage('alert', { type: 0, msg: 'Ptt無回應，請稍後再試，或重新整理頁面。' })
+    Ptt.unlock()
   } else {
     MessagePoster.PostMessage('alert', { type: 1, msg: '指令執行中......' })
-    setTimeout(checkPTTAlive, 3500)
+    setTimeout(checkPttAlive, 3500)
   }
 }
 const checkLock = () => {
@@ -37,12 +37,12 @@ const checkServerFull = () => {
   }
   return this.state.serverfull
 }
-export function PTTAddTask (fn, ...args) {
+export function PttAddTask (fn, ...args) {
   Reconnect.apply(this)
   if (!checkLock.apply(this) && !checkServerFull.apply(this)) {
     this.lock()
     fn(...args)
-    if (reportmode) console.log('AddTask', ...args)
-    setTimeout(checkPTTAlive, 3500)
+    if (ReportMode) console.log('AddTask', ...args)
+    setTimeout(checkPttAlive, 3500)
   }
 }

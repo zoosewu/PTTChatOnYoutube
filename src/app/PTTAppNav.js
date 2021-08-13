@@ -1,13 +1,13 @@
-import { reportmode } from '../logsetting.js'
+import { ReportMode } from '../logsetting.js'
 export const PTTAppNav = {
   computed: {
     isGotoChat: function () {
       const go = this.gotoChat
-      if (reportmode) console.log('isGotoChat', go)
+      if (ReportMode) console.log('isGotoChat', go)
       if (go) {
         this.$store.dispatch('gotoChat', false)
         this.$refs.chatbtn.click()
-        if (reportmode) console.log('gotoChat')
+        if (ReportMode) console.log('gotoChat')
       }
       return go
     },
