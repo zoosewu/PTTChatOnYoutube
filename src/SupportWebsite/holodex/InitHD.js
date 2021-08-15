@@ -16,7 +16,7 @@ export function InitHD (messageposter) {
   $(window).on('resize', () => {
     if (resizeTimer) clearTimeout(resizeTimer)
     resizeTimer = setTimeout(() => {
-      checkOriginDeleteBtn()
+      checkOriginMenuBtn()
       if (reportmode) console.log('window size change')
     }, 500)
   })
@@ -106,33 +106,56 @@ export function InitHD (messageposter) {
 
     recentWatch = true
     initPttChatPosition()
-    checkOriginDeleteBtn()
+    checkOriginMenuBtn()
     if (reportmode) console.log('main initialize done')
   }
 
-  function checkOriginDeleteBtn () {
-    const deleteBtnSvg = $('.v-toolbar__content path[d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"]')
-    if (deleteBtnSvg.length === 1) {
-      const originDeleteBtn = deleteBtnSvg.parents().eq(3)
-      if ($('#fake-menu-delete-btn').length === 0) {
-        const fakeDeleteBtn = originDeleteBtn.clone()
-        fakeDeleteBtn.attr({ id: 'fake-menu-delete-btn', title: '清除播放清單' })
-        fakeDeleteBtn.insertAfter(originDeleteBtn)
-        fakeDeleteBtn.on('click', () => {
-          if ($('#pttchatparent #PTTChat').length === 0) initPttChatPosition()
-          originDeleteBtn.trigger('click')
-          if (reportmode) console.log('clear playlist')
-        })
-        originDeleteBtn.css('display', 'none')
-      } else {
-        if (reportmode) console.warn('couldn\'t detect original delete btn.')
-        $('.v-toolbar__content path[d="M7 3H5V9H7V3M19 3H17V13H19V3M3 13H5V21H7V13H9V11H3V13M15 7H13V3H11V7H9V9H15V7M11 21H13V11H11V21M15 15V17H17V21H19V17H21V15H15Z"]').parents().eq(3).css('display', 'block')
-        $('#fake-menu-delete-btn').css('display', 'none')
+  function checkOriginMenuBtn () {
+    function replaceOriginalMenuBtn (id, svg, title, coverSvg = undefined) {
+      const btnSvg = $(`.v-toolbar__content path[d="${svg}"]`)
+      if (btnSvg.length === 1) {
+        const originalBtn = btnSvg.parents().eq(3)
+        if ($(`#fake-menu-${id}-btn`).length === 0) {
+          const fakeBtn = originalBtn.clone().attr({ id: `fake-menu-${id}-btn`, title: title })
+          fakeBtn.insertAfter(originalBtn)
+          originalBtn.css('display', 'none')
+          fakeBtn.off('click').on('click', () => {
+            if ($('#pttchatparent #PTTChat').length === 0) initPttChatPosition()
+            originalBtn.trigger('click')
+            if (reportmode) console.log(title)
+          })
+        } else {
+          if (reportmode) console.warn('couldn\'t detect original btn.')
+          if (coverSvg) $(`.v-toolbar__content path[d="${coverSvg}"]`).parents().eq(3).css('display', 'block')
+          $(`#fake-menu-${id}-btn`).css('display', 'none')
+        }
+      } else if (btnSvg.length === 2) {
+        const fakeBtn = $(`#fake-menu-${id}-btn`)
+        fakeBtn.css('display', 'block')
+        const originalBtn = btnSvg.parent().parent().parent().parent().not(fakeBtn)
+        originalBtn.css('display', 'none')
+
+        if (!coverSvg) {
+          fakeBtn.off('click').on('click', () => {
+            if ($('#pttchatparent #PTTChat').length === 0) initPttChatPosition()
+            originalBtn.trigger('click')
+            if (reportmode) console.log(title)
+          })
+        }
       }
-    } else if (deleteBtnSvg.length === 2) {
-      $('#fake-menu-delete-btn').css('display', 'block')
-      deleteBtnSvg.eq(0).parents().eq(3).css('display', 'none')
     }
+
+    replaceOriginalMenuBtn(
+      'delete',
+      'M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z',
+      '清除播放清單',
+      'M7 3H5V9H7V3M19 3H17V13H19V3M3 13H5V21H7V13H9V11H3V13M15 7H13V3H11V7H9V9H15V7M11 21H13V11H11V21M15 15V17H17V21H19V17H21V15H15Z'
+    )
+    replaceOriginalMenuBtn(
+      'defaultLayout',
+      'M4,2H20A2,2 0 0,1 22,4V20A2,2 0 0,1 20,22H4C2.92,22 2,21.1 2,20V4A2,2 0 0,1 4,2M4,4V11H11V4H4M4,20H11V13H4V20M20,20V13H13V20H20M20,4H13V11H20V4Z',
+      '預設佈局'
+    )
   }
 
   function initPttChatPosition () {
@@ -175,22 +198,23 @@ export function InitHD (messageposter) {
   }
 
   function checkAutoRemove () {
-    if ($('.vue-grid-item').length === 3) {
-      const firstGridItem = $('.vue-grid-item').eq(0)
-      if (firstGridItem.find($('#fake-grid-item-delete-btn')).length === 0) {
-        const originBtn = firstGridItem.find($('path[d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"]')).parents().eq(3)
-        if (originBtn.length !== 0) {
-          const fakeDeleteBtn = originBtn.clone().attr('id', 'fake-grid-item-delete-btn')
-          fakeDeleteBtn.insertAfter(originBtn)
-          originBtn.css('display', 'none')
-          fakeDeleteBtn.off('click').on('click', () => {
-            if ($('#pttchatparent #PTTChat').length === 0) initPttChatPosition()
-            originBtn.trigger('click')
-            if (reportmode) console.log('auto remove')
-          })
-        }
+    const gridItems = $('.vue-grid-item')
+    gridItems.each(index => {
+      const item = gridItems.eq(index)
+      if (item.find($('.mv-frame.ma-auto')).length === 0) return
+      if (item.find($('[name="fake-grid-item-delete-btn"]')).length !== 0) return
+      const originBtn = item.find($('path[d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"]')).parents().eq(3)
+      if (originBtn.length !== 0) {
+        const fakeDeleteBtn = originBtn.clone().attr('name', 'fake-grid-item-delete-btn')
+        fakeDeleteBtn.insertAfter(originBtn)
+        originBtn.css('display', 'none')
+        fakeDeleteBtn.off('click').on('click', () => {
+          if ($('#pttchatparent #PTTChat').length === 0) initPttChatPosition()
+          originBtn.trigger('click')
+          if (reportmode) console.log('auto remove')
+        })
       }
-    }
+    })
   }
 
   function appendPtt2Cell (gridIndex) {
@@ -312,6 +336,7 @@ export function InitHD (messageposter) {
       initPttChatPosition()
     }
   }
+
   function checkOverrideSettingBtn () {
     overrideBtn = $('[role="document"] span.v-btn__content').eq(0).parent()
     if (overrideBtn.length === 0) return
