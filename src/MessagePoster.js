@@ -1,34 +1,42 @@
 import { ShowPostMessage, ShowOnMessage, ReportMode } from './logsetting.js'
 
-export function MessagePoster () {
-  this.targetorigin = ''
-  this.ownerorigin = ''
-  this.targetWindow = null
-  this.PostMessage = function (msg, data) {
-    if (this.targetWindow === null) return
+export function MessagePoster (attachedWindow, targetOrigin, ownerOrigin = undefined) {
+  this.attachedWindow = attachedWindow
+  this.targetOrigin = targetOrigin
+  this.ownerOrigin = ownerOrigin
+  this.PostMessage = (msg, data) => {
+    if (this.attachedWindow === null)
+      return
 
-    const d = { m: msg, d: data }
-    this.targetWindow.postMessage(d, this.targetorigin)
-    if (ShowPostMessage && msg !== 'PlayerUpdate') { console.log(this.ownerorigin + ' message posted to ' + this.targetorigin, d) }
+    const message = { m: msg, d: data }
+    this.attachedWindow.postMessage(message, this.targetOrigin)
+    if (ShowPostMessage && msg !== 'PlayerUpdate')
+      console.log(`${this.ownerOrigin} message posted to ${this.targetOrigin}`, message)
   }
-  this.onMessage = function (event) {
+
+  // private method
+  const onMessage = event => {
     // Check sender origin to be trusted
-    if (event.origin !== this.targetorigin) return
+    if (event.origin !== this.targetOrigin)
+      return
 
     const data = event.data
-    // console.log('typeof (this[data.m])', typeof (this[data.m]))
+    if (ReportMode) console.log(`typeof this[data.m]: ${typeof (this[data.m])}`)
+    if (ShowOnMessage && data.m !== 'PlayerUpdate')
+      console.log(`${this.ownerOrigin} got message from ${this.targetOrigin}`, data)
+
     if (typeof (this[data.m]) === 'function') {
-      this[data.m].call(null, data.d)
+      this[data.m](data.d)
     }
-    if (ShowOnMessage && data.m !== 'PlayerUpdate') console.log(this.ownerorigin + ' get message from ' + this.targetorigin, data)
   }
+
   if (window.addEventListener) {
-    if (ReportMode) console.log('addEventListener message')
     /* eslint-disable no-useless-call */
-    window.addEventListener('message', event => { this.onMessage.call(this, event) }, false)
+    window.addEventListener('message', onMessage, false)
+    if (ReportMode) console.log('addEventListener message')
   } else if (window.attachEvent) {
-    if (ReportMode) console.log('addEventListener onmessage')
-    window.attachEvent('onmessage', event => { this.onMessage.call(this, event) }, false)
+    window.attachEvent('onmessage', onMessage)
+    if (ReportMode) console.log('attachEvent onmessage')
     /* eslint-enable no-useless-call */
   }
 }

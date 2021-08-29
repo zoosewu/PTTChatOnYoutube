@@ -1,71 +1,87 @@
+import { MessagePoster } from '../../MessagePoster.js'
 import { PttState } from './PttState.js'
-import { PttTaskManager } from './PttTaskManager.js'
 import { PttMatch } from './PttMatch.js'
-import { PttFrame } from './PttFrame.js'
+import { PttTaskManager } from './PttTaskManager.js'
 import { PttAutoCommand } from './PttAutoCommand.js'
+import { PttFrame } from './PttFrame.js'
 import { ShowCommand, ReportMode } from '../../logsetting.js'
 import { PttAddTask } from './PttAddTask.js'
-export const Ptt = {
-  command: null,
-  state: PttState,
-  taskManager: PttTaskManager,
-  window: window, // 自動
-  match: PttMatch,
-  autoCommand: PttAutoCommand,
-  frame: PttFrame,
-  addTask: PttAddTask,
-  lock: function () {
+
+/** @param {MessagePoster} msg */
+export function Ptt (msg) {
+  if (typeof Ptt.cache === 'object') return Ptt.cache
+
+  this.msg = msg
+  this.command = null
+  this.window = window // 自動
+
+  /** @type {PttState} */
+  this.state = PttState()
+
+  this.match = PttMatch
+
+  /** @type {PttTaskManager} */
+  this.taskManager = PttTaskManager.apply(this)
+
+  /** @type {PttAutoCommand} */
+  this.autoCommand = PttAutoCommand.apply(this)
+
+  /** @type {PttFrame} */
+  this.frame = PttFrame.apply(this)
+
+  this.addTask = PttAddTask
+
+  this.lock = () => {
     this.state.lock = true
-  },
-  unlock: function () {
+  }
+  this.unlock = () => {
     this.state.lock = false
     this.command = null
-  },
-  clearScreen: () => {
+  }
+  this.clearScreen = () => {
     this.state.screenUpdated = false
     this.state.screen = []
-  },
-  setCommand: function (reg, input, callback, ...args) {
+  }
+  this.setCommand = (reg, input, callback, ...args) => {
     if (!this.state.lock) return
-    if (this.command === null) {
+    if (!this.command) {
       this.command = { reg, input, callback, args }
       if (ShowCommand) console.log('==set command', this.command)
     } else if (ShowCommand) console.log('==set command error,already exist', this.command)
-  },
-  replaceCommand: function (reg, input, callback, ...args) {
+  }
+  this.replaceCommand = (reg, input, callback, ...args) => {
     if (!this.state.lock) return
     const lastCommand = this.command
     this.command = { reg, input, callback, args }
     if (ShowCommand) console.log('==replace command', lastCommand, '=>', this.command)
-  },
-  removeCommand: function (reg, input, callback, ...args) {
+  }
+  this.removeCommand = () => {
     if (ShowCommand) console.log('==remove command', this.command)
     this.command = null
-  },
-  removeAllTasks: function () {
+  }
+  this.removeAllTasks = () => {
     this.taskManager.reset()
-  },
-  insertText: (() => {
-    let t = Ptt.wind.document.querySelector('#t')
-    return str => {
-      if (!t) t = Ptt.wind.document.querySelector('#t')
-      const e = new CustomEvent('paste')
-      // debug用
-      if (ReportMode) console.log('insertText : "' + str + '"')
-      e.clipboardData = { getData: () => str }
-      t.dispatchEvent(e)
+  }
+  this.insertText = str => {
+    const t = this.window.document.querySelector('#t')
+    const e = new CustomEvent('paste')
+    // debug用
+    if (ReportMode) console.log(`insertText: "${str}"`)
+    e.clipboardData = { getData: () => str }
+    t.dispatchEvent(e)
+  }
+  this.runCommand = () => {
+    this.command = this.taskManager.next()
+    if (!this.command) {
+      this.runCommand()
+      return
     }
-  })(),
-  runCommand: function () {
+    console.log(this.taskManager.taskList)
     const cmd = this.command
-    if (typeof cmd !== 'undefined' && this.match(cmd.reg) != null) {
-      this.setCommand = null
-      if (ShowCommand) console.log('==execute command:', [cmd])
-      this.insertText(cmd.input)
-      if (typeof cmd.callback === 'function') {
-        const args = cmd.args ? cmd.args : []
-        cmd.callback(...args)
-      }
+    if (cmd) {
+       console.log('==execute command:', cmd)
+      cmd.fn(...cmd.args)
     }
   }
+  Ptt.cache = this
 }

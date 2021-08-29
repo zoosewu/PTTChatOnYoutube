@@ -1,246 +1,23 @@
-import { ShowAllLog, ShowPttScreen, ShowCommand, ReportMode } from '../logsetting.js'
+import { ShowAllLog, ShowPttScreen } from '../logsetting.js'
+import { Ptt } from './PttController/Ptt.js'
 
-export function InitPTT (messageposter) {
-  const SkipCommand = true
-  const msg = messageposter
-  /* eslint-disable no-global-assign */
-  // get crypt key;
-  cryptkey = GM_getValue('cryptkey', Math.random())
-  /* eslint-enable no-global-assign */
-
-  // start script
-  // const PageState = Object.freeze({ Unlogin: 0, MainScreen: 1, BoardSceen: 2, FirstPageOfPost: 3, OtherPageOfPost: 4 })
-  const PTT = {
-    connect: true, // 自動 連線狀態
-    login: false, // 自動
-    controlstate: 0,
-    lastviewupdate: 0,
-    lock: function () {
-      PTT.controlstate = 1
-    },
-    unlock: function () {
-      PTT.controlstate = 0
-      PTT.commands.list = []
-    },
-    // 0 free,1 lock 手動更新 每次操作都要打開 用完關閉
-    pagestate: 0, // PTT頁面狀態 0未登入畫面 1主畫面 2看板畫面 3文章畫面第一頁 4文章畫面其他頁
-    screen: [], // 自動 畫面資料
-    screenstate: 0, // 0 clear, 1 full 自動 畫面是否已更新
-    wind: null, // 自動
-    screenHaveText: function (regText) {
-      let result = null
-      let reg = regText
-      if (typeof regText.exec !== 'function') { reg = new RegExp(regText, 'i') }
-      if (this.screenstate === 0) {
-        const sElement = $("[data-type='bbsline']", this.wind.document)
-        for (let i = 0; i < sElement.length; i++) {
-          const txt = sElement[i].textContent
-          if (result == null) result = new RegExp(reg, 'i').exec(txt)
-          this.screen.push(txt)
-          // if (ReportMode) console.log("==screenHaveText", reg, result, txt);
-        }
-        this.screenstate = 1
-        return result
-      } else {
-        for (let i = 0; i < this.screen.length; i++) {
-          const txt = this.screen[i]
-          result = new RegExp(reg, 'i').exec(txt)
-          // if (ReportMode) console.log("==screenHaveText", reg, result, txt);
-          if (result != null) {
-            return result
-          }
-        }
-        return null
-      }
-    },
-    screenclear: function () {
-      this.screenstate = 0
-      this.screen = []
-    },
-    commands: {
-      list: [],
-      add: function (reg, input, callback, ...args) {
-        const com = { reg, input, callback, args }
-        if (ShowCommand) console.log('==Add command ', com)
-        this.list.push(com)
-      },
-      getfirst: function () {
-        return this.list[0]
-      },
-      removefirst: function () {
-        this.list.shift()
-      }
-    },
-    pagestatefilter: [
-      { reg: /請輸入代號，或以 guest 參觀，或以 new 註冊/, state: 0 },
-      { reg: /上方為使用者心情點播留言區|【 精華公佈欄 】/, state: 1 },
-      { reg: /^\[←\]離開 \[→\]閱讀/, state: 2 },
-      { reg: /目前顯示: 第 01/, state: 3 },
-      { reg: /目前顯示: 第/, state: 4 }
-    ],
-    autocom: [
-      {
-        reg: /您想刪除其他重複登入的連線嗎/,
-        input: '',
-        callback: () => {
-          const inserttxt = PTT.DeleteOtherConnect ? 'y\n' : 'n\n'
-          insertText(inserttxt)
-          return SkipCommand
-        }
-      },
-      { reg: /您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n' },
-      {
-        reg: /按任意鍵繼續/,
-        input: '',
-        callback: () => {
-          const reg = /(找不到這個文章代碼\(AID\)，可能是文章已消失，或是你找錯看板了|這一篇文章值|◆ 本文已過長, 禁止快速連續推文|◆ 對不起，您的文章或推文間隔太近囉！)/
-          const result = PTT.screenHaveText(reg)
-          if (result) { return !SkipCommand } else {
-            insertText('\n')
-            return SkipCommand
-          }
-        }
-      },
-      { reg: /動畫播放中\.\.\./, input: 'q' },
-      {
-        reg: /系統過載, 請稍後再來\.\.\./,
-        input: '',
-        callback: () => {
-          serverfull = true
-          if (PTT.controlstate === 1) {
-            PTT.unlock()
-            msg.PostMessage('alert', { type: 0, msg: '系統過載, 請稍後再來...' })
-            return SkipCommand
-          }
-        },
-        args: []
-      },
-      { reg: /大富翁 排行榜|發表次數排行榜/, input: 'q' },
-      { reg: /本日十大熱門話題/, input: 'q' },
-      { reg: /本週五十大熱門話題/, input: 'q' },
-      { reg: /每小時上站人次統計/, input: 'q' },
-      { reg: /本站歷史 \.\.\.\.\.\.\./, input: 'q' },
-      { reg: /看 板 {2}目錄數 {3}檔案數 {5}byte數 {3}總 分 {5}板 {3}主/, input: 'q' },
-      { reg: /名次──────範本───────────次數/, input: 'q' },
-      { reg: /鴻雁往返 {2}\(R\/y\)回信 \(x\)站內轉寄 \(d\/D\)刪信 \(\^P\)寄發新信/, input: 'q' },
-      { reg: /【精華文章】/, input: 'q' },
-      { reg: /【看板列表】/, input: 'q' },
-      { reg: /【分類看板】/, input: 'q' },
-      { reg: /【電子郵件】/, input: 'e' },
-      { reg: /【聊天說話】/, input: 'e' },
-      { reg: /【個人設定】/, input: 'e' },
-      { reg: /【工具程式】/, input: 'e' },
-      { reg: /【網路遊樂場】/, input: 'e' },
-      { reg: /您確定要離開【 批踢踢實業坊 】嗎\(Y\/N\)？/, input: 'n\n' }
-
-    ]
-  }
-  PTT.wind = window
-  let PTTPost = {
-    board: '',
-    AID: '',
-    title: '',
-    posttime: '',
-    pushes: [],
-    startline: 0,
-    endline: 3,
-    percent: 0,
-    samepost: false,
-    haveNormalTitle: false,
-    enteredAID: false,
-    searchingTitle: {
-      boardforsearch: '',
-      titleforsearch: '',
-      titlefetched: '',
-      enteredsearchtitle: false,
-      isend: {
-        insertP: true,
-        insert$: true
-      }
-    },
-    enteredTitle: false,
-    enableautofetchpost: false,
-    buffer: {
-      title: '',
-      board: '',
-      autofetch: false
-    }
-  }
-  let serverfull = false
-  const insertText = (() => {
-    let t = PTT.wind.document.querySelector('#t')
-    return str => {
-      if (!t) t = PTT.wind.document.querySelector('#t')
-      const e = new CustomEvent('paste')
-      // debug用
-      if (ReportMode) console.log('insertText : "' + str + '"')
-      e.clipboardData = { getData: () => str }
-      t.dispatchEvent(e)
-    }
-  })()
-  function ComLog (cmd) {
-    if (ShowCommand) console.log('==execute command:', [cmd])
-  }
-  function updatePagestate () {
-    for (let i = 0; i < PTT.pagestatefilter.length; i++) {
-      const filter = PTT.pagestatefilter[i]
-      const result = PTT.screenHaveText(filter.reg)
-      if (result != null) {
-        if (ReportMode) console.log('==page state:' + PTT.pagestate + '->' + filter.state, result)
-        PTT.pagestate = filter.state
-        if (PTT.pagestate > 1) reconnecttrytimes = 10
-        msg.PostMessage('PTTState', PTT.pagestate)
-        return
-      }
-    }
-  }
-  function chechAutoCommand () {
-    const commands = PTT.autocom
-    for (let autoi = 0; autoi < commands.length; autoi++) {
-      const cmd = commands[autoi]
-      const result = PTT.screenHaveText(cmd.reg)
-      // if (showcommand) console.log("==auto command", cmd, result);
-      if (result != null) {
-        ComLog(cmd)
-        insertText(cmd.input)
-        if (typeof cmd.callback !== 'undefined') {
-          const args = cmd.args ? cmd.args : []
-          return cmd.callback(...args)
-        } else { return true }
-      }
-    }
-    return false
-  }
-
-  function command () {
-    const cmd = PTT.commands.getfirst()
-    if (typeof cmd !== 'undefined' && PTT.screenHaveText(cmd.reg) != null) {
-      PTT.commands.removefirst()
-      ComLog(cmd)
-      insertText(cmd.input)
-      if (typeof cmd.callback === 'function') {
-        const args = cmd.args ? cmd.args : []
-        cmd.callback(...args)
-      }
-    }
-  }
+export function InitPTT (messagePoster) {
+  const ptt = new Ptt(messagePoster)
   function OnUpdate () {
-    if (ShowAllLog) console.log('==OnUpdate start')
-    PTT.screenclear()
-    if (ShowAllLog) console.log('==set pagestate.')
-    updatePagestate()
+    if (ShowAllLog) console.log('===OnUpdate start===')
+    if (ShowAllLog) console.log('Ptt.clearScreen()')
+    ptt.clearScreen()
+    if (ShowAllLog) console.log('Ptt.frame.update()')
+    ptt.frame.update()
     if (ShowAllLog) console.log('==check autocommand.')
-    if (!chechAutoCommand()) {
+    const skipThisFrame = ptt.autoCommand.runAutoCommand()
+    if (!skipThisFrame) {
       if (ShowAllLog) console.log('==check command.')
-      command()
+      ptt.runCommand()
     }
-    if (ShowPttScreen) console.log('==PTT screen shot:', PTT.screen)
-    const nextcom = PTT.commands.getfirst()
-    if (ShowCommand && typeof nextcom !== 'undefined') console.log('==next command : reg:' + nextcom.reg + 'input:' + nextcom.input, [nextcom.callback])
-    else if (ShowCommand) console.log('==next command : none.')
-    if (ShowAllLog) console.log('==OnUpdate end')
+    if (ShowPttScreen) console.log('==Ptt screen shot:', ptt.state.screen)
+    if (ShowAllLog) console.log('===OnUpdate end===')
   }
-  // hook start
   function hook (obj, key, cb) {
     const fn = obj[key].bind(obj)
     obj[key] = function (...args) {
@@ -249,551 +26,858 @@ export function InitPTT (messageposter) {
     }
   }
   hook(unsafeWindow.console, 'log', t => {
-    if (typeof t === 'string') {
-      if (t.indexOf('page state:') >= 0) {
-        /* const newstate = /->(\d)/.exec(t)[1]; */
-      } else if (t === 'view update') {
-        PTT.lastviewupdate = Date.now()
-        serverfull = false
-        OnUpdate()
-      }
+    if (t === 'view update') {
+      ptt.state.lastUpdateTime = Date.now()
+      ptt.state.serverfull = false
+      OnUpdate()
     }
   })
-  // hook end
-  function Reconnect () {
-    const disbtn = $('.btn.btn-danger[type=button]')
-    if (disbtn && disbtn.length > 0) {
-      msg.PostMessage('alert', { type: 0, msg: 'PTT已斷線，請重新登入。' })
-      PTT.login = false
-      disbtn[0].click()
-      serverfull = false
-      PTT.screenstate = -1
-      PTT.unlock()
-      reconnecttrytimes--
-      return true
-    }
-    return false
-  }
-  function checkscreenupdate () {
-    if (PTT.controlstate === 0) return
-    const now = Date.now()
-    if (now > PTT.lastviewupdate + 10000) {
-      msg.PostMessage('alert', { type: 0, msg: 'PTT無回應，請稍後再試，或重新整理頁面。' })
-      PTT.unlock()
-    } else {
-      msg.PostMessage('alert', { type: 1, msg: '指令執行中......' })
-      setTimeout(checkscreenupdate, 3500)
-    }
-  }
 
-  // -----------------------task getpostbyline --------------------
-  function gotoBoard () {
-    if (PTTPost.enableautofetchpost) {
-      insertText('s' + PTTPost.searchingTitle.boardforsearch + '\n')
-    } else insertText('s' + PTTPost.board + '\n')
-  }
-  function boardcheck () {
-    const res = { pass: false, callback: gotoBoard }
-    let reg = ''; let re = ''
-    if (PTT.pagestate === 4 || PTT.pagestate === 3) {
-      res.pass = true
-      return res
-    } else if (PTT.pagestate === 1) return res
-    else if (PTT.pagestate === 2) {
-      reg = '看板《' + (PTTPost.enableautofetchpost ? PTTPost.searchingTitle.boardforsearch : PTTPost.board) + '》'
-      re = '系列《' + (PTTPost.enableautofetchpost ? PTTPost.searchingTitle.boardforsearch : PTTPost.board) + '》'
-    }
-    const currect = PTT.screenHaveText(reg); const curr = PTT.screenHaveText(re)
-    if (currect || curr) res.pass = true
-    return res
-  }
+  /* eslint-disable no-global-assign */
+  cryptkey = GM_getValue('cryptkey', Math.random())
+  /* eslint-enable no-global-assign */
 
-  function gotoPost () {
-    if (!PTTPost.enableautofetchpost) {
-      if (PTT.screenHaveText(/系列《.+》/)) insertText('q') // 關鍵字搜尋狀態不能#AID
-      else if (PTTPost.enteredAID) {
-        insertText('r')
-        PTTPost.enteredAID = false
-      } else {
-        insertText('NPP#' + PTTPost.AID + '\n')
-        PTTPost.enteredAID = true
-      }
-    } else {
-      if (!PTTPost.enteredTitle) {
-        insertText('/' + PTTPost.searchingTitle.titleforsearch + '\n')
-        PTTPost.enteredTitle = true
-      } else {
-        insertText('$r')
-      }
-    }
-  }
-  function PostCheck () {
-    const res = { pass: true, callback: gotoPost }
-    if (PTT.pagestate === 2) {
-      if ((PTTPost.enableautofetchpost && !PTTPost.enteredTitle) || (!PTTPost.enableautofetchpost && !PTTPost.enteredTitle)) res.pass = false
-      if ((!PTTPost.enableautofetchpost && PTTPost.enteredAID) || (PTTPost.enableautofetchpost && PTTPost.enteredTitle)) {
-        if (PTT.screenHaveText(/找不到這個文章代碼\(AID\)，可能是文章已消失，或是你找錯看板了/)) {
-          msg.PostMessage('alert', { type: 0, msg: '文章AID錯誤，文章已消失或是你找錯看板了。' })
-          if (ReportMode) console.log('文章AID錯誤，文章已消失或是你找錯看板了', PTT.pagestate, PTT, PTTPost)
-          PTT.unlock()
-          return
-        } else res.pass = false
-      }
-    } else if (PTT.pagestate === 1) console.log('==PostCheck error, PTT.pagestate == 1.')
-    return res
-  }
-  function backtoboard () { insertText('qP') }
-  function PotsTitleCheck () {
-    const res = { pass: true, callback: backtoboard }
-    if (PTT.pagestate === 3) {
-      const reg = / 標題 +(.+)/
-      const posttitle = PTT.screenHaveText(reg)
-      let title = ''
-      if (posttitle) {
-        PTTPost.haveNormalTitle = true
-        if (ReportMode) console.log('==set haveNormalTitle true', posttitle)
-        title = posttitle[1].replace(/\s+$/g, '') // 抓一般標題
-      } else for (let i = 0; i < 5 && i < PTT.screen.length; i++) title += PTT.screen[i] // 抓前幾行
-      if (PTTPost.samepost) {
-        if (!PTTPost.enableautofetchpost) {
-          if (title !== PTTPost.title) res.pass = false
-        }
-      } else {
-        PTTPost.title = title
-        const result = PTT.screenHaveText(/時間 {2}(\S{3} \S{3} ...\d{2}:\d{2}:\d{2} \d{4})/)
-        if (result) PTTPost.posttime = new Date(result[1])
-        else PTTPost.posttime = new Date(Date.now())
-      }
-    } else if (PTT.pagestate === 1) console.log('==PotsTitleCheck error, PTT.pagestate == 1.')
-    else if (PTT.pagestate === 2) console.log('==PotsTitleCheck error, PTT.pagestate == 2.')
-    return res
-  }
-
-  function gotoline () { insertText(PTTPost.endline + '.\n') }
-  function PostLineCheck () {
-    const res = { pass: true, callback: gotoline }
-    if (PTT.pagestate === 4 || PTT.pagestate === 3) {
-      const lineresult = PTT.screenHaveText(/目前顯示: 第 (\d+)~(\d+) 行/)
-      const startline = lineresult[1]
-      let targetline = PTTPost.endline - startline + 1
-      if (startline < 5 && PTTPost.haveNormalTitle) targetline += 1
-      if ((targetline < 1 || targetline > 23) && PTT.screenHaveText(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~\d+ 行/) === null) res.pass = false
-      else getpush()
-    } else if (PTT.pagestate === 1) console.log('==PistLineCheck error, PTT.pagestate == 1.')
-    else if (PTT.pagestate === 2) console.log('==PistLineCheck error, PTT.pagestate == 2.')
-    return res
-  }
-
-  function searchfortitle () {
-    if (!PTTPost.searchingTitle.enteredsearchtitle) {
-      insertText('NPP/' + PTTPost.searchingTitle.titleforsearch + '\n')
-      PTTPost.searchingTitle.enteredsearchtitle = true
-    }
-  }
-  function istitleexistcheck () {
-    const res = { pass: true, callback: searchfortitle }
-    if (PTT.pagestate === 2) {
-      if (!PTTPost.searchingTitle.enteredsearchtitle) res.pass = false
-      else {
-        if (PTT.screenHaveText(/看板《.+》/)) {
-          if (ReportMode) console.log('==searchfortitle error, title unavailable.')
-          msg.PostMessage('alert', { type: 0, msg: '無此標題文章' })
-          PTT.unlock()
-          return
-        }
-      }
-    }
-    return res
-  }
-  function newesttitlecheck () {
-    const res = { pass: true, callback: gotoend }
-    if (PTT.pagestate === 2) {
-      if (!PTTPost.searchingTitle.isend.insertP || !PTTPost.searchingTitle.isend.insert$) res.pass = false
-      else {
-        const reg = /^(>|●).+(□|R:|轉)/
-        const posttitle = PTT.screenHaveText(reg)
-        let title = ''
-        if (posttitle) {
-          PTTPost.haveNormalTitle = true
-          if (ReportMode) console.log('==set haveNormalTitle true', posttitle)
-          title = posttitle.input.replace(/\s+$/g, '').substr(30)
-          if (title[0] === '□') title = title.substr(1)
-        }
-        if (title === '' || title === null) res.pass = false
-        else PTTPost.searchingTitle.titlefetched = title
-      }
-    }
-    return res
-  }
-  function receiveTitle () {
-    PTT.unlock()
-    msg.PostMessage('alert', { type: 2, msg: '標題讀取完成。' })
-    msg.PostMessage('getAutoFetchedPostTitle', PTTPost.searchingTitle.titlefetched)
-    insertText('qq')
-    PTTPost.searchingTitle.titlefetched = ''
-    PTTPost.searchingTitle.titleforsearch = PTTPost.buffer.title
-    PTTPost.searchingTitle.boardforsearch = PTTPost.buffer.board
-    if (!PTTPost.buffer.autofetch) { PTTPost.enableautofetchpost = false }
-  }
-
-  function savepush (content, result) {
-    const pushdata = {}
-    pushdata.type = result[1]
-    pushdata.id = result[2]
-    pushdata.content = content
-    pushdata.date = new Date(PTTPost.posttime.getFullYear(), result[4] - 1, result[5], result[6], result[7])
-    PTTPost.pushes.push(pushdata)
-    // console.log(result);
-  }
-  function getpush () {
-    const lineresult = PTT.screenHaveText(/目前顯示: 第 (\d+)~(\d+) 行/)
-    const startline = +lineresult[1]
-    const endline = +lineresult[2]
-    let targetline = PTTPost.endline - startline + 1
-    if (startline < 5 && PTTPost.haveNormalTitle) targetline += 1
-    const checkedline = []
-    // console.log("==GetPush from " + targetline + "to " + (PTT.screen.length - 1));
-    // console.log("==(pttstartline, pttendline, startline, endline, targetline): (" + PTTPost.startline + ", " + PTTPost.endline + ", " + startline + ", " + endline + ", " + targetline + ")");
-    for (let i = targetline; i < PTT.screen.length; i++) {
-      const line = PTT.screen[i]
-      const result = /^(→ |推 |噓 )(.+?): (.*)(\d\d)\/(\d\d) (\d\d):(\d\d)/.exec(line)
-      if (result != null) {
-        let content = result[3]
-        const reg = /\s+$/g
-        content = content.replace(reg, '')
-        savepush(content, result)
-        if (ReportMode) checkedline.push(i)
-        if (ReportMode) console.log('GetPush at line', i, content, line)
-      } else if (ReportMode) console.log('GetPush at line fail', i, line)
-    }
-    if (ReportMode) console.log('GetPush startline,', startline, ', endline', PTTPost.endline, ', targetline', targetline, ', checkedline', checkedline, ', haveNormalTitle', PTTPost.haveNormalTitle)
-    const percentresult = PTT.screenHaveText(/瀏覽 第 .+ 頁 \( *(\d+)%\)/)
-    PTTPost.percent = percentresult[1]
-    PTTPost.startline = startline
-    PTTPost.endline = endline
-  }
-
-  function gotonextpage () { insertText(' ') }
-  function PostPercentCheck () {
-    const res = { pass: false, callback: gotonextpage }
-    if ((PTT.pagestate === 3 || PTT.pagestate === 4) && PTT.screenHaveText(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~\d+ 行/) !== null) {
-      res.pass = true
-    } else if (PTT.pagestate === 1) console.log('==PostPercentCheck error, PTT.pagestate == 1.')
-    else if (PTT.pagestate === 2) console.log('==PostPercentCheck error, PTT.pagestate == 2.')
-    return res
-  }
-  // -----------------------task getpostbyrecent --------------------
-  function gotoend () {
-    if (!PTTPost.searchingTitle.isend.insertP || !PTTPost.searchingTitle.isend.insert$) {
-      if (!PTTPost.searchingTitle.isend.insertP) {
-        insertText('P')
-        PTTPost.searchingTitle.isend.insertP = true
-      } else if (!PTTPost.searchingTitle.isend.insert$) {
-        insertText('$')
-        PTTPost.searchingTitle.isend.insert$ = true
-      }
-    } else insertText('G')
-  }
-  function GetRecentLine () {
-    const res = { pass: false, callback: gotoend }
-    if (PTT.pagestate === 4 || PTT.pagestate === 3) {
-      const line = PTT.screenHaveText(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~(\d+) 行/)
-      if (line) {
-        let targetline = +line[1] - PTTPost.endline - 1
-        if (targetline < 3) targetline = 3
-        // console.log("==GetRecentLine, TotalLine, GotoLline", line[1], targetline);
-        PTTPost.endline = targetline
-        /* if (PTT.pagestate === 4 || PTT.pagestate === 3) */
-        insertText('qP') // insertText(PTTPost.endline + ".\n");
-        res.pass = true
-      }
-    } else if (PTT.pagestate === 1) console.log('==GetPushTask error, PTT.pagestate == 1.')
-    else if (PTT.pagestate === 2) console.log('==GetPushTask error, PTT.pagestate == 2.')
-    return res
-  }
-  //
-  // -----------------------task setNewPush --------------------
-  let SetNewPushtrytime = 5
-  function SetNewPush () {
-    const res = { pass: false, callback: () => { } }
-    SetNewPushtrytime--
-    if (SetNewPushtrytime < 0) { res.pass = true; return res }
-    if (PTT.pagestate === 4 || PTT.pagestate === 3) {
-      const pushcd = PTT.screenHaveText(/◆ 本文已過長, 禁止快速連續推文|◆ 對不起，您的文章或推文間隔太近囉！/)
-      if (pushcd) {
-        msg.PostMessage('alert', { type: 0, msg: '推文遭暫時禁止。' })
-        res.pass = true
-        return res
-      }
-      const pushtext = PTTPost.setpush + '\n'
-      const pushcheck = PTT.screenHaveText(/(.+?): (.+?) +確定\[y\/N]:/)
-      if (pushcheck) {
-        console.log('pushcheck')
-        PTTPost.setpush = ''
-        PTTPost.pushedtext = pushcheck[2]
-        insertText('y\n\nG')
-        res.pass = true
-        msg.PostMessage('alert', { type: 2, msg: '推文成功。' })
-        return res
-      }
-      const pushtype = PTT.screenHaveText(/您覺得這篇文章/)
-      if (pushtype) {
-        console.log('pushtype')
-        insertText('\n' + pushtext)
-        return res
-      }
-      const pushdirect = PTT.screenHaveText(/時間太近, 使用|作者本人, 使用/)
-      if (pushdirect) {
-        console.log('pushdirect', pushdirect)
-        insertText(pushtext)
-        return res
-      }
-      const unpush = PTT.screenHaveText(/瀏覽 第 .+ 頁 \( *(\d+)%\)/)
-      if (unpush) {
-        console.log('unpush')
-        insertText('%')
-        return res
-      }
-    } else if (PTT.pagestate === 1) console.log('==GetPushTask error, PTT.pagestate == 1.')
-    else if (PTT.pagestate === 2) console.log('==GetPushTask error, PTT.pagestate == 2.')
-    return res
-  }
-  // ------------------------task--------------------------------
-  function RunTask (tasklist, finishCallback) {
-    for (let i = 0; i < tasklist.length; i++) {
-      const result = tasklist[i]()
-      if (result.pass === true) if (ReportMode) console.log('RunTask pass, pagestate:', PTT.pagestate, ', task name:', tasklist[i].name)
-      if (result.pass === false) {
-        if (ReportMode) console.log('RunTask failed, pagestate:', PTT.pagestate, ', task name:', tasklist[i].name)
-        result.callback()
-        PTT.commands.add(/.*/, '', RunTask, tasklist, finishCallback)
-        return
-      }
-    }
-    finishCallback()
-  }
-  // ------------------------tasks--------------------------------
-
-  const task = {}
-  task.GetPostByLine = [boardcheck, PostCheck, PotsTitleCheck, PostLineCheck, PostPercentCheck]
-  task.GetPostRecentLine = [boardcheck, PostCheck, PotsTitleCheck, GetRecentLine]
-  task.SetPostNewPush = [boardcheck, PostCheck, PotsTitleCheck, SetNewPush]
-  task.GetPostTitle = [boardcheck, istitleexistcheck, newesttitlecheck]
-
-  function SetNewPushTask (pushtext) {
-    let allowedchar = 24
-    let addedtext = ''
-    let trytime = 7
-    while (trytime >= 0 && allowedchar > 0 && pushtext.length > 0) {
-      const addtextreg = '(.{0,' + allowedchar + '})(.*)'// (.{0,24})(.*)
-      const result = new RegExp(addtextreg).exec(pushtext)
-      addedtext += result[1]
-      const halfchar = addedtext.match(/[A-Za-z0-9_ :/\\.?=%]/g)
-      const halfcount = halfchar ? halfchar.length : 0
-      allowedchar = parseInt((48 - addedtext.length * 2 + halfcount) / 2)
-      pushtext = result[2]
-      if (ReportMode) {
-        console.log('SetNewPushTask Text Reg==', addedtext.length * 2, '==', halfcount, '==', halfchar)
-        console.log('SetNewPushTask Text Reg==', addedtext, '==', pushtext, '==', allowedchar, '==', result)
-      }
-      trytime--
-    }
-    SetNewPushtrytime = 5
-    PTTPost.setpush = addedtext
-    RunTask(task.SetPostNewPush, recieveNewPush)
-  }
-  function CheckTitleSame (_boardforsearch, _titleforsearch, task) {
-    PTT.unlock()
-    PTTPost.enteredAID = false
-    PTTPost.enteredTitle = false
-    PTTPost.buffer.title = PTTPost.searchingTitle.titleforsearch
-    PTTPost.buffer.board = PTTPost.searchingTitle.boardforsearch
-    msg.PostMessage('alert', { type: 1, msg: '搜尋中。' })
-    PTTPost.searchingTitle.boardforsearch = _boardforsearch
-    PTTPost.searchingTitle.titleforsearch = _titleforsearch
-    PTTPost.searchingTitle.enteredsearchtitle = false
-    PTTPost.searchingTitle.isend.insertP = false
-    PTTPost.searchingTitle.isend.insert$ = false
-    PTTPost.buffer.autofetch = false
-    if (PTTPost.enableautofetchpost) PTTPost.buffer.autofetch = true
-    PTTPost.enableautofetchpost = true
-    if (PTT.pagestate === 1) {
-      if (PTT.screenHaveText(/(> |●)\(M\)ail {9}【 私人信件區 】/)) insertText('c')// 隨意切畫面
-      else insertText('m')// 隨意切畫面
-    } else if (PTT.pagestate === 2) insertText('qP')
-    else { // PTT.pagestate === 3 || 4
-      insertText('qq')// 原本就在第一頁則直接退出
-    }
-    PTT.commands.add(/.*/, '', task)
-  }
-  function GetPostTitleTask () {
-    RunTask(task.GetPostTitle, receiveTitle)
-  }
-
-  function recieveNewPush () {
-    msg.PostMessage('pushedText', PTTPost.pushedtext)
-    PTTPost.pushedtext = ''
-    if (ShowAllLog) console.log(PTTPost)
-    GetPush(PTTPost.AID, PTTPost.board, PTTPost.endline, GetPushTask)
-  }
-  function GetRecentLineTask () { RunTask(task.GetPostRecentLine, () => PTT.commands.add(/.*/, '', GetPushTask)) }
-  function GetPushTask () { RunTask(task.GetPostByLine, recievePushes) }
-  function recievePushes () {
-    PTT.unlock()
-    msg.PostMessage('alert', { type: 2, msg: '文章讀取完成。' })
-    msg.PostMessage('newPush', PTTPost)
-    if (ShowAllLog) console.log(PTTPost)
-  }
-  // ------------------------Main Command--------------------------------
-  function GetPush (pAID, bname, startline, task, pboardforsearch, ptitleforsearch) {
-    startline = startline || 3
-    msg.PostMessage('alert', { type: 1, msg: '文章讀取中。' })
-    const auto = (pAID === undefined) && (bname === undefined) && (pboardforsearch === undefined) && (ptitleforsearch === undefined)
-    const samepostbyAID = (bname === PTTPost.board) && (pAID === PTTPost.AID) && (pAID !== undefined) && (bname !== undefined)
-    const samepostbytitle = (pboardforsearch === PTTPost.searchingTitle.boardforsearch) && (ptitleforsearch === PTTPost.searchingTitle.titleforsearch)
-    if (samepostbyAID) PTTPost.enableautofetchpost = false
-    if (samepostbyAID || (samepostbytitle && (ptitleforsearch !== undefined) && (pboardforsearch !== undefined)) || auto) {
-      PTTPost.pushes = []
-      PTTPost.samepost = true
-      PTTPost.endline = startline
-      if (ReportMode) console.log("Get same post's push.", bname, PTTPost.board, pAID, PTTPost.AID)
-    } else {
-      PTTPost = {
-        board: bname,
-        AID: pAID,
-        title: '',
-        posttime: '',
-        pushes: [],
-        startline: 0,
-        endline: startline,
-        percent: 0,
-        samepost: false,
-        haveNormalTitle: false,
-        enteredAID: false,
-        searchingTitle: {
-          boardforsearch: (pboardforsearch === undefined ? '' : pboardforsearch),
-          titleforsearch: (ptitleforsearch === undefined ? '' : ptitleforsearch),
-          titlefetched: '',
-          enteredsearchtitle: false,
-          isend: {
-            insertP: true,
-            insert$: true
-          }
-        },
-        enteredTitle: false,
-        enableautofetchpost: (ptitleforsearch !== undefined),
-        buffer: {
-          title: '',
-          board: '',
-          autofetch: false
-        }
-      }
-      if (ReportMode) console.log("Get new post's push.", bname, PTTPost.board, pAID, PTTPost.AID)
-    }
-    if (PTT.pagestate === 1) {
-      if (PTT.screenHaveText(/(> |●)\(M\)ail {9}【 私人信件區 】/)) insertText('c')// 隨意切畫面
-      else insertText('m')// 隨意切畫面
-    } else if (PTT.pagestate === 2) insertText('P')// 切下一頁
-    else { // PTT.pagestate === 3 || 4
-      if (!PTTPost.samepost) {
-        insertText('qP')// 在標題或是其他文章就退出
-      } else {
-        if (PTT.screenHaveText(/目前顯示: 第 01~/)) { // 內容少於一頁會卡在看板畫面
-          insertText('q') // 原本就在第一頁則直接退出
-        } else { insertText('qr') }// 相同文章直接進入標題
-      }
-    }
-    PTT.commands.add(/.*/, '', task)
-  }
-  let TryLogin = 0
-  function Login (id, pw, DeleteOtherConnect) {
-    msg.PostMessage('alert', { type: 1, msg: '登入中' })
-    if (!PTT.login) {
-      PTT.DeleteOtherConnect = DeleteOtherConnect
-      const logincheck = () => {
-        if (PTT.screenHaveText(/密碼不對或無此帳號。請檢查大小寫及有無輸入錯誤。|請重新輸入/)) {
-          msg.PostMessage('alert', { type: 0, msg: '登入失敗，帳號或密碼有誤。' })
-          PTT.unlock()
-        } else if (PTT.screenHaveText(/上方為使用者心情點播留言區|【 精華公佈欄 】/)) {
-          msg.PostMessage('alert', { type: 2, msg: '登入成功。' })
-          PTT.login = true
-          PTT.unlock()
-          // testcode
-          /* (() => {
-            PTTLockCheck(GetPostPush, `#1VobIvqM (C_Chat)`);
-            insertText("x");
-          })(); */
-        } else if (PTT.screenHaveText(/登入中，請稍候\.\.\.|正在更新與同步線上使用者及好友名單，系統負荷量大時會需時較久|密碼正確！ 開始登入系統/)) {
-          PTT.commands.add(/.*/, '', logincheck)
-        } else {
-          msg.PostMessage('alert', { type: 0, msg: '發生了未知錯誤，可能是因為保留連線導致被踢掉。' })
-          console.log(PTT.screen)
-          PTT.unlock()
-        }
-      }
-      const result = PTT.screenHaveText(/請輸入代號，或以 guest 參觀，或以 new 註冊/)
-      if (result) {
-        if (TryLogin <= 0) { // 防止過度嘗試
-          msg.PostMessage('alert', { type: 0, msg: '未知原因登入失敗。' })
-          PTT.unlock()
-          return
-        } else TryLogin--
-        insertText(id + '\n' + pw + '\n')
-        PTT.commands.add(/.*/, '', logincheck)
-      } else {
-        PTT.commands.add(/.*/, '', Login, id, pw)
-      }
-    } else {
-      msg.PostMessage('alert', { type: 0, msg: '已經登入，請勿重複登入。' })
-      PTT.unlock()
-    }
-  }
-  // ------------------------Lock Check--------------------------------
-  function CheckLoginState (command, ...args) {
-    if (ReportMode) console.log('CheckLoginState,PTT.pagestate = ', PTT.pagestate)
-    if (PTT.pagestate > 0) {
-      command(...args)
-    } else if (PTT.pagestate === -1) {
-      msg.PostMessage('alert', { type: 0, msg: 'PTT已斷線，請重新登入。' })
-      PTT.unlock()
-    } else if (PTT.pagestate === 0) {
-      msg.PostMessage('alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
-      PTT.unlock()
-    }
-  }
-  function PTTLockCheck (CallBack, ...args) {
-    if (!Reconnect()) {
-      if (PTT.controlstate === 1) {
-        msg.PostMessage('alert', { type: 0, msg: '指令執行中，請稍後再試。' })
-      } else if (serverfull) {
-        msg.PostMessage('alert', { type: 0, msg: '系統過載, 請稍後再來...' })
-        PTT.unlock()
-      } else if (!serverfull) {
-        PTT.lastviewupdate = Date.now()
-        PTT.lock()
-        if (ReportMode) console.log('PTTLockCheck', ...args)
-        CallBack(...args)
-        setTimeout(checkscreenupdate, 3500)
-      }
-    }
-  }
-  // end
-  let reconnecttrytimes = 10
-  // const ReconnectInterval =
-  window.setInterval(() => {
-    if (reconnecttrytimes >= 0) { Reconnect() }
-  }, 1500)
-
-  msg.login = data => {
+  ptt.msg.login = data => {
     const i = CryptoJS.AES.decrypt(data.id, cryptkey).toString(CryptoJS.enc.Utf8)
     const p = CryptoJS.AES.decrypt(data.pw, cryptkey).toString(CryptoJS.enc.Utf8)
     TryLogin = 2
-    // console.log(data );
-    // console.log([i, p],cryptkey);
-    PTTLockCheck(Login, i, p, data.DeleteOtherConnect)
+    ptt.addTask(Login, i, p, data.DeleteOtherConnect)
   }
-  msg.getPushByLine = data => { if (ReportMode) console.log('getPushByLine', data); PTTLockCheck(CheckLoginState, GetPush, data.AID, data.board, data.startline, GetPushTask) }
-  msg.getPushByRecent = data => { if (ReportMode) console.log('getPushByRecent', data); PTTLockCheck(CheckLoginState, GetPush, data.AID, data.board, data.recent, GetRecentLineTask, data.boardforsearch, data.titleforsearch) }
-  msg.setNewPush = data => { if (ReportMode) console.log('setNewPush', data); PTTLockCheck(SetNewPushTask, data) }
-  msg.getPostTitle = data => { if (ReportMode) console.log('getPostTitle', data); PTTLockCheck(CheckLoginState, CheckTitleSame, data.boardforsearch, data.titleforsearch, GetPostTitleTask) }
+
+  let TryLogin
+  const Login = (id, pw, DeleteOtherConnect) => {
+    ptt.msg.PostMessage('alert', { type: 1, msg: '登入中' })
+    if (!ptt.state.login) {
+      ptt.state.deleteOtherConnection = DeleteOtherConnect
+      const checkLogin = () => {
+        if (ptt.match(/密碼不對或無此帳號。請檢查大小寫及有無輸入錯誤。|請重新輸入/)) {
+          ptt.msg.PostMessage('alert', { type: 0, msg: '登入失敗，帳號或密碼有誤。' })
+          ptt.unlock()
+        } else if (ptt.match(/上方為使用者心情點播留言區|【 精華公佈欄 】/)) {
+          ptt.msg.PostMessage('alert', { type: 2, msg: '登入成功。' })
+          ptt.state.login = true
+          ptt.unlock()
+        } else if (ptt.match(/登入中，請稍候\.\.\.|正在更新與同步線上使用者及好友名單，系統負荷量大時會需時較久|密碼正確！ 開始登入系統/)) {
+          ptt.taskManager.addTask(checkLogin)
+        } else {
+          ptt.msg.PostMessage('alert', { type: 0, msg: '發生了未知錯誤，可能是因為保留連線導致被踢掉。' })
+          console.log(ptt.state.screen)
+          ptt.unlock()
+        }
+      }
+      const result = ptt.match(/請輸入代號，或以 guest 參觀，或以 new 註冊/)
+      if (result) {
+        if (TryLogin <= 0) { // 防止過度嘗試
+          ptt.msg.PostMessage('alert', { type: 0, msg: '未知原因登入失敗。' })
+          ptt.unlock()
+          return
+        } else TryLogin--
+        ptt.insertText(id + '\n' + pw + '\n')
+        ptt.taskManager.addTask(checkLogin)
+      } else {
+        ptt.taskManager.addTask(Login, id, pw)
+      }
+    } else {
+      ptt.msg.PostMessage('alert', { type: 0, msg: '已經登入，請勿重複登入。' })
+      ptt.unlock()
+    }
+  }
 }
+
+// export function InitPTT (messageposter) {
+//   const SkipCommand = true
+//   const msg = messageposter
+//   /* eslint-disable no-global-assign */
+//   // get crypt key;
+//   cryptkey = GM_getValue('cryptkey', Math.random())
+//   /* eslint-enable no-global-assign */
+
+//   // start script
+//   // const PageState = Object.freeze({ Unlogin: 0, MainScreen: 1, BoardSceen: 2, FirstPageOfPost: 3, OtherPageOfPost: 4 })
+//   const PTT = {
+//     connect: true, // 自動 連線狀態
+//     login: false, // 自動
+//     controlstate: 0,
+//     lastviewupdate: 0,
+//     lock: function () {
+//       PTT.controlstate = 1
+//     },
+//     unlock: function () {
+//       PTT.controlstate = 0
+//       PTT.commands.list = []
+//     },
+//     // 0 free,1 lock 手動更新 每次操作都要打開 用完關閉
+//     pagestate: 0, // PTT頁面狀態 0未登入畫面 1主畫面 2看板畫面 3文章畫面第一頁 4文章畫面其他頁
+//     screen: [], // 自動 畫面資料
+//     screenstate: 0, // 0 clear, 1 full 自動 畫面是否已更新
+//     wind: null, // 自動
+//     match: function (regText) {
+//       let result = null
+//       let reg = regText
+//       if (typeof regText.exec !== 'function') { reg = new RegExp(regText, 'i') }
+//       if (this.screenstate === 0) {
+//         const sElement = $("[data-type='bbsline']", this.wind.document)
+//         for (let i = 0; i < sElement.length; i++) {
+//           const txt = sElement[i].textContent
+//           if (result == null) result = new RegExp(reg, 'i').exec(txt)
+//           this.screen.push(txt)
+//           // if (ReportMode) console.log("==match", reg, result, txt);
+//         }
+//         this.screenstate = 1
+//         return result
+//       } else {
+//         for (let i = 0; i < this.screen.length; i++) {
+//           const txt = this.screen[i]
+//           result = new RegExp(reg, 'i').exec(txt)
+//           // if (ReportMode) console.log("==match", reg, result, txt);
+//           if (result != null) {
+//             return result
+//           }
+//         }
+//         return null
+//       }
+//     },
+//     screenclear: function () {
+//       this.screenstate = 0
+//       this.screen = []
+//     },
+//     commands: {
+//       list: [],
+//       add: function (reg, input, callback, ...args) {
+//         const com = { reg, input, callback, args }
+//         if (ShowCommand) console.log('==Add command ', com)
+//         this.list.push(com)
+//       },
+//       getfirst: function () {
+//         return this.list[0]
+//       },
+//       removefirst: function () {
+//         this.list.shift()
+//       }
+//     },
+//     pagestatefilter: [
+//       { reg: /請輸入代號，或以 guest 參觀，或以 new 註冊/, state: 0 },
+//       { reg: /上方為使用者心情點播留言區|【 精華公佈欄 】/, state: 1 },
+//       { reg: /^\[←\]離開 \[→\]閱讀/, state: 2 },
+//       { reg: /目前顯示: 第 01/, state: 3 },
+//       { reg: /目前顯示: 第/, state: 4 }
+//     ],
+//     autocom: [
+//       {
+//         reg: /您想刪除其他重複登入的連線嗎/,
+//         input: '',
+//         callback: () => {
+//           const inserttxt = PTT.DeleteOtherConnect ? 'y\n' : 'n\n'
+//           insertText(inserttxt)
+//           return SkipCommand
+//         }
+//       },
+//       { reg: /您要刪除以上錯誤嘗試的記錄嗎/, input: 'n\n' },
+//       {
+//         reg: /按任意鍵繼續/,
+//         input: '',
+//         callback: () => {
+//           const reg = /(找不到這個文章代碼\(AID\)，可能是文章已消失，或是你找錯看板了|這一篇文章值|◆ 本文已過長, 禁止快速連續推文|◆ 對不起，您的文章或推文間隔太近囉！)/
+//           const result = PTT.match(reg)
+//           if (result) { return !SkipCommand } else {
+//             insertText('\n')
+//             return SkipCommand
+//           }
+//         }
+//       },
+//       { reg: /動畫播放中\.\.\./, input: 'q' },
+//       {
+//         reg: /系統過載, 請稍後再來\.\.\./,
+//         input: '',
+//         callback: () => {
+//           serverfull = true
+//           if (PTT.controlstate === 1) {
+//             PTT.unlock()
+//             msg.PostMessage('alert', { type: 0, msg: '系統過載, 請稍後再來...' })
+//             return SkipCommand
+//           }
+//         },
+//         args: []
+//       },
+//       { reg: /大富翁 排行榜|發表次數排行榜/, input: 'q' },
+//       { reg: /本日十大熱門話題/, input: 'q' },
+//       { reg: /本週五十大熱門話題/, input: 'q' },
+//       { reg: /每小時上站人次統計/, input: 'q' },
+//       { reg: /本站歷史 \.\.\.\.\.\.\./, input: 'q' },
+//       { reg: /看 板 {2}目錄數 {3}檔案數 {5}byte數 {3}總 分 {5}板 {3}主/, input: 'q' },
+//       { reg: /名次──────範本───────────次數/, input: 'q' },
+//       { reg: /鴻雁往返 {2}\(R\/y\)回信 \(x\)站內轉寄 \(d\/D\)刪信 \(\^P\)寄發新信/, input: 'q' },
+//       { reg: /【精華文章】/, input: 'q' },
+//       { reg: /【看板列表】/, input: 'q' },
+//       { reg: /【分類看板】/, input: 'q' },
+//       { reg: /【電子郵件】/, input: 'e' },
+//       { reg: /【聊天說話】/, input: 'e' },
+//       { reg: /【個人設定】/, input: 'e' },
+//       { reg: /【工具程式】/, input: 'e' },
+//       { reg: /【網路遊樂場】/, input: 'e' },
+//       { reg: /您確定要離開【 批踢踢實業坊 】嗎\(Y\/N\)？/, input: 'n\n' }
+
+//     ]
+//   }
+//   PTT.wind = window
+//   let PTTPost = {
+//     board: '',
+//     AID: '',
+//     title: '',
+//     posttime: '',
+//     pushes: [],
+//     startline: 0,
+//     endline: 3,
+//     percent: 0,
+//     samepost: false,
+//     haveNormalTitle: false,
+//     enteredAID: false,
+//     searchingTitle: {
+//       boardforsearch: '',
+//       titleforsearch: '',
+//       titlefetched: '',
+//       enteredsearchtitle: false,
+//       isend: {
+//         insertP: true,
+//         insert$: true
+//       }
+//     },
+//     enteredTitle: false,
+//     enableautofetchpost: false,
+//     buffer: {
+//       title: '',
+//       board: '',
+//       autofetch: false
+//     }
+//   }
+//   let serverfull = false
+//   const insertText = (() => {
+//     let t = PTT.wind.document.querySelector('#t')
+//     return str => {
+//       if (!t) t = PTT.wind.document.querySelector('#t')
+//       const e = new CustomEvent('paste')
+//       // debug用
+//       if (ReportMode) console.log('insertText : "' + str + '"')
+//       e.clipboardData = { getData: () => str }
+//       t.dispatchEvent(e)
+//     }
+//   })()
+//   function ComLog (cmd) {
+//     if (ShowCommand) console.log('==execute command:', [cmd])
+//   }
+//   function updatePagestate () {
+//     for (let i = 0; i < PTT.pagestatefilter.length; i++) {
+//       const filter = PTT.pagestatefilter[i]
+//       const result = PTT.match(filter.reg)
+//       if (result != null) {
+//         if (ReportMode) console.log('==page state:' + PTT.pagestate + '->' + filter.state, result)
+//         PTT.pagestate = filter.state
+//         if (PTT.pagestate > 1) reconnecttrytimes = 10
+//         msg.PostMessage('PTTState', PTT.pagestate)
+//         return
+//       }
+//     }
+//   }
+//   function chechAutoCommand () {
+//     const commands = PTT.autocom
+//     for (let autoi = 0; autoi < commands.length; autoi++) {
+//       const cmd = commands[autoi]
+//       const result = PTT.match(cmd.reg)
+//       // if (showcommand) console.log("==auto command", cmd, result);
+//       if (result != null) {
+//         ComLog(cmd)
+//         insertText(cmd.input)
+//         if (typeof cmd.callback !== 'undefined') {
+//           const args = cmd.args ? cmd.args : []
+//           return cmd.callback(...args)
+//         } else { return true }
+//       }
+//     }
+//     return false
+//   }
+
+//   function command () {
+//     const cmd = PTT.commands.getfirst()
+//     if (typeof cmd !== 'undefined' && PTT.match(cmd.reg) != null) {
+//       PTT.commands.removefirst()
+//       ComLog(cmd)
+//       insertText(cmd.input)
+//       if (typeof cmd.callback === 'function') {
+//         const args = cmd.args ? cmd.args : []
+//         cmd.callback(...args)
+//       }
+//     }
+//   }
+//   function OnUpdate () {
+//     if (ShowAllLog) console.log('==OnUpdate start')
+//     PTT.screenclear()
+//     if (ShowAllLog) console.log('==set pagestate.')
+//     updatePagestate()
+//     if (ShowAllLog) console.log('==check autocommand.')
+//     if (!chechAutoCommand()) {
+//       if (ShowAllLog) console.log('==check command.')
+//       command()
+//     }
+//     if (ShowPttScreen) console.log('==PTT screen shot:', PTT.screen)
+//     const nextcom = PTT.commands.getfirst()
+//     if (ShowCommand && typeof nextcom !== 'undefined') console.log('==next command : reg:' + nextcom.reg + 'input:' + nextcom.input, [nextcom.callback])
+//     else if (ShowCommand) console.log('==next command : none.')
+//     if (ShowAllLog) console.log('==OnUpdate end')
+//   }
+//   // hook start
+//   function hook (obj, key, cb) {
+//     const fn = obj[key].bind(obj)
+//     obj[key] = function (...args) {
+//       fn.apply(this, args)
+//       cb.apply(this, args)
+//     }
+//   }
+//   hook(unsafeWindow.console, 'log', t => {
+//     if (typeof t === 'string') {
+//       if (t.indexOf('page state:') >= 0) {
+//         /* const newstate = /->(\d)/.exec(t)[1]; */
+//       } else if (t === 'view update') {
+//         PTT.lastviewupdate = Date.now()
+//         serverfull = false
+//         OnUpdate()
+//       }
+//     }
+//   })
+//   // hook end
+//   function Reconnect () {
+//     const disbtn = $('.btn.btn-danger[type=button]')
+//     if (disbtn && disbtn.length > 0) {
+//       msg.PostMessage('alert', { type: 0, msg: 'PTT已斷線，請重新登入。' })
+//       PTT.login = false
+//       disbtn[0].click()
+//       serverfull = false
+//       PTT.screenstate = -1
+//       PTT.unlock()
+//       reconnecttrytimes--
+//       return true
+//     }
+//     return false
+//   }
+//   function checkscreenupdate () {
+//     if (PTT.controlstate === 0) return
+//     const now = Date.now()
+//     if (now > PTT.lastviewupdate + 10000) {
+//       msg.PostMessage('alert', { type: 0, msg: 'PTT無回應，請稍後再試，或重新整理頁面。' })
+//       PTT.unlock()
+//     } else {
+//       msg.PostMessage('alert', { type: 1, msg: '指令執行中......' })
+//       setTimeout(checkscreenupdate, 3500)
+//     }
+//   }
+
+//   // -----------------------task getpostbyline --------------------
+//   function gotoBoard () {
+//     if (PTTPost.enableautofetchpost) {
+//       insertText('s' + PTTPost.searchingTitle.boardforsearch + '\n')
+//     } else insertText('s' + PTTPost.board + '\n')
+//   }
+//   function boardcheck () {
+//     const res = { pass: false, callback: gotoBoard }
+//     let reg = ''; let re = ''
+//     if (PTT.pagestate === 4 || PTT.pagestate === 3) {
+//       res.pass = true
+//       return res
+//     } else if (PTT.pagestate === 1) return res
+//     else if (PTT.pagestate === 2) {
+//       reg = '看板《' + (PTTPost.enableautofetchpost ? PTTPost.searchingTitle.boardforsearch : PTTPost.board) + '》'
+//       re = '系列《' + (PTTPost.enableautofetchpost ? PTTPost.searchingTitle.boardforsearch : PTTPost.board) + '》'
+//     }
+//     const currect = PTT.match(reg); const curr = PTT.match(re)
+//     if (currect || curr) res.pass = true
+//     return res
+//   }
+
+//   function gotoPost () {
+//     if (!PTTPost.enableautofetchpost) {
+//       if (PTT.match(/系列《.+》/)) insertText('q') // 關鍵字搜尋狀態不能#AID
+//       else if (PTTPost.enteredAID) {
+//         insertText('r')
+//         PTTPost.enteredAID = false
+//       } else {
+//         insertText('NPP#' + PTTPost.AID + '\n')
+//         PTTPost.enteredAID = true
+//       }
+//     } else {
+//       if (!PTTPost.enteredTitle) {
+//         insertText('/' + PTTPost.searchingTitle.titleforsearch + '\n')
+//         PTTPost.enteredTitle = true
+//       } else {
+//         insertText('$r')
+//       }
+//     }
+//   }
+//   function PostCheck () {
+//     const res = { pass: true, callback: gotoPost }
+//     if (PTT.pagestate === 2) {
+//       if ((PTTPost.enableautofetchpost && !PTTPost.enteredTitle) || (!PTTPost.enableautofetchpost && !PTTPost.enteredTitle)) res.pass = false
+//       if ((!PTTPost.enableautofetchpost && PTTPost.enteredAID) || (PTTPost.enableautofetchpost && PTTPost.enteredTitle)) {
+//         if (PTT.match(/找不到這個文章代碼\(AID\)，可能是文章已消失，或是你找錯看板了/)) {
+//           msg.PostMessage('alert', { type: 0, msg: '文章AID錯誤，文章已消失或是你找錯看板了。' })
+//           if (ReportMode) console.log('文章AID錯誤，文章已消失或是你找錯看板了', PTT.pagestate, PTT, PTTPost)
+//           PTT.unlock()
+//           return
+//         } else res.pass = false
+//       }
+//     } else if (PTT.pagestate === 1) console.log('==PostCheck error, PTT.pagestate == 1.')
+//     return res
+//   }
+//   function backtoboard () { insertText('qP') }
+//   function PotsTitleCheck () {
+//     const res = { pass: true, callback: backtoboard }
+//     if (PTT.pagestate === 3) {
+//       const reg = / 標題 +(.+)/
+//       const posttitle = PTT.match(reg)
+//       let title = ''
+//       if (posttitle) {
+//         PTTPost.haveNormalTitle = true
+//         if (ReportMode) console.log('==set haveNormalTitle true', posttitle)
+//         title = posttitle[1].replace(/\s+$/g, '') // 抓一般標題
+//       } else for (let i = 0; i < 5 && i < PTT.screen.length; i++) title += PTT.screen[i] // 抓前幾行
+//       if (PTTPost.samepost) {
+//         if (!PTTPost.enableautofetchpost) {
+//           if (title !== PTTPost.title) res.pass = false
+//         }
+//       } else {
+//         PTTPost.title = title
+//         const result = PTT.match(/時間 {2}(\S{3} \S{3} ...\d{2}:\d{2}:\d{2} \d{4})/)
+//         if (result) PTTPost.posttime = new Date(result[1])
+//         else PTTPost.posttime = new Date(Date.now())
+//       }
+//     } else if (PTT.pagestate === 1) console.log('==PotsTitleCheck error, PTT.pagestate == 1.')
+//     else if (PTT.pagestate === 2) console.log('==PotsTitleCheck error, PTT.pagestate == 2.')
+//     return res
+//   }
+
+//   function gotoline () { insertText(PTTPost.endline + '.\n') }
+//   function PostLineCheck () {
+//     const res = { pass: true, callback: gotoline }
+//     if (PTT.pagestate === 4 || PTT.pagestate === 3) {
+//       const lineresult = PTT.match(/目前顯示: 第 (\d+)~(\d+) 行/)
+//       const startline = lineresult[1]
+//       let targetline = PTTPost.endline - startline + 1
+//       if (startline < 5 && PTTPost.haveNormalTitle) targetline += 1
+//       if ((targetline < 1 || targetline > 23) && PTT.match(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~\d+ 行/) === null) res.pass = false
+//       else getpush()
+//     } else if (PTT.pagestate === 1) console.log('==PistLineCheck error, PTT.pagestate == 1.')
+//     else if (PTT.pagestate === 2) console.log('==PistLineCheck error, PTT.pagestate == 2.')
+//     return res
+//   }
+
+//   function searchfortitle () {
+//     if (!PTTPost.searchingTitle.enteredsearchtitle) {
+//       insertText('NPP/' + PTTPost.searchingTitle.titleforsearch + '\n')
+//       PTTPost.searchingTitle.enteredsearchtitle = true
+//     }
+//   }
+//   function istitleexistcheck () {
+//     const res = { pass: true, callback: searchfortitle }
+//     if (PTT.pagestate === 2) {
+//       if (!PTTPost.searchingTitle.enteredsearchtitle) res.pass = false
+//       else {
+//         if (PTT.match(/看板《.+》/)) {
+//           if (ReportMode) console.log('==searchfortitle error, title unavailable.')
+//           msg.PostMessage('alert', { type: 0, msg: '無此標題文章' })
+//           PTT.unlock()
+//           return
+//         }
+//       }
+//     }
+//     return res
+//   }
+//   function newesttitlecheck () {
+//     const res = { pass: true, callback: gotoend }
+//     if (PTT.pagestate === 2) {
+//       if (!PTTPost.searchingTitle.isend.insertP || !PTTPost.searchingTitle.isend.insert$) res.pass = false
+//       else {
+//         const reg = /^(>|●).+(□|R:|轉)/
+//         const posttitle = PTT.match(reg)
+//         let title = ''
+//         if (posttitle) {
+//           PTTPost.haveNormalTitle = true
+//           if (ReportMode) console.log('==set haveNormalTitle true', posttitle)
+//           title = posttitle.input.replace(/\s+$/g, '').substr(30)
+//           if (title[0] === '□') title = title.substr(1)
+//         }
+//         if (title === '' || title === null) res.pass = false
+//         else PTTPost.searchingTitle.titlefetched = title
+//       }
+//     }
+//     return res
+//   }
+//   function receiveTitle () {
+//     PTT.unlock()
+//     msg.PostMessage('alert', { type: 2, msg: '標題讀取完成。' })
+//     msg.PostMessage('getAutoFetchedPostTitle', PTTPost.searchingTitle.titlefetched)
+//     insertText('qq')
+//     PTTPost.searchingTitle.titlefetched = ''
+//     PTTPost.searchingTitle.titleforsearch = PTTPost.buffer.title
+//     PTTPost.searchingTitle.boardforsearch = PTTPost.buffer.board
+//     if (!PTTPost.buffer.autofetch) { PTTPost.enableautofetchpost = false }
+//   }
+
+//   function savepush (content, result) {
+//     const pushdata = { }
+//     pushdata.type = result[1]
+//     pushdata.id = result[2]
+//     pushdata.content = content
+//     pushdata.date = new Date(PTTPost.posttime.getFullYear(), result[4] - 1, result[5], result[6], result[7])
+//     PTTPost.pushes.push(pushdata)
+//     // console.log(result);
+//   }
+//   function getpush () {
+//     const lineresult = PTT.match(/目前顯示: 第 (\d+)~(\d+) 行/)
+//     const startline = +lineresult[1]
+//     const endline = +lineresult[2]
+//     let targetline = PTTPost.endline - startline + 1
+//     if (startline < 5 && PTTPost.haveNormalTitle) targetline += 1
+//     const checkedline = []
+//     // console.log("==GetPush from " + targetline + "to " + (PTT.screen.length - 1));
+//     // console.log("==(pttstartline, pttendline, startline, endline, targetline): (" + PTTPost.startline + ", " + PTTPost.endline + ", " + startline + ", " + endline + ", " + targetline + ")");
+//     for (let i = targetline; i < PTT.screen.length; i++) {
+//       const line = PTT.screen[i]
+//       const result = /^(→ |推 |噓 )(.+?): (.*)(\d\d)\/(\d\d) (\d\d):(\d\d)/.exec(line)
+//       if (result != null) {
+//         let content = result[3]
+//         const reg = /\s+$/g
+//         content = content.replace(reg, '')
+//         savepush(content, result)
+//         if (ReportMode) checkedline.push(i)
+//         if (ReportMode) console.log('GetPush at line', i, content, line)
+//       } else if (ReportMode) console.log('GetPush at line fail', i, line)
+//     }
+//     if (ReportMode) console.log('GetPush startline,', startline, ', endline', PTTPost.endline, ', targetline', targetline, ', checkedline', checkedline, ', haveNormalTitle', PTTPost.haveNormalTitle)
+//     const percentresult = PTT.match(/瀏覽 第 .+ 頁 \( *(\d+)%\)/)
+//     PTTPost.percent = percentresult[1]
+//     PTTPost.startline = startline
+//     PTTPost.endline = endline
+//   }
+
+//   function gotonextpage () { insertText(' ') }
+//   function PostPercentCheck () {
+//     const res = { pass: false, callback: gotonextpage }
+//     if ((PTT.pagestate === 3 || PTT.pagestate === 4) && PTT.match(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~\d+ 行/) !== null) {
+//       res.pass = true
+//     } else if (PTT.pagestate === 1) console.log('==PostPercentCheck error, PTT.pagestate == 1.')
+//     else if (PTT.pagestate === 2) console.log('==PostPercentCheck error, PTT.pagestate == 2.')
+//     return res
+//   }
+//   // -----------------------task getpostbyrecent --------------------
+//   function gotoend () {
+//     if (!PTTPost.searchingTitle.isend.insertP || !PTTPost.searchingTitle.isend.insert$) {
+//       if (!PTTPost.searchingTitle.isend.insertP) {
+//         insertText('P')
+//         PTTPost.searchingTitle.isend.insertP = true
+//       } else if (!PTTPost.searchingTitle.isend.insert$) {
+//         insertText('$')
+//         PTTPost.searchingTitle.isend.insert$ = true
+//       }
+//     } else insertText('G')
+//   }
+//   function GetRecentLine () {
+//     const res = { pass: false, callback: gotoend }
+//     if (PTT.pagestate === 4 || PTT.pagestate === 3) {
+//       const line = PTT.match(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~(\d+) 行/)
+//       if (line) {
+//         let targetline = +line[1] - PTTPost.endline - 1
+//         if (targetline < 3) targetline = 3
+//         // console.log("==GetRecentLine, TotalLine, GotoLline", line[1], targetline);
+//         PTTPost.endline = targetline
+//         /* if (PTT.pagestate === 4 || PTT.pagestate === 3) */
+//         insertText('qP') // insertText(PTTPost.endline + ".\n");
+//         res.pass = true
+//       }
+//     } else if (PTT.pagestate === 1) console.log('==GetPushTask error, PTT.pagestate == 1.')
+//     else if (PTT.pagestate === 2) console.log('==GetPushTask error, PTT.pagestate == 2.')
+//     return res
+//   }
+//   //
+//   // -----------------------task setNewPush --------------------
+//   let SetNewPushtrytime = 5
+//   function SetNewPush () {
+//     const res = { pass: false, callback: () => { } }
+//     SetNewPushtrytime--
+//     if (SetNewPushtrytime < 0) { res.pass = true; return res }
+//     if (PTT.pagestate === 4 || PTT.pagestate === 3) {
+//       const pushcd = PTT.match(/◆ 本文已過長, 禁止快速連續推文|◆ 對不起，您的文章或推文間隔太近囉！/)
+//       if (pushcd) {
+//         msg.PostMessage('alert', { type: 0, msg: '推文遭暫時禁止。' })
+//         res.pass = true
+//         return res
+//       }
+//       const pushtext = PTTPost.setpush + '\n'
+//       const pushcheck = PTT.match(/(.+?): (.+?) +確定\[y\/N]:/)
+//       if (pushcheck) {
+//         console.log('pushcheck')
+//         PTTPost.setpush = ''
+//         PTTPost.pushedtext = pushcheck[2]
+//         insertText('y\n\nG')
+//         res.pass = true
+//         msg.PostMessage('alert', { type: 2, msg: '推文成功。' })
+//         return res
+//       }
+//       const pushtype = PTT.match(/您覺得這篇文章/)
+//       if (pushtype) {
+//         console.log('pushtype')
+//         insertText('\n' + pushtext)
+//         return res
+//       }
+//       const pushdirect = PTT.match(/時間太近, 使用|作者本人, 使用/)
+//       if (pushdirect) {
+//         console.log('pushdirect', pushdirect)
+//         insertText(pushtext)
+//         return res
+//       }
+//       const unpush = PTT.match(/瀏覽 第 .+ 頁 \( *(\d+)%\)/)
+//       if (unpush) {
+//         console.log('unpush')
+//         insertText('%')
+//         return res
+//       }
+//     } else if (PTT.pagestate === 1) console.log('==GetPushTask error, PTT.pagestate == 1.')
+//     else if (PTT.pagestate === 2) console.log('==GetPushTask error, PTT.pagestate == 2.')
+//     return res
+//   }
+//   // ------------------------task--------------------------------
+//   function RunTask (tasklist, finishCallback) {
+//     for (let i = 0; i < tasklist.length; i++) {
+//       const result = tasklist[i]()
+//       if (result.pass === true) if (ReportMode) console.log('RunTask pass, pagestate:', PTT.pagestate, ', task name:', tasklist[i].name)
+//       if (result.pass === false) {
+//         if (ReportMode) console.log('RunTask failed, pagestate:', PTT.pagestate, ', task name:', tasklist[i].name)
+//         result.callback()
+//         PTT.commands.add(/.*/, '', RunTask, tasklist, finishCallback)
+//         return
+//       }
+//     }
+//     finishCallback()
+//   }
+//   // ------------------------tasks--------------------------------
+
+//   const task = { }
+//   task.GetPostByLine = [boardcheck, PostCheck, PotsTitleCheck, PostLineCheck, PostPercentCheck]
+//   task.GetPostRecentLine = [boardcheck, PostCheck, PotsTitleCheck, GetRecentLine]
+//   task.SetPostNewPush = [boardcheck, PostCheck, PotsTitleCheck, SetNewPush]
+//   task.GetPostTitle = [boardcheck, istitleexistcheck, newesttitlecheck]
+
+//   function SetNewPushTask (pushtext) {
+//     let allowedchar = 24
+//     let addedtext = ''
+//     let trytime = 7
+//     while (trytime >= 0 && allowedchar > 0 && pushtext.length > 0) {
+//       const addtextreg = '(.{0,' + allowedchar + '})(.*)'// (.{0,24})(.*)
+//       const result = new RegExp(addtextreg).exec(pushtext)
+//       addedtext += result[1]
+//       const halfchar = addedtext.match(/[A-Za-z0-9_ :/\\.?=%]/g)
+//       const halfcount = halfchar ? halfchar.length : 0
+//       allowedchar = parseInt((48 - addedtext.length * 2 + halfcount) / 2)
+//       pushtext = result[2]
+//       if (ReportMode) {
+//         console.log('SetNewPushTask Text Reg==', addedtext.length * 2, '==', halfcount, '==', halfchar)
+//         console.log('SetNewPushTask Text Reg==', addedtext, '==', pushtext, '==', allowedchar, '==', result)
+//       }
+//       trytime--
+//     }
+//     SetNewPushtrytime = 5
+//     PTTPost.setpush = addedtext
+//     RunTask(task.SetPostNewPush, recieveNewPush)
+//   }
+//   function CheckTitleSame (_boardforsearch, _titleforsearch, task) {
+//     PTT.unlock()
+//     PTTPost.enteredAID = false
+//     PTTPost.enteredTitle = false
+//     PTTPost.buffer.title = PTTPost.searchingTitle.titleforsearch
+//     PTTPost.buffer.board = PTTPost.searchingTitle.boardforsearch
+//     msg.PostMessage('alert', { type: 1, msg: '搜尋中。' })
+//     PTTPost.searchingTitle.boardforsearch = _boardforsearch
+//     PTTPost.searchingTitle.titleforsearch = _titleforsearch
+//     PTTPost.searchingTitle.enteredsearchtitle = false
+//     PTTPost.searchingTitle.isend.insertP = false
+//     PTTPost.searchingTitle.isend.insert$ = false
+//     PTTPost.buffer.autofetch = false
+//     if (PTTPost.enableautofetchpost) PTTPost.buffer.autofetch = true
+//     PTTPost.enableautofetchpost = true
+//     if (PTT.pagestate === 1) {
+//       if (PTT.match(/(> |●)\(M\)ail {9}【 私人信件區 】/)) insertText('c')// 隨意切畫面
+//       else insertText('m')// 隨意切畫面
+//     } else if (PTT.pagestate === 2) insertText('qP')
+//     else { // PTT.pagestate === 3 || 4
+//       insertText('qq')// 原本就在第一頁則直接退出
+//     }
+//     PTT.commands.add(/.*/, '', task)
+//   }
+//   function GetPostTitleTask () {
+//     RunTask(task.GetPostTitle, receiveTitle)
+//   }
+
+//   function recieveNewPush () {
+//     msg.PostMessage('pushedText', PTTPost.pushedtext)
+//     PTTPost.pushedtext = ''
+//     if (ShowAllLog) console.log(PTTPost)
+//     GetPush(PTTPost.AID, PTTPost.board, PTTPost.endline, GetPushTask)
+//   }
+//   function GetRecentLineTask () { RunTask(task.GetPostRecentLine, () => PTT.commands.add(/.*/, '', GetPushTask)) }
+//   function GetPushTask () { RunTask(task.GetPostByLine, recievePushes) }
+//   function recievePushes () {
+//     PTT.unlock()
+//     msg.PostMessage('alert', { type: 2, msg: '文章讀取完成。' })
+//     msg.PostMessage('newPush', PTTPost)
+//     if (ShowAllLog) console.log(PTTPost)
+//   }
+//   // ------------------------Main Command--------------------------------
+//   function GetPush (pAID, bname, startline, task, pboardforsearch, ptitleforsearch) {
+//     startline = startline || 3
+//     msg.PostMessage('alert', { type: 1, msg: '文章讀取中。' })
+//     const auto = (pAID === undefined) && (bname === undefined) && (pboardforsearch === undefined) && (ptitleforsearch === undefined)
+//     const samepostbyAID = (bname === PTTPost.board) && (pAID === PTTPost.AID) && (pAID !== undefined) && (bname !== undefined)
+//     const samepostbytitle = (pboardforsearch === PTTPost.searchingTitle.boardforsearch) && (ptitleforsearch === PTTPost.searchingTitle.titleforsearch)
+//     if (samepostbyAID) PTTPost.enableautofetchpost = false
+//     if (samepostbyAID || (samepostbytitle && (ptitleforsearch !== undefined) && (pboardforsearch !== undefined)) || auto) {
+//       PTTPost.pushes = []
+//       PTTPost.samepost = true
+//       PTTPost.endline = startline
+//       if (ReportMode) console.log("Get same post's push.", bname, PTTPost.board, pAID, PTTPost.AID)
+//     } else {
+//       PTTPost = {
+//         board: bname,
+//         AID: pAID,
+//         title: '',
+//         posttime: '',
+//         pushes: [],
+//         startline: 0,
+//         endline: startline,
+//         percent: 0,
+//         samepost: false,
+//         haveNormalTitle: false,
+//         enteredAID: false,
+//         searchingTitle: {
+//           boardforsearch: (pboardforsearch === undefined ? '' : pboardforsearch),
+//           titleforsearch: (ptitleforsearch === undefined ? '' : ptitleforsearch),
+//           titlefetched: '',
+//           enteredsearchtitle: false,
+//           isend: {
+//             insertP: true,
+//             insert$: true
+//           }
+//         },
+//         enteredTitle: false,
+//         enableautofetchpost: (ptitleforsearch !== undefined),
+//         buffer: {
+//           title: '',
+//           board: '',
+//           autofetch: false
+//         }
+//       }
+//       if (ReportMode) console.log("Get new post's push.", bname, PTTPost.board, pAID, PTTPost.AID)
+//     }
+//     if (PTT.pagestate === 1) {
+//       if (PTT.match(/(> |●)\(M\)ail {9}【 私人信件區 】/)) insertText('c')// 隨意切畫面
+//       else insertText('m')// 隨意切畫面
+//     } else if (PTT.pagestate === 2) insertText('P')// 切下一頁
+//     else { // PTT.pagestate === 3 || 4
+//       if (!PTTPost.samepost) {
+//         insertText('qP')// 在標題或是其他文章就退出
+//       } else {
+//         if (PTT.match(/目前顯示: 第 01~/)) { // 內容少於一頁會卡在看板畫面
+//           insertText('q') // 原本就在第一頁則直接退出
+//         } else { insertText('qr') }// 相同文章直接進入標題
+//       }
+//     }
+//     PTT.commands.add(/.*/, '', task)
+//   }
+//   let TryLogin = 0
+//   function Login (id, pw, DeleteOtherConnect) {
+//     msg.PostMessage('alert', { type: 1, msg: '登入中' })
+//     if (!PTT.login) {
+//       PTT.DeleteOtherConnect = DeleteOtherConnect
+//       const logincheck = () => {
+//         if (PTT.match(/密碼不對或無此帳號。請檢查大小寫及有無輸入錯誤。|請重新輸入/)) {
+//           msg.PostMessage('alert', { type: 0, msg: '登入失敗，帳號或密碼有誤。' })
+//           PTT.unlock()
+//         } else if (PTT.match(/上方為使用者心情點播留言區|【 精華公佈欄 】/)) {
+//           msg.PostMessage('alert', { type: 2, msg: '登入成功。' })
+//           PTT.login = true
+//           PTT.unlock()
+//           // testcode
+//           /* (() => {
+//             PTTLockCheck(GetPostPush, `#1VobIvqM (C_Chat)`);
+//             insertText("x");
+//           })(); */
+//         } else if (PTT.match(/登入中，請稍候\.\.\.|正在更新與同步線上使用者及好友名單，系統負荷量大時會需時較久|密碼正確！ 開始登入系統/)) {
+//           PTT.commands.add(/.*/, '', logincheck)
+//         } else {
+//           msg.PostMessage('alert', { type: 0, msg: '發生了未知錯誤，可能是因為保留連線導致被踢掉。' })
+//           console.log(PTT.screen)
+//           PTT.unlock()
+//         }
+//       }
+//       const result = PTT.match(/請輸入代號，或以 guest 參觀，或以 new 註冊/)
+//       if (result) {
+//         if (TryLogin <= 0) { // 防止過度嘗試
+//           msg.PostMessage('alert', { type: 0, msg: '未知原因登入失敗。' })
+//           PTT.unlock()
+//           return
+//         } else TryLogin--
+//         insertText(id + '\n' + pw + '\n')
+//         PTT.commands.add(/.*/, '', logincheck)
+//       } else {
+//         PTT.commands.add(/.*/, '', Login, id, pw)
+//       }
+//     } else {
+//       msg.PostMessage('alert', { type: 0, msg: '已經登入，請勿重複登入。' })
+//       PTT.unlock()
+//     }
+//   }
+//   // ------------------------Lock Check--------------------------------
+//   function CheckLoginState (command, ...args) {
+//     if (ReportMode) console.log('CheckLoginState,PTT.pagestate = ', PTT.pagestate)
+//     if (PTT.pagestate > 0) {
+//       command(...args)
+//     } else if (PTT.pagestate === -1) {
+//       msg.PostMessage('alert', { type: 0, msg: 'PTT已斷線，請重新登入。' })
+//       PTT.unlock()
+//     } else if (PTT.pagestate === 0) {
+//       msg.PostMessage('alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
+//       PTT.unlock()
+//     }
+//   }
+//   function PTTLockCheck (CallBack, ...args) {
+//     if (!Reconnect()) {
+//       if (PTT.controlstate === 1) {
+//         msg.PostMessage('alert', { type: 0, msg: '指令執行中，請稍後再試。' })
+//       } else if (serverfull) {
+//         msg.PostMessage('alert', { type: 0, msg: '系統過載, 請稍後再來...' })
+//         PTT.unlock()
+//       } else if (!serverfull) {
+//         PTT.lastviewupdate = Date.now()
+//         PTT.lock()
+//         if (ReportMode) console.log('PTTLockCheck', ...args)
+//         CallBack(...args)
+//         setTimeout(checkscreenupdate, 3500)
+//       }
+//     }
+//   }
+//   // end
+//   let reconnecttrytimes = 10
+//   // const ReconnectInterval =
+//   window.setInterval(() => {
+//     if (reconnecttrytimes >= 0) { Reconnect() }
+//   }, 1500)
+
+//   msg.login = data => {
+//     const i = CryptoJS.AES.decrypt(data.id, cryptkey).toString(CryptoJS.enc.Utf8)
+//     const p = CryptoJS.AES.decrypt(data.pw, cryptkey).toString(CryptoJS.enc.Utf8)
+//     TryLogin = 2
+//     // console.log(data );
+//     // console.log([i, p],cryptkey);
+//     PTTLockCheck(Login, i, p, data.DeleteOtherConnect)
+//   }
+//   msg.getPushByLine = data => { if (ReportMode) console.log('getPushByLine', data); PTTLockCheck(CheckLoginState, GetPush, data.AID, data.board, data.startline, GetPushTask) }
+//   msg.getPushByRecent = data => { if (ReportMode) console.log('getPushByRecent', data); PTTLockCheck(CheckLoginState, GetPush, data.AID, data.board, data.recent, GetRecentLineTask, data.boardforsearch, data.titleforsearch) }
+//   msg.setNewPush = data => { if (ReportMode) console.log('setNewPush', data); PTTLockCheck(SetNewPushTask, data) }
+//   msg.getPostTitle = data => { if (ReportMode) console.log('getPostTitle', data); PTTLockCheck(CheckLoginState, CheckTitleSame, data.boardforsearch, data.titleforsearch, GetPostTitleTask) }
+// }

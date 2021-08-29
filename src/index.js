@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { ReportMode } from './logsetting.js'
 /* eslint-enable no-unused-vars */
-import { MessagePoster } from './MessagePoster.js'
 import { HerfFilter } from './filter/HerfFilter.js'
 import { ytfilter } from './SupportWebsite/youtube/ytfilter.js'
 import { htfilter } from './SupportWebsite/holotools/htfilter.js'
@@ -27,16 +26,17 @@ Vue.config.devtools = ReportMode
 /* 關閉錯誤警告 */
 Vue.config.debug = ReportMode;
 (function () {
-  const msg = new MessagePoster()
   const filters = []
-  filters.push(ytfilter)
-  filters.push(htfilter)
-  filters.push(blankfilter)
-  filters.push(twitchfilter)
-  filters.push(nijimadofilter)
+  filters.push(
+    ytfilter,
+    htfilter,
+    blankfilter,
+    twitchfilter,
+    nijimadofilter,
+    hdfilter
+  )
   // filters.push(lineTVfilter);
-  filters.push(hdfilter)
-  HerfFilter(msg, filters)
+  HerfFilter(filters)
   /* eslint-disable semi */
 })();
 /* eslint-enable semi */

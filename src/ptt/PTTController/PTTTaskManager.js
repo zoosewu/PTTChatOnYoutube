@@ -1,23 +1,23 @@
-export const PttTaskManager = {
-  lock: false,
-  taskList: [],
-  addTask: function (newTask) {
-    if (!this.lock) {
-      this.lock = true
-      return newTask
+import { Ptt } from "./PTT"
+
+/** 
+ * @this {Ptt}
+ * @typedef {{lock, taskList, addTask, next, reset}} PttTaskManager
+ */
+export function PttTaskManager () {
+  return {
+    taskList: [],
+    addTask: (newTask, ...args) => {
+      this.taskManager.taskList.push({ fn: newTask, args })
+    },
+    next: () => {
+      if (this.taskManager.taskList.length > 0) {
+        return this.taskManager.taskList.shift()
+      }
+      return null
+    },
+    reset: () => {
+      this.taskManager.taskList = []
     }
-    this.taskList.push(newTask)
-    return null
-  },
-  next: function () {
-    if (this.taskList.length > 0) {
-      return this.taskList.shift()
-    }
-    this.lock = false
-    return null
-  },
-  reset: function () {
-    this.lock = false
-    this.taskList = []
   }
 }

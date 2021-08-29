@@ -4,7 +4,7 @@ export const PTTScreenIframe = {
   inject: ['msg'],
   data () {
     return {
-      src: '//term.ptt.cc/?url=' + this.msg.ownerorigin
+      src: '//term.ptt.cc/?url=' + this.msg.ownerOrigin
     }
   },
   methods: {
@@ -18,7 +18,7 @@ export const PTTScreenIframe = {
     /* eslint-enable no-global-assign */
   },
   mounted () {
-    this.msg.targetWindow = this.$el.contentWindow
+    this.msg.attachedWindow = this.$el.contentWindow
     window.addEventListener('beforeunload', this.removeiframe)
   },
   beforeDestroy () {
