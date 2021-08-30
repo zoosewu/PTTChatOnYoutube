@@ -1,11 +1,6 @@
 PTTChatOnYoutube - 在Youtube上顯示PTT推文
 ========================================
-![GitHub license](https://img.shields.io/github/license/zoosewu/pttchatonyoutube)
-[![Code style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/zoosewu/pttchatonyoutube?style=plastic)
-
-<!--[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/zoosewu/pttchatonyoutube?sort=semver)](https://greasyfork.org/zh-TW/scripts/418469-pttchatonyoutube)
-![GitHub Release Date](https://img.shields.io/github/release-date/zoosewu/pttchatonyoutube)-->
+![GitHub license](https://img.shields.io/github/license/zoosewu/pttchatonyoutube) [![Code style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) ![GitHub package.json version](https://img.shields.io/github/package-json/v/zoosewu/pttchatonyoutube?style=plastic) [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/zoosewu/pttchatonyoutube?sort=semver)](https://greasyfork.org/zh-TW/scripts/418469-pttchatonyoutube) ![GitHub Release Date](https://img.shields.io/github/release-date/zoosewu/pttchatonyoutube)
 ## 如何開始開發
 
 在專案底下輸入 ```npm install``` 安裝開發環境，VSCode設定請開啟 ```"javascript.format.insertSpaceBeforeFunctionParenthesis": true```
@@ -48,21 +43,6 @@ PTTChatOnYoutube - 在Youtube上顯示PTT推文
 
 如果有任何建議或指教請歡迎討論或發PR。
 
-## TODO List
-#### App
-- [ ] 彈幕版本
-
-#### PTT
-- [ ] 任務柱列功能
-
-#### Script
-- [ ] 透過vuex element資料傳輸 [vue教學](https://ithelp.ithome.com.tw/users/20107673/ironman/1470?page=1) [todolist範例](https://codepen.io/oddvalue/pen/dpBGpj) [todolist範例2](https://codepen.io/mkumaran/pen/vZgara?editors=1010)
-- [ ] 根據網址撈實況開始時間[HoloStats](https://github.com/PoiScript/HoloStats/tree/master) [舊版api](https://holo.poi.cat/api/v3/streams_report?ids=skSmTEnAyGk&metrics=youtube_stream_viewer&start_at=0&end_at=0) [新版api](https://holo.poi.cat/api/v3/streams_report?ids=77OTDrqhN80&metrics=youtube_stream_viewer&start_at=0&end_at=0) [req測試](https://reqbin.com/)
-- [ ] 測試[彩虹官網](https://niji-mado.web.app/home)的支援度，[彩虹的開台統計](https://2434analytics.com/rank/dailyView.html)
-
-#### CSS 
-- [ ] 確認套件在各網站的排版都正常且一樣
-
 ## 贊助
 
 如果你覺得這個套件好用，歡迎[點我](https://qr.opay.tw/eZHf2)贊助或使用下方QR Code。
@@ -74,7 +54,7 @@ PTTChatOnYoutube - 在Youtube上顯示PTT推文
 MIT License
 Copyright (c) 2020-2021 zoosewu
 
-## 使用的開源程式碼授權
+## 開源程式碼授權
 [term.ptt.cc 自動登入](https://openuserjs.org/scripts/maple3142/term.ptt.cc_%E8%87%AA%E5%8B%95%E7%99%BB%E5%85%A5)
 ```
 author       maple3142

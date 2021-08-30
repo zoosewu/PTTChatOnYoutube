@@ -1,4 +1,3 @@
-
 import { InitApp } from '../../app/appindex.js'
 import { ChangeLog } from '../../ChangeLog.js'
 import { ThemeCheck } from '../../library.js'
@@ -185,7 +184,7 @@ export function InitHD (messageposter) {
           btnParent.prepend($('<div class="d-flex"></div>').prepend(btnParent.children()))
           btnParent.css('flex-direction', 'column')
         }
-        const btn = btnParent.children().eq(0).children().eq(1).clone().attr({ name: 'ptt-boot-btn', style: 'background-color:rgb(150, 0, 180)!important;margin-top:10px;width:165px;' }).appendTo(btnParent)
+        const btn = btnParent.children().eq(0).children().eq(1).clone().attr({ name: 'ptt-boot-btn', style: 'background-color:rgb(130, 30, 150)!important;margin-top:10px;width:165px;' }).appendTo(btnParent)
         btn.find('path').attr('d', 'M13 3H6v18h4v-6h3c3.31 0 6-2.69 6-6s-2.69-6-6-6zm.2 8H10V7h3.2c1.1 0 2 .9 2 2s-.9 2-2 2z')
         btn.on('click', () => {
           const gridIndex = btn.parents().eq(3).index()

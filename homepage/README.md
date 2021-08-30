@@ -37,15 +37,16 @@ Youtube聊天室顯示PTT推文
 
 ### Holotools：
 * 右上方控制列中會有一個P的按鈕，點擊就能開闔介面
-* P按鈕的上方有佈局變更按鈕，提供直立螢幕的使用者選用
+* P按鈕的上方有佈局變更按鈕，可以切換至直立式螢幕模式
 
 ### Holodex：
-* 在空的分割中會有一個P的按鈕，點擊後會打開介面
+* 在空的分割中會有一個紫色的P按鈕，點擊後會打開含有套件的聊天室分割
 * 若要瀏覽Youtube聊天室，可以點擊左上方P按鈕暫時隱藏PTT聊天室
 * 若要調整大小、位置，可以點擊左下方的編輯按鈕，完成後點擊下方確認按紐即可回復到滿版畫面
 
-* **註：** 因應Holodex改版頻繁，故保留舊版介面選項，可在發生異常時使用
 * **註：** 一個分頁中僅允許一個PTT聊天室存在，若在其他分割中打開介面會讓聊天室移到該分割中
+* **註：** 因Holodex改版頻繁，如果套件沒有在分割內正常運作，可切換為舊的顯示模式
+
 
 ### Niji-mado：
 * 右方會有一個P的按鈕，點擊就能打開介面
@@ -154,11 +155,16 @@ if (!isTopframe) throw "[Script Stopped: This script should run in top frame onl
 
     請到github issue回報給我。
 
+**套件原本好好的，突然就壞掉了**
+
+    如果原本可以使用變成壞掉的話，可以試試看重開瀏覽器或重開機，
+    如果還是一樣有問題請到github issue回報給我。
+
 **我有其他疑問想問但是這邊沒有寫**
 
     請回報給我，或在PTT原串下面推文回應。
 
-## 腳本預覽圖
+## 其他預覽圖
 <p align='center'>
     <img src='https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/sample1.png' width='70%'>
 </p>
@@ -173,6 +179,9 @@ if (!isTopframe) throw "[Script Stopped: This script should run in top frame onl
 </p>
 <p align='center'>
     <img src='https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/sample5.png' width='70%'>
+</p>
+<p align='center'>
+    <img src='https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/sample6.png' width='70%'>
 </p>
 
 ## 聲明
