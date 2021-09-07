@@ -176,7 +176,7 @@ export function InitHD (messageposter) {
   }
 
   function appendPttEmbedBtn () {
-    const btnParentSet = $('.mx-6.thin-scroll-bar.d-flex.flex-grow-1.flex-shrink-1.align-center.justify-center')
+    const btnParentSet = $('.centered-btn')
     btnParentSet.each(index => {
       const btnParent = btnParentSet.eq(index)
       if (btnParent.find($('[name="ptt-boot-btn"]')).length === 0) {
@@ -189,6 +189,7 @@ export function InitHD (messageposter) {
         btn.on('click', () => {
           const gridIndex = btn.parents().eq(3).index()
           btnParent.children().eq(0).children().eq(1).trigger('click')
+          initPttChatPosition()
           appendPtt2Cell(gridIndex)
           if (reportmode) console.log(`grid-#${gridIndex}-boot-button clicked`)
         })
@@ -218,11 +219,11 @@ export function InitHD (messageposter) {
 
   function appendPtt2Cell (gridIndex) {
     const gridParent = $('.vue-grid-layout').children().eq(gridIndex)
-    const cellContent = gridParent.find($('.cell-content'))
-    const cellControl = gridParent.find($('.cell-control'))
+    const cellContent = gridParent.find($('.cell-content')).not('.pt-4')
+    const cellControl = gridParent.find($('.cell-content .d-flex'))
     if (cellContent.length === 0) setTimeout(appendPtt2Cell, 250, gridIndex)
     else {
-      cellContent.css('position', 'relative').prepend($('<div name="pttchat-parent" style="height: 100%;width: 100%;position: absolute;z-index: 6;"></div>'))
+      cellContent.css('position', 'relative').prepend($('<div name="pttchat-parent" style="height: calc(100% - 25px);width: 100%;position: absolute;z-index: 6;"></div>'))
       const pttChatParent = $('#PTTChat').parent('[name="pttchat-parent"]')
       $('#PTTChat').appendTo(cellContent.children().eq(0)).css('display', 'block')
       if (pttChatParent.length !== 0) pttChatParent.remove()
@@ -232,7 +233,6 @@ export function InitHD (messageposter) {
         chatBtn.trigger('click')
       }
 
-      $('#PTTChat-app').css('height', $('#PTTChat').parent().css('height'))
       $('#PTTChat-contents').css('height', '')
       $('#PTTMainBtn').off('click').on('click', () => $('[name="pttchat-parent"]').css('z-index', $('[name="pttchat-parent"]').css('z-index') === 'auto' ? '6' : 'auto'))
 
@@ -281,16 +281,12 @@ export function InitHD (messageposter) {
   }
 
   function listenEditBtn (gridParent) {
-    const editBtn = gridParent.find($('path[d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"]')).parents().eq(3)
+    const editBtn = gridParent.find($('path[d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"]')).parents().eq(3)
     if (editBtn.length === 0) setTimeout(listenEditBtn, 250, gridParent)
     else {
       editBtn.off('click').on('click', () => {
         if (gridParent.find($('#PTTChat')).length !== 0) {
-          const cellContent = gridParent.children().eq(0).children().eq(1)
-          const px = cellContent.css('padding-left')
-          const pt = cellContent.css('padding-top')
-          const pb = cellContent.css('padding-bottom')
-          cellContent.children().eq(0).css({ height: `calc(100% - ${pt} - ${pb})`, width: `calc(100% - ${px} - ${px})` })
+          $('[name="pttchat-parent"]').css('height', 'calc(100% - 35px)')
           listenCtrlBtn(gridParent)
         }
       })
@@ -298,7 +294,7 @@ export function InitHD (messageposter) {
   }
 
   function listenCtrlBtn (gridParent) {
-    const btnParent = gridParent.find($('.cell-control')).children().eq(0)
+    const btnParent = gridParent.find($('.cell-control')).eq(0)
     if (btnParent.length === 0) setTimeout(listenCtrlBtn, 250, gridParent)
     else {
       const originBackBtn = btnParent.children().eq(0)
@@ -312,7 +308,7 @@ export function InitHD (messageposter) {
       fakeDeleteBtn.insertAfter(originDeleteBtn)
       confirmBtn.off('click').on('click', () => {
         if (gridParent.find($('#PTTChat')).length !== 0) {
-          gridParent.find($('[name="pttchat-parent"]')).css({ height: '100%', width: '100%' })
+          gridParent.find($('[name="pttchat-parent"]')).css({ height: 'calc(100% - 25px)', width: '100%' })
           $('#PTTChat-app').css('height', $('#PTTChat').parent().css('height'))
           listenEditBtn(gridParent)
         }
@@ -330,9 +326,8 @@ export function InitHD (messageposter) {
 
   function checkFilledVideo (gridParent) {
     if (gridParent.find($('.mv-frame.ma-auto')).length === 0) setTimeout(checkFilledVideo, 1000, gridParent)
-    else if (gridParent.find($('#PTTChat')).length !== 0) {
-      if (reportmode) console.log('cell fill with video, remove PTTChat')
-      initPttChatPosition()
+    else {
+      console.log(gridParent.find($('.mv-frame.ma-auto')).parent())
     }
   }
 
