@@ -6,6 +6,9 @@ export function ChangeLog () {
   function AddChangeLogInfo () {
     const changeLogInfo = {}
 
+    changeLogInfo.v_2_9 = new Info()
+    changeLogInfo.v_2_9.HoloDex.push('修正holodex改版造成套件失效的問題。')
+
     changeLogInfo.v_2_8 = new Info()
     changeLogInfo.v_2_8.HoloTools.push('修復在新版HoloTools中無法使用的問題。')
     changeLogInfo.v_2_8.HoloTools.push('支援新版HoloTools聊天室開關、佈局切換。')
