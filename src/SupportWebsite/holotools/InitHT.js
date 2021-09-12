@@ -92,10 +92,12 @@ export function InitHT (messageposter) {
       iconFlex.on('click', function () {
         if (isChatOnen) {
           if ($('#fakeparent').hasClass('flex-row')) {
+            parent.css('overflow', 'visible')
             $('#fakeparent').removeClass('flex-row').addClass('flex-column')
             defaultVideo.height(containerHeight - pluginportraitheight)
             $('#PTTChat-contents').height(pluginportraitheight - 35)
           } else {
+            parent.css('overflow', 'hidden')
             $('#fakeparent').removeClass('flex-column').addClass('flex-row')
             defaultVideo.height(containerHeight)
             $('#PTTChat-contents').height(pluginheight)
