@@ -2,7 +2,7 @@ import { Ptt } from './PTT'
 import { FrameState } from './PttState'
 import { ReportMode } from '../../logsetting.js'
 
-/** 
+/**
  * @this {Ptt}
  * @typedef {{filters, update}} PttFrame
  */

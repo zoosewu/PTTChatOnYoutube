@@ -65,21 +65,17 @@ export function Ptt (msg) {
   this.insertText = str => {
     const t = this.window.document.querySelector('#t')
     const e = new CustomEvent('paste')
-    // debug用
     if (ReportMode) console.log(`insertText: "${str}"`)
     e.clipboardData = { getData: () => str }
     t.dispatchEvent(e)
   }
   this.runCommand = () => {
     this.command = this.taskManager.next()
-    if (!this.command) {
-      this.runCommand()
-      return
-    }
+    if (!this.command) return
     console.log(this.taskManager.taskList)
     const cmd = this.command
     if (cmd) {
-       console.log('==execute command:', cmd)
+      console.log('==execute command:', cmd)
       cmd.fn(...cmd.args)
     }
   }

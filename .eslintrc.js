@@ -8,7 +8,8 @@ module.exports = {
   extends: [
     // add more generic rulesets here, such as:
     'plugin:vue/recommended',
-    'standard'
+    'standard',
+    'plugin:jsdoc/recommended'
   ],
   rules: {
     "no-global-assign": [
@@ -38,7 +39,7 @@ module.exports = {
     "disablepttframe": "readonly",
     "simulateisstreaming": "readonly",
     "appinscount": "readonly",
-    "cryptkey": "readonly"
+    "cryptkey": "writable"
   },
   "ignorePatterns": [
     ".eslintrc.js",
