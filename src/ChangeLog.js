@@ -39,7 +39,8 @@ export function ChangeLog () {
 
   const previousVersion = GM_getValue('previousVersion', '2.5.0').split('.')
   const nowVerion = GM_info.script.version.split('.')
-  if (nowVerion[0] === previousVersion[0] && nowVerion[1] === previousVersion[1]) return
+  GM_setValue('previousVersion', GM_info.script.version)
+  if (nowVerion[0] <= previousVersion[0] && nowVerion[1] <= previousVersion[1]) return
   class Info { constructor () { this.版本 = []; this.HoloDex = []; this.HoloTools = []; this.Twitch = []; this.Nijimado = []; this.Youtube = [] } }
   const allChangeLogInfo = AddChangeLogInfo()
   const changeLogInfo = GetChangeLogInfo(new Info(), +previousVersion[0], +previousVersion[1] + 1)
@@ -66,7 +67,6 @@ export function ChangeLog () {
     </div>`)
   $('#PTTChat').append(modal)
   $('#PTTChangeLog').modal('show')
-  GM_setValue('previousVersion', GM_info.script.version)
 
   function GetChangeLogInfo (info, major, minor) {
     const newInfo = allChangeLogInfo['v_' + major + '_' + minor]
