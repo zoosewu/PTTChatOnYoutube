@@ -1,5 +1,2 @@
 ﻿node_modules
-css
-map
-publish
-.vscode
+dist

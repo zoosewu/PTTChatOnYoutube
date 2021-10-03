@@ -5,13 +5,6 @@ Vue.component('ChatItemMsg', {
       parsedmsg: []
     }
   },
-  /* methods: {
-    $_ChatElementMessage_ParseMsg: function () {
-      //var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-      //return this.chat.msg.replace(exp, "<a class='ptt-chat-msg' href='$1' target='_blank' rel='noopener noreferrer'>$1</a>");
-
-    },
-  }, */
   computed: {
     msgList: function () {
       return this.msgs
@@ -21,14 +14,10 @@ Vue.component('ChatItemMsg', {
       'previewImage'
     ])
   },
-  /* mounted() {
-    this.$_ChatElementMessage_ParseMsg();
-  }, */
   beforeDestroy () {
     this.msgList.forEach(element => { if (element.islink && this.previewImage === element.string) this.$store.dispatch('previewImage', '') })
   },
   render: function (createElement) {
-    // <p class="ptt-chat-msg mb-0 mx-2" :style="msgFontsize"></p>
     return createElement(
       'p',
       {

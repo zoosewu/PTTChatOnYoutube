@@ -1,7 +1,8 @@
 
-import { InitApp } from '../../app/appindex.js'
-import { ChangeLog } from '../../ChangeLog.js'
-import { ThemeCheck } from '../../library.js'
+import { InitApp } from '../../app/appindex'
+import { ChangeLog } from '../../ChangeLog'
+import { ThemeCheck } from '../../library'
+import { reportmode } from '../../logsetting'
 
 export function InitHT (messageposter) {
   // Check Theme
@@ -57,19 +58,7 @@ export function InitHT (messageposter) {
       let isChatOnen = false
       let enablePortaitMode = false
       const containerHeight = defaultVideo.height()
-      function defaultSetting () {
-        if (/https:\/\/hololive\.jetri\.co\/#\/watch/.exec(iswatch)) {
-          const defaultHTDisplaySettingBtn = $(`.md-icon.md-icon-font:eq(${$('.md-icon.md-icon-font').length - 6})`)
-          defaultHTDisplaySettingBtn.trigger('click')
-        } else if ((/https:\/\/hololive\.jetri\.co\/#\/ameliawatchon/.exec(iswatch))) {
-          const defaultHTDisplaySettingList = $(`.md-icon.md-icon-font:eq(${$('.md-icon.md-icon-font').length - 6})`)
-          defaultHTDisplaySettingList.trigger('click')
-          setTimeout(() => {
-            const defaultHTDisplaySettingBtn = $('.preset-preview').eq(0)
-            defaultHTDisplaySettingBtn.trigger('click')
-          }, 100)
-        }
-      }
+
       iconPTT.on('click', function () {
         if (collapseEnd || !collapseStart) {
           if (now === '0') {
@@ -118,6 +107,19 @@ export function InitHT (messageposter) {
       tryinsholotools = -10
     } else {
       tryinsholotools--
+    }
+  }
+  function defaultSetting () {
+    if (/https:\/\/hololive\.jetri\.co\/#\/watch/.exec(iswatch)) {
+      const defaultHTDisplaySettingBtn = $(`.md-icon.md-icon-font:eq(${$('.md-icon.md-icon-font').length - 6})`)
+      defaultHTDisplaySettingBtn.trigger('click')
+    } else if ((/https:\/\/hololive\.jetri\.co\/#\/ameliawatchon/.exec(iswatch))) {
+      const defaultHTDisplaySettingList = $(`.md-icon.md-icon-font:eq(${$('.md-icon.md-icon-font').length - 6})`)
+      defaultHTDisplaySettingList.trigger('click')
+      setTimeout(() => {
+        const defaultHTDisplaySettingBtn = $('.preset-preview').eq(0)
+        defaultHTDisplaySettingBtn.trigger('click')
+      }, 100)
     }
   }
 }

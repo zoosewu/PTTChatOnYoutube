@@ -1,10 +1,13 @@
-import { ChatPreviewImage } from './ChatPreviewImage.js'
-import { ChatScrollBtn } from './ChatScrollBtn.js'
-import { ChatElement } from './ChatElement.js'
-import { ChatSetNewPush } from './ChatSetNewPush.js'
+import ChatPreviewImage from './ChatPreviewImage.vue'
+import ChatScrollBtn from './ChatScrollButton.vue'
+import ChatElement from './ChatElement.vue'
+import ChatSetNewPush from './ChatSetNewComment.vue'
+import { reportmode } from '../../logsetting'
+
 Vue.component('DynamicScroller', VueVirtualScroller.DynamicScroller)
 Vue.component('DynamicScrollerItem', VueVirtualScroller.DynamicScrollerItem)
-export const Chat = {
+
+export default {
   inject: ['msg', 'isStream'],
   data () {
     return {
@@ -27,7 +30,7 @@ export const Chat = {
       if (reportmode) {
         console.log('update gray', index, this.allchats[index])
         console.log('update gray', this.allchats[index].gray, '->', isgray, this.allchats[index].msg)
-      };
+      }
       if (this.allchats[index].gray !== isgray) this.allchats[index].gray = isgray
       else console.log('update gray error', index, this.allchats[index].gray, '->', isgray, this.allchats[index].msg)
     },

@@ -34,16 +34,15 @@ export function dateReviver (key, value) {
     }
   }
   return value
-};
+}
 
-/* eslint-disable no-return-assign */
-/* eslint-disable no-sequences */
 // 对象深复制，不考虑循环引用的情况
 function cloneObj (from) {
+/* eslint-disable no-sequences */
+  // eslint-disable-next-line no-return-assign
   return Object.keys(from).reduce((obj, key) => (obj[key] = clone(from[key]), obj), {})
-}
-/* eslint-enable no-return-assign */
 /* eslint-enable no-sequences */
+}
 
 // 数组深复制，不考虑循环引用的情况
 function cloneArr (from) {
