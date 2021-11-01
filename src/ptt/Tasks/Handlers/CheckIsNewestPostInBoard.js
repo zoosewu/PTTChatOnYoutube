@@ -1,6 +1,9 @@
 /* eslint-disable */
 function gotoend () {
-  if (!PTTPost.searchingTitle.isend.insertP || !PTTPost.searchingTitle.isend.insert$) {
+  if (
+    !PTTPost.searchingTitle.isend.insertP ||
+    !PTTPost.searchingTitle.isend.insert$
+  ) {
     if (!PTTPost.searchingTitle.isend.insertP) {
       insertText('P')
       PTTPost.searchingTitle.isend.insertP = true
@@ -11,13 +14,21 @@ function gotoend () {
   } else insertText('G')
 }
 
-function newesttitlecheck () {
+/**
+ * @this {Ptt}
+ * @returns {import('./CheckIsCurrectLineInPost.js').HandlerResult} result
+ */
+export default function () {
   const res = { pass: true, callback: gotoend }
-  if (PTT.pagestate === 2) {
-    if (!PTTPost.searchingTitle.isend.insertP || !PTTPost.searchingTitle.isend.insert$) res.pass = false
+  if (this.pagestate === 2) {
+    if (
+      !PTTPost.searchingTitle.isend.insertP ||
+      !PTTPost.searchingTitle.isend.insert$
+    )
+      res.pass = false
     else {
       const reg = /^(>|●).+(□|R:|轉)/
-      const posttitle = PTT.screenHaveText(reg)
+      const posttitle = this.match(reg)
       let title = ''
       if (posttitle) {
         PTTPost.haveNormalTitle = true

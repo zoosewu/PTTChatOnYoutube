@@ -1,8 +1,17 @@
+/**
+ *
+ */
 export function ChangeLog () {
+  /**
+   * @returns {string} newest post in ptt
+   */
   function GetPTTChangeLogURL () {
     return 'https://www.ptt.cc/bbs/C_Chat/M.1621163470.A.1DD.html'
   }
 
+  /**
+   * @returns {object} object of change log
+   */
   function AddChangeLogInfo () {
     const changeLogInfo = {}
 
@@ -62,6 +71,12 @@ export function ChangeLog () {
   $('#PTTChangeLog').modal('show')
   GM_setValue('previousVersion', GM_info.script.version)
 
+  /**
+   * @param {object} info ..
+   * @param {string} major major version number
+   * @param {string} minor minor version number
+   * @returns {object} Logs to show
+   */
   function GetChangeLogInfo (info, major, minor) {
     const newInfo = allChangeLogInfo['v_' + major + '_' + minor]
     if (+minor > nowVerion[1] && +major > nowVerion[0]) return info
@@ -74,7 +89,10 @@ export function ChangeLog () {
     if ((+major + 1) <= nowVerion[0]) return GetChangeLogInfo(info, +major + 1, 0)
     return info
   }
-
+  /**
+   * @param {object} log ..
+   * @returns {string} HTML data with Logs
+   */
   function EncodeChangeLog (log) {
     let logHTML = ''
     for (const key in log) {

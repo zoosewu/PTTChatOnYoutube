@@ -1,5 +1,5 @@
 // 要回傳給套件的資料結構
-export const RecieveData = {
+export default {
   key: '',
   board: '',
   title: '',

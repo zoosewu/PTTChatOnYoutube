@@ -1,20 +1,32 @@
 import { Ptt } from '../../PttController/Ptt.js'
 import { PostData } from '../../MessagePosterData/PostData.js'
-import { FrameState } from '../../PTTController/PTTState.js'
+import { FrameState } from '../../PttController/PttState.js'
 // import { RecieveData } from '../../MessagePosterData/RecieveData.js'
-const gotoBoard = () => {
-  Ptt.insertText('s' + PostData.board + '\n')
+
+/**
+ * @this {Ptt}
+ */
+function gotoBoard () {
+  this.insertText('s' + PostData.board + '\n')
 }
-export const CheckIsBoard = () => {
+
+/**
+ * @this {Ptt}
+ * @returns {import('./CheckIsCurrectLineInPost.js').HandlerResult} result
+ */
+export default function () {
   const result = { pass: false, callback: gotoBoard }
-  if (Ptt.state.frame === FrameState.firstPageofPost || Ptt.state.frame === FrameState.otherPageofPost) {
+  if (
+    this.state.frame === FrameState.firstPageofPost ||
+    this.state.frame === FrameState.otherPageofPost
+  ) {
     result.pass = true
     return result
-  } else if (Ptt.state.frame === FrameState.main) {
+  } else if (this.state.frame === FrameState.main) {
     return result
-  } else if (Ptt.state.frame === FrameState.board) {
+  } else if (this.state.frame === FrameState.board) {
     const reg = '看板《' + PostData.board + '》'
-    const isCurrectBoard = Ptt.match(reg)
+    const isCurrectBoard = this.match(reg)
     if (isCurrectBoard) result.pass = true
     return result
   }

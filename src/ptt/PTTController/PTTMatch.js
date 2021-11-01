@@ -1,10 +1,10 @@
-import { Ptt } from './PTT'
+import { Ptt } from './Ptt'
 
 /**
  * @this {Ptt}
- * @param {string | RegExp} pattern
- * @param {string} flags
- * @returns {RegExpExecArray|undefined}
+ * @param {string | RegExp} pattern regular expression pattern
+ * @param {string} flags regular expression flags
+ * @returns {RegExpExecArray|undefined} return result
  */
 export function PttMatch (pattern, flags = undefined) {
   let result
@@ -28,8 +28,9 @@ export function PttMatch (pattern, flags = undefined) {
 }
 
 /**
- * @param pattern
- * @param flags
+ * @param {object|string} pattern regular expression pattern
+ * @param {string} flags regular expression flasgs
+ * @returns {RegExpObject} regular expression
  */
 function GetReg (pattern, flags) {
   if (flags) return new RegExp(pattern, flags)

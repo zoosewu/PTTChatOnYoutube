@@ -7,7 +7,10 @@ import { PttFrame } from './PttFrame.js'
 import { ShowCommand, ReportMode } from '../../logsetting.js'
 import { PttAddTask } from './PttAddTask.js'
 
-/** @param {MessagePoster} msg */
+/**
+ * @param {MessagePoster} msg message poster
+ * @returns {object} Ptt
+ */
 export function Ptt (msg) {
   if (typeof Ptt.cache === 'object') return Ptt.cache
 
@@ -47,13 +50,17 @@ export function Ptt (msg) {
     if (!this.command) {
       this.command = { reg, input, callback, args }
       if (ShowCommand) console.log('==set command', this.command)
-    } else if (ShowCommand) console.log('==set command error,already exist', this.command)
+    } else if (ShowCommand) {
+      console.log('==set command error,already exist', this.command)
+    }
   }
   this.replaceCommand = (reg, input, callback, ...args) => {
     if (!this.state.lock) return
     const lastCommand = this.command
     this.command = { reg, input, callback, args }
-    if (ShowCommand) console.log('==replace command', lastCommand, '=>', this.command)
+    if (ShowCommand) {
+      console.log('==replace command', lastCommand, '=>', this.command)
+    }
   }
   this.removeCommand = () => {
     if (ShowCommand) console.log('==remove command', this.command)
@@ -75,8 +82,8 @@ export function Ptt (msg) {
     console.log(this.taskManager.taskList)
     const cmd = this.command
     if (cmd) {
-      console.log('==execute command:', cmd)
-      cmd.fn(...cmd.args)
+      console.log('execute command:', cmd)
+      cmd.apply(this, ...cmd.args)
     }
   }
   Ptt.cache = this

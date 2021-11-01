@@ -1,7 +1,6 @@
 import { ShowAllLog, ShowPttScreen } from '../logsetting.js'
 import { Ptt } from './PttController/Ptt.js'
 import { Login } from './Tasks/Login.js'
-
 /**
  * @param messagePoster
  */
@@ -16,10 +15,10 @@ export function InitPTT (messagePoster) {
     ptt.clearScreen()
     if (ShowAllLog) console.log('Ptt.frame.update()')
     ptt.frame.update()
-    if (ShowAllLog) console.log('==check autocommand.')
+    if (ShowAllLog) console.log('runAutoCommand()')
     const skipThisFrame = ptt.autoCommand.runAutoCommand()
     if (!skipThisFrame) {
-      if (ShowAllLog) console.log('==check command.')
+      if (ShowAllLog) console.log('runCommand()')
       ptt.runCommand()
     }
     if (ShowPttScreen) console.log('==Ptt screen shot:', ptt.state.screen)

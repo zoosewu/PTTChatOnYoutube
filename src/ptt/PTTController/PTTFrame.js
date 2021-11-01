@@ -1,4 +1,4 @@
-import { Ptt } from './PTT'
+import { Ptt } from './Ptt'
 import { FrameState } from './PttState'
 import { ReportMode } from '../../logsetting.js'
 

@@ -6,7 +6,12 @@ import { ReportMode } from '../../../logsetting.js'
 const searchTitle = () => {
   Ptt.insertText('NPP/' + PostData.key + '\n')
 }
-export const SearchTitle = () => {
+
+/**
+ * @this {Ptt}
+ * @returns {import('./CheckIsCurrectLineInPost.js').HandlerResult} result
+ */
+export default function () {
   const res = { pass: true, callback: searchTitle }
   if (Ptt.pagestate === 2) {
     /* if (!PTTPost.searchingTitle.enteredsearchtitle ) */ res.pass = false

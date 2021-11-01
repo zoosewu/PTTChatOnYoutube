@@ -1,4 +1,4 @@
-import { Ptt } from './PTT'
+import { Ptt } from './Ptt'
 /**
  * @this {Ptt}
  * @typedef {{lock, taskList, addTask, next, reset}} PttTaskManager

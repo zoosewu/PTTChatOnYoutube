@@ -1,4 +1,4 @@
-import { Ptt } from './PTT'
+import { Ptt } from './Ptt'
 
 export const FrameState = Object.freeze({ login: 0, main: 1, board: 2, firstPageofPost: 3, otherPageofPost: 4, boardInfo: 5 })
 

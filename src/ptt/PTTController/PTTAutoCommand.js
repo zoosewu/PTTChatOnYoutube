@@ -1,10 +1,10 @@
-import { Ptt } from './PTT.js'
+import { Ptt } from './Ptt.js'
 import { ShowCommand } from '../../logsetting.js'
 
 export const ThisFrame = Object.freeze({ skip: true, notSkip: false })
 
 /**
- * @this Ptt
+ * @this {Ptt}
  * @typedef {{list, runAutoCommand}} PttAutoCommand
  */
 export function PttAutoCommand () {

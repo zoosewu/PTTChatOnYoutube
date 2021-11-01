@@ -1,18 +1,28 @@
-import { Ptt } from '../../PTTController/Ptt.js'
+import { Ptt } from '../../PttController/Ptt.js'
 import { PostData } from '../../MessagePosterData/PostData.js'
 import { RecieveData } from '../../MessagePosterData/RecieveData.js'
 import { ReportMode } from '../../../logsetting.js'
 
 const getComment = (content, commentResult) => {
-  const pushdata = {}
-  pushdata.type = commentResult[1]
-  pushdata.id = commentResult[2]
-  pushdata.content = content
-  pushdata.date = new Date(PostData.postTime.getFullYear(), commentResult[4] - 1, commentResult[5], commentResult[6], commentResult[7])
-  return pushdata
+  const commentData = {}
+  commentData.type = commentResult[1]
+  commentData.id = commentResult[2]
+  commentData.content = content
+  commentData.date = new Date(
+    PostData.postTime.getFullYear(),
+    commentResult[4] - 1,
+    commentResult[5],
+    commentResult[6],
+    commentResult[7]
+  )
+  return commentData
 }
 
-export const GetComment = () => {
+/**
+ * @this {Ptt}
+ * @returns {import('./CheckIsCurrectLineInPost.js').HandlerResult} result
+ */
+export default function () {
   const lineResult = Ptt.match(/目前顯示: 第 (\d+)~(\d+) 行/)
   const startLine = +lineResult[1]
   const endLine = +lineResult[2]
@@ -23,7 +33,9 @@ export const GetComment = () => {
   // console.log("==(pttstartline, pttendline, startline, endline, targetline): (" + PTTPost.startline + ", " + PTTPost.endline + ", " + startline + ", " + endline + ", " + targetline + ")");
   for (let i = targetLine; i < Ptt.screen.length; i++) {
     const line = Ptt.screen[i]
-    const commentResult = /^(→ |推 |噓 )(.+?): (.*)(\d\d)\/(\d\d) (\d\d):(\d\d)/.exec(line)
+    const commentResult = /^(→ |推 |噓 )(.+?): (.*)(\d\d)\/(\d\d) (\d\d):(\d\d)/.exec(
+      line
+    )
     if (commentResult != null) {
       let content = commentResult[3]
       const reg = /\s+$/g
@@ -34,8 +46,22 @@ export const GetComment = () => {
       if (ReportMode) console.log('GetPush at line', i, content, line)
     } else if (ReportMode) console.log('GetPush at line fail', i, line)
   }
-  if (ReportMode) console.log('GetPush startline,', startLine, ', endline', PostData.endLine, ', targetline', targetLine, ', checkedline', checkedLine, ', haveNormalTitle', PostData.haveNormalInsideTitle)
+  if (ReportMode) {
+    console.log(
+      'GetPush startline,',
+      startLine,
+      ', endline',
+      PostData.endLine,
+      ', targetline',
+      targetLine,
+      ', checkedline',
+      checkedLine,
+      ', haveNormalTitle',
+      PostData.haveNormalInsideTitle
+    )
+  }
   // const percentresult = Ptt.match(/瀏覽 第 .+ 頁 \( *(\d+)%\)/)
   PostData.startLine = startLine
   PostData.endLine = endLine
+  return { pass: true, callback: () => {} }
 }
