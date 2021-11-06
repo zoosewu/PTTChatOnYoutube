@@ -36,7 +36,7 @@ export const state = {
   theme: GM_getValue(types.THEME, -1),
   themeColorBG: GM_getValue(types.THEMECOLORBG, -1),
   themeColorBorder: GM_getValue(types.THEMECOLORBORDER, -1),
-  searchTitle: GM_getValue(types.SEARCHTITLE, null)
+  titleList: GM_getValue(types.TITLELIST, ['直播單 (C_Chat)', '彩虹直播 (Vtuber)'])
 }
 // mutations
 export const mutations = {
@@ -53,6 +53,9 @@ export const mutations = {
   },
   [types.GOTOPOST] (state, aid) {
     state.aid = aid
+  },
+  [types.UPDATEBOARD] (state, board) {
+    state.post.board = board
   },
   [types.UPDATEPOST] (state, post) {
     if (reportmode) console.log('UPDATEPOST', post)
@@ -155,8 +158,8 @@ export const mutations = {
     GM_setValue(types.THEMECOLORBORDER, themecolorborder)
     state.themeColorBorder = themecolorborder
   },
-  [types.SEARCHTITLE] (state, list) {
-    GM_setValue(types.SEARCHTITLE, list)
-    state.searchTitle = list
+  [types.TITLELIST] (state, list) {
+    GM_setValue(types.TITLELIST, list)
+    state.titleList = list
   }
 }
