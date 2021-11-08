@@ -14,6 +14,7 @@
     "postcss-loader": "^4.3.0",
     "sass-loader": "^10.2.0",
     "source-map-js": "^0.6.2",
+    "standard": "^16.0.4",
     "vue": "^2.6.14",
     "vue-eslint-parser": "^7.6.0",
     "vue-loader": "^15.9.2",
@@ -32,12 +33,15 @@
     }
   },
   "lint-staged": {
-    "*.{js,vue}": ["eslint --fix"]
+    "*.{js,vue}": [
+      "eslint --fix"
+    ]
   },
   "scripts": {
     "dev": "webpack serve --config configs/webpack.dev.js",
     "build": "webpack --config configs/webpack.build.js",
     "lint": "eslint --fix --ext .vue,.js src/",
+    "standard": "standard"
   },
   "name": "pttchatonyoutube",
   "version": "2.8.49",
