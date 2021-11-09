@@ -6,6 +6,7 @@ export const types = {
   ALERT: 'Alert',
   GOTOPOST: 'GOTOPOST',
   PUSHDATA: 'PushData',
+  UPDATEBOARD: 'updateBoard',
   UPDATEPOST: 'UpdatePost',
   UPDATECHAT: 'Updatechatlist',
   UPDATELOG: 'UpdateLog',
@@ -35,5 +36,5 @@ export const types = {
   THEME: 'Theme',
   THEMECOLORBG: 'ThemeColorBG',
   THEMECOLORBORDER: 'ThemeColorBorder',
-  SEARCHTITLE: 'SearchTitle'
+  TITLELIST: 'TitleList'
 }
