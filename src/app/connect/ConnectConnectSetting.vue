@@ -16,7 +16,7 @@
 import ConnectLogin from './ConnectConnectSetting/ConnectLogin.vue'
 import ConnectLoginDeleteOtherConnect from './ConnectConnectSetting/ConnectLoginDeleteOtherConnect.vue'
 import ConnectAID from './ConnectConnectSetting/ConnectAID.vue'
-import ConnectReinstancePTTBtn from './ConnectConnectSetting/ConnectReinstancePttbutton.vue'
+import ConnectReinstancePTTBtn from './ConnectConnectSetting/ConnectReinstancePttButton.vue'
 import ConnectAutoFetchPostDropDownElement from './ConnectConnectSetting/ConnectAutoFetchPostDropDownElement.vue'
 
 export default {

@@ -14,7 +14,10 @@ module.exports = mergeConfig(commonConfig, {
     inline: true,
     allowedHosts: [
       '.blank.org' // example site
-    ]
+    ],
+    disableHostCheck: true,
+    open: true,
+    openPage: 'main.user.js'
   },
   plugins: [
     new WebpackUserscript({

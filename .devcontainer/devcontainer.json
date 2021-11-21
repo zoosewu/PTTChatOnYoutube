@@ -15,7 +15,17 @@
 
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
-		"dbaeumer.vscode-eslint"
+		"dbaeumer.vscode-eslint",
+		"stevencl.adddoccomments",
+		"irongeek.vscode-env",
+		"capaj.vscode-standardjs-snippets",
+		"numso.prettier-standard-vscode",
+		"ducfilan.pug-formatter",
+		"sibiraj-s.vscode-scss-formatter",
+		"standard.vscode-standard",
+		"octref.vetur",
+		"jcbuisson.vue",
+		"ms-vscode-remote.remote-containers"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
