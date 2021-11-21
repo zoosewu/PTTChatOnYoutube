@@ -10,18 +10,17 @@ export function MessagePoster () {
     this.targetWindow.postMessage(d, this.targetorigin)
     if (showMessage && msg !== 'PlayerUpdate') {
       console.log(
-        this.ownerorigin + ' message posted to ' + this.targetorigin,
+        this.ownerorigin + ' posted message to ' + this.targetorigin,
         d
       )
     }
   }
   this.onMessage = function (event) {
     // Check sender origin to be trusted
-    console.log(this.ownerorigin, 'onMessage origin:', event.origin, 'targetorigin:', this.targetorigin, 'same origin:', event.origin === this.targetorigin, 'data:', event.data, event)
     if (event.origin !== this.targetorigin) return
-
     const data = event.data
     console.log('typeof (this[data.m])', typeof this[data.m])
+    console.log('data.m', data.d)
     if (typeof this[data.m] === 'function') {
       this[data.m].call(null, data.d)
     }

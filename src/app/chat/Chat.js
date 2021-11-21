@@ -180,7 +180,7 @@ export default {
     this.intervalChat = window.setInterval(() => {
       if (this.isStream && this.PTTState > 0 && Date.now() > this.nextUpdateTime) {
         this.nextUpdateTime = Date.now() + 10 * 60 * 1000
-        this.msg.PostMessage('getPushByLine', { AID: this.post.AID, board: this.post.board, startline: this.post.lastendline })
+        this.msg.PostMessage('getPushByLine', { AID: this.post.AID, board: this.post.board, title: this.post.title, startline: this.post.lastendline })
       }
     }, 340)
     // 定時滾動
