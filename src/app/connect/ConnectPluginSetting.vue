@@ -109,13 +109,13 @@
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
 import ConnectPluginSettingInputElement from './PluginSettings/ConnectPluginSettingInputElement.vue'
 import ConnectOtherSetting from './PluginSettings/ConnectOtherSetting.vue'
 import ConnectNewVersion from './PluginSettings/ConnectNewVersion.vue'
 import ConnectDropdownElement from './PluginSettings/ConnectDropdownElement.vue'
 export default {
   components: {
+    'connect-plugin-setting-input-element': ConnectPluginSettingInputElement,
     'connect-other-setting': ConnectOtherSetting,
     'connect-new-version': ConnectNewVersion,
     'connect-dropdown': ConnectDropdownElement
@@ -129,23 +129,21 @@ export default {
   computed: {
     ThemeColorBGOptions: function () {
       const array = ['黑色']
-      for (let i = 1; i < 20; i++) array.push((i * 5) + '%')
+      for (let i = 1; i < 20; i++) array.push(i * 5 + '%')
       array.push('白色')
       return array
     },
     ThemeColorBorderOptions: function () {
       const array = ['黑色']
-      for (let i = 1; i < 10; i++) array.push((i * 10) + '%')
+      for (let i = 1; i < 10; i++) array.push(i * 10 + '%')
       array.push('白色')
       return array
     },
     showThemeColorOption: function () {
       // console.log("showThemeColorOption", (+this.getTheme == 3));
-      return (+this.getTheme === 3)
+      return +this.getTheme === 3
     },
-    ...Vuex.mapGetters([
-      'getTheme'
-    ])
+    ...Vuex.mapGetters(['getTheme'])
   }
 }
 </script>

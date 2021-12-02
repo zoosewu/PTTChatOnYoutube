@@ -156,7 +156,9 @@ export function InitPTT (messageposter) {
       isResponded: false,
       cb: undefined,
       set isRespondedFromPtt (val) {
-        if (typeof this.cb === 'function' && this.isResponded === false) { this.cb() }
+        if (typeof this.cb === 'function' && this.isResponded === false) {
+          this.cb()
+        }
         if (val) this.serverFull = false
         this.isResponded = val
       },
@@ -920,7 +922,11 @@ export function InitPTT (messageposter) {
     TryLogin = 2
     // console.log(data );
     console.log([i, p], cryptkey)
-    PTTLockCheck(Login, i, p, data.DeleteOtherConnect)
+    if (i === '' && p === '') {
+      msg.PostMessage('alert', { type: 0, msg: '加密錯誤' })
+    } else {
+      PTTLockCheck(Login, i, p, data.DeleteOtherConnect)
+    }
   }
   msg.getPushByLine = data => {
     if (reportmode) console.log('getPushByLine', data)

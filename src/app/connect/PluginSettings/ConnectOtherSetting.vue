@@ -37,11 +37,11 @@
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
 import ConnectPluginSettingCheckboxElement from './ConnectPluginSettingCheckboxElement.vue'
 import ConnectPluginSettingBlacklist from './ConnectPluginSettingBlacklist.vue'
 export default {
   components: {
+    'connect-plugin-setting-checkbox-element': ConnectPluginSettingCheckboxElement,
     'plugin-setting-blacklist': ConnectPluginSettingBlacklist
   }
 }
