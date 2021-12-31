@@ -1,5 +1,5 @@
-import { InitApp } from '../../app/appindex.js'
-import { ChangeLog } from '../../ChangeLog.js'
+import { InitApp } from '../../app/appindex'
+import { ChangeLog } from '../../ChangeLog'
 
 export function Initblank (messageposter) {
   const WhiteTheme = true

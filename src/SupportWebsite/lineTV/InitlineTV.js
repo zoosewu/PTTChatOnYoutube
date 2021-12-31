@@ -1,5 +1,6 @@
-import { InitApp } from '../../app/appindex.js'
-import { ChangeLog } from '../../ChangeLog.js'
+/* eslint-disable  */
+import { InitApp } from '../../app/appindex'
+import { ChangeLog } from '../../ChangeLog'
 
 export function InitlineTV (messageposter) {
   const WhiteTheme = true

@@ -1,35 +1,31 @@
 {
   "devDependencies": {
-    "@zoosewu/userscript-builder": "^0.3.3",
-    "eslint": "^7.26.0",
-    "eslint-config-standard": "^16.0.2",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-vue": "^7.9.0",
-    "husky": "^3.0.2",
-    "lint-staged": "^10.3.0",
-    "node-sass": "^6.0.1"
-  },
-  "dependencies": {
-    "bootstrap": "^4.5.3",
-    "npm-watch": "^0.7.0",
-    "vue-virtual-scroller": "^1.0.10"
-  },
-  "watch": {
-    "build": {
-      "patterns": [
-        "src",
-        "css"
-      ],
-      "extensions": "js,css"
-    },
-    "release:bugfix": {
-      "patterns": [
-        "src",
-        "css"
-      ],
-      "extensions": "js,css"
-    }
+    "@babel/core": "^7.15.5",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.2.2",
+    "bootstrap": "^4.6.0",
+    "css-loader": "^5.2.7",
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-vue": "^7.18.0",
+    "husky": "^7.0.2",
+    "lint-staged": "^11.1.2",
+    "node-sass": "^6.0.1",
+    "postcss-loader": "^4.3.0",
+    "sass-loader": "^10.2.0",
+    "source-map-js": "^0.6.2",
+    "standard": "^16.0.4",
+    "vue": "^2.6.14",
+    "vue-eslint-parser": "^7.6.0",
+    "vue-loader": "^15.9.2",
+    "vue-template-compiler": "^2.6.14",
+    "vue-virtual-scroller": "^1.0.10",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^3.11.2",
+    "webpack-merge": "^4.2.2",
+    "webpack-shell-plugin-next": "^1.1.6",
+    "webpack-userscript": "^2.5.8"
   },
   "husky": {
     "hooks": {
@@ -42,68 +38,16 @@
     ]
   },
   "scripts": {
-    "watch-dev": "npm-watch release:bugfix",
-    "watch-scss-map": "node-sass --source-map map --watch scss/index.scss -o css",
-    "http": "http-server ./ --cors -c-1 -p 8889",
-    "watch-scss": "node-sass --watch scss/index.scss -o css",
-    "release": "userscript-builder --mode minor",
-    "watch-dev-n": "npm-watch build",
-    "build": "userscript-builder --mode dev",
-    "release:bugfix": "userscript-builder --mode bugfix",
-    "release:major": "userscript-builder --mode major",
-    "lint": "eslint --ext .js,.vue src",
-    "lint-fix": "eslint --fix --ext .js,.vue src",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack serve --config configs/webpack.dev.js",
+    "build": "webpack --config configs/webpack.build.js",
+    "lint": "eslint --fix --ext .vue,.js src/",
+    "standard": "standard"
   },
   "name": "pttchatonyoutube",
-  "version": "2.8.15",
+  "version": "2.8.49",
   "description": "Connect ptt pushes to youtube chatroom",
   "author": "Zoosewu, crimsonmoon9",
   "license": "MIT",
-  "userscript": {
-    "entry": "./src/index.js",
-    "dev": "./publish",
-    "release": "./publish",
-    "fileName": "PTTChatOnYt",
-    "meta": {
-      "name:zh-TW": "Youtube聊天室顯示PTT推文",
-      "namespace": "https://github.com/zoosewu/PTTChatOnYoutube",
-      "description:zh-tw": "連結PTT推文到Youtube聊天室  讓你簡單追實況搭配推文",
-      "match": [
-        "https://www.youtube.com/*",
-        "https://youtu.be/*",
-        "https://term.ptt.cc/*",
-        "https://hololive.jetri.co/*",
-        "https://www.twitch.tv/*",
-        "https://niji-mado.web.app/home",
-        "https://lin.ee/*",
-        "https://today.line.me/tw/v2/article/*",
-        "http://blank.org/",
-        "https://holodex.net/*"
-      ],
-      "grant": [
-        "GM_xmlhttpRequest",
-        "GM_info",
-        "unsafeWindow",
-        "GM_getValue",
-        "GM_setValue",
-        "GM_deleteValue"
-      ],
-      "run-at": "document-start",
-      "require": [
-        "https://code.jquery.com/jquery-3.5.1.slim.min.js",
-        "https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js",
-        "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js",
-        "https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js",
-        "https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js",
-        "https://cdn.jsdelivr.net/npm/vuex@3.6.0/dist/vuex.min.js",
-        "https://cdn.jsdelivr.net/npm/xss@1.0.8/dist/xss.js",
-        "https://cdn.jsdelivr.net/npm/@akryuminfinitum/vue-virtual-scroller@1.0.11-canary.2/dist/vue-virtual-scroller.min.js"
-      ],
-      "homepageURL": "https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage",
-      "downloadURL": "https://greasyfork.org/scripts/418469-pttchatonyt/code/PttChatOnYt.user.js"
-    }
-  },
   "standard": {
     "globals": [
       "$",
@@ -118,34 +62,11 @@
       "GM_setValue",
       "GM_getValue",
       "CustomEvent",
-      "getComputedStyle",
-      "reportmode",
-      "showalllog",
-      "showPTTscreen",
-      "showcommand",
-      "showPostMessage",
-      "showonMessage",
-      "showalertmsg",
-      "defaultopen",
-      "disablepttframe",
-      "simulateisstreaming",
-      "appinscount",
-      "cryptkey"
+      "getComputedStyle"
     ],
     "ignore": [
       "src/logsetting.js",
-      "src/SupportWebsite/lineTV/InitlineTV.js",
-      ".eslintrc.js"
-    ],
-    "rules": {
-      "no-global-assign": [
-        "error",
-        {
-          "exceptions": [
-            "appinscount"
-          ]
-        }
-      ]
-    }
+      "src/SupportWebsite/lineTV/InitlineTV.js"
+    ]
   }
 }

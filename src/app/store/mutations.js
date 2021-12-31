@@ -1,16 +1,39 @@
-import { types } from './mutations_type.js'
+import { types } from './mutations_type'
+import { reportmode } from '../../logsetting'
 
 // state
 export const state = {
   count: 0,
   alert: { type: 0, msg: '' },
   aid: '',
-  post: { AID: '', board: '', title: '', date: (() => { const t = new Date(); t.setHours(0); t.setMinutes(0); t.setSeconds(0); return t })(), lastendline: 0, lastpushtime: new Date(), pushcount: 0, nowpush: 0, gettedpost: false },
+  post: {
+    AID: '',
+    board: '',
+    title: '',
+    date: (() => {
+      const t = new Date()
+      t.setHours(0)
+      t.setMinutes(0)
+      t.setSeconds(0)
+      return t
+    })(),
+    lastendline: 0,
+    lastpushtime: new Date(),
+    pushcount: 0,
+    nowpush: 0,
+    gettedpost: false
+  },
   chatlist: [],
   log: {},
   firstChatTime: {},
   lastChatTime: {},
-  VStartDate: (() => { const t = new Date(); t.setHours(0); t.setMinutes(0); t.setSeconds(0); return t })(),
+  VStartDate: (() => {
+    const t = new Date()
+    t.setHours(0)
+    t.setMinutes(0)
+    t.setSeconds(0)
+    return t
+  })(),
   VPlayedTime: 0,
   VCurrentTime: new Date(),
   pageChange: false,
@@ -36,7 +59,10 @@ export const state = {
   theme: GM_getValue(types.THEME, -1),
   themeColorBG: GM_getValue(types.THEMECOLORBG, -1),
   themeColorBorder: GM_getValue(types.THEMECOLORBORDER, -1),
-  titleList: GM_getValue(types.TITLELIST, ['直播單 (C_Chat)', '彩虹直播 (Vtuber)'])
+  titleList: GM_getValue(types.TITLELIST, [
+    '直播單 (C_Chat)',
+    '彩虹直播 (Vtuber)'
+  ])
 }
 // mutations
 export const mutations = {
@@ -117,6 +143,7 @@ export const mutations = {
   },
   // input value
   [types.PLUGINHEIGHT] (state, height) {
+    console.log('types.PLUGINHEIGHT: ', height)
     GM_setValue(types.PLUGINHEIGHT, height)
     state.pluginHeight = height
   },

@@ -1,6 +1,6 @@
-import { state, mutations } from './mutations.js'
-import { getters } from './getters.js'
-import { actions } from './actions.js'
+import { state, mutations } from './mutations'
+import { getters } from './getters'
+import { actions } from './actions'
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({

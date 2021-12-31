@@ -1,0 +1,102 @@
+<template>
+  <div
+    id="PTTChat-contents-log-main"
+    class="flex-grow-1 overflow-auto h-100 w-100 mx-0 row"
+    style="overscroll-behavior: contain;"
+  >
+    <table class="table ptt-bg">
+      <tbody class="ptt-text">
+        <log-item
+          item-title="PTT狀態"
+          item-type="--pagestate"
+        />
+
+        <log-title title="文章資訊" />
+        <log-item
+          item-title="文章標題"
+          item-type="postTitle"
+          item-col-span="3"
+        />
+        <log-item
+          item-title="文章看板"
+          item-type="postBoard"
+          second-item-title="文章代碼"
+          second-item-type="postAID"
+        />
+        <log-item
+          item-title="推文數"
+          item-type="--postpushcount"
+          second-item-title="結尾行數"
+          second-item-type="postEndline"
+        />
+        <log-item
+          item-title="發文時間"
+          item-type="postDate"
+          item-col-span="3"
+        />
+        <log-item
+          item-title="最後推文時間"
+          item-type="--postlastpushtime"
+          item-col-span="3"
+        />
+
+        <log-title title="詳細資訊" />
+        <log-item
+          item-title="影片類型"
+          item-type="--videotype"
+          second-item-title="自動獲得推文"
+          second-item-type="--isautogetpush"
+        />
+        <log-item
+          item-title="主題顏色"
+          item-type="--themecolor"
+          second-item-title=" "
+          second-item-type=""
+        />
+        <log-item
+          item-title="預估開台時間"
+          item-type="videoStartTime"
+          item-col-span="3"
+        />
+        <log-item
+          item-title="影片播放時間"
+          item-type="videoPlayedTime"
+          item-col-span="3"
+        />
+        <log-item
+          item-title="影片當下時間"
+          item-type="videoCurrentTime"
+          item-col-span="3"
+        />
+
+        <log-title title="滾動狀態" />
+        <log-item
+          item-title="目標推文樓數"
+          item-type="--pushindex"
+          second-item-title="目標捲動高度"
+          second-item-type="--targetscroll"
+        />
+        <log-item
+          item-title="現在捲動高度"
+          item-type="--nowscroll"
+          second-item-title="上次捲動高度"
+          second-item-type="--lastscroll"
+        />
+        <log-title title="近期訊息" />
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<script>
+import LogItem from './LogItem.vue'
+import LogTitle from './LogTitle.vue'
+export default {
+  components: {
+    'log-item': LogItem,
+    'log-title': LogTitle
+  }
+}
+</script>
+
+<style lang="scss" scoped></style>
