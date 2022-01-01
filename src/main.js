@@ -15,7 +15,6 @@ Vue.config.devtools = reportmode
 /* 關閉錯誤警告 */
 Vue.config.debug = reportmode
 ;(function () {
-  console.log('GM_info', GM_info)
   const isTopframe = window.top === window.self
   if (isTopframe) {
     console.log('top last update: ', GM_getValue('lastupdatetop', 0))
