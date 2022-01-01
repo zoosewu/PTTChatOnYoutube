@@ -1,5 +1,5 @@
-import { types } from './mutations_type.js'
-import { ReportMode } from '../../logsetting.js'
+import { types } from './mutations_type'
+import { reportmode } from '../../logsetting'
 
 export const actions = {
   actionIncrease: ({ commit }) => { console.log('actionIncrease'); commit(types.INCREASE) },
@@ -40,8 +40,7 @@ export const actions = {
       }
       const t = newpost.date
       dispatch('updateLog', { type: 'postAID', data: newpost.AID })
-      dispatch('updateLog', [
-        { type: 'postBoard', data: newpost.board },
+      dispatch('updateLog', [{ type: 'postBoard', data: newpost.board },
         { type: 'postTitle', data: newpost.title },
         { type: 'postDate', data: t.toLocaleDateString() + ' ' + t.toLocaleTimeString() },
         { type: 'postEndline', data: newpost.lastendline }])
@@ -108,19 +107,20 @@ export const actions = {
       chat.id = existpush + index
       chat.uid = state.post.AID + '_' + chat.id
       chat.gray = !state.disablepushgray
+      let isMatch = false
       if (state.enableblacklist) {
         const list = state.blacklist.split('\n')
         const id = chat.pttid.toLowerCase()
         for (let index = 0; index < list.length; index++) {
           if (id === list[index]) {
-            chat.pttid = '隱藏的使用者'
-            chat.msg = ''
-            chat.type = '→ '
+            isMatch = true
           }
         }
       }
-      chatlist.push(chat)
-      if (ReportMode) console.log('new Chat', chat, currpush)
+      if (!isMatch) {
+        chatlist.push(chat)
+      }
+      if (reportmode) console.log('new Chat', chat, currpush)
     }
     // console.log("chatlist actions", chatlist);
     commit(types.UPDATECHAT, chatlist)
@@ -142,7 +142,7 @@ export const actions = {
     const time = state.VPlayedTime// [H,m,s,isVideoVeforePost]
     const currtime = new Date(vstart.valueOf())
     currtime.setSeconds(vstart.getSeconds() + time)
-    if (ReportMode) console.log('updateVideoCurrentTime check, currtime.valueOf() < state.post.date.valueOf()', currtime.valueOf() < state.post.date.valueOf(), currtime.valueOf(), state.post.date.valueOf())
+    if (reportmode) console.log('updateVideoCurrentTime check, currtime.valueOf() < state.post.date.valueOf()', currtime.valueOf() < state.post.date.valueOf(), currtime.valueOf(), state.post.date.valueOf())
     // console.log("updateVideoCurrentTime vstart, time, currtime", vstart, time, currtime);
     dispatch('updateLog', { type: 'videoCurrentTime', data: currtime.toLocaleDateString() + ' ' + currtime.toLocaleTimeString() })
     commit(types.VIDEOCURRENTRIME, currtime)
@@ -171,5 +171,5 @@ export const actions = {
   setTheme: ({ commit }, value) => { commit(types.THEME, value) },
   setThemeColorBG: ({ commit }, value) => { commit(types.THEMECOLORBG, value) },
   setThemeColorBorder: ({ commit }, value) => { commit(types.THEMECOLORBORDER, value) },
-  setSearchTitle: ({ commit }, value) => { commit(types.SEARCHTITLE, value) }
+  setTitleList: ({ commit }, list) => { commit(types.TITLELIST, list) }
 }

@@ -1,4 +1,4 @@
-import { InsFilter } from '../../filter/InsFilter.js'
-import { InitHT } from './InitHT.js'
+import { InsFilter } from '../../filter/InsFilter'
+import { InitHT } from './InitHT'
 
 export const htfilter = InsFilter('Holotools', /hololive\.jetri\.co/, 'https://hololive.jetri.co', InitHT)

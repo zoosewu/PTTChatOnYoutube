@@ -1,58 +1,55 @@
-import { ShowPostMessage, ShowOnMessage, ReportMode } from './logsetting.js'
+import { showMessage } from './logsetting'
+export function MessagePoster () {
+  this.targetorigin = ''
+  this.ownerorigin = ''
+  this.targetWindow = null
+  this.PostMessage = function (msg, data) {
+    if (this.targetWindow === null) return
 
-/**
- * @param attachedWindow
- * @param targetOrigin
- * @param ownerOrigin
- */
-export function MessagePoster (
-  attachedWindow,
-  targetOrigin,
-  ownerOrigin = undefined
-) {
-  this.attachedWindow = attachedWindow
-  this.targetOrigin = targetOrigin
-  this.ownerOrigin = ownerOrigin
-  this.PostMessage = (msg, data) => {
-    if (this.attachedWindow === null) return
-
-    const message = { m: msg, d: data }
-    this.attachedWindow.postMessage(message, this.targetOrigin)
-    if (ShowPostMessage && msg !== 'PlayerUpdate') {
+    const d = { m: msg, d: data }
+    this.targetWindow.postMessage(d, this.targetorigin)
+    if (showMessage && msg !== 'PlayerUpdate') {
       console.log(
-        `${this.ownerOrigin} message posted to ${this.targetOrigin}`,
-        message
+        this.ownerorigin + ' posted message to ' + this.targetorigin,
+        d
       )
     }
   }
-
-  // private method
-  const onMessage = event => {
+  this.onMessage = function (event) {
     // Check sender origin to be trusted
-    if (event.origin !== this.targetOrigin) {
-      return
-    }
-
+    if (event.origin !== this.targetorigin) return
     const data = event.data
-    if (ReportMode) console.log(`typeof this[data.m]: ${typeof this[data.m]}`)
-    if (ShowOnMessage && data.m !== 'PlayerUpdate') {
+    console.log('typeof (this[data.m])', typeof this[data.m])
+    console.log('data.m', data.d)
+    if (typeof this[data.m] === 'function') {
+      this[data.m].call(null, data.d)
+    }
+    if (showMessage && data.m !== 'PlayerUpdate') {
       console.log(
-        `${this.ownerOrigin} got message from ${this.targetOrigin}`,
+        this.ownerorigin + ' get message from ' + this.targetorigin,
         data
       )
     }
-    if (typeof this[data.m] === 'function') {
-      this[data.m](data.d)
-    }
   }
-
   if (window.addEventListener) {
+    if (showMessage) console.log('addEventListener message')
     /* eslint-disable no-useless-call */
-    window.addEventListener('message', onMessage, false)
-    if (ReportMode) console.log('addEventListener message')
+    window.addEventListener(
+      'message',
+      event => {
+        this.onMessage.call(this, event)
+      },
+      false
+    )
   } else if (window.attachEvent) {
-    window.attachEvent('onmessage', onMessage)
-    if (ReportMode) console.log('attachEvent onmessage')
+    if (showMessage) console.log('addEventListener onmessage')
+    window.attachEvent(
+      'onmessage',
+      event => {
+        this.onMessage.call(this, event)
+      },
+      false
+    )
     /* eslint-enable no-useless-call */
   }
 }

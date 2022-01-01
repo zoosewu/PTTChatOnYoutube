@@ -1,7 +1,8 @@
-import { InitApp } from '../../app/AppIndex.js'
-import { ChangeLog } from '../../ChangeLog.js'
-import { ThemeCheck } from '../../library.js'
-import { ReportMode } from '../../logsetting.js'
+
+import { InitApp } from '../../app/appindex'
+import { ChangeLog } from '../../ChangeLog'
+import { ThemeCheck } from '../../library'
+import { reportmode } from '../../logsetting'
 
 export function InitHT (messageposter) {
   // Check Theme
@@ -32,7 +33,7 @@ export function InitHT (messageposter) {
     const defaultVideoHandler = $('<div id="holotoolsvideohandler" style="flex:1 1 auto;"></div>')
     const defaultVideo = $('.player-container.hasControls')
     const PTTChatHandler = $('<div id="pttchatparent" class="p-0 d-flex" style="flex:0 0 0px;position:relative;"></div>')
-    if (ReportMode) console.log('parent', parent)
+    if (reportmode) console.log('parent', parent)
     if (parent.length > 0 && iswatch) {
       const pluginwidth = GM_getValue('PluginWidth', 400)
       const pluginheight = GM_getValue('PluginHeight', 400)
@@ -43,7 +44,7 @@ export function InitHT (messageposter) {
       const datahash = Object.keys(liveControls.data())[0]
       const iconParent = $(`<div data-${datahash} class="live-control live-control-double bg-300" type="button"></div>`)
       const iconFlex = $(`<div data-${datahash} class="live-control-button"><i data-${datahash} class="md-icon md-icon-font md-theme-${theme}" title="切換PTT顯示佈局">library_books</i></div>`)
-      const iconPTT = $(`<div data-${datahash} class="live-control-button"><i data-${datahash} class="md-icon md-icon-font md-theme-${theme}" title="Ptt">local_parking</i></div>`)
+      const iconPTT = $(`<div data-${datahash} class="live-control-button"><i data-${datahash} class="md-icon md-icon-font md-theme-${theme}" title="PTT">local_parking</i></div>`)
       iconParent.append(iconFlex, iconPTT)
       liveControls.prepend(iconParent)
       if (/https:\/\/hololive\.jetri\.co\/#\/watch/.exec(iswatch)) {
@@ -57,31 +58,20 @@ export function InitHT (messageposter) {
       let isChatOnen = false
       let enablePortaitMode = false
       const containerHeight = defaultVideo.height()
-      function defaultSetting () {
-        if (/https:\/\/hololive\.jetri\.co\/#\/watch/.exec(iswatch)) {
-          const defaultHTDisplaySettingBtn = $(`.md-icon.md-icon-font:eq(${$('.md-icon.md-icon-font').length - 6})`)
-          defaultHTDisplaySettingBtn.trigger('click')
-        } else if ((/https:\/\/hololive\.jetri\.co\/#\/ameliawatchon/.exec(iswatch))) {
-          const defaultHTDisplaySettingList = $(`.md-icon.md-icon-font:eq(${$('.md-icon.md-icon-font').length - 6})`)
-          defaultHTDisplaySettingList.trigger('click')
-          setTimeout(() => {
-            const defaultHTDisplaySettingBtn = $('.preset-preview').eq(0)
-            defaultHTDisplaySettingBtn.trigger('click')
-          }, 100)
-        }
-      }
+
       iconPTT.on('click', function () {
         if (collapseEnd || !collapseStart) {
-          if (now === '0') $('#PTTMain').collapse('show')
-          else {
-            parent.css('overflow', 'hidden')
+          if (now === '0') {
+            $('#PTTMainBtn').css('display', 'block')
+            $('#PTTMain').collapse('show')
+          } else {
+            $('#PTTMainBtn').css('display', 'none')
             $('#PTTMain').collapse('hide')
           }
           now = (now === pluginwidth0 ? pluginwidth : pluginwidth0)
           $('#pttchatparent').css('flex', '0 0 ' + now + 'px')
-          if (enablePortaitMode && isChatOnen) defaultVideo.height('')
+          if (enablePortaitMode && isChatOnen) defaultVideo.height(containerHeight)
           else if (enablePortaitMode) {
-            parent.css('overflow', 'visible')
             defaultVideo.height(containerHeight - pluginportraitheight)
           }
           defaultSetting()
@@ -91,13 +81,14 @@ export function InitHT (messageposter) {
       iconFlex.on('click', function () {
         if (isChatOnen) {
           if ($('#fakeparent').hasClass('flex-row')) {
+            parent.css('overflow', 'visible')
             $('#fakeparent').removeClass('flex-row').addClass('flex-column')
             defaultVideo.height(containerHeight - pluginportraitheight)
-            parent.css('overflow', 'visible')
             $('#PTTChat-contents').height(pluginportraitheight - 35)
           } else {
+            parent.css('overflow', 'hidden')
             $('#fakeparent').removeClass('flex-column').addClass('flex-row')
-            defaultVideo.height('')
+            defaultVideo.height(containerHeight)
             $('#PTTChat-contents').height(pluginheight)
           }
           enablePortaitMode = !enablePortaitMode
@@ -116,6 +107,19 @@ export function InitHT (messageposter) {
       tryinsholotools = -10
     } else {
       tryinsholotools--
+    }
+  }
+  function defaultSetting () {
+    if (/https:\/\/hololive\.jetri\.co\/#\/watch/.exec(iswatch)) {
+      const defaultHTDisplaySettingBtn = $(`.md-icon.md-icon-font:eq(${$('.md-icon.md-icon-font').length - 6})`)
+      defaultHTDisplaySettingBtn.trigger('click')
+    } else if ((/https:\/\/hololive\.jetri\.co\/#\/ameliawatchon/.exec(iswatch))) {
+      const defaultHTDisplaySettingList = $(`.md-icon.md-icon-font:eq(${$('.md-icon.md-icon-font').length - 6})`)
+      defaultHTDisplaySettingList.trigger('click')
+      setTimeout(() => {
+        const defaultHTDisplaySettingBtn = $('.preset-preview').eq(0)
+        defaultHTDisplaySettingBtn.trigger('click')
+      }, 100)
     }
   }
 }

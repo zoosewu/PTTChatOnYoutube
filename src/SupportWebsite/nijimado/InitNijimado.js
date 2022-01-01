@@ -1,7 +1,7 @@
-import { ReportMode } from '../../logsetting.js'
-import { InitApp } from '../../app/AppIndex.js'
-import { ChangeLog } from '../../ChangeLog.js'
-import { ThemeCheck } from '../../library.js'
+import { InitApp } from '../../app/appindex'
+import { ChangeLog } from '../../ChangeLog'
+import { ThemeCheck } from '../../library'
+import { reportmode } from '../../logsetting'
 
 export function InitNijimado (messageposter) {
   // Check Theme
@@ -16,7 +16,7 @@ export function InitNijimado (messageposter) {
   })()
   function TryInsChat () {
     const parent = $('app-home.ng-star-inserted')
-    if (ReportMode) console.log('parent', parent)
+    if (reportmode) console.log('parent', parent)
     if (parent.length > 0) {
       const pluginwidth = GM_getValue('PluginWidth', 400)
       const fakeparent = $('<div id="fakeparent" class="d-flex flex-row"></div>')

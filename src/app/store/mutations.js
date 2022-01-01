@@ -1,17 +1,39 @@
-import { types } from './mutations_type.js'
-import { ReportMode } from '../../logsetting.js'
+import { types } from './mutations_type'
+import { reportmode } from '../../logsetting'
 
 // state
 export const state = {
   count: 0,
   alert: { type: 0, msg: '' },
   aid: '',
-  post: { AID: '', board: '', title: '', date: (() => { const t = new Date(); t.setHours(0); t.setMinutes(0); t.setSeconds(0); return t })(), lastendline: 0, lastpushtime: new Date(), pushcount: 0, nowpush: 0, gettedpost: false },
+  post: {
+    AID: '',
+    board: '',
+    title: '',
+    date: (() => {
+      const t = new Date()
+      t.setHours(0)
+      t.setMinutes(0)
+      t.setSeconds(0)
+      return t
+    })(),
+    lastendline: 0,
+    lastpushtime: new Date(),
+    pushcount: 0,
+    nowpush: 0,
+    gettedpost: false
+  },
   chatlist: [],
   log: {},
   firstChatTime: {},
   lastChatTime: {},
-  VStartDate: (() => { const t = new Date(); t.setHours(0); t.setMinutes(0); t.setSeconds(0); return t })(),
+  VStartDate: (() => {
+    const t = new Date()
+    t.setHours(0)
+    t.setMinutes(0)
+    t.setSeconds(0)
+    return t
+  })(),
   VPlayedTime: 0,
   VCurrentTime: new Date(),
   pageChange: false,
@@ -37,7 +59,10 @@ export const state = {
   theme: GM_getValue(types.THEME, -1),
   themeColorBG: GM_getValue(types.THEMECOLORBG, -1),
   themeColorBorder: GM_getValue(types.THEMECOLORBORDER, -1),
-  searchTitle: GM_getValue(types.SEARCHTITLE, null)
+  titleList: GM_getValue(types.TITLELIST, [
+    '直播單 (C_Chat)',
+    '彩虹直播 (Vtuber)'
+  ])
 }
 // mutations
 export const mutations = {
@@ -55,16 +80,19 @@ export const mutations = {
   [types.GOTOPOST] (state, aid) {
     state.aid = aid
   },
+  [types.UPDATEBOARD] (state, board) {
+    state.post.board = board
+  },
   [types.UPDATEPOST] (state, post) {
-    if (ReportMode) console.log('UPDATEPOST', post)
+    if (reportmode) console.log('UPDATEPOST', post)
     state.post = post
   },
   [types.UPDATECHAT] (state, chatlist) {
-    if (ReportMode) console.log('UPDATECHAT', chatlist)
+    if (reportmode) console.log('UPDATECHAT', chatlist)
     state.chatlist = chatlist
   },
   [types.UPDATELOG] (state, log) {
-    if (ReportMode) console.log('UPDATELOG', log)
+    if (reportmode) console.log('UPDATELOG', log)
     state.log = log
   },
   [types.VIDEOSTARTDATE] (state, videostartdate) {
@@ -115,6 +143,7 @@ export const mutations = {
   },
   // input value
   [types.PLUGINHEIGHT] (state, height) {
+    console.log('types.PLUGINHEIGHT: ', height)
     GM_setValue(types.PLUGINHEIGHT, height)
     state.pluginHeight = height
   },
@@ -156,8 +185,8 @@ export const mutations = {
     GM_setValue(types.THEMECOLORBORDER, themecolorborder)
     state.themeColorBorder = themecolorborder
   },
-  [types.SEARCHTITLE] (state, list) {
-    GM_setValue(types.SEARCHTITLE, list)
-    state.searchTitle = list
+  [types.TITLELIST] (state, list) {
+    GM_setValue(types.TITLELIST, list)
+    state.titleList = list
   }
 }

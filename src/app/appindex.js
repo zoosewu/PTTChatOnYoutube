@@ -1,9 +1,15 @@
-import { ReportMode } from '../logsetting.js'
-
-import { PTTApp } from './PTTApp.js'
-import { PTTAppBtn } from './PTTAppBtn.js'
-import { store } from './store/store.js'
-export function InitApp (chatcon, whitetheme, isstreaming, messageposter, dynamicPlugin = false) {
+import PttApp from './PttApp.vue'
+import PttAppButton from './PttAppButton.vue'
+import { store } from './store/store'
+import { reportmode } from '../logsetting'
+let appinscount = 0
+export function InitApp (
+  chatcon,
+  whitetheme,
+  isstreaming,
+  messageposter,
+  dynamicPlugin = false
+) {
   // generate crypt key everytime;
   InitChatApp(chatcon)
   function InitChatApp (cn) {
@@ -23,8 +29,8 @@ export function InitApp (chatcon, whitetheme, isstreaming, messageposter, dynami
 
       store,
       components: {
-        PTTAppBtn: PTTAppBtn,
-        PTTApp: PTTApp
+        PTTAppBtn: PttAppButton,
+        PTTApp: PttApp
       },
       provide: function () {
         return {
@@ -46,7 +52,7 @@ export function InitApp (chatcon, whitetheme, isstreaming, messageposter, dynami
       computed: {
         classes: function () {
           const classes = ['position-absolute', 'w-100']
-          if (ReportMode) console.log('Appindex set theme', this.getTheme)
+          if (reportmode) console.log('Appindex set theme', this.getTheme)
           switch (+this.getTheme) {
             case 0:
               if (whitetheme) classes.push(themewhite)
@@ -79,31 +85,42 @@ export function InitApp (chatcon, whitetheme, isstreaming, messageposter, dynami
         appinscount++
         /* eslint-enable no-global-assign */
         this.playertime = window.setInterval(() => {
-          if (this.player) this.$store.dispatch('updateVideoPlayedTime', this.player.currentTime)
-          else clearInterval(this.playertime)
+          if (this.player) {
+            this.$store.dispatch(
+              'updateVideoPlayedTime',
+              this.player.currentTime
+            )
+          } else clearInterval(this.playertime)
         }, 1000)
         this.exist = window.setInterval(() => {
-          const self = document.querySelector('#PTTChat[ins="' + this.index + '"')
+          const self = document.querySelector(
+            '#PTTChat[ins="' + this.index + '"'
+          )
           if (!self) {
             console.log('Instance ' + this.index + ' destroyed.')
             PTT.$destroy()
-          } else { // console.log("Instance " + this.index + " alive.");
+          } else {
+            // console.log("Instance " + this.index + " alive.");
           }
         }, 1000)
         this.$store.dispatch('isStream', isstreaming)
         if (!isstreaming) {
           try {
-            const videoinfo = JSON.parse(document.getElementById('scriptTag').innerHTML)
-            if (ReportMode) console.log('videoinfo', videoinfo)
+            const videoinfo = JSON.parse(
+              document.getElementById('scriptTag').innerHTML
+            )
+            if (reportmode) console.log('videoinfo', videoinfo)
             const startDate = new Date(videoinfo.publication[0].startDate)
-            if (ReportMode) console.log('startDate', startDate)
+            if (reportmode) console.log('startDate', startDate)
             this.$store.dispatch('updateVideoStartDate', startDate)
           } catch (e) {
             console.log(e)
           }
         }
 
-        this.rootmsg.PTTState = data => { this.$store.dispatch('PTTState', data) }
+        this.rootmsg.PTTState = data => {
+          this.$store.dispatch('PTTState', data)
+        }
       },
       beforeDestroy () {
         console.log('beforeDestroy', this)

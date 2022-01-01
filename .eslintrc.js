@@ -1,49 +1,27 @@
 module.exports = {
-  root: true,
   env: {
-    node: true,
-    jest: true,
     browser: true
   },
-  extends: [
-    // add more generic rulesets here, such as:
-    'plugin:vue/recommended',
-    'standard',
-    'plugin:jsdoc/recommended'
-  ],
-  rules: {
-    "no-global-assign": [
-      "error",
-      {
-        "exceptions": [
-          "appinscount"
-        ]
-      }
-    ]
+  root: true,
+  extends: ['plugin:vue/recommended', 'standard', 'eslint:recommended'],
+  parser: 'vue-eslint-parser',
+  parserOptions: {
+    parser: 'babel-eslint'
   },
+  ignorePatterns: ['node_modules/*', 'dist/*', 'local/*'],
   globals: {
-    "$": "readonly",
-    "Vue": "readonly",
-    "Vuex": "readonly",
-    "VueVirtualScroller": "readonly",
-    "CryptoJS": "readonly",
-    "filterXSS": "readonly",
-    "unsafeWindow": "readonly",
-    "top": "readonly",
-    "GM_info": "readonly",
-    "GM_setValue": "readonly",
-    "GM_getValue": "readonly",
-    "CustomEvent": "readonly",
-    "getComputedStyle": "readonly",
-    "defaultopen": "readonly",
-    "disablepttframe": "readonly",
-    "simulateisstreaming": "readonly",
-    "appinscount": "readonly",
-    "cryptkey": "writable"
-  },
-  "ignorePatterns": [
-    ".eslintrc.js",
-    "src/logsetting.js",
-    "src/SupportWebsite/lineTV/InitlineTV.js"
-  ]
+    $: 'readonly',
+    Vue: 'readonly',
+    Vuex: 'readonly',
+    VueVirtualScroller: 'readonly',
+    CryptoJS: 'readonly',
+    filterXSS: 'readonly',
+    unsafeWindow: 'readonly',
+    top: 'readonly',
+    GM_info: 'readonly',
+    GM_setValue: 'readonly',
+    GM_getValue: 'readonly',
+    CustomEvent: 'readonly',
+    getComputedStyle: 'readonly'
+  }
 }

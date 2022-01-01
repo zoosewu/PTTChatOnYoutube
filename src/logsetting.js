@@ -1,10 +1,13 @@
 // user log
-export const ReportMode = false
+export const reportmode = false
 // all log
-export const ShowAllLog = false
+export const showalllog = false
 // dev log
-export const ShowPttScreen = (false || ReportMode || ShowAllLog)
-export const ShowCommand = (false || ReportMode || ShowAllLog)
-export const ShowPostMessage = (false || ReportMode || ShowAllLog)
-export const ShowOnMessage = (false || ReportMode || ShowAllLog)
-export const showAlertMessage = false || ShowAllLog
+export const showPttscreen = (false || reportmode || showalllog)
+export const showcommand = (false || reportmode || showalllog)
+export const showMessage = (true || reportmode || showalllog)
+export const showalertmsg = false || showalllog
+
+export const defaultopen = false
+export const disablepttframe = false
+export const simulateisstreaming = false

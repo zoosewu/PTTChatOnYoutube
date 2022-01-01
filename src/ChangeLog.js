@@ -6,7 +6,7 @@ export function ChangeLog () {
    * @returns {string} newest post in ptt
    */
   function GetPTTChangeLogURL () {
-    return 'https://www.ptt.cc/bbs/C_Chat/M.1621163470.A.1DD.html'
+    return 'https://www.ptt.cc/bbs/C_Chat/M.1630322443.A.2E2.html'
   }
 
   /**
@@ -15,16 +15,22 @@ export function ChangeLog () {
   function AddChangeLogInfo () {
     const changeLogInfo = {}
 
+    changeLogInfo.v_2_9 = new Info()
+    changeLogInfo.v_2_9.HoloDex.push('修正holodex改版造成套件失效的問題。')
+
     changeLogInfo.v_2_8 = new Info()
     changeLogInfo.v_2_8.HoloTools.push('修復在新版HoloTools中無法使用的問題。')
-    changeLogInfo.v_2_8.HoloTools.push('已支援新版HoloTools聊天室開關、佈局切換。')
+    changeLogInfo.v_2_8.HoloTools.push('支援新版HoloTools聊天室開關、佈局切換。')
     changeLogInfo.v_2_8.HoloTools.push('修正開台數多時會擋住增加指定影片按鈕的問題。')
+    changeLogInfo.v_2_8.HoloDex.push('支援嵌入式顯示模式，可以在分割中使用PTT聊天室並自訂大小、位置了。<br>詳細說明：<a href="https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage#holodex" target="_blank">github</a>')
+    changeLogInfo.v_2_8.HoloDex.push('在右上方控制列中新增新舊版PTT聊天室切換開關。')
     changeLogInfo.v_2_8.版本.push('修復PTT新式游標在搜尋超過五位數文章數時會發生錯誤的問題。')
     changeLogInfo.v_2_8.版本.push('修復在同看板使用同標題搜尋時不會更新標題預覽及跳轉至聊天室的問題。')
-    // changeLogInfo.v_2_8.版本.push('修復在PTT卡住後無法再使用標題搜尋功能的問題。')
+    changeLogInfo.v_2_8.版本.push('修復在PTT卡住後無法再使用標題搜尋功能的問題。')
     changeLogInfo.v_2_8.版本.push('支援回文、轉文的搜尋。')
     changeLogInfo.v_2_8.版本.push('修正若干css問題。')
     changeLogInfo.v_2_8.版本.push('修正網站原生對話框(如結帳頁面)會錯誤的問題。')
+    changeLogInfo.v_2_8.版本.push('現在會完全隱藏被黑名單ID的推文了。')
 
     changeLogInfo.v_2_7 = new Info()
     changeLogInfo.v_2_7.HoloTools.push('(舊版)在右上方控制列中新增<strong>PTT聊天室開關</strong>與<strong>切換顯示佈局按鈕</strong>。<br>')
@@ -42,7 +48,8 @@ export function ChangeLog () {
 
   const previousVersion = GM_getValue('previousVersion', '2.5.0').split('.')
   const nowVerion = GM_info.script.version.split('.')
-  if (nowVerion[0] === previousVersion[0] && nowVerion[1] === previousVersion[1]) return
+  GM_setValue('previousVersion', GM_info.script.version)
+  if (nowVerion[0] <= previousVersion[0] && nowVerion[1] <= previousVersion[1]) return
   class Info { constructor () { this.版本 = []; this.HoloDex = []; this.HoloTools = []; this.Twitch = []; this.Nijimado = []; this.Youtube = [] } }
   const allChangeLogInfo = AddChangeLogInfo()
   const changeLogInfo = GetChangeLogInfo(new Info(), +previousVersion[0], +previousVersion[1] + 1)
@@ -51,7 +58,7 @@ export function ChangeLog () {
 
   // data-backdrop should be empty
   const modal = $(`
-    <div id="PTTChangeLog" class="modal fade" data-backdrop="" data-keyboard="false" tabindex="-1" aria-hidden="true" style="color: #000">
+    <div id="PTTChangeLog" class="modal fade" data-backdrop="" data-keyboard="false" tabindex="-1" aria-hidden="true" style="color: #000; overflow: overlay;">
       <div class="modal-dialog modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
@@ -69,7 +76,6 @@ export function ChangeLog () {
     </div>`)
   $('#PTTChat').append(modal)
   $('#PTTChangeLog').modal('show')
-  GM_setValue('previousVersion', GM_info.script.version)
 
   /**
    * @param {object} info ..
