@@ -2,7 +2,6 @@ import ChatPreviewImage from './ChatPreviewImage.vue'
 import ChatScrollBtn from './ChatScrollButton.vue'
 import ChatElement from './ChatElement.vue'
 import ChatSetNewPush from './ChatSetNewComment.vue'
-import { reportmode } from '../../logsetting'
 
 Vue.component('DynamicScroller', VueVirtualScroller.DynamicScroller)
 Vue.component('DynamicScrollerItem', VueVirtualScroller.DynamicScrollerItem)
@@ -27,7 +26,7 @@ export default {
   },
   methods: {
     updateGray: function (index, isgray) {
-      if (reportmode) {
+      if (showScrollLog) {
         console.log('update gray', index, this.allchats[index])
         console.log('update gray', this.allchats[index].gray, '->', isgray, this.allchats[index].msg)
       }
@@ -39,7 +38,7 @@ export default {
       setTimeout(() => this.autoScrollCheck(), 10)
     },
     autoScrollCheck: function () {
-      if (reportmode) {
+      if (showScrollLog) {
         console.log('scrollToChat',
           this.lastactiveChat,
           this.activeChat,
@@ -68,8 +67,8 @@ export default {
     getCurrentChat: function () {
       const chats = this.allchats
       if (this.isStream) { this.activeChat = chats.length - 1 } else {
-        // console.log("this.activeChat && chats && reportmode", this.activeChat, chats, reportmode);
-        if (this.activeChat > -1 && chats && reportmode) {
+        // console.log("this.activeChat && chats && reportMode", this.activeChat, chats, reportMode);
+        if (this.activeChat > -1 && chats && reportMode) {
           console.log('current time: ' + this.videoCurrentTime.toString(), ', activeChat', this.activeChat)
           if (chats[this.activeChat - 1]) { console.log('activeChat-1', chats[this.activeChat - 1].time.toString()) }
           if (chats[this.activeChat]) { console.log('activeChat+0', chats[this.activeChat].time.toString(), ', activeChat > CurrentTime', chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()) }
@@ -87,7 +86,7 @@ export default {
           move = move / 2
         }
       }
-      if (reportmode && this.lastactiveChat !== this.activeChat && chats[this.activeChat]) console.log('CurrentChat, ', this.lastactiveChat, '->', this.activeChat, 'chats.length-1', chats.length - 1, ' isStream', this.isStream, 'chats[this.activeChat].msg', chats[this.activeChat].msg)
+      if (reportMode && this.lastactiveChat !== this.activeChat && chats[this.activeChat]) console.log('CurrentChat, ', this.lastactiveChat, '->', this.activeChat, 'chats.length-1', chats.length - 1, ' isStream', this.isStream, 'chats[this.activeChat].msg', chats[this.activeChat].msg)
     },
     MouseWheelHandler: function (e) {
       this.isAutoScroll = false
@@ -162,7 +161,7 @@ export default {
     ])
   },
   created () {
-    if (reportmode) this._allchats = testchat.list// test
+    if (reportMode) this._allchats = testchat.list// test
     else this._allchats = []
     this.lastChat = []
     this.lastpostaid = this.post.AID

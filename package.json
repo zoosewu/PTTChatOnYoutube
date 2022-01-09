@@ -62,10 +62,19 @@
       "GM_setValue",
       "GM_getValue",
       "CustomEvent",
-      "getComputedStyle"
+      "getComputedStyle",
+      "reportMode",
+      "showAllLog",
+      "showPttScreen",
+      "showCommand",
+      "showMessage",
+      "showAlertMsg",
+      "defaultOpen",
+      "disablePttFrame",
+      "simulateIsStreaming",
+      "showScrollLog"
     ],
     "ignore": [
-      "src/logsetting.js",
       "src/SupportWebsite/lineTV/InitlineTV.js"
     ]
   }

@@ -1,5 +1,10 @@
 import { InitPTT } from '../ptt/pttindex'
-
+/**
+ * @typedef {import("../MessagePoster").MessagePoster} MessagePoster
+ * @typedef {import("./InsFilter").default} InsFilter
+ * @param {MessagePoster} msg
+ * @param {InsFilter[]} filters
+ */
 export function HerfFilter (msg, filters) {
   const isTopframe = window.top === window.self
   if (/term\.ptt\.cc/.exec(window.location.href) !== null) {
@@ -21,12 +26,13 @@ export function HerfFilter (msg, filters) {
         if (!isTopframe) throw throwstring(filter.Fullname) // check script work in right frame
         // init postmessage
         msg.targetorigin = 'https://term.ptt.cc'
-        msg.ownerorigin = filter.ownerorigin
+        msg.ownerorigin = filter.ownerOrigin
         // -----
         console.log(
           'PTTChatOnYT Script started at ' + filter.Fullname + ', href:',
           window.location.href
         )
+        console.log('ownerorigin ' + filter.ownerorigin)
         switch (document.readyState) {
           case 'complete':
             InitualizeScript(filter)

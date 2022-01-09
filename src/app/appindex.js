@@ -1,7 +1,6 @@
 import PttApp from './PttApp.vue'
 import PttAppButton from './PttAppButton.vue'
 import { store } from './store/store'
-import { reportmode } from '../logsetting'
 let appinscount = 0
 export function InitApp (
   chatcon,
@@ -52,7 +51,7 @@ export function InitApp (
       computed: {
         classes: function () {
           const classes = ['position-absolute', 'w-100']
-          if (reportmode) console.log('Appindex set theme', this.getTheme)
+          if (reportMode) console.log('Appindex set theme', this.getTheme)
           switch (+this.getTheme) {
             case 0:
               if (whitetheme) classes.push(themewhite)
@@ -81,9 +80,7 @@ export function InitApp (
       },
 
       mounted () {
-        /* eslint-disable no-global-assign */
         appinscount++
-        /* eslint-enable no-global-assign */
         this.playertime = window.setInterval(() => {
           if (this.player) {
             this.$store.dispatch(
@@ -109,9 +106,9 @@ export function InitApp (
             const videoinfo = JSON.parse(
               document.getElementById('scriptTag').innerHTML
             )
-            if (reportmode) console.log('videoinfo', videoinfo)
+            if (reportMode) console.log('videoinfo', videoinfo)
             const startDate = new Date(videoinfo.publication[0].startDate)
-            if (reportmode) console.log('startDate', startDate)
+            if (reportMode) console.log('startDate', startDate)
             this.$store.dispatch('updateVideoStartDate', startDate)
           } catch (e) {
             console.log(e)

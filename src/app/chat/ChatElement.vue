@@ -32,11 +32,9 @@
 </template>
 
 <script>
-/* eslint-disable no-unused-vars */
+/* eslint-disable-next-line no-unused-vars */
 import ChatElementMessage from './ChatElementMessage'
-/* eslint-enable no-unused-vars */
 import { paddingLeft } from '../../library'
-import { reportmode } from '../../logsetting'
 
 export default {
   props: {
@@ -71,13 +69,12 @@ export default {
       this.$refs.p.mouseEnter = this.$_ChatElementMessage_MoueseEnter
       this.$refs.p.mouseLeave = this.$_ChatElementMessage_MoueseLeave
       this.$refs.p.gotoPost = this.$_ChatElementMessage_GotoPost
-      if (reportmode) console.log('mounted', this, this.$refs)
     })
   },
-  updated () { if (reportmode) console.log('updated, listIndex, chatIndex, msg', this.item.id, this.item.msg) },
+  updated () { if (showScrollLog) console.log('updated, listIndex, chatIndex, msg', this.item.id, this.item.msg) },
   methods: {
     $_ChatElementMessage_GrayCheck () {
-      if (reportmode) console.log('GrayCheck', this.item, 'id', this.item.id, 'index', this.index, 'activeChat', this.activeChat, this.item, 'id>activeChat', this.item.id > this.activeChat, '->', this.item.gray, 'getDisablePushGray', this.getDisablePushGray)
+      if (showScrollLog) console.log('GrayCheck', this.item, 'id', this.item.id, 'index', this.index, 'activeChat', this.activeChat, this.item, 'id>activeChat', this.item.id > this.activeChat, '->', this.item.gray, 'getDisablePushGray', this.getDisablePushGray)
       if (this.index > this.activeChat && !this.item.gray) this.$emit('updategray', this.index, true)
       else if (this.index <= this.activeChat && this.item.gray) this.$emit('updategray', this.index, false)
     },

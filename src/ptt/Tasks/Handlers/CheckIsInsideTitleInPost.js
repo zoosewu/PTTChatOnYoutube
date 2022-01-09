@@ -1,8 +1,6 @@
 import { Ptt } from '../../PttController/Ptt.js'
-import { PostData } from '../../MessagePosterData/PostData.js'
+import PostData from '../../MessagePosterData/PostData.js'
 import { FrameState } from '../../PttController/PttState.js'
-// import { RecieveData } from '../../MessagePosterData/RecieveData.js'
-import { ReportMode } from '../../../logsetting.js'
 
 const backToBoard = () => Ptt.insertText('qP')
 
@@ -28,6 +26,7 @@ const updatePostDate = (insideTitle, isPostHaveNormalInsideTitle) => {
 }
 
 /**
+ * @typedef {import("../../PttController/Ptt").Ptt} Ptt
  * @this {Ptt}
  * @returns {import('./CheckIsCurrectLineInPost.js').HandlerResult} result
  */
@@ -50,7 +49,7 @@ export default function () {
     this.state.frame === FrameState.board ||
     this.state.frame === FrameState.main
   ) {
-    if (ReportMode) {
+    if (reportMode) {
       console.log(
         '==IsPostCurrectInsideTitle error, Ptt.pagestate:',
         this.state.frame

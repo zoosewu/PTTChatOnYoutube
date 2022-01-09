@@ -1,5 +1,4 @@
 import { types } from './mutations_type'
-import { reportmode } from '../../logsetting'
 
 // state
 export const state = {
@@ -84,15 +83,15 @@ export const mutations = {
     state.post.board = board
   },
   [types.UPDATEPOST] (state, post) {
-    if (reportmode) console.log('UPDATEPOST', post)
+    if (reportMode) console.log('UPDATEPOST', post)
     state.post = post
   },
   [types.UPDATECHAT] (state, chatlist) {
-    if (reportmode) console.log('UPDATECHAT', chatlist)
+    if (reportMode) console.log('UPDATECHAT', chatlist)
     state.chatlist = chatlist
   },
   [types.UPDATELOG] (state, log) {
-    if (reportmode) console.log('UPDATELOG', log)
+    if (reportMode) console.log('UPDATELOG', log)
     state.log = log
   },
   [types.VIDEOSTARTDATE] (state, videostartdate) {

@@ -32,8 +32,6 @@
 </template>
 
 <script>
-import { reportmode } from '../../../logsetting'
-
 export default {
   inject: ['nowPluginWidth'],
 
@@ -60,10 +58,9 @@ export default {
     Classes: function () {
       let c = this.Col
       if (this.nowPluginWidth < 399) c = Math.min(this.Col * 2, 12)
-      if (reportmode) console.log('Classes', this.Col, c)
+      // if (reportMode) console.log('Classes', this.Col, c)
       const classes = ['form-row', 'px-0', 'mx-0', 'my-2']
-      if (this.nowPluginWidth < 399) classes.push('col-' + Math.min(this.Col * 2, 12))
-      else classes.push('col-' + Math.min(this.Col, 12))
+      if (this.nowPluginWidth < 399) { classes.push('col-' + Math.min(this.Col * 2, 12)) } else classes.push('col-' + Math.min(this.Col, 12))
       return classes.join(' ')
     },
     LabelClasses: function () {
@@ -71,7 +68,7 @@ export default {
       const classes = ['col-form-label']
       if (this.nowPluginWidth < 399) classes.push('col-12')
       else classes.push('col-' + col)
-      if (reportmode) console.log('LabelClasses', this.description, classes, col)
+      // if (reportMode) console.log('LabelClasses', this.description, classes, col)
       return classes.join(' ')
     }
   },
@@ -83,8 +80,14 @@ export default {
 
   methods: {
     $_PluginSetting_update: function () {
-      if (reportmode) console.log('$_PluginSetting_update', this.SettingValue)
-      if (+this.SettingValue > this.ValueMax) { this.SettingValue = this.ValueMax } else if (+this.SettingValue < this.ValueMin) { this.SettingValue = this.ValueMin }
+      if (reportMode) {
+        console.log('$_PluginSetting_update', this.settingName, this.SettingValue)
+      }
+      if (+this.SettingValue > this.ValueMax) {
+        this.SettingValue = this.ValueMax
+      } else if (+this.SettingValue < this.ValueMin) {
+        this.SettingValue = this.ValueMin
+      }
 
       this.$store.dispatch('set' + this.settingName, this.SettingValue)
     },

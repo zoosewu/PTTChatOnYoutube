@@ -2,7 +2,6 @@
 import { InitApp } from '../../app/appindex'
 import { ChangeLog } from '../../ChangeLog'
 import { ThemeCheck } from '../../library'
-import { reportmode } from '../../logsetting'
 
 export function InitHT (messageposter) {
   // Check Theme
@@ -33,7 +32,7 @@ export function InitHT (messageposter) {
     const defaultVideoHandler = $('<div id="holotoolsvideohandler" style="flex:1 1 auto;"></div>')
     const defaultVideo = $('.player-container.hasControls')
     const PTTChatHandler = $('<div id="pttchatparent" class="p-0 d-flex" style="flex:0 0 0px;position:relative;"></div>')
-    if (reportmode) console.log('parent', parent)
+    if (reportMode) console.log('parent', parent)
     if (parent.length > 0 && iswatch) {
       const pluginwidth = GM_getValue('PluginWidth', 400)
       const pluginheight = GM_getValue('PluginHeight', 400)

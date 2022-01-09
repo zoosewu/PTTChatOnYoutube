@@ -15,6 +15,7 @@ function gotoend () {
 }
 
 /**
+ * @typedef {import("../../PttController/Ptt").Ptt} Ptt
  * @this {Ptt}
  * @returns {import('./CheckIsCurrectLineInPost.js').HandlerResult} result
  */

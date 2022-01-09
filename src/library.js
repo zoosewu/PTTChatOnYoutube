@@ -38,10 +38,10 @@ export function dateReviver (key, value) {
 
 // 对象深复制，不考虑循环引用的情况
 function cloneObj (from) {
-/* eslint-disable no-sequences */
+  /* eslint-disable no-sequences */
   // eslint-disable-next-line no-return-assign
   return Object.keys(from).reduce((obj, key) => (obj[key] = clone(from[key]), obj), {})
-/* eslint-enable no-sequences */
+  /* eslint-enable no-sequences */
 }
 
 // 数组深复制，不考虑循环引用的情况

@@ -1,5 +1,4 @@
 import { types } from './mutations_type'
-import { reportmode } from '../../logsetting'
 
 export const actions = {
   actionIncrease: ({ commit }) => { console.log('actionIncrease'); commit(types.INCREASE) },
@@ -7,6 +6,7 @@ export const actions = {
   Alert: (context, alertobject) => { context.commit(types.ALERT, alertobject) },
   gotoPost: ({ dispatch, commit, state }, aid) => {
     const result = /#(.+) \((.+)\)/.exec(aid)
+    console.log('gotoPost', result, state.PTTState)
     if (!result || result.length <= 2) {
       dispatch('Alert', { type: 0, msg: '文章AID格式錯誤，請重新輸入。' })
     } else if (state.PTTState < 1) {
@@ -120,7 +120,7 @@ export const actions = {
       if (!isMatch) {
         chatlist.push(chat)
       }
-      if (reportmode) console.log('new Chat', chat, currpush)
+      if (reportMode) console.log('new Chat', chat, currpush)
     }
     // console.log("chatlist actions", chatlist);
     commit(types.UPDATECHAT, chatlist)
@@ -142,7 +142,7 @@ export const actions = {
     const time = state.VPlayedTime// [H,m,s,isVideoVeforePost]
     const currtime = new Date(vstart.valueOf())
     currtime.setSeconds(vstart.getSeconds() + time)
-    if (reportmode) console.log('updateVideoCurrentTime check, currtime.valueOf() < state.post.date.valueOf()', currtime.valueOf() < state.post.date.valueOf(), currtime.valueOf(), state.post.date.valueOf())
+    if (reportMode) console.log('updateVideoCurrentTime check, currtime.valueOf() < state.post.date.valueOf()', currtime.valueOf() < state.post.date.valueOf(), currtime.valueOf(), state.post.date.valueOf())
     // console.log("updateVideoCurrentTime vstart, time, currtime", vstart, time, currtime);
     dispatch('updateLog', { type: 'videoCurrentTime', data: currtime.toLocaleDateString() + ' ' + currtime.toLocaleTimeString() })
     commit(types.VIDEOCURRENTRIME, currtime)

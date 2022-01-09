@@ -1,13 +1,12 @@
 /* eslint-disable */
 import { RunTask } from '../RunTask.js'
-import { ReportMode, ShowAllLog } from '../../logsetting.js'
 import { CheckIsInBoard } from './Handlers/CheckIsInBoard.js'
 import { CheckIsInPost } from './Handlers/CheckIsInPost.js'
 import { CheckIsInsideTitleInPost } from './Handlers/CheckIsInsideTitleInPost.js'
 import { SetNewComment } from './Handlers/SetNewComment.js'
 import { MessagePoster } from '../../MessagePoster.js'
-import { PostData } from '../../PostData.js'
-import { RecieveData } from '../MessagePosterData/RecieveData.js'
+import  PostData  from '../../PostData.js'
+import RecieveData from '../MessagePosterData/RecieveData.js'
 
 const setCommentTaskList = [
   CheckIsInBoard,
@@ -19,7 +18,7 @@ const recieveNewPush = () => {
   const receiveData = new RecieveData()
   receiveData.pushedComment = PostData.pushComment
   MessagePoster.PostMessage('pushedText', receiveData.pushedComment)
-  if (ShowAllLog) console.log(PostData)
+  if (showAllLog) console.log(PostData)
   GetPush(PostData.key, PTTPost.board, PTTPost.endline, GetPushTask)
 }
 export const SetComment = pushtext => {
@@ -34,7 +33,7 @@ export const SetComment = pushtext => {
     const halfcount = halfchar ? halfchar.length : 0
     allowedchar = parseInt((48 - addedtext.length * 2 + halfcount) / 2)
     pushtext = result[2]
-    if (ReportMode) {
+    if (reportMode) {
       console.log(
         'SetNewPushTask Text Reg==',
         addedtext.length * 2,

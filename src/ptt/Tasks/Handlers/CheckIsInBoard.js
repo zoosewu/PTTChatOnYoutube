@@ -1,9 +1,8 @@
-import { Ptt } from '../../PttController/Ptt.js'
-import { PostData } from '../../MessagePosterData/PostData.js'
+import PostData from '../../MessagePosterData/PostData.js'
 import { FrameState } from '../../PttController/PttState.js'
-// import { RecieveData } from '../../MessagePosterData/RecieveData.js'
 
 /**
+ * @typedef {import("../../PttController/Ptt").Ptt} Ptt
  * @this {Ptt}
  */
 function gotoBoard () {
@@ -11,10 +10,12 @@ function gotoBoard () {
 }
 
 /**
+ * @typedef {import("../../PttController/Ptt").Ptt} Ptt
  * @this {Ptt}
  * @returns {import('./CheckIsCurrectLineInPost.js').HandlerResult} result
  */
 export default function () {
+  console.log('CheckIsInBoard this', this)
   const result = { pass: false, callback: gotoBoard }
   if (
     this.state.frame === FrameState.firstPageofPost ||

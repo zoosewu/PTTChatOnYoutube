@@ -69,7 +69,7 @@ export default {
       console.log(this.pushtext)
       /* const reg = "(" + text + ")(.*)";
       const result = new RegExp(reg).exec(this.pushtext);
-      if (reportmode) console.log("removePushedText", text, this.pushtext, result);
+      if (reportMode) console.log("removePushedText", text, this.pushtext, result);
       this.pushtext = result[2]; */
     }
   }

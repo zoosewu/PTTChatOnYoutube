@@ -23,8 +23,6 @@
 </template>
 
 <script>
-import { showalllog } from '../../logsetting'
-
 export default {
   props: {
     itemTitle: { type: String, required: true },
@@ -54,7 +52,7 @@ export default {
       if (this.lastlog1 !== this.log) {
       /* eslint-disable vue/no-side-effects-in-computed-properties */
         this.lastlog1 = this.log
-        if (showalllog) console.log('item1Data', this.itemType, this.log.type, this.itemType === this.log.type)
+        if (showAllLog) console.log('item1Data', this.itemType, this.log.type, this.itemType === this.log.type)
         if (this.itemType === this.log.type) this.i1Data = this.log.data
       /* eslint-enable vue/no-side-effects-in-computed-properties */
       }
@@ -64,7 +62,7 @@ export default {
       if (this.lastlog2 !== this.log) {
       /* eslint-disable vue/no-side-effects-in-computed-properties */
         this.lastlog2 = this.log
-        if (showalllog) console.log('item2Data', this.secondItemTitle, this.secondItemType, this.log.type, this.secondItemType === this.log.type)
+        if (showAllLog) console.log('item2Data', this.secondItemTitle, this.secondItemType, this.log.type, this.secondItemType === this.log.type)
         if (this.secondItemTitle && this.secondItemType === this.log.type) this.i2Data = this.log.data
       /* eslint-enable vue/no-side-effects-in-computed-properties */
       }
@@ -73,7 +71,7 @@ export default {
     ...Vuex.mapGetters(['log'])
   },
   mounted () {
-    if (showalllog) console.log('LogItem', this.itemTitle, this.itemType, this.itemColSpan, this.secondItemTitle, this.secondItemType)
+    if (showAllLog) console.log('LogItem', this.itemTitle, this.itemType, this.itemColSpan, this.secondItemTitle, this.secondItemType)
   }
 }
 </script>

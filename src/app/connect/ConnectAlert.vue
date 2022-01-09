@@ -19,7 +19,6 @@
 </template>
 
 <script>
-import { showalertmsg } from '../../logsetting'
 import ConnectAlertItem from './ConnectAlertItem.vue'
 
 export default {
@@ -50,7 +49,7 @@ export default {
   mounted () {
     this.msg.alert = data => {
       this.$store.dispatch('Alert', { type: data.type, msg: data.msg })
-      if (showalertmsg) console.log('Alert,type: ' + data.type + ', msg: ' + data.msg)
+      if (showAlertMsg) console.log('Alert,type: ' + data.type + ', msg: ' + data.msg)
     }
     this.lastAlert = this.newAlert
     this.al = []

@@ -1,4 +1,3 @@
-import { reportmode } from './logsetting'
 import { MessagePoster } from './MessagePoster'
 import { HerfFilter } from './filter/HerfFilter'
 import { ytfilter } from './SupportWebsite/youtube/ytfilter'
@@ -11,9 +10,9 @@ import { hdfilter } from './SupportWebsite/holodex/hdfilter'
 import './scss/index.scss'
 
 /* 關閉vue-devtools */
-Vue.config.devtools = reportmode
+Vue.config.devtools = reportMode
 /* 關閉錯誤警告 */
-Vue.config.debug = reportmode
+Vue.config.debug = reportMode
 ;(function () {
   const isTopframe = window.top === window.self
   if (isTopframe) {

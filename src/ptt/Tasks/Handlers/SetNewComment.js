@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { Ptt } from '../../PTTController/Ptt.js'
-import { PostData } from '../../MessagePosterData/PostData.js'
+import { Ptt } from '../../PttController/Ptt.js'
+import PostData from '../../MessagePosterData/PostData.js'
 import { MessagePoster } from '../../../MessagePoster.js'
 
 /**

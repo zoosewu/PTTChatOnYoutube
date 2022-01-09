@@ -1,11 +1,9 @@
-import { Ptt } from '../../PttController/Ptt.js'
-import { PostData, SearchType } from '../../MessagePosterData/PostData.js'
+import PostData, { SearchType } from '../../MessagePosterData/PostData.js'
 import { FrameState } from '../../PttController/PttState.js'
-// import { RecieveData } from '../../MessagePosterData/RecieveData.js'
-import { ReportMode } from '../../../logsetting.js'
 import { MessagePoster } from '../../../MessagePoster.js'
 
 /**
+ * @typedef {import("../../PttController/Ptt").Ptt} Ptt
  * @this {Ptt}
  */
 function gotoPostByAID () {
@@ -67,13 +65,13 @@ export default function () {
         res.pass = false
       } else {
         MessagePoster.PostMessage('alert', { type: 0, msg: message })
-        if (ReportMode) console.log(message, this, PostData)
+        if (reportMode) console.log(message, this, PostData)
         res.pass = false
         this.unlock()
       }
     }
   } else if (this.state.frame === FrameState.main) {
-    if (ReportMode) {
+    if (reportMode) {
       console.log(
         '==IsPostCurrectInsideTitle error, Ptt.pagestate:',
         this.state.frame

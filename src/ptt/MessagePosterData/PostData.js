@@ -1,6 +1,5 @@
 export const SearchType = Object.freeze({ none: 0, AID: 1, Title: 2 })
-
-const PostDataOriginal = {
+const PostData = {
   board: '',
   key: '',
   outsideTitle: '',
@@ -14,30 +13,29 @@ const PostDataOriginal = {
   isPostChecked: false,
   isBoadChecked: false,
   TrySetNewComment: 0,
-  pushedComment: ''
+  pushedComment: '',
+  samePost: function () {
+    this.isSamePost = true
+    this.isPostChecked = false
+    this.isBoadChecked = false
+    this.TrySetNewComment = 0
+    this.pushedComment = ''
+  },
+  reset: function () {
+    this.board = ''
+    this.key = ''
+    this.outsideTitle = ''
+    this.insideTitle = ''
+    this.postTime = new Date()
+    this.startLine = 0
+    this.endLine = 0
+    this.haveNormalInsideTitle = false // 普通標題會有第四行消失的問題
+    this.searchType = SearchType.none
+    this.isSamePost = false
+    this.isPostChecked = false
+    this.isBoadChecked = false
+    this.TrySetNewComment = 0
+    this.pushedComment = ''
+  }
 }
-export const PostData = {
-  ...PostDataOriginal
-}
-export const SetPostDataSamePost = () => {
-  PostData.isSamePost = true
-  PostData.isPostChecked = false
-  PostData.isBoadChecked = false
-  PostData.TrySetNewComment = 0
-  PostData.pushedComment = ''
-}
-export const ResetPostData = () => {
-  PostData.board = PostDataOriginal.board
-  PostData.key = PostDataOriginal.key
-  PostData.outsideTitle = PostDataOriginal.outsideTitle
-  PostData.insideTitle = PostDataOriginal.insideTitle
-  PostData.postTime = PostDataOriginal.postTime
-  PostData.startline = PostDataOriginal.startline
-  PostData.endline = PostDataOriginal.endline
-  PostData.searchType = PostDataOriginal.searchType
-  PostData.isSamePost = PostDataOriginal.isSamePost
-  PostData.isPostChecked = PostDataOriginal.isPostChecked
-  PostData.isBoadChecked = PostDataOriginal.isBoadChecked
-  PostData.TrySetNewComment = PostDataOriginal.TrySetNewComment
-  PostData.pushedComment = PostDataOriginal.pushedComment
-}
+export default PostData

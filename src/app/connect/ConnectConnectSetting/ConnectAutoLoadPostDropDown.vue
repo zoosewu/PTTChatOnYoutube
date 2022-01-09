@@ -131,7 +131,7 @@ export default {
   mounted () {
     this.msg.setPreviewPostTitle = data => {
       this.previewTitle = data
-      // if (reportmode) console.log("gettitle" + this.title)
+      // if (reportMode) console.log("gettitle" + this.title)
     }
   },
   methods: {

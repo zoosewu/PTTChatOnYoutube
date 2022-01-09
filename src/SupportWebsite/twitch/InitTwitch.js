@@ -2,7 +2,6 @@
 import { InitApp } from '../../app/appindex'
 import { ChangeLog } from '../../ChangeLog'
 import { ThemeCheck } from '../../library'
-import { reportmode } from '../../logsetting'
 
 export function InitTwitch (messageposter) {
   // Check Theme
@@ -15,11 +14,11 @@ export function InitTwitch (messageposter) {
   })()
   function TryInsChat () {
     const parent = $('section.chat-room')
-    if (reportmode) console.log('parent', parent)
+    if (reportMode) console.log('parent', parent)
     if (parent.length > 0) {
       const PTTApp = $('#PTTChat', parent)
       if (PTTApp.length < 1) {
-        if (reportmode) console.log('InitApp')
+        if (reportMode) console.log('InitApp')
         InitApp(parent, WhiteTheme, true, messageposter)
         ChangeLog()
       }

@@ -1,28 +1,24 @@
-import { ShowAllLog, ShowPttScreen } from '../logsetting.js'
 import { Ptt } from './PttController/Ptt.js'
-import { Login } from './Tasks/Login.js'
+import eventBind from './eventBind.js'
 /**
- * @param messagePoster
+ * @param {import('../MessagePoster').MessagePoster} messagePoster
  */
 export function InitPTT (messagePoster) {
   const ptt = new Ptt(messagePoster)
-  /**
-   *
-   */
   function OnUpdate () {
-    if (ShowAllLog) console.log('===OnUpdate start===')
-    if (ShowAllLog) console.log('Ptt.clearScreen()')
+    if (showAllLog) console.log('===OnUpdate start===')
+    if (showAllLog) console.log('Ptt.clearScreen()')
     ptt.clearScreen()
-    if (ShowAllLog) console.log('Ptt.frame.update()')
+    if (showAllLog) console.log('Ptt.frame.update()')
     ptt.frame.update()
-    if (ShowAllLog) console.log('runAutoCommand()')
+    if (showAllLog) console.log('runAutoCommand()')
     const skipThisFrame = ptt.autoCommand.runAutoCommand()
     if (!skipThisFrame) {
-      if (ShowAllLog) console.log('runCommand()')
+      if (showAllLog) console.log('runCommand()')
       ptt.runCommand()
     }
-    if (ShowPttScreen) console.log('==Ptt screen shot:', ptt.state.screen)
-    if (ShowAllLog) console.log('===OnUpdate end===')
+    if (showPttScreen) console.log('==Ptt screen shot:', ptt.state.screen)
+    if (showAllLog) console.log('===OnUpdate end===')
   }
   /**
    * @param obj
@@ -43,5 +39,5 @@ export function InitPTT (messagePoster) {
       OnUpdate()
     }
   })
-  ptt.msg.login = Login
+  eventBind(ptt)
 }

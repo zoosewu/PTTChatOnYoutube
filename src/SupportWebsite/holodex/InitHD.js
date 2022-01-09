@@ -1,10 +1,9 @@
 import { InitApp } from '../../app/appindex'
 import { ChangeLog } from '../../ChangeLog'
 import { ThemeCheck } from '../../library'
-import { reportmode } from '../../logsetting'
 const PluginMode = Object.freeze({ new: true, classic: false })
 export function InitHD (messageposter) {
-  if (reportmode) console.log('InitHD')
+  if (reportMode) console.log('InitHD')
 
   // Check Theme
   const WhiteTheme = ThemeCheck('html', '250, 250, 250')
@@ -18,7 +17,7 @@ export function InitHD (messageposter) {
 
   setInterval(() => {
     const url = /https:\/\/holodex\.net\/multiview/.exec(window.location.href)
-    if (reportmode) console.log('url', url, 'recentWatch', recentWatch)
+    if (reportMode) console.log('url', url, 'recentWatch', recentWatch)
     if (!url) {
       recentWatch = false
     } else if (!recentWatch) {
@@ -71,7 +70,7 @@ export function InitHD (messageposter) {
           $('#pttchatparent').css('flex', `0 0 ${nowWidth}px`)
         }
       }
-      if (reportmode) console.log('hide PTT')
+      if (reportMode) console.log('hide PTT')
     })
     $(document).on('show.bs.collapse hide.bs.collapse', '#PTTMain', () => {
       collapseStart = true
@@ -104,7 +103,7 @@ export function InitHD (messageposter) {
         break
     }
     initPttChatStyle()
-    if (reportmode) console.log('display mode changed')
+    if (reportMode) console.log('display mode changed')
   }
   function switchToClassicMode () {
     clearInterval(mainTimer)
@@ -162,7 +161,7 @@ export function InitHD (messageposter) {
     fakeparent.append(PTTChatHandler)
   }
   function initHolodex () {
-    if (reportmode) console.log('initHolodex')
+    if (reportMode) console.log('initHolodex')
     initPttConstructure()
     createControlIcon()
     initControlIcon()
@@ -175,13 +174,13 @@ export function InitHD (messageposter) {
       )
       $('.vue-grid-layout').append(pttFrame)
       listenPttFrameBtn()
-      if (reportmode) console.log('create PTTChat instance in holodex')
+      if (reportMode) console.log('create PTTChat instance in holodex')
     }
     mainTimer =
       GM_getValue('PluginTypeHolodex', '1') === '0'
         ? setInterval(appendPttEmbedBtn, 1000)
         : undefined
-    if (reportmode) console.log('main initialize done')
+    if (reportMode) console.log('main initialize done')
   }
 
   function appendPttEmbedBtn () {
@@ -217,7 +216,7 @@ export function InitHD (messageposter) {
           .eq(1)
           .trigger('click')
         appendPtt2Cell(gridIndex)
-        if (reportmode) console.log(`grid-#${gridIndex}-boot-button clicked`)
+        if (reportMode) console.log(`grid-#${gridIndex}-boot-button clicked`)
       })
     })
   }
@@ -300,14 +299,14 @@ export function InitHD (messageposter) {
       $('#PTTMain').collapse('hide')
     }
     if (observer) observer.disconnect()
-    if (reportmode) console.log('hide PTTChat')
+    if (reportMode) console.log('hide PTTChat')
   }
 
   function checkFilledWithVideo (cell) {
     if (cell.find($('.mv-frame.ma-auto')).length === 0) {
       setTimeout(checkFilledWithVideo, 1000, cell)
     } else {
-      if (reportmode) console.log('cell fill with video, remove PTTChat')
+      if (reportMode) console.log('cell fill with video, remove PTTChat')
       hidePttChatInGrid()
     }
   }
