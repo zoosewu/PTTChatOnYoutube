@@ -1,6 +1,6 @@
-import PostData from '../../MessagePosterData/PostData.js'
+import { FrameState } from '../../PttController/PttState.js'
 function gotoEndOfPost () {
-  Ptt.insertText('G')
+  this.insertText('G')
 }
 
 /**
@@ -8,25 +8,21 @@ function gotoEndOfPost () {
  * @this {Ptt}
  * @returns {import('./CheckIsCurrectLineInPost.js').HandlerResult} result
  */
-export default function () {
+export default function GetRecentLine () {
   const res = { pass: false, callback: gotoEndOfPost }
-  if (Ptt.pagestate === 4 || Ptt.pagestate === 3) {
-    const lineResult = Ptt.screenHaveText(
-      /瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~(\d+) 行/
-    )
+  if (this.state.frame === FrameState.firstPageofPost || this.state.frame === FrameState.otherPageofPost) {
+    const lineResult = this.match(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~(\d+) 行/)
     if (lineResult) {
-      let targetline = +lineResult[1] - PostData.endline - 1
+      let targetline = +lineResult[1] - this.postData.endline - 1
       if (targetline < 3) targetline = 3
       // console.log("==GetRecentLine, TotalLine, GotoLline", line[1], targetline);
-      PostData.endline = targetline
+      this.postData.endline = targetline
       /* if (Ptt.pagestate === 4 || Ptt.pagestate === 3) */
-      Ptt.insertText('qP') // insertText(PTTPost.endline + ".\n");
+      this.insertText('qP') // insertText(PTTPost.endline + ".\n");
       res.pass = true
     }
-  } else if (Ptt.pagestate === 1) {
-    console.log('==GetPushTask error, Ptt.pagestate == 1.')
-  } else if (Ptt.pagestate === 2) {
-    console.log('==GetPushTask error, Ptt.pagestate == 2.')
+  } else {
+    console.log('==GetPushTask error, Ptt.pagestate ==', this.state.frame)
   }
   return res
 }

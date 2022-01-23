@@ -4,7 +4,9 @@ import { PttTaskManager } from './PttTaskManager.js'
 import { PttAutoCommand } from './PttAutoCommand.js'
 import { PttFrame } from './PttFrame.js'
 import { PttCheckState, checkPttAlive } from './PttCheckState.js'
-
+import { PttCommand } from './PttCommand.js'
+import PostData from '../MessagePosterData/PostData.js'
+import RecieveData from '../MessagePosterData/RecieveData.js'
 /**
  * @typedef {import("../../MessagePoster").MessagePoster} MessagePoster
  * @param {MessagePoster} msg message poster
@@ -17,7 +19,6 @@ export function Ptt (msg) {
   }
   console.log('instance Ptt')
   this.msg = msg
-  this.command = null
   this.window = window // 自動
 
   /** @type {PttState} */
@@ -34,64 +35,57 @@ export function Ptt (msg) {
   /** @type {PttFrame} */
   this.frame = PttFrame.apply(this)
 
-  // this.postData = new PostData()
+  /** @type {PttCommand} */
+  this.command = PttCommand.apply(this)
+
+  /** @type {PostData} */
+  this.postData = PostData
+
+  this.recieveData = new RecieveData()
 
   /** @type {PttAddTask} */
   this.addTask = function (newTask, ...args) {
-    this.taskManager.addTask(newTask, ...args)
-    if (PttCheckState.apply(this)) {
-      this.lock()
-      const task = this.taskManager.next()
+    console.log('this.taskManager.nowTask', this.taskManager.nowTask)
+    this.taskManager.add(newTask, ...args)
+    if (!this.taskManager.nowTask) {
+      this.runTask()
+    }
+  }
+  this.runTask = function () {
+    this.taskManager.next()
+    const task = this.taskManager.nowTask
+    console.log('runTask', task)
+    if (!task) {
+      this.unlock()
+      return
+    }
+    const NormalState = PttCheckState.apply(this)
+    if (NormalState) {
       this.state.lastUpdateTime = Date.now()
-      task.fn.apply(this, args)
+      task.fn.apply(this, task.args)
       setTimeout(checkPttAlive.bind(this), 3500)
     }
   }
   this.endTask = function () {
-    const task = this.taskManager.next()
-    this.state.lastUpdateTime = Date.now()
-    if (reportMode) console.log('AddTask', task.fn.name, task.args, this)
-    task.fn.apply(this, task.args)
-    setTimeout(checkPttAlive.bind(this), 3500)
-  }
-  this.lock = () => {
-    this.state.lock = true
-  }
-  this.unlock = () => {
-    this.state.lock = false
-    this.command = null
-  }
-  this.clearScreen = () => {
-    this.state.screenUpdated = false
-    this.state.screen = []
-  }
-  this.setCommand = (reg, input, callback, ...args) => {
-    if (!this.state.lock) return
-    if (!this.command) {
-      this.command = { reg, input, callback, args }
-      if (showCommand) console.log('==set command', this.command)
-    } else if (showCommand) { console.log('==set command error,already exist', this.command) }
-  }
-  this.replaceCommand = (reg, input, callback, ...args) => {
-    if (!this.state.lock) return
-    const lastCommand = this.command
-    this.command = { reg, input, callback, args }
-    if (showCommand) { console.log('==replace command', lastCommand, '=>', this.command) }
-  }
-  this.removeCommand = () => {
-    if (showCommand) console.log('==remove command', this.command)
-    this.command = null
+    const lasttask = this.taskManager.nowTask
+    if (reportMode) console.log('endTask', lasttask.fn.name, lasttask.args)
+    this.runTask()
   }
   this.removeAllTasks = () => {
     this.taskManager.reset()
   }
-  this.runCommand = () => {
-    if (!this.command) return
-    const cmd = this.command
-    if (cmd) {
-      console.log('execute command:', cmd)
-      cmd.fn.apply(this, ...cmd.args)
-    }
+  this.lock = () => {
+    if (reportMode) console.log('Ptt lock')
+    this.state.lock = true
+  }
+  this.unlock = () => {
+    if (reportMode) console.log('Ptt unlock')
+    this.state.lock = false
+    this.command.cmd = null
+  }
+  this.clearScreen = () => {
+    this.state.screenUpdated = false
+    this.state.screen = []
   }
   this.insertText = str => {
     const t = this.window.document.querySelector('#t')

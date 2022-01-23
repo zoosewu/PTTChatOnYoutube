@@ -1,4 +1,3 @@
-import PostData from '../../MessagePosterData/PostData.js'
 import { FrameState } from '../../PttController/PttState.js'
 
 /**
@@ -7,7 +6,7 @@ import { FrameState } from '../../PttController/PttState.js'
  * @property {Function} callback call when false
  */
 
-const gotoline = () => this.insertText(PostData.endLine + 1 + '.\n')
+const gotoline = () => this.insertText(this.postData.endLine + 1 + '.\n')
 
 /**
  * @typedef {import("../../PttController/Ptt").Ptt} Ptt
@@ -19,8 +18,8 @@ export default function () {
   if (this.state.frame === FrameState.firstPageofPost || this.state.frame === FrameState.otherPageofPost) {
     const lineResult = this.match(/目前顯示: 第 (\d+)~(\d+) 行/)
     const startLine = lineResult[1]
-    let targetLine = PostData.endline - startLine + 1
-    if (startLine < 5 && PostData.haveNormalInsideTitle) {
+    let targetLine = this.postData.endline - startLine + 1
+    if (startLine < 5 && this.postData.haveNormalInsideTitle) {
       targetLine += 1
     }
     if (targetLine < 1 || targetLine > 23 /* && Ptt.match(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~\d+ 行/) === null */) {

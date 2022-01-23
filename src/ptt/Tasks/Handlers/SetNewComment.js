@@ -7,7 +7,7 @@ import { MessagePoster } from '../../../MessagePoster.js'
  * @this {Ptt}
  * @returns {import('./CheckIsCurrectLineInPost.js').HandlerResult} result
  */
-export default function () {
+export default function SetNewComment() {
   const res = { pass: false, callback: () => {} }
   PostData.TrySetNewComment++
   if (PostData.TrySetNewComment > 4) {

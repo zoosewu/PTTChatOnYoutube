@@ -9,7 +9,7 @@ module.exports = mergeConfig(commonConfig, {
   entry: './src/main.js',
   devtool: 'cheap-module-eval-source-map',
   devServer: {
-    contentBase: path.resolve(__dirname, '../dist'),
+    contentBase: path.resolve(__dirname, '../src'),
     https: true,
     hot: true,
     inline: true,
@@ -18,7 +18,11 @@ module.exports = mergeConfig(commonConfig, {
     ],
     disableHostCheck: true,
     open: true,
-    openPage: 'main.user.js'
+    openPage: 'main.user.js',
+    watchOptions: {
+      poll: true, // or use an integer for a check every x milliseconds, e.g. poll: 1000,
+      ignored: /node_modules/ // otherwise it takes a lot of time to refresh
+    }
   },
   plugins: [
     new WebpackUserscript({
@@ -28,10 +32,10 @@ module.exports = mergeConfig(commonConfig, {
     new webpack.DefinePlugin({
       reportMode: true,
       showAllLog: false,
-      showPttScreen: false || this.reportMode || this.showAllLog,
-      showCommand: false || this.reportMode || this.showAllLog,
-      showMessage: true || this.reportMode || this.showAllLog,
-      showAlertMsg: false || this.showAllLog,
+      get showPttScreen () { return (false || this.reportMode || this.showAllLog) },
+      get showCommand () { return (false || this.reportMode || this.showAllLog) },
+      get showMessage () { return (true || this.reportMode || this.showAllLog) },
+      get showAlertMsg () { return (false || this.showAllLog) },
       defaultOpen: false,
       disablePttFrame: false,
       simulateIsStreaming: false,

@@ -6,9 +6,9 @@ export default function RecieveData () {
   /** @type {string} */
   this.title = ''
   /** @type {string} */
-  this.date = ''
+  this.date = new Date(Date.now)
   /** @type {string} */
-  this.endLine = ''
+  this.endLine = 0
   /** @type {Object[]} */
   this.comments = []
   /** @type {string} */

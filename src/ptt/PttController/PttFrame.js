@@ -22,14 +22,15 @@ export function PttFrame () {
       { reg: /目前顯示: 第/, state: FrameState.otherPageofPost }
     ],
     update: () => {
+      console.log('PTT.frmae.update')
       for (let i = 0; i < this.frame.filters.length; i++) {
         const filter = this.frame.filters[i]
         const result = this.match(filter.reg)
-        if (result != null) {
-          if (reportMode) console.log('==page state:' + this.state.frame + '->' + filter.state, result)
+        console.log('this.match(filter.reg)', filter.reg, result)
+        if (result) {
+          if (reportMode) console.log('==ptt.state.frame:' + this.state.frame + '->' + filter.state, result)
           this.state.frame = filter.state
           if (this.state.frame > 1) this.state.reconnectTime = 10
-          console.log('PTTState', this.state.frame)
           this.msg.PostMessage('PTTState', this.state.frame)
           return
         }

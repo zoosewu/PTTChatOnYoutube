@@ -1,9 +1,6 @@
 /* eslint-disable */
 function gotoend () {
-  if (
-    !PTTPost.searchingTitle.isend.insertP ||
-    !PTTPost.searchingTitle.isend.insert$
-  ) {
+  if (!PTTPost.searchingTitle.isend.insertP || !PTTPost.searchingTitle.isend.insert$) {
     if (!PTTPost.searchingTitle.isend.insertP) {
       insertText('P')
       PTTPost.searchingTitle.isend.insertP = true
@@ -19,7 +16,7 @@ function gotoend () {
  * @this {Ptt}
  * @returns {import('./CheckIsCurrectLineInPost.js').HandlerResult} result
  */
-export default function () {
+export default function CheckIsNewestPostInBoard () {
   const res = { pass: true, callback: gotoend }
   if (this.pagestate === 2) {
     if (

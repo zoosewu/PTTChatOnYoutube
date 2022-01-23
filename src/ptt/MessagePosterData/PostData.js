@@ -10,14 +10,10 @@ const PostData = {
   haveNormalInsideTitle: false, // 普通標題會有第四行消失的問題
   searchType: SearchType.none,
   isSamePost: false,
-  isPostChecked: false,
-  isBoadChecked: false,
   TrySetNewComment: 0,
   pushedComment: '',
   samePost: function () {
     this.isSamePost = true
-    this.isPostChecked = false
-    this.isBoadChecked = false
     this.TrySetNewComment = 0
     this.pushedComment = ''
   },
@@ -32,8 +28,6 @@ const PostData = {
     this.haveNormalInsideTitle = false // 普通標題會有第四行消失的問題
     this.searchType = SearchType.none
     this.isSamePost = false
-    this.isPostChecked = false
-    this.isBoadChecked = false
     this.TrySetNewComment = 0
     this.pushedComment = ''
   }

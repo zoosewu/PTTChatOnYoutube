@@ -6,7 +6,7 @@ import eventBind from './eventBind.js'
 export function InitPTT (messagePoster) {
   const ptt = new Ptt(messagePoster)
   function OnUpdate () {
-    if (showAllLog) console.log('===OnUpdate start===')
+    if (reportMode) console.log('===OnUpdate start===')
     if (showAllLog) console.log('Ptt.clearScreen()')
     ptt.clearScreen()
     if (showAllLog) console.log('Ptt.frame.update()')
@@ -15,10 +15,10 @@ export function InitPTT (messagePoster) {
     const skipThisFrame = ptt.autoCommand.runAutoCommand()
     if (!skipThisFrame) {
       if (showAllLog) console.log('runCommand()')
-      ptt.runCommand()
+      ptt.command.execute()
     }
-    if (showPttScreen) console.log('==Ptt screen shot:', ptt.state.screen)
-    if (showAllLog) console.log('===OnUpdate end===')
+    // if (showPttScreen) console.log('==Ptt screen snapshot:', ptt.state.screen)
+    if (reportMode) console.log('===OnUpdate end===')
   }
   /**
    * @param obj
@@ -39,5 +39,5 @@ export function InitPTT (messagePoster) {
       OnUpdate()
     }
   })
-  eventBind(ptt)
+  eventBind.apply(ptt)
 }

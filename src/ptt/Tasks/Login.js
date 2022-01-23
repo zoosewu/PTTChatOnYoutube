@@ -26,40 +26,40 @@ function login (id, pw, DeleteOtherConnect) {
   if (!this.state.login) {
     this.state.deleteOtherConnection = DeleteOtherConnect
     this.msg.PostMessage('alert', { type: 1, msg: '登入中' })
-
     const result = this.match(/請輸入代號，或以 guest 參觀，或以 new 註冊/)
     if (result) {
       if (TryLogin <= 0) { // 防止過度嘗試
         this.msg.PostMessage('alert', { type: 0, msg: '未知原因登入失敗。' })
-        this.unlock()
+        this.endTask()
         return
       } else {
         TryLogin--
       }
       this.insertText(id + '\n' + pw + '\n')
-      this.taskManager.addTask(checkLogin)
+      this.command.set(checkLogin)
     } else {
-      this.taskManager.addTask(login, id, pw)
+      this.command.set(login, id, pw)
     }
   } else {
     this.msg.PostMessage('alert', { type: 0, msg: '已經登入，請勿重複登入。' })
-    this.unlock()
+    this.endTask()
   }
 }
 
 function checkLogin () {
   if (this.match(/密碼不對或無此帳號。請檢查大小寫及有無輸入錯誤。|請重新輸入/)) {
     this.msg.PostMessage('alert', { type: 0, msg: '登入失敗，帳號或密碼有誤。' })
-    this.unlock()
+    this.endTask()
   } else if (this.match(/上方為使用者心情點播留言區|【 精華公佈欄 】/)) {
-    this.msg.PostMessage('alert', { type: 2, msg: '登入成功。123' })
+    this.msg.PostMessage('alert', { type: 2, msg: '登入成功。' })
     this.state.login = true
-    this.unlock()
+    this.endTask()
   } else if (this.match(/登入中，請稍候\.\.\.|正在更新與同步線上使用者及好友名單，系統負荷量大時會需時較久|密碼正確！ 開始登入系統/)) {
-    this.taskManager.addTask(checkLogin)
+    this.msg.PostMessage('alert', { type: 1, msg: '登入中，請稍候...' })
+    this.command.set(checkLogin)
   } else {
     this.msg.PostMessage('alert', { type: 0, msg: '發生了未知錯誤，可能是因為保留連線導致被踢掉。' })
     console.log(this.state.screen)
-    this.unlock()
+    this.endTask()
   }
 }

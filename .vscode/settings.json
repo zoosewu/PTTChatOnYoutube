@@ -17,5 +17,6 @@
     "vetur": " "
   },
   "vetur.format.defaultFormatter.js": "prettier-eslint",
-  "vetur.format.defaultFormatter.html": "none"
+  "vetur.format.defaultFormatter.html": "none",
+  "commentTranslate.hover.enabled": true
 }
