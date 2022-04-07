@@ -20,7 +20,7 @@ export function InitHD (messageposter) {
 
   function initHolodex () {
     const pluginWidth = parseInt(GM_getValue('PluginWidth', 350), 10)
-    const liveControls = $('.flex-grow-1.justify-end.d-flex.mv-toolbar-btn.align-center.no-btn-text')
+    const liveControls = $('.justify-end.d-flex.mv-toolbar-btn.align-center.no-btn-text')
     const fakeparent = $('<div id="fakeparent" class="d-flex flex-row"></div>')
     const defaultVideoHandler = $('<div id="holotoolsvideohandler" style="flex:1 1 auto;"></div>')
     const PTTChatHandler = $('<div id="pttchatparent" class="p-0 d-flex" style="flex:0 0 0px;position:relative;"></div>')
