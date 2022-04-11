@@ -12,15 +12,15 @@ export const getters = {
   getInstancePTTID: state => { return state.InstancePTTID },
 
   // checkbox
-  getEnableSetNewPush: state => { /* console.log("EnableSetNewPush getter",state.enablesetnewpush); */ return state.enablesetnewpush },
-  getDisablePushGray: state => { return state.disablepushgray },
+  getEnableSetNewComment: state => { /* console.log("EnableSetNewPush getter",state.enablesetnewpush); */ return state.enablesetnewcomment },
+  getDisableCommentGray: state => { return state.disablepushgray },
   getDeleteOtherConnect: state => { return state.deleteotherconnect },
   getEnableBlacklist: state => { return state.enableblacklist },
   // input value
   getPluginHeight: state => { return state.pluginHeight },
   getFontsize: state => { return state.chatFontsize },
   getChatSpace: state => { return state.chatSpace },
-  getPushInterval: state => { return state.pushInterval },
+  getCommentInterval: state => { return state.commentInterval },
   getPluginWidth: state => { return state.pluginWidth },
   getPluginPortraitHeight: state => { return state.pluginPortraitHeight },
   getBlacklist: state => { return state.blacklist },

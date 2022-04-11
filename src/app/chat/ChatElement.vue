@@ -53,18 +53,18 @@ export default {
       return typecolor + ' mr-2 mb-0'
     },
     bgc: function () {
-      if (this.getDisablePushGray) return ''
+      if (this.getDisableCommentGray) return ''
       const isUnchat = this.item.gray ? '0.25' : '0'
       const color = 'rgba(128, 128, 128, ' + isUnchat + ')'
       return { backgroundColor: color, transition: '2s' }
     },
-    ...Vuex.mapGetters(['getDisablePushGray'])
+    ...Vuex.mapGetters(['getDisableCommentGray'])
   },
   watch: {
     activeChat: function () { this.$_ChatElementMessage_GrayCheck() }
   },
   mounted () {
-    if (!this.getDisablePushGray) this.$_ChatElementMessage_GrayCheck()
+    if (!this.getDisableCommentGray) this.$_ChatElementMessage_GrayCheck()
     this.$nextTick(function () {
       this.$refs.p.mouseEnter = this.$_ChatElementMessage_MoueseEnter
       this.$refs.p.mouseLeave = this.$_ChatElementMessage_MoueseLeave
@@ -74,7 +74,7 @@ export default {
   updated () { if (showScrollLog) console.log('updated, listIndex, chatIndex, msg', this.item.id, this.item.msg) },
   methods: {
     $_ChatElementMessage_GrayCheck () {
-      if (showScrollLog) console.log('GrayCheck', this.item, 'id', this.item.id, 'index', this.index, 'activeChat', this.activeChat, this.item, 'id>activeChat', this.item.id > this.activeChat, '->', this.item.gray, 'getDisablePushGray', this.getDisablePushGray)
+      if (showScrollLog) console.log('GrayCheck', this.item, 'id', this.item.id, 'index', this.index, 'activeChat', this.activeChat, this.item, 'id>activeChat', this.item.id > this.activeChat, '->', this.item.gray, 'getDisableCommentGray', this.getDisableCommentGray)
       if (this.index > this.activeChat && !this.item.gray) this.$emit('updategray', this.index, true)
       else if (this.index <= this.activeChat && this.item.gray) this.$emit('updategray', this.index, false)
     },

@@ -72,13 +72,13 @@ export default {
       console.log('_ConnectAID_SearchPushByPostAID', this.post)
       if (this.post.AID === result[1] && this.post.board === result[2]) { // 相同文章取最新推文
         if (reportMode) console.log('nowAID same post', result[1], result[2], this.post.lastendline)
-        this.msg.PostMessage('getPushByLine', { key: result[1], board: result[2], startline: this.post.lastendline })
+        this.msg.PostMessage('getCommentByAID', { key: result[1], board: result[2], startline: this.post.lastendline })
       } else if (this.isStream) { // 實況取得最近的推文
         if (reportMode) console.log('nowAID recent', result[1], result[2], 200)
-        this.msg.PostMessage('getPushByRecent', { key: result[1], board: result[2], recent: 200 })
+        this.msg.PostMessage('getCommentByAID', { key: result[1], board: result[2], recent: 200 })
       } else { // 實況紀錄取得所有推文
         if (reportMode) console.log('nowAID total', result[1], result[2], 0)
-        this.msg.PostMessage('getPushByLine', { key: result[1], board: result[2], startline: 0 })
+        this.msg.PostMessage('getCommentByAID', { key: result[1], board: result[2], startline: 0 })
       }
     }
   }

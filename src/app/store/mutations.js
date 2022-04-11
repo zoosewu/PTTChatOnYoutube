@@ -17,9 +17,9 @@ export const state = {
       return t
     })(),
     lastendline: 0,
-    lastpushtime: new Date(),
-    pushcount: 0,
-    nowpush: 0,
+    lastcommenttime: new Date(),
+    commentcount: 0,
+    nowcomment: 0,
     gettedpost: false
   },
   chatlist: [],
@@ -42,13 +42,13 @@ export const state = {
   previewImg: '',
   InstancePTTID: 1,
   // checkbox
-  enablesetnewpush: GM_getValue(types.ENABLESETNEWPUSH, false),
-  disablepushgray: GM_getValue(types.DISABLEPUSHGRAY, false),
+  enablesetnewcomment: GM_getValue(types.ENABLESETNEWCOMMENT, false),
+  disablecommentgray: GM_getValue(types.DISABLECOMMENTGRAY, false),
   deleteotherconnect: GM_getValue(types.DELETEOTHERCONNECT, false),
   enableblacklist: GM_getValue(types.ENABLEBLACKLIST, false),
   // input value
   pluginHeight: GM_getValue(types.PLUGINHEIGHT, -1),
-  pushInterval: GM_getValue(types.PUSHINTERVAL, -1),
+  commentInterval: GM_getValue(types.COMMENTINTERVAL, -1),
   chatFontsize: GM_getValue(types.CHATFONTSIZE, -1),
   chatSpace: GM_getValue(types.CHATSPACE, -1),
   pluginWidth: GM_getValue(types.PLUGINWIDTH, -1),
@@ -128,13 +128,13 @@ export const mutations = {
     GM_setValue(types.DELETEOTHERCONNECT, deleteotherconnect)
     state.deleteotherconnect = deleteotherconnect
   },
-  [types.ENABLESETNEWPUSH] (state, value) {
-    GM_setValue(types.ENABLESETNEWPUSH, value)
-    state.enablesetnewpush = value
+  [types.ENABLESETNEWCOMMENT] (state, value) {
+    GM_setValue(types.ENABLESETNEWCOMMENT, value)
+    state.enablesetnewcomment = value
   },
-  [types.DISABLEPUSHGRAY] (state, disable) {
-    GM_setValue(types.DISABLEPUSHGRAY, disable)
-    state.disablepushgray = disable
+  [types.DISABLECOMMENTGRAY] (state, disable) {
+    GM_setValue(types.DISABLECOMMENTGRAY, disable)
+    state.disablecommentgray = disable
   },
   [types.ENABLEBLACKLIST] (state, enable) {
     GM_setValue(types.ENABLEBLACKLIST, enable)
@@ -146,9 +146,9 @@ export const mutations = {
     GM_setValue(types.PLUGINHEIGHT, height)
     state.pluginHeight = height
   },
-  [types.PUSHINTERVAL] (state, interval) {
-    GM_setValue(types.PUSHINTERVAL, interval)
-    state.pushInterval = interval
+  [types.COMMENTINTERVAL] (state, interval) {
+    GM_setValue(types.COMMENTINTERVAL, interval)
+    state.commentInterval = interval
   },
   [types.CHATFONTSIZE] (state, size) {
     GM_setValue(types.CHATFONTSIZE, size)

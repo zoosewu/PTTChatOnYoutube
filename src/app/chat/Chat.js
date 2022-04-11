@@ -154,8 +154,8 @@ export default {
       'post',
       'videoCurrentTime',
       'PTTState',
-      'getDisablePushGray',
-      'getPushInterval',
+      'getDisableCommentGray',
+      'getCommentInterval',
       'getFontsize',
       'getChatSpace'
     ])
@@ -173,13 +173,13 @@ export default {
     // 註冊文章事件
     this.msg.newPush = data => {
       this.$store.dispatch('updatePost', data)
-      this.nextUpdateTime = Date.now() + Math.max(this.getPushInterval, 2.5) * 1000
+      this.nextUpdateTime = Date.now() + Math.max(this.getCommentInterval, 2.5) * 1000
     }
     // 定時抓新聊天
     this.intervalChat = window.setInterval(() => {
       if (this.isStream && this.PTTState > 0 && Date.now() > this.nextUpdateTime) {
         this.nextUpdateTime = Date.now() + 10 * 60 * 1000
-        this.msg.PostMessage('getPushByLine', { AID: this.post.AID, board: this.post.board, title: this.post.title, startline: this.post.lastendline })
+        this.msg.PostMessage('getCommentByLine', { AID: this.post.AID, board: this.post.board, title: this.post.title, startline: this.post.lastendline })
       }
     }, 340)
     // 定時滾動

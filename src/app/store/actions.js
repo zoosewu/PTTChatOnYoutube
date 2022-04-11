@@ -9,8 +9,10 @@ export const actions = {
     console.log('gotoPost', result, state.PTTState)
     if (!result || result.length <= 2) {
       dispatch('Alert', { type: 0, msg: '文章AID格式錯誤，請重新輸入。' })
+      commit(types.GOTOPOST, aid)
     } else if (state.PTTState < 1) {
       dispatch('Alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
+      commit(types.GOTOPOST, aid)
     } else {
       GM_setValue('PostAID', aid)
       dispatch('pageChange', true)
@@ -21,21 +23,21 @@ export const actions = {
     if (!Array.isArray(log)) context.commit(types.UPDATELOG, log)
     else for (let i = 0; i < log.length; i++) context.commit(types.UPDATELOG, log[i])
   },
-  updatePost: ({ dispatch, commit, state }, postdata) => {
+  updatePost: ({ dispatch, commit, state }, RecievedData) => {
     let newpost
-    if (postdata.AID === state.post.AID && postdata.board === state.post.board) {
+    if (RecievedData.key === state.post.key && RecievedData.board === state.post.board) {
       newpost = state.post
-      newpost.lastendline = postdata.endline
+      newpost.lastendline = RecievedData.endLine
     } else {
       newpost = {
-        AID: postdata.AID,
-        board: postdata.board,
-        title: postdata.title,
-        date: postdata.posttime,
-        lastendline: postdata.endline,
-        lastpushtime: new Date(),
-        pushcount: 0,
-        nowpush: 0,
+        AID: RecievedData.key,
+        board: RecievedData.board,
+        title: RecievedData.title,
+        date: RecievedData.date,
+        lastendline: RecievedData.endLine,
+        lastcommenttime: new Date(),
+        commentcount: 0,
+        nowcomment: 0,
         gettedpost: true
       }
       const t = newpost.date
@@ -45,31 +47,31 @@ export const actions = {
         { type: 'postDate', data: t.toLocaleDateString() + ' ' + t.toLocaleTimeString() },
         { type: 'postEndline', data: newpost.lastendline }])
     }
-    if (postdata.pushes.length > 0) {
-      newpost.pushcount += postdata.pushes.length
+    if (RecievedData.comments.length > 0) {
+      newpost.commentcount += RecievedData.comments.length
     }
     commit(types.UPDATEPOST, newpost)
-    dispatch('updateChat', postdata.pushes)
+    dispatch('updateChat', RecievedData.comments)
     // console.log("state.pageChange", state.pageChange);
     if (state.pageChange) {
       dispatch('gotoChat', true)
       dispatch('pageChange', false)
     }
   },
-  updateChat: ({ commit, state }, pushes) => {
-    const existpush = state.post.pushcount - pushes.length
+  updateChat: ({ commit, state }, comments) => {
+    const existcomment = state.post.commentcount - comments.length
     const chatlist = []
     let sametimecount = 0
     let sametimeIndex = 0
-    for (let index = 0; index < pushes.length; index++) {
-      const currpush = pushes[index]// 抓出來的推文
+    for (let index = 0; index < comments.length; index++) {
+      const currcomment = comments[index]// 抓出來的推文
       const chat = {}
       if (!state.isStream) {
         if (index >= sametimeIndex) { // 獲得同時間點的推文數量
-          for (let nextpointer = index + 1; nextpointer < pushes.length; nextpointer++) {
-            const element = pushes[nextpointer]
+          for (let nextpointer = index + 1; nextpointer < comments.length; nextpointer++) {
+            const element = comments[nextpointer]
             // console.log("currpush.date.getTime(), element.date.getTime()", currpush.date.getTime(), element.date.getTime());
-            if ((currpush.date.getTime() < element.date.getTime()) || (nextpointer >= pushes.length - 1)) {
+            if ((currcomment.date.getTime() < element.date.getTime()) || (nextpointer >= comments.length - 1)) {
               sametimeIndex = nextpointer
               sametimecount = nextpointer - index
               // console.log("sametimeIndex, sametimecount", sametimeIndex, sametimecount);
@@ -78,14 +80,14 @@ export const actions = {
           }
         }
       }
-      chat.time = new Date(currpush.date.getTime())
+      chat.time = new Date(currcomment.date.getTime())
       // console.log("sametimeIndex, index, sametimecount", sametimeIndex, index, sametimecount);
       if (!state.isStream && sametimecount > 0) chat.time.setSeconds((sametimecount + index - sametimeIndex) * 60 / sametimecount)
-      chat.pttid = currpush.id
-      chat.type = currpush.type
+      chat.pttid = currcomment.id
+      chat.type = currcomment.type
       // chat.msg = currpush.content;
       let msg = ''
-      let m = filterXSS(currpush.content)
+      let m = filterXSS(currcomment.content)
       const haveAID = /(.*)(#.{8} \(.+\))(.*)/.exec(m)
       if (haveAID && haveAID.length > 3) {
         m = haveAID[1] + '<u onclick="this.parentNode.gotoPost(`' + haveAID[2] + '`)" style="cursor: pointer;">' + haveAID[2] + '</u>' + haveAID[3]
@@ -104,9 +106,9 @@ export const actions = {
       }
       if (m !== '') msg = msg + m
       chat.msg = msg
-      chat.id = existpush + index
+      chat.id = existcomment + index
       chat.uid = state.post.AID + '_' + chat.id
-      chat.gray = !state.disablepushgray
+      chat.gray = !state.disablecommentgray
       let isMatch = false
       if (state.enableblacklist) {
         const list = state.blacklist.split('\n')
@@ -120,7 +122,7 @@ export const actions = {
       if (!isMatch) {
         chatlist.push(chat)
       }
-      if (reportMode) console.log('new Chat', chat, currpush)
+      if (reportMode) console.log('new Chat', chat, currcomment)
     }
     // console.log("chatlist actions", chatlist);
     commit(types.UPDATECHAT, chatlist)
@@ -155,15 +157,15 @@ export const actions = {
   reInstancePTT: ({ commit }) => commit(types.REINSTANCEPTT),
 
   // checkbox
-  setEnableSetNewPush: ({ commit }, value) => { /* console.log("EnableSetNewPush action",value); */commit(types.ENABLESETNEWPUSH, value) },
-  setDisablePushGray: ({ commit }, value) => { commit(types.DISABLEPUSHGRAY, value) },
+  setEnableSetNewComment: ({ commit }, value) => { /* console.log("EnableSetNewPush action",value); */commit(types.ENABLESETNEWCOMMENT, value) },
+  setDisableCommentGray: ({ commit }, value) => { commit(types.DISABLECOMMENTGRAY, value) },
   setDeleteOtherConnect: ({ commit }, value) => { commit(types.DELETEOTHERCONNECT, value) },
   setEnableBlacklist: ({ commit }, value) => { commit(types.ENABLEBLACKLIST, value) },
   // input value
   setPluginHeight: (context, value) => { context.commit(types.PLUGINHEIGHT, value) },
   setFontsize: ({ commit }, value) => { commit(types.CHATFONTSIZE, value) },
   setChatSpace: ({ commit }, value) => { commit(types.CHATSPACE, value) },
-  setPushInterval: ({ commit }, value) => { commit(types.PUSHINTERVAL, value) },
+  setCommentInterval: ({ commit }, value) => { commit(types.COMMENTINTERVAL, value) },
   setPluginWidth: ({ commit }, value) => { commit(types.PLUGINWIDTH, value) },
   setPluginPortraitHeight: ({ commit }, value) => { commit(types.PLUGINPORTRAITHEIGHT, value) },
   setBlacklist: ({ commit }, value) => { commit(types.BLACKLIST, value) },

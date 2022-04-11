@@ -8,7 +8,8 @@ import CheckIsCurrectLineInPost from './Handlers/CheckIsCurrectLineInPost'
 import RecieveData from '../MessagePosterData/RecieveData'
 import GetRecentLine from './Handlers/GetRecentLine'
 
-const GetCommentByAIDTaskList = [
+const GetCommentByLineTaskList = [
+  () => { console.log('run GetCommentByAID'); return { pass: true } },
   CheckIsInBoard,
   CheckIsInPost,
   CheckIsInsideTitleInPost,
@@ -18,6 +19,7 @@ const GetCommentByAIDTaskList = [
 ]
 
 const GetCommentByRecentTaskList = [
+  () => { console.log('run GetCommentByRecent'); return { pass: true } },
   CheckIsInBoard,
   CheckIsInPost,
   CheckIsInsideTitleInPost,
@@ -36,9 +38,16 @@ function recieveComments () {
   this.msg.PostMessage('newPush', this.recieveData)
   if (reportMode) console.log(this.recieveData)
 }
-
 /**
  * @this {Ptt}
+ */
+function GetCommentByLine () {
+  this.addTask(RunHandler, GetCommentByLineTaskList, recieveComments)
+}
+/**
+ * @typedef {import("../MessagePosterData/PostData").PostData} PostData
+ * @this {Ptt}
+ * @param {PostData} data PostData
  */
 export default function (data) {
   console.log('GetCommentByAID', data)
@@ -52,9 +61,8 @@ export default function (data) {
   this.recieveData = new RecieveData()
   this.recieveData.board = data.board
   this.recieveData.key = data.key
-  if (data.recent) {
-    this.postData.key = data.key
+  if (data.endLine === 0) {
     this.addTask(RunHandler, GetCommentByRecentTaskList)
   }
-  this.addTask(RunHandler, GetCommentByAIDTaskList, recieveComments)
+  this.addTask(GetCommentByLine)
 }

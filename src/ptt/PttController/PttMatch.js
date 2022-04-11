@@ -16,7 +16,7 @@ export function PttMatch (pattern, flags = undefined) {
       if (!result) result = reg.exec(txt)
     }
     this.state.screenUpdated = true
-    if (showPttScreen) console.log('ptt screen snapshot:', this.state.screen)
+    if (showPttScreen) console.log('PTT screen snapshot:\n', this.state.screen.join('\n'))
     return result
   } else {
     for (let i = 0; i < this.state.screen.length; i++) {

@@ -7,5 +7,5 @@ import GetCommentByAID from './Tasks/GetCommentByAID'
 export default function eventBind () {
   console.log('eventBind')
   this.msg.login = Login.bind(this)
-  this.msg.getPushByRecent = GetCommentByAID.bind(this)
+  this.msg.getCommentByAID = GetCommentByAID.bind(this)
 }
