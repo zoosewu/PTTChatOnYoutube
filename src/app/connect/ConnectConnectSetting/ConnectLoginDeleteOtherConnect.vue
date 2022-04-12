@@ -11,6 +11,12 @@
 </template>
 
 <script>
+import ConnectPluginSettingCheckboxElement from '../PluginSettings/ConnectPluginSettingCheckboxElement.vue'
+export default {
+  components: {
+    'connect-plugin-setting-checkbox-element': ConnectPluginSettingCheckboxElement
+  }
+}
 </script>
 
 <style lang="scss">

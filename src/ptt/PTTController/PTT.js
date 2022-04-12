@@ -68,7 +68,7 @@ export function Ptt (msg) {
   }
   this.endTask = function () {
     const lasttask = this.taskManager.nowTask
-    if (reportMode) console.log('endTask', lasttask.fn.name, lasttask.args)
+    if (reportMode && lasttask) console.log('endTask', lasttask.fn.name, lasttask.args)
     this.runTask()
   }
   this.removeAllTasks = () => {

@@ -18,12 +18,11 @@ export default function GetComment () {
   const endLine = +lineResult[2]
   let targetLine = this.postData.endLine - startLine + 1
   if (startLine < 5 && this.postData.haveNormalInsideTitle) targetLine += 1
+  console.log('GetComment', startLine, endLine, this.postData.endLine, targetLine)
   const checkedLine = []
   for (let i = targetLine; i < this.state.screen.length; i++) {
     const line = this.state.screen[i]
-    const commentResult = /^(→ |推 |噓 )(.+?): (.*)(\d\d)\/(\d\d) (\d\d):(\d\d)/.exec(
-      line
-    )
+    const commentResult = /^(→ |推 |噓 )(.+?): (.*)(\d\d)\/(\d\d) (\d\d):(\d\d)/.exec(line)
     if (commentResult != null) {
       let content = commentResult[3]
       const reg = /\s+$/g

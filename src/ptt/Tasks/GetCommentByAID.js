@@ -1,3 +1,4 @@
+import { FrameState } from '../PttController/PttState'
 import { RunHandler } from './HandlerRunner'
 import CheckIsInBoard from './Handlers/CheckIsInBoard'
 import CheckIsInPost from './Handlers/CheckIsInPost'
@@ -42,6 +43,11 @@ function recieveComments () {
  * @this {Ptt}
  */
 function GetCommentByLine () {
+  console.log('GetCommentByLine')
+  if (this.state.frame === FrameState.firstPageofPost || this.state.frame === FrameState.otherPageofPost) {
+    this.insertText('q')
+  }
+  this.insertText('P')
   this.addTask(RunHandler, GetCommentByLineTaskList, recieveComments)
 }
 /**
@@ -57,11 +63,12 @@ export default function (data) {
     this.postData.reset()
     this.postData.board = data.board
     this.postData.key = data.key
+    if (data.startline) this.postData.endLine = data.startline
   }
   this.recieveData = new RecieveData()
   this.recieveData.board = data.board
   this.recieveData.key = data.key
-  if (data.endLine === 0) {
+  if (data.recent) {
     this.addTask(RunHandler, GetCommentByRecentTaskList)
   }
   this.addTask(GetCommentByLine)

@@ -10,8 +10,8 @@ import { hdfilter } from './SupportWebsite/holodex/hdfilter'
 import './scss/index.scss'
 
 /* 關閉vue-devtools */
-
 Vue.config.devtools = reportMode
+console.log('Vue.config.devtools', reportMode)
 /* 關閉錯誤警告 */
 Vue.config.debug = reportMode
 ;(function () {

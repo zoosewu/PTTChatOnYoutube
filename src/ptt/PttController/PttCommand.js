@@ -30,7 +30,10 @@ export function PttCommand () {
       this.command.cmd = null
     },
     execute: () => {
-      if (!this.command.cmd) return
+      if (!this.command.cmd) {
+        this.endTask()
+        return
+      }
       const cmd = this.command.cmd
       this.command.cmd = null
       if (cmd) {
