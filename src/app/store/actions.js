@@ -86,10 +86,14 @@ export const actions = {
       // chat.msg = currpush.content;
       let msg = ''
       let m = filterXSS(currpush.content)
-      const haveAID = /(.*)(#.{8} \(.+\))(.*)/.exec(m)
-      if (haveAID && haveAID.length > 3) {
-        m = haveAID[1] + '<u onclick="this.parentNode.gotoPost(`' + haveAID[2] + '`)" style="cursor: pointer;">' + haveAID[2] + '</u>' + haveAID[3]
-        console.log(haveAID[1] + '<u onclick="this.parentNode.gotoPost(' + haveAID[2] + ')">' + haveAID[2] + '</u>' + haveAID[3])
+      const AidResult = /(.*)(#[a-zA-Z0-9-_^'^"^`]{8} \([^'^"^`)]+\))(.*)/.exec(m)
+      if (AidResult && AidResult.length > 3) {
+        const precontent = AidResult[1];
+        const aid = AidResult[2];
+        const postcontent = AidResult[3];
+
+        m = precontent + '<u onclick="this.parentNode.gotoPost(`' + aid + '`)" style="cursor: pointer;">' + aid + '</u>' + postcontent
+        if(reportmode) console.log(precontent + '<u onclick="this.parentNode.gotoPost(' + aid + ')">' + aid + '</u>' + postcontent)
       }
       let result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])(.*)/ig.exec(m)
       let parsetime = 5

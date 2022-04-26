@@ -2,7 +2,6 @@
   <div
     id="PTTMain"
     class="pttchat rounded-right position-absolute rounded-bottom w-100 collapse"
-    style="z-index: 301;"
   >
     <PTTAppMain />
   </div>
@@ -17,4 +16,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+div {
+  z-index: 301;
+}
+</style>

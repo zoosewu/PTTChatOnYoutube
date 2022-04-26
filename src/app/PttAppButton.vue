@@ -14,6 +14,6 @@
 
 <style lang="scss" scoped>
 a {
-  z-index: 400;
+  z-index: 400 !important;
 }
 </style>
