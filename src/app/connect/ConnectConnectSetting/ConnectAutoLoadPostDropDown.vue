@@ -116,7 +116,7 @@ export default {
     }
   },
   computed: {
-    ...Vuex.mapGetters(['PTTState'])
+    ...Vuex.mapGetters(['pttState'])
   },
   watch: {
     previewTitle () {
@@ -136,11 +136,8 @@ export default {
   },
   methods: {
     $_connectAutoLoadPost_onClickDropdownItem (item, index) {
-      if (this.PTTState < 1) {
-        this.$store.dispatch('Alert', {
-          type: 0,
-          msg: 'PTT尚未登入，請先登入。'
-        })
+      if (this.pttState < 1) {
+        this.$store.dispatch('Alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
         return
       }
       $(this.$refs.manualInputArea).collapse('hide')
@@ -161,11 +158,8 @@ export default {
       this.$store.dispatch('setTitleList', this.optionGroup)
     },
     addAndSearch () {
-      if (this.PTTState < 1) {
-        this.$store.dispatch('Alert', {
-          type: 0,
-          msg: 'PTT尚未登入，請先登入。'
-        })
+      if (this.pttState < 1) {
+        this.$store.dispatch('Alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
         return
       }
       if (!this.manualBoard || !this.manualTitle) {

@@ -26,12 +26,12 @@ export function PttFrame () {
       for (let i = 0; i < this.frame.filters.length; i++) {
         const filter = this.frame.filters[i]
         const result = this.match(filter.reg)
-        console.log('this.match(filter.reg)', filter.reg, result)
+        // console.log('this.match(', filter.reg, ')', result)
         if (result) {
           if (reportMode) console.log('==ptt.state.frame:' + this.state.frame + '->' + filter.state, result)
           this.state.frame = filter.state
           if (this.state.frame > 1) this.state.reconnectTime = 10
-          this.msg.PostMessage('PTTState', this.state.frame)
+          this.msg.PostMessage('pttState', this.state.frame)
           return
         }
       }

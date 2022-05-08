@@ -25,7 +25,6 @@ export function InitApp (
     console.log('Instance PTTChatOnYT App, index', appinscount)
     const PTT = new Vue({
       el: '#PTTChat',
-
       store,
       components: {
         PTTAppBtn: PttAppButton,
@@ -115,8 +114,8 @@ export function InitApp (
           }
         }
 
-        this.rootmsg.PTTState = data => {
-          this.$store.dispatch('PTTState', data)
+        this.rootmsg.pttState = data => {
+          this.$store.dispatch('pttState', data)
         }
       },
       beforeDestroy () {

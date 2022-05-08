@@ -38,34 +38,32 @@ export default {
   data () {
     return {
       aid: GM_getValue('PostAID', ''),
-      lastgotoAID: '',
       forceSubmit: false
     }
   },
   computed: {
     nowAID: function () {
-      if (this.lastgotoAID === this.gotoAID && !this.forceSubmit) return this.lastgotoAID
-      /* eslint-disable vue/no-side-effects-in-computed-properties */
-      this.forceSubmit = false
-      this.aid = this.gotoAID
-      this.lastgotoAID = this.gotoAID
-      /* eslint-enable vue/no-side-effects-in-computed-properties */
-      this.$_ConnectAID_SearchPushByPostAID(this.gotoAID)
-      return this.lastgotoAID
+      if (this.aid === this.newAID && !this.forceSubmit) return this.aid
+      else return this.$_ConnectAID_updateAID(this.newAID)
     },
     ...Vuex.mapGetters([
       'post',
-      'PTTState',
-      'gotoAID'
+      'newAID'
     ])
   },
   methods: {
+    $_ConnectAID_updateAID: function () {
+      this.forceSubmit = false
+      this.aid = this.newAID
+      this.$_ConnectAID_SearchPushByPostAID()
+      return this.aid
+    },
     $_ConnectAID_SubmitSearch: function () {
       if (reportMode) console.log('submitAID', this.aid)
       this.$store.dispatch('gotoPost', this.aid)
       this.forceSubmit = true
     },
-    $_ConnectAID_SearchPushByPostAID: function (aid) {
+    $_ConnectAID_SearchPushByPostAID: function () {
       const result = /(#.+) \((.+)\)/.exec(this.aid)
       console.log('_ConnectAID_SearchPushByPostAID', this.aid)
       console.log('_ConnectAID_SearchPushByPostAID', result)

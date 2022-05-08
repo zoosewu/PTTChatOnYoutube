@@ -25,6 +25,13 @@ export default {
     }
   },
   methods: {
+    updateComment: function () {
+      if (this.lastpostaid !== this.post.AID) { this.lastpostaid = this.post.AID; this._allchats = []; console.log('allchats new post') }
+      if (!this._allchats) this._allchats = []
+      this._allchats = this._allchats.concat(this.newChatList)
+      this.$store.dispatch('clearChat')
+      return this._allchats
+    },
     updateGray: function (index, isgray) {
       if (showScrollLog) {
         console.log('update gray', index, this.allchats[index])
@@ -109,16 +116,7 @@ export default {
   },
   computed: {
     allchats: function () {
-      // console.log("allchats");
-      if (this.newChatList !== this.lastChat) {
-        if (this.lastpostaid !== this.post.AID) { this.lastpostaid = this.post.AID; this._allchats = []; console.log('allchats new post') }
-        if (!this._allchats) this._allchats = []
-        const newAllChats = this._allchats.concat(this.newChatList)
-        // console.log("old _allchats", this._allchats, "newChatList", this.newChatList, "new_allchats", new_allchats);
-        this._allchats = newAllChats
-        this.lastChat = this.newChatList
-      }
-      return this._allchats ? this._allchats : []
+      return this._allchats.length > 0 ? this.updateComment() : (this._allchats ? this._allchats : [])
     },
     activeChat: {
       get () {
@@ -153,7 +151,7 @@ export default {
       'newChatList',
       'post',
       'videoCurrentTime',
-      'PTTState',
+      'pttState',
       'getDisableCommentGray',
       'getCommentInterval',
       'getFontsize',
@@ -177,7 +175,7 @@ export default {
     }
     // 定時抓新聊天
     this.intervalChat = window.setInterval(() => {
-      if (this.isStream && this.PTTState > 0 && Date.now() > this.nextUpdateTime) {
+      if (this.isStream && this.pttState > 0 && Date.now() > this.nextUpdateTime) {
         this.nextUpdateTime = Date.now() + 10 * 60 * 1000
         this.msg.PostMessage('getCommentByLine', { AID: this.post.AID, board: this.post.board, title: this.post.title, startline: this.post.lastendline })
       }
@@ -185,7 +183,6 @@ export default {
     // 定時滾動
     this.intervalScroll = window.setInterval(() => { this.updateChat() }, 500)
   },
-  // updated: function () { console.log("updateChat", this.allchats); },
   beforeDestroy () {
     clearInterval(this.intervalChat)
     clearInterval(this.intervalScroll)

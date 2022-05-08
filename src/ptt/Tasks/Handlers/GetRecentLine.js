@@ -13,12 +13,10 @@ export default function GetRecentLine () {
   if (this.state.frame === FrameState.firstPageofPost || this.state.frame === FrameState.otherPageofPost) {
     const lineResult = this.match(/瀏覽 第 \d+\/\d+ 頁 \(100%\) +目前顯示: 第 \d+~(\d+) 行/)
     if (lineResult) {
-      let targetline = +lineResult[1] - this.postData.endline - 1
+      let targetline = +lineResult[1] - 100 - 1
       if (targetline < 3) targetline = 3
-      // console.log("==GetRecentLine, TotalLine, GotoLline", line[1], targetline);
-      this.postData.endline = targetline
-      /* if (Ptt.pagestate === 4 || Ptt.pagestate === 3) */
-      this.insertText('qP') // insertText(PTTPost.endline + ".\n");
+      this.postData.endLine = targetline
+      this.insertText('qP')
       res.pass = true
     }
   } else {

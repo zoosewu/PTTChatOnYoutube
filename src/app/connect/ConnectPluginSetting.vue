@@ -11,38 +11,38 @@
     </div>
     <div class="form-row px-2">
       <connect-plugin-setting-input-element
-        setting-name="PluginHeight"
-        description="套件長度(px)"
-        default-value="850"
-        max="850"
-        min="180"
-        column="6"
+        :setting-name="'PluginHeight'"
+        :description="'套件長度(px)'"
+        :default-value="850"
+        :max="850"
+        :min="180"
+        :column="6"
       />
       <connect-plugin-setting-input-element
-        setting-name="PushInterval"
-        description="推文更新(s)"
-        default-value="2.5"
-        max="360"
-        min="2.5"
-        column="6"
+        :setting-name="'PushInterval'"
+        :description="'推文更新(s)'"
+        :default-value="2.5"
+        :max="360"
+        :min="2.5"
+        :column="6"
       />
     </div>
     <div class="form-row px-2">
       <connect-plugin-setting-input-element
-        setting-name="Fontsize"
-        description="字體尺寸(px)"
-        default-value="16"
-        max="30"
-        min="9"
-        column="6"
+        :setting-name="'Fontsize'"
+        :description="'字體尺寸(px)'"
+        :default-value="16"
+        :max="30"
+        :min="9"
+        :column="6"
       />
       <connect-plugin-setting-input-element
-        setting-name="ChatSpace"
-        description="推文間隔(行)"
-        default-value="0.5"
-        max="5"
-        min="0"
-        column="6"
+        :setting-name="'ChatSpace'"
+        :description="'推文間隔(行)'"
+        :default-value="0.5"
+        :max="5"
+        :min="0"
+        :column="6"
       />
     </div>
     <div
@@ -50,12 +50,12 @@
       class="form-row px-2"
     >
       <connect-plugin-setting-input-element
-        setting-name="PluginWidth"
-        description="套件寬度"
-        default-value="400"
-        max="800"
-        min="290"
-        column="12"
+        :setting-name="'PluginWidth'"
+        :description="'套件寬度'"
+        :default-value="400"
+        :max="800"
+        :min="290"
+        :column="12"
       />
       <p class="my-0 px-2">
         僅Holotools、niji-mado可用，需重新整理
@@ -66,12 +66,12 @@
       class="form-row px-2"
     >
       <connect-plugin-setting-input-element
-        setting-name="PluginPortraitHeight"
-        description="直立顯示時的套件高度"
-        default-value="400"
-        max="800"
-        min="290"
-        column="12"
+        :setting-name="'PluginPortraitHeight'"
+        :description="'直立顯示時的套件高度'"
+        :default-value="400"
+        :max="800"
+        :min="290"
+        :column="12"
       />
       <p class="my-0 px-2">
         僅舊版Holotools可用，需重新整理
@@ -79,24 +79,24 @@
     </div>
     <div class="form-row px-2">
       <connect-dropdown
-        setting-name="Theme"
-        description="主題顏色"
+        :setting-name="'Theme'"
+        :description="'主題顏色'"
         :option-group="ThemeOptions"
-        default-value="0"
+        :default-value="0"
       />
       <connect-dropdown
         v-if="showThemeColorOption"
-        setting-name="ThemeColorBG"
-        description="背景亮度"
+        :setting-name="'ThemeColorBG'"
+        :description="'背景亮度'"
         :option-group="ThemeColorBGOptions"
-        default-value="2"
+        :default-value="2"
       />
       <connect-dropdown
         v-if="showThemeColorOption"
-        setting-name="ThemeColorBorder"
-        description="字體亮度"
+        :setting-name="'ThemeColorBorder'"
+        :description="'字體亮度'"
         :option-group="ThemeColorBorderOptions"
-        default-value="2"
+        :default-value="2"
       />
     </div>
     <div class="form-row px-2">

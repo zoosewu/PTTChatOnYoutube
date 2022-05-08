@@ -19,7 +19,7 @@ const recieveNewPush = () => {
   receiveData.pushedComment = PostData.pushComment
   MessagePoster.PostMessage('pushedText', receiveData.pushedComment)
   if (showAllLog) console.log(PostData)
-  GetPush(PostData.key, PTTPost.board, PTTPost.endline, GetPushTask)
+  GetPush(PostData.key, PTTPost.board, PTTPost.endLine, GetPushTask)
 }
 export const SetComment = pushtext => {
   let allowedchar = 24

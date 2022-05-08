@@ -35,9 +35,7 @@ export default {
     return {
       item1Title: this.itemTitle,
       i1Data: '--',
-      i2Data: '',
-      lastlog1: [],
-      lastlog2: []
+      i2Data: ''
     }
   },
   computed: {
@@ -49,29 +47,37 @@ export default {
       return this.secondItemTitle ? this.secondItemTitle : ''
     },
     item1Data: function () {
-      if (this.lastlog1 !== this.log) {
-      /* eslint-disable vue/no-side-effects-in-computed-properties */
-        this.lastlog1 = this.log
-        if (showAllLog) console.log('item1Data', this.itemType, this.log.type, this.itemType === this.log.type)
-        if (this.itemType === this.log.type) this.i1Data = this.log.data
-      /* eslint-enable vue/no-side-effects-in-computed-properties */
+      let i = 0
+      for (; i < this.newLog.length; i++) {
+        if (this.newLog[i].type === this.itemType) break
       }
-      return this.i1Data
+      // console.log('computed', this.itemType, this.newLog[i], i)
+      return i < this.newLog.length ? this.$_LogItem_updateLog1(this.newLog[i].data) : this.i1Data
     },
     item2Data: function () {
-      if (this.lastlog2 !== this.log) {
-      /* eslint-disable vue/no-side-effects-in-computed-properties */
-        this.lastlog2 = this.log
-        if (showAllLog) console.log('item2Data', this.secondItemTitle, this.secondItemType, this.log.type, this.secondItemType === this.log.type)
-        if (this.secondItemTitle && this.secondItemType === this.log.type) this.i2Data = this.log.data
-      /* eslint-enable vue/no-side-effects-in-computed-properties */
+      let i = 0
+      for (; i < this.newLog.length; i++) {
+        if (this.newLog[i].type === this.secondItemType) break
       }
-      return this.i2Data
+      // console.log('computed', this.secondItemType, this.newLog[i], i)
+      return i < this.newLog.length ? this.$_LogItem_updateLog2(this.newLog[i].data) : this.i2Data
     },
-    ...Vuex.mapGetters(['log'])
+    ...Vuex.mapGetters(['newLog'])
   },
   mounted () {
-    if (showAllLog) console.log('LogItem', this.itemTitle, this.itemType, this.itemColSpan, this.secondItemTitle, this.secondItemType)
+    // if (showAllLog) console.log('LogItem', this.itemTitle, this.itemType, this.itemColSpan, this.secondItemTitle, this.secondItemType)
+  },
+  methods: {
+    $_LogItem_updateLog1: function (data) {
+      this.i1Data = data
+      this.$store.dispatch('removeLog', this.itemType)
+      return this.i1Data
+    },
+    $_LogItem_updateLog2: function (data) {
+      this.i2Data = data
+      this.$store.dispatch('removeLog', this.secondItemType)
+      return this.i2Data
+    }
   }
 }
 </script>

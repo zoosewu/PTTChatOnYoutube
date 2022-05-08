@@ -4,13 +4,14 @@ export const actions = {
   actionIncrease: ({ commit }) => { console.log('actionIncrease'); commit(types.INCREASE) },
   actionDecrease: ({ commit }) => { console.log('actionDecrease'); commit(types.DECREASE) },
   Alert: (context, alertobject) => { context.commit(types.ALERT, alertobject) },
+  ClearAlert: (context) => { context.commit(types.CLEARALERT) },
   gotoPost: ({ dispatch, commit, state }, aid) => {
     const result = /#(.+) \((.+)\)/.exec(aid)
-    console.log('gotoPost', result, state.PTTState)
+    console.log('gotoPost', result, state.pttState)
     if (!result || result.length <= 2) {
       dispatch('Alert', { type: 0, msg: '文章AID格式錯誤，請重新輸入。' })
       commit(types.GOTOPOST, aid)
-    } else if (state.PTTState < 1) {
+    } else if (state.pttState < 1) {
       dispatch('Alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
       commit(types.GOTOPOST, aid)
     } else {
@@ -19,25 +20,23 @@ export const actions = {
       commit(types.GOTOPOST, aid)
     }
   },
-  updateLog: (context, log) => {
-    if (!Array.isArray(log)) context.commit(types.UPDATELOG, log)
-    else for (let i = 0; i < log.length; i++) context.commit(types.UPDATELOG, log[i])
-  },
+  updateLog: (context, log) => { context.commit(types.UPDATELOG, log) },
+  removeLog: (context, log) => { context.commit(types.REMOVELOG, log) },
   updatePost: ({ dispatch, commit, state }, RecievedData) => {
     let newpost
     if (RecievedData.key === state.post.key && RecievedData.board === state.post.board) {
       newpost = state.post
-      newpost.lastendline = RecievedData.endLine
+      newpost.lastEndLine = RecievedData.endLine
     } else {
       newpost = {
         AID: RecievedData.key,
         board: RecievedData.board,
         title: RecievedData.title,
         date: RecievedData.date,
-        lastendline: RecievedData.endLine,
-        lastcommenttime: new Date(),
-        commentcount: 0,
-        nowcomment: 0,
+        lastEndLine: RecievedData.endLine,
+        lastCommentTime: new Date(),
+        commentCount: 0,
+        nowComment: 0,
         gettedpost: true
       }
       const t = newpost.date
@@ -45,21 +44,21 @@ export const actions = {
       dispatch('updateLog', [{ type: 'postBoard', data: newpost.board },
         { type: 'postTitle', data: newpost.title },
         { type: 'postDate', data: t.toLocaleDateString() + ' ' + t.toLocaleTimeString() },
-        { type: 'postEndline', data: newpost.lastendline }])
+        { type: 'postEndLine', data: newpost.lastEndLine }])
     }
     if (RecievedData.comments.length > 0) {
-      newpost.commentcount += RecievedData.comments.length
+      newpost.commentCount += RecievedData.comments.length
+      dispatch('updateLog', { type: 'postCommentCount', data: newpost.commentCount })
     }
     commit(types.UPDATEPOST, newpost)
     dispatch('updateChat', RecievedData.comments)
-    // console.log("state.pageChange", state.pageChange);
     if (state.pageChange) {
       dispatch('gotoChat', true)
       dispatch('pageChange', false)
     }
   },
   updateChat: ({ commit, state }, comments) => {
-    const existcomment = state.post.commentcount - comments.length
+    const existcomment = state.post.commentCount - comments.length
     const chatlist = []
     let sametimecount = 0
     let sametimeIndex = 0
@@ -88,10 +87,14 @@ export const actions = {
       // chat.msg = currpush.content;
       let msg = ''
       let m = filterXSS(currcomment.content)
-      const haveAID = /(.*)(#.{8} \(.+\))(.*)/.exec(m)
-      if (haveAID && haveAID.length > 3) {
-        m = haveAID[1] + '<u onclick="this.parentNode.gotoPost(`' + haveAID[2] + '`)" style="cursor: pointer;">' + haveAID[2] + '</u>' + haveAID[3]
-        console.log(haveAID[1] + '<u onclick="this.parentNode.gotoPost(' + haveAID[2] + ')">' + haveAID[2] + '</u>' + haveAID[3])
+      const AidResult = /(.*)(#[a-zA-Z0-9-_^'^"^`]{8} \([^'^"^`)]+\))(.*)/.exec(m)
+      if (AidResult && AidResult.length > 3) {
+        const precontent = AidResult[1]
+        const aid = AidResult[2]
+        const postcontent = AidResult[3]
+
+        m = precontent + '<u onclick="this.parentNode.gotoPost(`' + aid + '`)" style="cursor: pointer;">' + aid + '</u>' + postcontent
+        if (reportMode) console.log(precontent + '<u onclick="this.parentNode.gotoPost(' + aid + ')">' + aid + '</u>' + postcontent)
       }
       let result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])(.*)/ig.exec(m)
       let parsetime = 5
@@ -127,6 +130,7 @@ export const actions = {
     // console.log("chatlist actions", chatlist);
     commit(types.UPDATECHAT, chatlist)
   },
+  clearChat: ({ commit }) => { commit(types.CLEARCHAT) },
   updateVideoStartDate: ({ dispatch, commit, state }, d) => {
     console.trace('updateVideoStartDate', d)
     dispatch('updateLog', { type: 'videoStartTime', data: d.toLocaleDateString() + ' ' + d.toLocaleTimeString() })
@@ -151,7 +155,7 @@ export const actions = {
   },
   pageChange: ({ commit }, Change) => { commit(types.PAGECHANGE, Change) },
   gotoChat: ({ commit }, gtChat) => { commit(types.GOTOCHAT, gtChat) },
-  PTTState: ({ commit }, pttstate) => { commit(types.PTTSTATE, pttstate) },
+  pttState: ({ dispatch, commit }, pttstate) => { dispatch('updateLog', { type: 'pttState', data: pttstate }); commit(types.PTTSTATE, pttstate) },
   isStream: ({ commit }, isStream) => { commit(types.ISSTREAM, isStream) },
   previewImage: ({ commit }, src) => { commit(types.PREVIEWIMG, src) },
   reInstancePTT: ({ commit }) => commit(types.REINSTANCEPTT),

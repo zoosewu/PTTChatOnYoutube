@@ -3,8 +3,8 @@ import { types } from './mutations_type'
 // state
 export const state = {
   count: 0,
-  alert: { type: 0, msg: '' },
-  aid: '',
+  alert: [],
+  aid: GM_getValue('PostAID', ''),
   post: {
     AID: '',
     board: '',
@@ -23,7 +23,7 @@ export const state = {
     gettedpost: false
   },
   chatlist: [],
-  log: {},
+  log: [],
   firstChatTime: {},
   lastChatTime: {},
   VStartDate: (() => {
@@ -37,7 +37,7 @@ export const state = {
   VCurrentTime: new Date(),
   pageChange: false,
   gotoChat: false,
-  PTTState: 0,
+  pttState: 0,
   isStream: true,
   previewImg: '',
   InstancePTTID: 1,
@@ -74,7 +74,10 @@ export const mutations = {
     state.count -= 1
   },
   [types.ALERT] (state, alert) {
-    state.alert = alert
+    state.alert.push(alert)
+  },
+  [types.CLEARALERT] (state) {
+    state.alert = []
   },
   [types.GOTOPOST] (state, aid) {
     state.aid = aid
@@ -90,9 +93,21 @@ export const mutations = {
     if (reportMode) console.log('UPDATECHAT', chatlist)
     state.chatlist = chatlist
   },
+  [types.CLEARCHAT] (state) {
+    state.chatlist = []
+  },
   [types.UPDATELOG] (state, log) {
-    if (reportMode) console.log('UPDATELOG', log)
-    state.log = log
+    console.log('UPDATELOG', log)
+    if (!Array.isArray(log)) state.log.push(log)
+    else state.log = state.log.concat(log)
+  },
+  [types.REMOVELOG] (state, type) {
+    for (let i = 0; i < state.log.length; i++) {
+      if (state.log[i].type === type) {
+        state.log.splice(i, 1)
+        return
+      }
+    }
   },
   [types.VIDEOSTARTDATE] (state, videostartdate) {
     console.trace('VIDEOSTARTDATE mutations', videostartdate)
@@ -111,7 +126,7 @@ export const mutations = {
     state.gotoChat = gotoChat
   },
   [types.PTTSTATE] (state, pttstate) {
-    state.PTTState = pttstate
+    state.pttState = pttstate
   },
   [types.ISSTREAM] (state, isStream) {
     state.isStream = isStream
@@ -142,7 +157,6 @@ export const mutations = {
   },
   // input value
   [types.PLUGINHEIGHT] (state, height) {
-    console.log('types.PLUGINHEIGHT: ', height)
     GM_setValue(types.PLUGINHEIGHT, height)
     state.pluginHeight = height
   },

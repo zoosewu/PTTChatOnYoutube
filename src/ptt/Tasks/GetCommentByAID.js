@@ -10,7 +10,7 @@ import RecieveData from '../MessagePosterData/RecieveData'
 import GetRecentLine from './Handlers/GetRecentLine'
 
 const GetCommentByLineTaskList = [
-  () => { console.log('run GetCommentByAID'); return { pass: true } },
+  () => { console.log('run GetCommentByLineTaskList'); return { pass: true } },
   CheckIsInBoard,
   CheckIsInPost,
   CheckIsInsideTitleInPost,
@@ -19,13 +19,11 @@ const GetCommentByLineTaskList = [
   CheckIsEndInPost
 ]
 
-const GetCommentByRecentTaskList = [
-  () => { console.log('run GetCommentByRecent'); return { pass: true } },
+const GetRecentLineTaskList = [
+  () => { console.log('run GetRecentLineTaskList'); return { pass: true } },
   CheckIsInBoard,
   CheckIsInPost,
   CheckIsInsideTitleInPost,
-  CheckIsCurrectLineInPost,
-  CheckIsEndInPost,
   GetRecentLine
 ]
 
@@ -69,7 +67,7 @@ export default function (data) {
   this.recieveData.board = data.board
   this.recieveData.key = data.key
   if (data.recent) {
-    this.addTask(RunHandler, GetCommentByRecentTaskList)
+    this.addTask(RunHandler, GetRecentLineTaskList)
   }
   this.addTask(GetCommentByLine)
 }

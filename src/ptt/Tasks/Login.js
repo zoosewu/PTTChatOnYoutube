@@ -55,10 +55,10 @@ function checkLogin () {
     this.state.login = true
     this.endTask()
   } else if (this.match(/登入中，請稍候\.\.\.|正在更新與同步線上使用者及好友名單，系統負荷量大時會需時較久|密碼正確！ 開始登入系統/)) {
-    this.msg.PostMessage('alert', { type: 1, msg: '登入中，請稍候...' })
+    this.msg.PostMessage('alert', { type: 1, msg: '登入執行中，請稍候...' })
     this.command.set(checkLogin)
   } else {
-    this.msg.PostMessage('alert', { type: 0, msg: '發生了未知錯誤，可能是因為保留連線導致被踢掉。' })
+    this.msg.PostMessage('alert', { type: 0, msg: '123發生了未知錯誤，可能是因為保留連線導致被踢掉。' })
     console.log(this.state.screen)
     this.endTask()
   }

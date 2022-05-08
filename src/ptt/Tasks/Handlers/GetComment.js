@@ -18,7 +18,7 @@ export default function GetComment () {
   const endLine = +lineResult[2]
   let targetLine = this.postData.endLine - startLine + 1
   if (startLine < 5 && this.postData.haveNormalInsideTitle) targetLine += 1
-  console.log('GetComment', startLine, endLine, this.postData.endLine, targetLine)
+  console.log('GetComment at', startLine, 'to', endLine, 'endline:', this.postData.endLine, 'targetline:', targetLine)
   const checkedLine = []
   for (let i = targetLine; i < this.state.screen.length; i++) {
     const line = this.state.screen[i]
@@ -31,11 +31,11 @@ export default function GetComment () {
       const comment = getComment.apply(this, [content, commentResult])
       this.recieveData.comments.push(comment)
       if (reportMode) checkedLine.push(i)
-      if (reportMode) console.log('GetPush at line', i, content, line)
-    } else if (reportMode) console.log('GetPush at line fail', i, line)
+      if (reportMode) console.log('GetComment at line', i, content, line)
+    } else if (reportMode) console.log('GetComment at line fail', i, line)
   }
   if (reportMode) {
-    console.log('GetPush startline:', startLine, ', endline:', this.postData.endLine, ', targetline:', targetLine,
+    console.log('GetComment, startline:', startLine, ', endline:', this.postData.endLine, ', targetline:', targetLine,
       ', checkedline:', checkedLine, ', haveNormalTitle:', this.postData.haveNormalInsideTitle)
   }
   // const percentresult = Ptt.match(/瀏覽 第 .+ 頁 \( *(\d+)%\)/)

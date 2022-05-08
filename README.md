@@ -1,13 +1,16 @@
-PTTChatOnYoutube - 在Youtube上顯示PTT推文
+PTTChatOnYoutube - Youtube聊天室顯示PTT推文
 ========================================
 ![GitHub license](https://img.shields.io/github/license/zoosewu/pttchatonyoutube) [![Code style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) ![GitHub package.json version](https://img.shields.io/github/package-json/v/zoosewu/pttchatonyoutube?style=plastic) [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/zoosewu/pttchatonyoutube?sort=semver)](https://greasyfork.org/zh-TW/scripts/418469-pttchatonyoutube) ![GitHub Release Date](https://img.shields.io/github/release-date/zoosewu/pttchatonyoutube)
-## 如何開始開發
+
+如果你想了解套件如何使用請[點我](https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage)
+
+## 如何開始參與開發
 
 在專案底下輸入 ```npm install``` 安裝開發環境，VSCode設定請開啟 ```"javascript.format.insertSpaceBeforeFunctionParenthesis": true```
 
 推薦使用violentmonkey，並使用chrome開發，Firefox無法載入本地檔案
 
-在專案底下輸入 ```npm run watch-dev```，每次腳本存檔都會自動更新腳本
+在專案底下輸入 ```npm run dev```，每次腳本存檔都會自動更新腳本
 
 在專案底下輸入 ```npm run watch-scss```，每次css存檔都會自動更新腳本
 

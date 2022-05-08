@@ -11,9 +11,10 @@ import './scss/index.scss'
 
 /* 關閉vue-devtools */
 Vue.config.devtools = reportMode
-console.log('Vue.config.devtools', reportMode)
 /* 關閉錯誤警告 */
 Vue.config.debug = reportMode
+console.log('Vue.config.devtools', reportMode)
+console.log({ Vue })
 ;(function () {
   const isTopframe = window.top === window.self
   if (isTopframe) {

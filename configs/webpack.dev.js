@@ -27,7 +27,7 @@ module.exports = mergeConfig(commonConfig, {
   plugins: [
     new WebpackUserscript({
       metajs: false,
-      headers: './configs/metadata.js'
+      headers: './configs/metadata.dev.js'
     }),
     new webpack.DefinePlugin({
       reportMode: true,

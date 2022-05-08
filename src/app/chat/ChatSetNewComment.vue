@@ -49,7 +49,7 @@ export default {
     },
     ...Vuex.mapGetters([
       'post',
-      'PTTState',
+      'pttState',
       'getEnableSetNewPush'
     ])
   },
@@ -60,7 +60,7 @@ export default {
     setPush: function () {
       const result = /.+/.exec(this.pushtext)
       if (!result) this.$store.dispatch('Alert', { type: 0, msg: '請輸入文字。' })
-      else if (this.PTTState < 1) this.$store.dispatch('Alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
+      else if (this.pttState < 1) this.$store.dispatch('Alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
       else if (!this.post.gettedpost) this.$store.dispatch('Alert', { type: 0, msg: '尚未獲取文章，請先獲取文章。' })
       else this.msg.PostMessage('setNewPush', this.pushtext)
     },

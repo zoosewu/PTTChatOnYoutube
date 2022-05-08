@@ -62,7 +62,7 @@ export default {
       if (this.id === '' || this.pw === '') {
         this.$store.dispatch('Alert', { type: 0, msg: '帳號或密碼不得為空。' })
         return
-      } else if (this.PTTState > 0) {
+      } else if (this.pttState > 0) {
         this.$store.dispatch('Alert', { type: 0, msg: '已經登入，請勿重複登入。' })
         return
       }

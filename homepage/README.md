@@ -1,12 +1,15 @@
-Youtube聊天室顯示PTT推文
+PTTChatOnYoutube - Youtube聊天室顯示PTT推文
 =======================
+![GitHub license](https://img.shields.io/github/license/zoosewu/pttchatonyoutube) [![Code style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) ![GitHub package.json version](https://img.shields.io/github/package-json/v/zoosewu/pttchatonyoutube?style=plastic) [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/zoosewu/pttchatonyoutube?sort=semver)](https://greasyfork.org/zh-TW/scripts/418469-pttchatonyoutube) ![GitHub Release Date](https://img.shields.io/github/release-date/zoosewu/pttchatonyoutube)
+
 在Youtube及其他[支援網站](#支援網站-點擊項目可跳轉至使用教學)觀看實況或實況紀錄時載入PTT討論串推文
+如果你想了解如何參與開發請[點我](https://github.com/zoosewu/PTTChatOnYoutube)
 
 **套件主要有以下兩個功能：**
 
 1. **實況：** 即時顯示討論串最新推文，並且可以直接在套件內直接推文
 
-2. **實況紀錄** (目前僅支援Youtube的實況紀錄)： ~~設定好影片開台時間後就能根據影片時間顯示當時的推文~~ 現在會自動抓取開台時間了
+2. **實況紀錄** (目前僅支援Youtube的實況紀錄)： 根據影片時間顯示當時的推文
 <p align='center'>
     <img src='https://raw.githubusercontent.com/zoosewu/PTTChatOnYoutube/master/images/samplemain.gif' width='70%'>
 </p>
