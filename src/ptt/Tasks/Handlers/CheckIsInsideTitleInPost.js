@@ -1,16 +1,15 @@
-import { Ptt } from '../../PttController/Ptt.js'
-import { FrameState } from '../../PttController/PttState.js'
+import { FrameState } from 'PttController/PttState.js'
 
 function backToBoard () {
-  this.insertText('qP')
+  this.insertText('qq')
 }
 
-const getTitleWithoutSpace = result => {
+function getTitleWithoutSpace (result) {
   return result[1].replace(/\s+$/g, '')
 }
-const getTheFirstThreeLine = () => {
+function getTheFirstThreeLine () {
   let s = ''
-  for (let i = 0; i < 5 && i < Ptt.screen.length; i++) s += Ptt.screen[i]
+  for (let i = 0; i < 5 && i < this.state.screen.length; i++) s += this.state.screen[i]
   return s
 }
 /**
@@ -26,7 +25,7 @@ export default function CheckIsInsideTitleInPost () {
     if (isPostHaveNormalInsideTitle) {
       insideTitle = getTitleWithoutSpace(isPostHaveNormalInsideTitle)
     } else {
-      insideTitle = getTheFirstThreeLine()
+      insideTitle = getTheFirstThreeLine.apply(this)
     }
     if (this.postData.isSamePost) {
       if (!insideTitle === this.postData.insideTitle) {

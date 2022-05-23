@@ -1,8 +1,8 @@
-import { InitApp } from '../../app/appindex'
-import { ChangeLog } from '../../ChangeLog'
-import { ThemeCheck } from '../../library'
+import InitApp from 'src/app/appindex'
+import ChangeLog from 'src/ChangeLog'
+import { ThemeCheck } from 'src/library'
 const PluginMode = Object.freeze({ new: true, classic: false })
-export function InitHD (messageposter) {
+export default function InitHD (messageposter, siteName) {
   if (reportMode) console.log('InitHD')
 
   // Check Theme
@@ -84,11 +84,7 @@ export function InitHD (messageposter) {
 
   function initIconSwitchMode () {
     iconSwitchMode.on('click', () => {
-      if (
-        confirm(
-          `切換為${pluginMode === PluginMode.new ? '新' : '舊'}版PTT顯示模式？`
-        )
-      ) {
+      if (confirm(`切換為${pluginMode === PluginMode.new ? '新' : '舊'}版PTT顯示模式？`)) {
         switchMode()
       }
     })
@@ -167,7 +163,7 @@ export function InitHD (messageposter) {
     initControlIcon()
 
     if ($('#PTTChat').length === 0) {
-      InitApp($('#pttchatparent'), WhiteTheme, true, messageposter, true)
+      InitApp($('#pttchatparent'), WhiteTheme, true, messageposter, siteName, true)
       ChangeLog()
       const pttFrame = $(
         '<div id="ptt-frame-parent" style="position: absolute; z-index: 6;"><iframe id="PTTframe" src="//term.ptt.cc/?url=https://holodex.net" style="display:none;">你的瀏覽器不支援iframe</iframe></div>'

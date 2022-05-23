@@ -38,12 +38,13 @@ export default {
   data () {
     return {
       aid: GM_getValue('PostAID', ''),
+      lastaid: GM_getValue('PostAID', ''),
       forceSubmit: false
     }
   },
   computed: {
     nowAID: function () {
-      if (this.aid === this.newAID && !this.forceSubmit) return this.aid
+      if (this.lastaid === this.newAID && !this.forceSubmit) return this.aid
       else return this.$_ConnectAID_updateAID(this.newAID)
     },
     ...Vuex.mapGetters([
@@ -55,6 +56,7 @@ export default {
     $_ConnectAID_updateAID: function () {
       this.forceSubmit = false
       this.aid = this.newAID
+      this.lastaid = this.newAID
       this.$_ConnectAID_SearchPushByPostAID()
       return this.aid
     },
@@ -65,9 +67,9 @@ export default {
     },
     $_ConnectAID_SearchPushByPostAID: function () {
       const result = /(#.+) \((.+)\)/.exec(this.aid)
-      console.log('_ConnectAID_SearchPushByPostAID', this.aid)
-      console.log('_ConnectAID_SearchPushByPostAID', result)
-      console.log('_ConnectAID_SearchPushByPostAID', this.post)
+      // console.log('_ConnectAID_SearchPushByPostAID', this.aid)
+      // console.log('_ConnectAID_SearchPushByPostAID', result)
+      // console.log('_ConnectAID_SearchPushByPostAID', this.post)
       if (this.post.AID === result[1] && this.post.board === result[2]) { // 相同文章取最新推文
         if (reportMode) console.log('nowAID same post', result[1], result[2], this.post.lastendline)
         this.msg.PostMessage('getCommentByAID', { key: result[1], board: result[2], startline: this.post.lastendline })

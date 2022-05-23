@@ -1,8 +1,20 @@
-export function InsFilter (fullname, reg, ownerOrigin, Initcallback) {
+/**
+ * @typedef Filter
+ * @property {String} siteName
+ * @property {RegExp} siteRegExp
+ * @property {String} ownerOrigin
+ * @property {Function} callback
+ * @param {String} siteName
+ * @param {RegExp} siteRegExp
+ * @param {String} ownerOrigin
+ * @param {Function} initCallback
+ * @returns Filter
+ */
+export default function InsFilter (siteName, siteRegExp, ownerOrigin, initCallback) {
   return {
-    Fullname: fullname,
-    Reg: reg,
+    siteName: siteName,
+    siteRegExp: siteRegExp,
     ownerOrigin: ownerOrigin,
-    callback: Initcallback
+    callback: initCallback
   }
 }

@@ -1,9 +1,9 @@
 
-import { InitApp } from '../../app/appindex'
-import { ChangeLog } from '../../ChangeLog'
-import { ThemeCheck } from '../../library'
+import InitApp from 'src/app/appindex'
+import ChangeLog from 'src/ChangeLog'
+import { ThemeCheck } from 'src/library'
 
-export function InitTwitch (messageposter) {
+export default function InitTwitch (messageposter, siteName) {
   // Check Theme
   const WhiteTheme = ThemeCheck('body', 'rgb(247, 247, 248)');
 
@@ -18,8 +18,7 @@ export function InitTwitch (messageposter) {
     if (parent.length > 0) {
       const PTTApp = $('#PTTChat', parent)
       if (PTTApp.length < 1) {
-        if (reportMode) console.log('InitApp')
-        InitApp(parent, WhiteTheme, true, messageposter)
+        InitApp(parent, WhiteTheme, true, messageposter, siteName)
         ChangeLog()
       }
     }

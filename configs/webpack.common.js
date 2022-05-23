@@ -14,6 +14,11 @@ module.exports = {
   //   vue: 'Vue'
   // },
   resolve: {
+    alias: {
+      menuCommand: path.resolve(__dirname, '../src/menuCommand/'),
+      src: path.resolve(__dirname, '../src/'),
+      PttController: path.resolve(__dirname, '../src/ptt/PttController/')
+    },
     extensions: ['.js', '.vue', '.css']
   },
   module: {

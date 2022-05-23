@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { GenerateCryptKey } from '../../../library'
+import { GenerateCryptKey } from 'src/library'
 
 export default {
   inject: ['msg'],

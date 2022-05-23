@@ -1,0 +1,75 @@
+
+<template>
+  <div>
+    <div
+      class="form-row mt-3"
+    >
+      <label
+        for="anySearch"
+        class="col-3 col-form-label"
+      >搜尋</label>
+      <div class="col">
+        <input
+          id="anySearch"
+          v-model.lazy="search"
+          class="form-control"
+          type="text"
+          placeholder="C_Chat,/間直播單"
+          autocomplete="off"
+          @keyup.13="$_ConnectAnySearchAddNew_Add"
+        >
+      </div>
+      <div class="col-2 px-0">
+        <button
+          id="anySearchbtn"
+          class="btn ptt-btnoutline w-100 px-2"
+          type="button"
+          @click.self="$_ConnectAnySearchAddNew_Add()"
+        >
+          搜尋
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  inject: ['msg', 'isStream'],
+  data () {
+    return {
+      search: ''
+    }
+  },
+  methods: {
+    $_ConnectAnySearchAddNew_Add: function () {
+      console.log('_ConnectAnySearchAddNew_Add', this.search)
+      const searchResultBoard = /^ *([a-zA-Z0-9_-]+) *, *(.+) *$/.exec(this.search)
+      console.log(searchResultBoard)
+      if (searchResultBoard) {
+        const board = searchResultBoard[1]
+        const searches = searchResultBoard[2]
+        const searchResultSearch = /^ *([#/?aZGA][^,]+?) *(?:, *([#/?aZGA!].+))? *$/.exec(searches)
+        console.log(searchResultSearch)
+        if (searchResultSearch) {
+          let search = board + ',' + searchResultSearch[1]
+          search += searchResultSearch.length > 2 ? ',' + searchResultSearch[2] : ''
+          console.log('符合規則', search)
+          this.$store.dispatch('addAnySearch', search)
+          return
+        }
+      }
+      const AidResult = / *(#[a-zA-Z0-9_-]+) \(([a-zA-Z0-9_-]+)\) */.exec(this.search)
+      console.log(AidResult)
+      if (AidResult) {
+        const search = AidResult[2] + ',' + AidResult[1]
+        console.log('符合規則', search)
+        this.$store.dispatch('addAnySearch', search)
+      }
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+</style>

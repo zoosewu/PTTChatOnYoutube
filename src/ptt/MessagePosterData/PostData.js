@@ -1,7 +1,8 @@
-export const SearchType = Object.freeze({ none: 0, AID: 1, Title: 2 })
 export const PostData = {
   /** @type {string} */
   board: '',
+  /** @type {Boolean} */
+  isCurrectboard: false,
   /** @type {string} */
   key: '',
   /** @type {string} */
@@ -16,8 +17,6 @@ export const PostData = {
   endLine: 0,
   /** @type {Boolean} */
   haveNormalInsideTitle: false, // 普通標題會有第四行消失的問題
-  /** @type {SearchType} */
-  searchType: SearchType.none,
   /** @type {Boolean} */
   isSamePost: false,
   /** @type {Number} */
@@ -31,6 +30,7 @@ export const PostData = {
   },
   reset: function () {
     this.board = ''
+    this.isCurrectboard = false
     this.key = ''
     this.outsideTitle = ''
     this.insideTitle = ''
@@ -38,7 +38,6 @@ export const PostData = {
     this.startLine = 0
     this.endLine = 0
     this.haveNormalInsideTitle = false // 普通標題會有第四行消失的問題
-    this.searchType = SearchType.none
     this.isSamePost = false
     this.TrySetNewComment = 0
     this.pushedComment = ''

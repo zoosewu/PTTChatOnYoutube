@@ -13,7 +13,7 @@ export default {
       _allchats: [],
       lastChat: [],
       acChat: 0,
-      lastpostaid: '',
+      postKey: '',
       lastactiveChat: -1,
       intervalChat: null,
       intervalScroll: null,
@@ -26,7 +26,11 @@ export default {
   },
   methods: {
     updateComment: function () {
-      if (this.lastpostaid !== this.post.AID) { this.lastpostaid = this.post.AID; this._allchats = []; console.log('allchats new post') }
+      if (this.postKey !== this.post.key) {
+        if (reportMode) console.log('new post, reset chat')
+        this.postKey = this.post.key
+        this._allchats = []
+      }
       if (!this._allchats) this._allchats = []
       this._allchats = this._allchats.concat(this.newChatList)
       this.$store.dispatch('clearChat')
@@ -162,7 +166,7 @@ export default {
     if (reportMode) this._allchats = testchat.list// test
     else this._allchats = []
     this.lastChat = []
-    this.lastpostaid = this.post.AID
+    this.postKey = this.post.key
 
     this.activeChat = 0
     this.nextUpdateTime = Date.now() + 5 * 365 * 24 * 60 * 60 * 1000
@@ -177,7 +181,7 @@ export default {
     this.intervalChat = window.setInterval(() => {
       if (this.isStream && this.pttState > 0 && Date.now() > this.nextUpdateTime) {
         this.nextUpdateTime = Date.now() + 10 * 60 * 1000
-        this.msg.PostMessage('getCommentByLine', { AID: this.post.AID, board: this.post.board, title: this.post.title, startline: this.post.lastendline })
+        this.msg.PostMessage('getCommentByAnySearch', { key: this.post.key, board: this.post.board, startline: this.post.lastendline })
       }
     }, 340)
     // 定時滾動
@@ -240,20 +244,27 @@ const testchat = {
         default:
           break
       }
-      const haveAID = /(.*)(#.{8} \(.+\))(.*)/.exec(m)
-      if (haveAID && haveAID.length > 3) {
-        m = haveAID[1] + '<u onclick="this.parentNode.gotoPost(`' + haveAID[2] + '`)" style="cursor: pointer;">' + haveAID[2] + '</u>' + haveAID[3]
+
+      const AidResult = /(.*)(#[a-zA-Z0-9-_^'"`]{8} \([^'"`)]+\))(.*)/.exec(m)
+      if (AidResult && AidResult.length > 3) {
+        const precontent = AidResult[1]
+        const aid = AidResult[2]
+        const postcontent = AidResult[3]
+        const aidResult = /(#[a-zA-Z0-9_-]+) \(([a-zA-Z0-9_-]+)\)/.exec(aid)
+        const search = aidResult[2] + ',' + aidResult[1]
+        m = precontent + '<u onclick="this.parentNode.AddAnySrarch(`' + search + '`)" style="cursor: pointer;">' + aid + '</u>' + postcontent
+        if (reportMode) console.log(precontent + '<u onclick="this.parentNode.AddAnySrarch(' + search + ')">' + aid + '</u>' + postcontent)
       }
       let result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])(.*)/ig.exec(m)
-      let parsetime = 5
-      while (result && m !== '' && parsetime > 0) {
+      let ParseTimeLimit = 5
+      while (result && m !== '' && ParseTimeLimit > 0) {
         const prestring = result[1]
         const linkstring = result[2]
         if (prestring !== '') msg = msg + prestring
-        msg = msg + '<a href="' + linkstring + '" target="_blank" rel="noopener noreferrer" class="ptt-chat-msg" ref="link' + (5 - parsetime) + '" onmouseover="this.parentNode.mouseEnter(this.href)" onmouseleave="this.parentNode.mouseLeave(this.href)">' + linkstring + '</a>'
+        msg = msg + '<a href="' + linkstring + '" target="_blank" rel="noopener noreferrer" class="ptt-chat-msg" ref="link' + (5 - ParseTimeLimit) + '" onmouseover="this.parentNode.mouseEnter(this.href)" onmouseleave="this.parentNode.mouseLeave(this.href)">' + linkstring + '</a>'
         m = result[3]
         result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])(.*)/ig.exec(m)
-        parsetime--
+        ParseTimeLimit--
       }
       if (m !== '') msg = msg + m
       el.msg = msg

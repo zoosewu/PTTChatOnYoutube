@@ -58,7 +58,7 @@ function checkLogin () {
     this.msg.PostMessage('alert', { type: 1, msg: '登入執行中，請稍候...' })
     this.command.set(checkLogin)
   } else {
-    this.msg.PostMessage('alert', { type: 0, msg: '123發生了未知錯誤，可能是因為保留連線導致被踢掉。' })
+    this.msg.PostMessage('alert', { type: 0, msg: '發生了未知錯誤，可能是因為保留連線導致被踢掉。' })
     console.log(this.state.screen)
     this.endTask()
   }

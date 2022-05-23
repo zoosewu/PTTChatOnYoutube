@@ -1,14 +1,10 @@
 
 <template>
   <div class="mt-4 mb-1">
-    <div class="text-center mb-2">
-      <h4 class="mb-1 mt-0">
-        套件設定
-      </h4>
-      <p class="mt-1 mb-0">
-        輸入數值之後按Enter確認
-      </p>
-    </div>
+    <connect-component-title
+      :title="'套件設定'"
+      :description="'輸入數值之後按Enter確認'"
+    />
     <div class="form-row px-2">
       <connect-plugin-setting-input-element
         :setting-name="'PluginHeight'"
@@ -46,7 +42,7 @@
       />
     </div>
     <div
-      v-if="dynamicPlugin"
+      v-if="siteName === 'Holotools' ||siteName === 'niji-mado'"
       class="form-row px-2"
     >
       <connect-plugin-setting-input-element
@@ -62,7 +58,7 @@
       </p>
     </div>
     <div
-      v-if="dynamicPlugin"
+      v-if="siteName === 'Holotools'"
       class="form-row px-2"
     >
       <connect-plugin-setting-input-element
@@ -77,28 +73,7 @@
         僅舊版Holotools可用，需重新整理
       </p>
     </div>
-    <div class="form-row px-2">
-      <connect-dropdown
-        :setting-name="'Theme'"
-        :description="'主題顏色'"
-        :option-group="ThemeOptions"
-        :default-value="0"
-      />
-      <connect-dropdown
-        v-if="showThemeColorOption"
-        :setting-name="'ThemeColorBG'"
-        :description="'背景亮度'"
-        :option-group="ThemeColorBGOptions"
-        :default-value="2"
-      />
-      <connect-dropdown
-        v-if="showThemeColorOption"
-        :setting-name="'ThemeColorBorder'"
-        :description="'字體亮度'"
-        :option-group="ThemeColorBorderOptions"
-        :default-value="2"
-      />
-    </div>
+    <connect-plugin-setting-theme />
     <div class="form-row px-2">
       <connect-other-setting />
     </div>
@@ -109,44 +84,21 @@
 </template>
 
 <script>
+import ConnectComponentTitle from './Components/ConnectComponentTitle.vue'
 import ConnectPluginSettingInputElement from './PluginSettings/ConnectPluginSettingInputElement.vue'
+import ConnectPluginSettingTheme from './PluginSettings/ConnectPluginSettingTheme.vue'
 import ConnectOtherSetting from './PluginSettings/ConnectOtherSetting.vue'
 import ConnectNewVersion from './PluginSettings/ConnectNewVersion.vue'
-import ConnectDropdownElement from './PluginSettings/ConnectDropdownElement.vue'
 export default {
   components: {
+    'connect-component-title': ConnectComponentTitle,
     'connect-plugin-setting-input-element': ConnectPluginSettingInputElement,
+    'connect-plugin-setting-theme': ConnectPluginSettingTheme,
     'connect-other-setting': ConnectOtherSetting,
-    'connect-new-version': ConnectNewVersion,
-    'connect-dropdown': ConnectDropdownElement
-  },
-  inject: ['dynamicPlugin'],
-  data () {
-    return {
-      ThemeOptions: ['與網站相同', '淺色主題', '深色主題', '使用者自訂']
-    }
+    'connect-new-version': ConnectNewVersion
   },
   computed: {
-    ThemeColorBGOptions: function () {
-      const array = ['黑色']
-      for (let i = 1; i < 20; i++) array.push(i * 5 + '%')
-      array.push('白色')
-      return array
-    },
-    ThemeColorBorderOptions: function () {
-      const array = ['黑色']
-      for (let i = 1; i < 10; i++) array.push(i * 10 + '%')
-      array.push('白色')
-      return array
-    },
-    showThemeColorOption: function () {
-      // console.log("showThemeColorOption", (+this.getTheme == 3));
-      return +this.getTheme === 3
-    },
-    ...Vuex.mapGetters(['getTheme'])
+    ...Vuex.mapGetters(['siteName'])
   }
 }
 </script>
-
-<style lang="scss">
-</style>

@@ -1,8 +1,8 @@
 /* eslint-disable  */
-import { InitApp } from '../../app/appindex'
-import { ChangeLog } from '../../ChangeLog'
+import  InitApp  from 'src/app/appindex'
+import  ChangeLog  from 'src/ChangeLog'
 
-export function InitlineTV (messageposter) {
+export default function InitlineTV (messageposter,siteName) {
   const WhiteTheme = true
   // Check Theme
   // setTimeout(() => { WhiteTheme = ThemeCheck('mat-drawer-container', 'rgb(250, 250, 250)'); }, 100);
@@ -25,7 +25,7 @@ export function InitlineTV (messageposter) {
       const defaultVideoHandler = $('<div id="videohandler" style="flex:1 1 auto;"></div>')
       const PTTChatHandler = $('<div id="pttchatparent" class="p-0 d-flex" style="flex:0 0 ' + pluginwidth + 'px;position:relative;"></div>')
       defaultVideo.append(PTTChatHandler)
-      InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true)
+      InitApp(PTTChatHandler, WhiteTheme, true, messageposter,siteName, true)
       tryinsholotools = -10
     } else {
       tryinsholotools--

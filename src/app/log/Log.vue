@@ -21,7 +21,7 @@
           :item-title="'文章看板'"
           :item-type="'postBoard'"
           :second-item-title="'文章代碼'"
-          :second-item-type="'postAID'"
+          :second-item-type="'postKey'"
         />
         <log-item
           :item-title="'推文數'"

@@ -6,7 +6,7 @@
       v-model="SettingValue"
       class="form-control"
       rows="5"
-      placeholder="一行一個ID\n隱藏舊推文需重新整理"
+      placeholder="一行一個ID \n隱藏舊推文需重新整理"
       @change="$_PluginSetting_valueChange($event)"
     />
   </div>

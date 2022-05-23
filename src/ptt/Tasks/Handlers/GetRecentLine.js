@@ -1,4 +1,4 @@
-import { FrameState } from '../../PttController/PttState.js'
+import { FrameState } from 'PttController/PttState.js'
 function gotoEndOfPost () {
   this.insertText('G')
 }
@@ -16,7 +16,7 @@ export default function GetRecentLine () {
       let targetline = +lineResult[1] - 100 - 1
       if (targetline < 3) targetline = 3
       this.postData.endLine = targetline
-      this.insertText('qP')
+      this.insertText('qr')
       res.pass = true
     }
   } else {

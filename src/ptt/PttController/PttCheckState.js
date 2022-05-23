@@ -31,13 +31,13 @@ export function checkPttAlive () {
   }
 }
 
-/**
- * @this {Ptt}
- */
-function checkLock () {
-  if (this.state.lock) { this.msg.PostMessage('alert', { type: 0, msg: '指令執行中，請稍後再試。' }) }
-  return this.state.lock
-}
+// /**
+//  * @this {Ptt}
+//  */
+// function checkLock () {
+//   if (this.state.lock) { this.msg.PostMessage('alert', { type: 0, msg: '指令執行中，請稍後再試。' }) }
+//   return this.state.lock
+// }
 
 /**
  * @this {Ptt}

@@ -4,23 +4,23 @@
     <div :class="className">
       <div class="col">
         <input
-          id="setnewpush"
-          v-model.lazy="pushtext"
+          id="setnewcomment"
+          v-model.lazy="commenttext"
           class="form-control"
           type="text"
           style="font-size:14px"
           :placeholder="placeholder"
           autocomplete="off"
-          :disabled="!getEnableSetNewPush"
-          @keyup.13="setPush"
+          :disabled="!getEnableSetNewComment"
+          @keyup.13="$_ChatSetNewComment_setComment"
         >
       </div>
       <div class="col-2 px-0">
         <button
-          id="setnewpushbtn"
+          id="setnewcommentbtn"
           class="btn ptt-btnoutline w-100 px-2"
           type="button"
-          @click.self="setPush()"
+          @click.self="$_ChatSetNewComment_setComment()"
         >
           推文
         </button>
@@ -34,12 +34,12 @@ export default {
   inject: ['msg', 'isStream'],
   data () {
     return {
-      pushtext: ''
+      commenttext: ''
     }
   },
   computed: {
     placeholder: function () {
-      if (this.getEnableSetNewPush) return '輸入文字以推文...'
+      if (this.getEnableSetNewComment) return '輸入文字以推文...'
       else return '請到連線設定開啟測試版推文功能'
     },
     className: function () {
@@ -50,27 +50,23 @@ export default {
     ...Vuex.mapGetters([
       'post',
       'pttState',
-      'getEnableSetNewPush'
+      'getEnableSetNewComment'
     ])
   },
   mounted () {
-    this.msg.pushedText = data => this.removePushedText(data)
+    this.msg.commentedText = data => this.$_ChatSetNewComment_removeCommentedText(data)
   },
   methods: {
-    setPush: function () {
-      const result = /.+/.exec(this.pushtext)
+    $_ChatSetNewComment_setComment: function () {
+      const result = /.+/.exec(this.commenttext)
       if (!result) this.$store.dispatch('Alert', { type: 0, msg: '請輸入文字。' })
       else if (this.pttState < 1) this.$store.dispatch('Alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
       else if (!this.post.gettedpost) this.$store.dispatch('Alert', { type: 0, msg: '尚未獲取文章，請先獲取文章。' })
-      else this.msg.PostMessage('setNewPush', this.pushtext)
+      else this.msg.PostMessage('setNewcomment', this.commenttext)
     },
-    removePushedText (text) {
-      if (this.pushtext.indexOf(text) === 0) this.pushtext = this.pushtext.substring(text.length, this.pushtext.length)
-      console.log(this.pushtext)
-      /* const reg = "(" + text + ")(.*)";
-      const result = new RegExp(reg).exec(this.pushtext);
-      if (reportMode) console.log("removePushedText", text, this.pushtext, result);
-      this.pushtext = result[2]; */
+    $_ChatSetNewComment_removeCommentedText (text) {
+      if (this.commenttext.indexOf(text) === 0) this.commenttext = this.commenttext.substring(text.length, this.commenttext.length)
+      console.log(this.commenttext)
     }
   }
 }

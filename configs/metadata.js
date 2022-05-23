@@ -21,7 +21,10 @@ module.exports = {
     'unsafeWindow',
     'GM_getValue',
     'GM_setValue',
-    'GM_deleteValue'
+    'GM_deleteValue',
+    'GM_addValueChangeListener',
+    'GM_registerMenuCommand',
+    'GM_unregisterMenuCommand'
   ],
   'run-at': 'document-start',
   require: [

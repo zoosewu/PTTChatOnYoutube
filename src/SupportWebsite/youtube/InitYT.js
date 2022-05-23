@@ -1,8 +1,8 @@
-import { InitApp } from '../../app/appindex'
-import { ChangeLog } from '../../ChangeLog'
-import { ThemeCheck } from '../../library'
+import InitApp from 'src/app/appindex'
+import ChangeLog from 'src/ChangeLog'
+import { ThemeCheck } from 'src/library'
 
-export function InitYT (messageposter) {
+export default function InitYT (messageposter, siteName) {
   const msg = messageposter
   // Check Theme
   const WhiteTheme = ThemeCheck('html', 'rgb(249, 249, 249)');
@@ -25,7 +25,7 @@ export function InitYT (messageposter) {
 
       // 生出套件
       const isstream = checkvideotype()
-      InitApp(ChatContainer, WhiteTheme, isstream, msg)
+      InitApp(ChatContainer, WhiteTheme, isstream, msg, siteName)
       ChangeLog()
       setTimeout(CheckChatInstanced, 5000)
     } else {

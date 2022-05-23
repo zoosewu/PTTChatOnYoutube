@@ -4,8 +4,8 @@ import { CheckIsInBoard } from './Handlers/CheckIsInBoard.js'
 import { CheckIsInPost } from './Handlers/CheckIsInPost.js'
 import { CheckIsInsideTitleInPost } from './Handlers/CheckIsInsideTitleInPost.js'
 import { SetNewComment } from './Handlers/SetNewComment.js'
-import { MessagePoster } from '../../MessagePoster.js'
-import  PostData  from '../../PostData.js'
+import { MessagePoster } from 'src/MessagePoster.js'
+import PostData from '../../PostData.js'
 import RecieveData from '../MessagePosterData/RecieveData.js'
 
 const setCommentTaskList = [

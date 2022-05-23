@@ -8,6 +8,7 @@
     "sibiraj-s.vscode-scss-formatter",
     "standard.vscode-standard",
     "octref.vetur",
-    "jcbuisson.vue"
+    "jcbuisson.vue",
+    "ionutvmi.path-autocomplete"
   ]
 }

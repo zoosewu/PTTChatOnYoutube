@@ -1,12 +1,11 @@
 import { types } from './mutations_type'
 
-// state
 export const state = {
   count: 0,
   alert: [],
-  aid: GM_getValue('PostAID', ''),
+  anySearch: '',
   post: {
-    AID: '',
+    key: '',
     board: '',
     title: '',
     date: (() => {
@@ -41,11 +40,14 @@ export const state = {
   isStream: true,
   previewImg: '',
   InstancePTTID: 1,
+  customPluginSetting: false,
+  siteName: '',
   // checkbox
   enablesetnewcomment: GM_getValue(types.ENABLESETNEWCOMMENT, false),
   disablecommentgray: GM_getValue(types.DISABLECOMMENTGRAY, false),
   deleteotherconnect: GM_getValue(types.DELETEOTHERCONNECT, false),
   enableblacklist: GM_getValue(types.ENABLEBLACKLIST, false),
+  anySearchHint: GM_getValue(types.ANYSEARCHHINT, false),
   // input value
   pluginHeight: GM_getValue(types.PLUGINHEIGHT, -1),
   commentInterval: GM_getValue(types.COMMENTINTERVAL, -1),
@@ -79,8 +81,8 @@ export const mutations = {
   [types.CLEARALERT] (state) {
     state.alert = []
   },
-  [types.GOTOPOST] (state, aid) {
-    state.aid = aid
+  [types.ADDANYSEARCH] (state, search) {
+    state.anySearch = search
   },
   [types.UPDATEBOARD] (state, board) {
     state.post.board = board
@@ -137,6 +139,12 @@ export const mutations = {
   [types.REINSTANCEPTT] (state) {
     state.InstancePTTID++
   },
+  [types.CUSTOMPLUGINSETTING] (state, value) {
+    state.customPluginSetting = value
+  },
+  [types.SITENAME] (state, value) {
+    state.siteName = value
+  },
 
   // checkbox
   [types.DELETEOTHERCONNECT] (state, deleteotherconnect) {
@@ -155,29 +163,41 @@ export const mutations = {
     GM_setValue(types.ENABLEBLACKLIST, enable)
     state.enableblacklist = enable
   },
+  [types.ANYSEARCHHINT] (state, search) {
+    GM_setValue(types.ANYSEARCHHINT, search)
+    state.anySearchHint = search
+  },
+
   // input value
   [types.PLUGINHEIGHT] (state, height) {
-    GM_setValue(types.PLUGINHEIGHT, height)
+    const ValueName = types.PLUGINHEIGHT + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, height)
+    console.log('PLUGINHEIGHT', ValueName, state.customPluginSetting, state.siteName)
     state.pluginHeight = height
   },
   [types.COMMENTINTERVAL] (state, interval) {
-    GM_setValue(types.COMMENTINTERVAL, interval)
+    const ValueName = types.COMMENTINTERVAL + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, interval)
     state.commentInterval = interval
   },
   [types.CHATFONTSIZE] (state, size) {
-    GM_setValue(types.CHATFONTSIZE, size)
+    const ValueName = types.CHATFONTSIZE + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, size)
     state.chatFontsize = size
   },
   [types.CHATSPACE] (state, space) {
-    GM_setValue(types.CHATSPACE, space)
+    const ValueName = types.CHATSPACE + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, space)
     state.chatSpace = space
   },
   [types.PLUGINWIDTH] (state, width) {
-    GM_setValue(types.PLUGINWIDTH, width)
+    const ValueName = types.PLUGINWIDTH + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, width)
     state.pluginWidth = width
   },
   [types.PLUGINPORTRAITHEIGHT] (state, portraitHeight) {
-    GM_setValue(types.PLUGINPORTRAITHEIGHT, portraitHeight)
+    const ValueName = types.PLUGINPORTRAITHEIGHT + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, portraitHeight)
     state.pluginPortraitHeight = portraitHeight
   },
   [types.BLACKLIST] (state, list) {
@@ -187,15 +207,18 @@ export const mutations = {
   },
   // dropdown
   [types.THEME] (state, theme) {
-    GM_setValue(types.THEME, theme)
+    const ValueName = types.PLUGINPORTRAITHEIGHT + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, theme)
     state.theme = theme
   },
   [types.THEMECOLORBG] (state, themecolorbg) {
-    GM_setValue(types.THEMECOLORBG, themecolorbg)
+    const ValueName = types.THEMECOLORBG + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, themecolorbg)
     state.themeColorBG = themecolorbg
   },
   [types.THEMECOLORBORDER] (state, themecolorborder) {
-    GM_setValue(types.THEMECOLORBORDER, themecolorborder)
+    const ValueName = types.THEMECOLORBORDER + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, themecolorborder)
     state.themeColorBorder = themecolorborder
   },
   [types.TITLELIST] (state, list) {

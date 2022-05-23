@@ -1,7 +1,7 @@
 /**
  *
  */
-export function ChangeLog () {
+export default function ChangeLog () {
   /**
    * @returns {string} newest post in ptt
    */

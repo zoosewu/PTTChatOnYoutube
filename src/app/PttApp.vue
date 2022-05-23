@@ -12,6 +12,9 @@ import PTTAppMain from './PttAppMain.vue'
 export default {
   components: {
     PTTAppMain: PTTAppMain
+  },
+  mouted () {
+    GM_deleteValue('PostAID')
   }
 }
 </script>

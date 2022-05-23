@@ -26,7 +26,7 @@ export function PttAutoCommand () {
         reg: /按任意鍵繼續/,
         input: '',
         callback: () => {
-          const reg = /(找不到這個文章代碼\(AID\)，可能是文章已消失，或是你找錯看板了|這一篇文章值|◆ 本文已過長, 禁止快速連續推文|◆ 對不起，您的文章或推文間隔太近囉！)/
+          const reg = /(找不到這個文章代碼\(AID\)，可能是文章已消失，或是你找錯看板了|這一篇文章值|◆ 本文已過長, 禁止快速連續推文|◆ 對不起，您的文章或推文間隔太近囉！|《.+》看板設定)/
           const result = this.match(reg)
           if (result) {
             return ThisFrame.notSkip
@@ -66,6 +66,7 @@ export function PttAutoCommand () {
         reg: /鴻雁往返 {2}\(R\/y\)回信 \(x\)站內轉寄 \(d\/D\)刪信 \(\^P\)寄發新信/,
         input: 'q'
       },
+      { reg: /您確定要離開【 批踢踢實業坊 】嗎\(Y\/N\)？/, input: 'n\n' },
       { reg: /【精華文章】/, input: 'q' },
       { reg: /【看板列表】/, input: 'q' },
       { reg: /【分類看板】/, input: 'q' },
@@ -73,8 +74,7 @@ export function PttAutoCommand () {
       { reg: /【聊天說話】/, input: 'e' },
       { reg: /【個人設定】/, input: 'e' },
       { reg: /【工具程式】/, input: 'e' },
-      { reg: /【網路遊樂場】/, input: 'e' },
-      { reg: /您確定要離開【 批踢踢實業坊 】嗎\(Y\/N\)？/, input: 'n\n' }
+      { reg: /【網路遊樂場】/, input: 'e' }
     ],
     runAutoCommand: () => {
       const commands = this.autoCommand.list

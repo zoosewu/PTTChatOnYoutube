@@ -34,7 +34,7 @@
 <script>
 /* eslint-disable-next-line no-unused-vars */
 import ChatElementMessage from './ChatElementMessage'
-import { paddingLeft } from '../../library'
+import { paddingLeft } from 'src/library'
 
 export default {
   props: {
@@ -68,7 +68,7 @@ export default {
     this.$nextTick(function () {
       this.$refs.p.mouseEnter = this.$_ChatElementMessage_MoueseEnter
       this.$refs.p.mouseLeave = this.$_ChatElementMessage_MoueseLeave
-      this.$refs.p.gotoPost = this.$_ChatElementMessage_GotoPost
+      this.$refs.p.AddAnySrarch = this.$_ChatElementMessage_AddAnySrarch
     })
   },
   updated () { if (showScrollLog) console.log('updated, listIndex, chatIndex, msg', this.item.id, this.item.msg) },
@@ -84,9 +84,9 @@ export default {
     $_ChatElementMessage_MoueseLeave (url) {
       this.$store.dispatch('previewImage', '')
     },
-    $_ChatElementMessage_GotoPost (aid) {
-      console.log('GotoPost')
-      this.$store.dispatch('gotoPost', aid)
+    $_ChatElementMessage_AddAnySrarch (search) {
+      if (reportMode) console.log('click addAnySearch')
+      this.$store.dispatch('addAnySearch', search)
     }
   }
 }

@@ -1,4 +1,4 @@
-import { FrameState } from '../../PttController/PttState.js'
+import { FrameState } from 'PttController/PttState.js'
 
 /**
  * @typedef {object} HandlerResult

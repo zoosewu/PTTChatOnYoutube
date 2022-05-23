@@ -10,7 +10,7 @@
     >
       <connect-alert-item
         v-for="(item) in alertlist"
-        :key="item"
+        :key="item.no"
         :alert="item"
         @destroyalert="removeAlert(item)"
       />
@@ -28,6 +28,7 @@ export default {
   inject: ['msg'],
   data () {
     return {
+      serialNumber: 0,
       alert: []
     }
   },
@@ -50,6 +51,10 @@ export default {
       this.alert.splice(index, 1)
     },
     addAlert (items) {
+      for (let i = 0; i < items.length; i++) {
+        items[i].no = this.serialNumber
+        this.serialNumber++
+      }
       this.alert = this.alert.concat(items)
       this.$store.dispatch('ClearAlert')
       return this.alert

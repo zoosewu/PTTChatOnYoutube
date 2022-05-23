@@ -1,9 +1,9 @@
 
-import { InitApp } from '../../app/appindex'
-import { ChangeLog } from '../../ChangeLog'
-import { ThemeCheck } from '../../library'
+import InitApp from 'src/app/appindex'
+import ChangeLog from 'src/ChangeLog'
+import { ThemeCheck } from 'src/library'
 
-export function InitHT (messageposter) {
+export default function InitHT (messageposter, siteName) {
   // Check Theme
   const WhiteTheme = ThemeCheck('html', '250, 250, 250')
 
@@ -101,7 +101,7 @@ export function InitHT (messageposter) {
       defaultVideoHandler.append(defaultVideo)
       fakeparent.append(PTTChatHandler)
       $('.reopen-toolbar').css({ 'z-index': '302' })
-      InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true)
+      InitApp(PTTChatHandler, WhiteTheme, true, messageposter, siteName, true)
       ChangeLog()
       tryinsholotools = -10
     } else {

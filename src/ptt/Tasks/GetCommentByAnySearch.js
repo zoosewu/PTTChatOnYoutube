@@ -2,7 +2,7 @@ import { FrameState } from '../PttController/PttState'
 import { RunHandler } from './HandlerRunner'
 import GotoMain from './GotoMain'
 import CheckIsInBoard from './Handlers/CheckIsInBoard'
-import CheckIsInPost from './Handlers/CheckIsInPost'
+import CheckIsCurrectPost from './Handlers/CheckIsCurrectPost'
 import CheckIsInsideTitleInPost from './Handlers/CheckIsInsideTitleInPost'
 import GetComment from './Handlers/GetComment'
 import CheckIsEndInPost from './Handlers/CheckIsEndInPost'
@@ -13,7 +13,7 @@ import GetRecentLine from './Handlers/GetRecentLine'
 const GetCommentByLineTaskList = [
   () => { console.log('run GetCommentByLineTaskList'); return { pass: true } },
   CheckIsInBoard,
-  CheckIsInPost,
+  CheckIsCurrectPost,
   CheckIsInsideTitleInPost,
   CheckIsCurrectLineInPost,
   GetComment,
@@ -23,7 +23,7 @@ const GetCommentByLineTaskList = [
 const GetRecentLineTaskList = [
   () => { console.log('run GetRecentLineTaskList'); return { pass: true } },
   CheckIsInBoard,
-  CheckIsInPost,
+  CheckIsCurrectPost,
   CheckIsInsideTitleInPost,
   GetRecentLine
 ]
@@ -46,7 +46,7 @@ function GetCommentByLine () {
   if (this.state.frame === FrameState.firstPageofPost || this.state.frame === FrameState.otherPageofPost) {
     this.insertText('q')
   }
-  this.insertText('P')
+  this.insertText('q')
   this.addTask(RunHandler, GetCommentByLineTaskList, recieveComments)
 }
 /**
@@ -55,13 +55,18 @@ function GetCommentByLine () {
  * @param {PostData} data PostData
  */
 export default function (data) {
-  console.log('GetCommentByAID', data)
+  console.log('GetCommentByAnySearch', data)
   if (this.postData.board === data.board && this.postData.key === data.key) {
     this.postData.samePost()
   } else {
+    const result = /^ *([#/?aZGA][^,]+?) *(?:, *([#/?aZGA!].+))? *$/.exec(data.key)
+    if (!result) return
+    let key = result[1]
+    console.log(result.length, result)
+    if (result.length > 2 && result[2]) key += '\n' + result[2]
     this.postData.reset()
     this.postData.board = data.board
-    this.postData.key = data.key
+    this.postData.key = key
     if (data.startline) this.postData.endLine = data.startline
   }
   this.recieveData = new RecieveData()

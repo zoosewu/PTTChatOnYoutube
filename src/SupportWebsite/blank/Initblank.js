@@ -1,7 +1,7 @@
-import { InitApp } from '../../app/appindex'
-import { ChangeLog } from '../../ChangeLog'
+import InitApp from 'src/app/appindex'
+import ChangeLog from 'src/ChangeLog'
 
-export function Initblank (messageposter) {
+export default function Initblank (messageposter, siteName) {
   const WhiteTheme = true
   // Check Theme
 
@@ -13,6 +13,6 @@ export function Initblank (messageposter) {
   container.setAttribute('style', 'width:' + pluginwidth + 'px;height:800px;')
   Body.prepend(container)
   // const blankcontainer = document.getElementById(`container`);
-  InitApp([container], WhiteTheme, true, messageposter, true)
+  InitApp([container], WhiteTheme, true, messageposter, siteName, true)
   ChangeLog()
 }

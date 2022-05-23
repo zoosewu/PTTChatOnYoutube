@@ -5,21 +5,7 @@ export const actions = {
   actionDecrease: ({ commit }) => { console.log('actionDecrease'); commit(types.DECREASE) },
   Alert: (context, alertobject) => { context.commit(types.ALERT, alertobject) },
   ClearAlert: (context) => { context.commit(types.CLEARALERT) },
-  gotoPost: ({ dispatch, commit, state }, aid) => {
-    const result = /#(.+) \((.+)\)/.exec(aid)
-    console.log('gotoPost', result, state.pttState)
-    if (!result || result.length <= 2) {
-      dispatch('Alert', { type: 0, msg: '文章AID格式錯誤，請重新輸入。' })
-      commit(types.GOTOPOST, aid)
-    } else if (state.pttState < 1) {
-      dispatch('Alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
-      commit(types.GOTOPOST, aid)
-    } else {
-      GM_setValue('PostAID', aid)
-      dispatch('pageChange', true)
-      commit(types.GOTOPOST, aid)
-    }
-  },
+  addAnySearch: ({ commit }, search) => { commit(types.ADDANYSEARCH, search) },
   updateLog: (context, log) => { context.commit(types.UPDATELOG, log) },
   removeLog: (context, log) => { context.commit(types.REMOVELOG, log) },
   updatePost: ({ dispatch, commit, state }, RecievedData) => {
@@ -29,7 +15,7 @@ export const actions = {
       newpost.lastEndLine = RecievedData.endLine
     } else {
       newpost = {
-        AID: RecievedData.key,
+        key: RecievedData.key,
         board: RecievedData.board,
         title: RecievedData.title,
         date: RecievedData.date,
@@ -40,7 +26,7 @@ export const actions = {
         gettedpost: true
       }
       const t = newpost.date
-      dispatch('updateLog', { type: 'postAID', data: newpost.AID })
+      dispatch('updateLog', { type: 'postKey', data: newpost.key })
       dispatch('updateLog', [{ type: 'postBoard', data: newpost.board },
         { type: 'postTitle', data: newpost.title },
         { type: 'postDate', data: t.toLocaleDateString() + ' ' + t.toLocaleTimeString() },
@@ -87,14 +73,15 @@ export const actions = {
       // chat.msg = currpush.content;
       let msg = ''
       let m = filterXSS(currcomment.content)
-      const AidResult = /(.*)(#[a-zA-Z0-9-_^'^"^`]{8} \([^'^"^`)]+\))(.*)/.exec(m)
+      const AidResult = /(.*)(#[a-zA-Z0-9-_^'"`]{8} \([^'"`)]+\))(.*)/.exec(m)
       if (AidResult && AidResult.length > 3) {
         const precontent = AidResult[1]
         const aid = AidResult[2]
         const postcontent = AidResult[3]
-
-        m = precontent + '<u onclick="this.parentNode.gotoPost(`' + aid + '`)" style="cursor: pointer;">' + aid + '</u>' + postcontent
-        if (reportMode) console.log(precontent + '<u onclick="this.parentNode.gotoPost(' + aid + ')">' + aid + '</u>' + postcontent)
+        const aidResult = /(#[a-zA-Z0-9_-]+) \(([a-zA-Z0-9_-]+)\)/.exec(aid)
+        const search = aidResult[2] + ',' + aidResult[1]
+        m = precontent + '<u onclick="this.parentNode.AddAnySrarch(`' + search + '`)" style="cursor: pointer;">' + aid + '</u>' + postcontent
+        if (reportMode) console.log(precontent + '<u onclick="this.parentNode.AddAnySrarch(' + search + ')">' + aid + '</u>' + postcontent)
       }
       let result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])(.*)/ig.exec(m)
       let parsetime = 5
@@ -159,12 +146,16 @@ export const actions = {
   isStream: ({ commit }, isStream) => { commit(types.ISSTREAM, isStream) },
   previewImage: ({ commit }, src) => { commit(types.PREVIEWIMG, src) },
   reInstancePTT: ({ commit }) => commit(types.REINSTANCEPTT),
+  setCustomPluginSetting: ({ commit }, value) => { commit(types.CUSTOMPLUGINSETTING, value) },
+  setSiteName: ({ commit }, value) => { commit(types.SITENAME, value) },
 
   // checkbox
   setEnableSetNewComment: ({ commit }, value) => { /* console.log("EnableSetNewPush action",value); */commit(types.ENABLESETNEWCOMMENT, value) },
   setDisableCommentGray: ({ commit }, value) => { commit(types.DISABLECOMMENTGRAY, value) },
   setDeleteOtherConnect: ({ commit }, value) => { commit(types.DELETEOTHERCONNECT, value) },
   setEnableBlacklist: ({ commit }, value) => { commit(types.ENABLEBLACKLIST, value) },
+  setAnySearchHint: ({ commit }, value) => { commit(types.ANYSEARCHHINT, value) },
+
   // input value
   setPluginHeight: (context, value) => { context.commit(types.PLUGINHEIGHT, value) },
   setFontsize: ({ commit }, value) => { commit(types.CHATFONTSIZE, value) },
@@ -173,6 +164,7 @@ export const actions = {
   setPluginWidth: ({ commit }, value) => { commit(types.PLUGINWIDTH, value) },
   setPluginPortraitHeight: ({ commit }, value) => { commit(types.PLUGINPORTRAITHEIGHT, value) },
   setBlacklist: ({ commit }, value) => { commit(types.BLACKLIST, value) },
+
   // dropdown
   setTheme: ({ commit }, value) => { commit(types.THEME, value) },
   setThemeColorBG: ({ commit }, value) => { commit(types.THEMECOLORBG, value) },
