@@ -9,7 +9,7 @@
     </legend>
     <div class="col px-0">
       <connect-plugin-setting-checkbox-element
-        :setting-name="'EnableSetNewPush'"
+        :setting-name="'EnableSetNewComment'"
         :description="'推文功能(使用此功能後果請自負)'"
         :default-value="false"
       />

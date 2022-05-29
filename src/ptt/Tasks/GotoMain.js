@@ -7,10 +7,8 @@ const GotoMainTaskList = [
 ]
 
 /**
- * @typedef {import("../MessagePosterData/PostData").PostData} PostData
  * @this {Ptt}
- * @param {PostData} data PostData
  */
-export default function (data) {
+export default function () {
   this.addTask(RunHandler, GotoMainTaskList)
 }

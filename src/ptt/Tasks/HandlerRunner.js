@@ -5,10 +5,9 @@
  * @param {Function} OnTaskFinishedCallBack call when task finish
  */
 export function RunHandler (HandlerList, OnTaskFinishedCallBack) {
-  console.log('RunHandler', [HandlerList, OnTaskFinishedCallBack])
+  if (reportMode)console.log('RunHandler', [HandlerList, OnTaskFinishedCallBack])
   for (let i = 0; i < HandlerList.length; i++) {
     const result = HandlerList[i].apply(this)
-    console.log('RunHandler result', result)
     if (result.pass === true) {
       if (reportMode) console.log('RunHandler pass, framestate:', this.state.frame, ', handler name:', HandlerList[i].name)
     }
@@ -20,4 +19,5 @@ export function RunHandler (HandlerList, OnTaskFinishedCallBack) {
     }
   }
   if (OnTaskFinishedCallBack)OnTaskFinishedCallBack.apply(this)
+  this.endTask()
 }

@@ -22,11 +22,11 @@ export const PostData = {
   /** @type {Number} */
   TrySetNewComment: 0,
   /** @type {string} */
-  pushedComment: '',
+  commentText: '',
   samePost: function () {
     this.isSamePost = true
     this.TrySetNewComment = 0
-    this.pushedComment = ''
+    this.commentText = ''
   },
   reset: function () {
     this.board = ''
@@ -40,7 +40,7 @@ export const PostData = {
     this.haveNormalInsideTitle = false // 普通標題會有第四行消失的問題
     this.isSamePost = false
     this.TrySetNewComment = 0
-    this.pushedComment = ''
+    this.commentText = ''
   }
 }
 export default PostData

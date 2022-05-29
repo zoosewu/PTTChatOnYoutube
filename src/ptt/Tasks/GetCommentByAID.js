@@ -35,7 +35,7 @@ const GetRecentLineTaskList = [
 function recieveComments () {
   this.endTask()
   this.msg.PostMessage('alert', { type: 2, msg: '文章讀取完成。' })
-  this.msg.PostMessage('newPush', this.recieveData)
+  this.msg.PostMessage('newComment', this.recieveData)
   if (reportMode) console.log(this.recieveData)
 }
 /**
@@ -62,7 +62,7 @@ export default function (data) {
     this.postData.reset()
     this.postData.board = data.board
     this.postData.key = data.key
-    if (data.startline) this.postData.endLine = data.startline
+    if (data.startLine) this.postData.endLine = data.startLine
   }
   this.recieveData = new RecieveData()
   this.recieveData.board = data.board
@@ -72,4 +72,5 @@ export default function (data) {
     this.addTask(RunHandler, GetRecentLineTaskList)
   }
   this.addTask(GetCommentByLine)
+  this.endTask()
 }

@@ -27,15 +27,15 @@ export default function GetComment () {
       let content = commentResult[3]
       const reg = /\s+$/g
       content = content.replace(reg, '')
-      console.log('GetComment', this)
+      // console.log('GetComment', this)
       const comment = getComment.apply(this, [content, commentResult])
       this.recieveData.comments.push(comment)
       if (reportMode) checkedLine.push(i)
-      if (reportMode) console.log('GetComment at line', i, content, line)
-    } else if (reportMode) console.log('GetComment at line fail', i, line)
+      // if (reportMode) console.log('GetComment at line', i, content, line)
+    } /* else if (reportMode) console.log('GetComment at line fail', i, line) */
   }
   if (reportMode) {
-    console.log('GetComment, startline:', startLine, ', endline:', this.postData.endLine, ', targetline:', targetLine,
+    console.log('GetComment, startLine:', startLine, ', endline:', this.postData.endLine, ', targetline:', targetLine,
       ', checkedline:', checkedLine, ', haveNormalTitle:', this.postData.haveNormalInsideTitle)
   }
   // const percentresult = Ptt.match(/瀏覽 第 .+ 頁 \( *(\d+)%\)/)

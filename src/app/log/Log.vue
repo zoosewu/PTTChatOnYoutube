@@ -24,7 +24,7 @@
           :second-item-type="'postKey'"
         />
         <log-item
-          :item-title="'推文數'"
+          :item-title="'已獲取推文數'"
           :item-type="'postCommentCount'"
           :second-item-title="'結尾行數'"
           :second-item-type="'postEndLine'"

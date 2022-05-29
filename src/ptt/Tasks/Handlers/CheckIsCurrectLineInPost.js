@@ -25,7 +25,7 @@ export default function CheckIsCurrectLineInPost () {
     if (startLine < 5 && this.postData.haveNormalInsideTitle) {
       targetLine += 1
     }
-    console.log('targetLine', targetLine)
+    console.log('CheckIsCurrectLineInPost targetLine', targetLine)
     if (targetLine < 1 || targetLine > 23) {
       res.pass = false
     }

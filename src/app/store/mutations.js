@@ -15,7 +15,7 @@ export const state = {
       t.setSeconds(0)
       return t
     })(),
-    lastendline: 0,
+    lastEndLine: 0,
     lastcommenttime: new Date(),
     commentcount: 0,
     nowcomment: 0,
@@ -98,6 +98,12 @@ export const mutations = {
   [types.CLEARCHAT] (state) {
     state.chatlist = []
   },
+  [types.SETPOSTLASTENDLINE] (state, lastEndLine) {
+    state.post.lastEndLine = lastEndLine
+  },
+  [types.SETPOSTCOMMENTCOUNT] (state, commentCount) {
+    state.post.commentCount = commentCount
+  },
   [types.UPDATELOG] (state, log) {
     console.log('UPDATELOG', log)
     if (!Array.isArray(log)) state.log.push(log)
@@ -112,7 +118,6 @@ export const mutations = {
     }
   },
   [types.VIDEOSTARTDATE] (state, videostartdate) {
-    console.trace('VIDEOSTARTDATE mutations', videostartdate)
     state.VStartDate = videostartdate
   },
   [types.VIDEOPLAYEDTIME] (state, videoplayedtime) {

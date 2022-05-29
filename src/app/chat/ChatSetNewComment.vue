@@ -54,7 +54,7 @@ export default {
     ])
   },
   mounted () {
-    this.msg.commentedText = data => this.$_ChatSetNewComment_removeCommentedText(data)
+    this.msg.commentedText = data => this.$_ChatSetNewComment_removeCommentedText(data.commentedText)
   },
   methods: {
     $_ChatSetNewComment_setComment: function () {
@@ -66,7 +66,6 @@ export default {
     },
     $_ChatSetNewComment_removeCommentedText (text) {
       if (this.commenttext.indexOf(text) === 0) this.commenttext = this.commenttext.substring(text.length, this.commenttext.length)
-      console.log(this.commenttext)
     }
   }
 }

@@ -12,6 +12,6 @@ export default function RecieveData () {
   /** @type {Object[]} */
   this.comments = []
   /** @type {string} */
-  this.pushedText = ''
+  this.commentedText = ''
   console.log('RecieveData date', this.date)
 }

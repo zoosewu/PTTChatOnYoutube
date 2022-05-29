@@ -74,7 +74,7 @@ export default {
   updated () { if (showScrollLog) console.log('updated, listIndex, chatIndex, msg', this.item.id, this.item.msg) },
   methods: {
     $_ChatElementMessage_GrayCheck () {
-      if (showScrollLog) console.log('GrayCheck', this.item, 'id', this.item.id, 'index', this.index, 'activeChat', this.activeChat, this.item, 'id>activeChat', this.item.id > this.activeChat, '->', this.item.gray, 'getDisableCommentGray', this.getDisableCommentGray)
+      if (reportMode) console.log('GrayCheck', this.item, 'id', this.item.id, 'index', this.index, 'activeChat', this.activeChat, this.item, 'id>activeChat', this.item.id > this.activeChat, '->', this.item.gray, 'getDisableCommentGray', this.getDisableCommentGray)
       if (this.index > this.activeChat && !this.item.gray) this.$emit('updategray', this.index, true)
       else if (this.index <= this.activeChat && this.item.gray) this.$emit('updategray', this.index, false)
     },

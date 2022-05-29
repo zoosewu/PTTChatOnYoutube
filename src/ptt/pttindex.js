@@ -17,7 +17,6 @@ export function InitPTT (messagePoster) {
       if (showAllLog) console.log('runCommand()')
       ptt.command.execute()
     }
-    // if (showPttScreen) console.log('==Ptt screen snapshot:', ptt.state.screen)
     if (reportMode) console.log('===OnUpdate end===')
   }
   /**

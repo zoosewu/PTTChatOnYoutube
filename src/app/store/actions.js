@@ -12,7 +12,11 @@ export const actions = {
     let newpost
     if (RecievedData.key === state.post.key && RecievedData.board === state.post.board) {
       newpost = state.post
-      newpost.lastEndLine = RecievedData.endLine
+      commit(types.SETPOSTLASTENDLINE, RecievedData.endLine)
+      const commentCount = state.post.commentCount + RecievedData.comments.length
+      commit(types.SETPOSTCOMMENTCOUNT, commentCount)
+      dispatch('updateLog', [{ type: 'postEndLine', data: RecievedData.endLine },
+        { type: 'postCommentCount', data: commentCount }])
     } else {
       newpost = {
         key: RecievedData.key,
@@ -21,29 +25,31 @@ export const actions = {
         date: RecievedData.date,
         lastEndLine: RecievedData.endLine,
         lastCommentTime: new Date(),
-        commentCount: 0,
+        commentCount: RecievedData.comments.length,
         nowComment: 0,
         gettedpost: true
       }
       const t = newpost.date
-      dispatch('updateLog', { type: 'postKey', data: newpost.key })
-      dispatch('updateLog', [{ type: 'postBoard', data: newpost.board },
+      dispatch('updateLog', [{ type: 'postKey', data: newpost.key },
+        { type: 'postBoard', data: newpost.board },
         { type: 'postTitle', data: newpost.title },
         { type: 'postDate', data: t.toLocaleDateString() + ' ' + t.toLocaleTimeString() },
-        { type: 'postEndLine', data: newpost.lastEndLine }])
-    }
-    if (RecievedData.comments.length > 0) {
-      newpost.commentCount += RecievedData.comments.length
-      dispatch('updateLog', { type: 'postCommentCount', data: newpost.commentCount })
+        { type: 'postEndLine', data: newpost.lastEndLine },
+        { type: 'postCommentCount', data: newpost.commentCount }])
     }
     commit(types.UPDATEPOST, newpost)
     dispatch('updateChat', RecievedData.comments)
+    if (RecievedData.comments.length > 0) {
+      const lastcommentDate = RecievedData.comments[RecievedData.comments.length - 1].date
+      dispatch('updateLog', { type: 'postLastCommentTime', data: lastcommentDate.toLocaleDateString() + ' ' + lastcommentDate.toLocaleTimeString() })
+    }
     if (state.pageChange) {
       dispatch('gotoChat', true)
       dispatch('pageChange', false)
     }
   },
   updateChat: ({ commit, state }, comments) => {
+    console.log('state.post.commentCount', state.post.commentCount, comments.length)
     const existcomment = state.post.commentCount - comments.length
     const chatlist = []
     let sametimecount = 0
@@ -55,11 +61,9 @@ export const actions = {
         if (index >= sametimeIndex) { // 獲得同時間點的推文數量
           for (let nextpointer = index + 1; nextpointer < comments.length; nextpointer++) {
             const element = comments[nextpointer]
-            // console.log("currpush.date.getTime(), element.date.getTime()", currpush.date.getTime(), element.date.getTime());
             if ((currcomment.date.getTime() < element.date.getTime()) || (nextpointer >= comments.length - 1)) {
               sametimeIndex = nextpointer
               sametimecount = nextpointer - index
-              // console.log("sametimeIndex, sametimecount", sametimeIndex, sametimecount);
               break
             }
           }
@@ -97,15 +101,16 @@ export const actions = {
       if (m !== '') msg = msg + m
       chat.msg = msg
       chat.id = existcomment + index
-      chat.uid = state.post.AID + '_' + chat.id
+      chat.uid = state.post.key + '_' + chat.id
       chat.gray = !state.disablecommentgray
       let isMatch = false
       if (state.enableblacklist) {
         const list = state.blacklist.split('\n')
         const id = chat.pttid.toLowerCase()
-        for (let index = 0; index < list.length; index++) {
-          if (id === list[index]) {
+        for (let i = 0; i < list.length; i++) {
+          if (id === list[i]) {
             isMatch = true
+            break
           }
         }
       }
@@ -119,7 +124,6 @@ export const actions = {
   },
   clearChat: ({ commit }) => { commit(types.CLEARCHAT) },
   updateVideoStartDate: ({ dispatch, commit, state }, d) => {
-    console.trace('updateVideoStartDate', d)
     dispatch('updateLog', { type: 'videoStartTime', data: d.toLocaleDateString() + ' ' + d.toLocaleTimeString() })
     commit(types.VIDEOSTARTDATE, d)
     dispatch('updateVideoCurrentTime')
@@ -150,7 +154,7 @@ export const actions = {
   setSiteName: ({ commit }, value) => { commit(types.SITENAME, value) },
 
   // checkbox
-  setEnableSetNewComment: ({ commit }, value) => { /* console.log("EnableSetNewPush action",value); */commit(types.ENABLESETNEWCOMMENT, value) },
+  setEnableSetNewComment: ({ commit }, value) => { commit(types.ENABLESETNEWCOMMENT, value) },
   setDisableCommentGray: ({ commit }, value) => { commit(types.DISABLECOMMENTGRAY, value) },
   setDeleteOtherConnect: ({ commit }, value) => { commit(types.DELETEOTHERCONNECT, value) },
   setEnableBlacklist: ({ commit }, value) => { commit(types.ENABLEBLACKLIST, value) },

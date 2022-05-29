@@ -1,7 +1,7 @@
 import ChatPreviewImage from './ChatPreviewImage.vue'
 import ChatScrollBtn from './ChatScrollButton.vue'
 import ChatElement from './ChatElement.vue'
-import ChatSetNewPush from './ChatSetNewComment.vue'
+import ChatSetNewComment from './ChatSetNewComment.vue'
 
 Vue.component('DynamicScroller', VueVirtualScroller.DynamicScroller)
 Vue.component('DynamicScrollerItem', VueVirtualScroller.DynamicScrollerItem)
@@ -37,7 +37,8 @@ export default {
       return this._allchats
     },
     updateGray: function (index, isgray) {
-      if (showScrollLog) {
+      if (!this.allchats[index]) return
+      if (reportMode) {
         console.log('update gray', index, this.allchats[index])
         console.log('update gray', this.allchats[index].gray, '->', isgray, this.allchats[index].msg)
       }
@@ -50,12 +51,8 @@ export default {
     },
     autoScrollCheck: function () {
       if (showScrollLog) {
-        console.log('scrollToChat',
-          this.lastactiveChat,
-          this.activeChat,
-          this.lastactiveChat !== this.activeChat,
-          'this.isAutoScroll', this.isAutoScroll,
-          this.lastautoscrolltime + 50 < Date.now())
+        console.log('scrollToChat', this.lastactiveChat, this.activeChat, this.lastactiveChat !== this.activeChat,
+          'this.isAutoScroll', this.isAutoScroll, this.lastautoscrolltime + 50 < Date.now())
       }
       if (this.lastactiveChat !== this.activeChat) { this.lastactiveChat = this.activeChat }
       if (this.isAutoScroll && this.lastautoscrolltime + 50 < Date.now()) {
@@ -172,8 +169,9 @@ export default {
     this.nextUpdateTime = Date.now() + 5 * 365 * 24 * 60 * 60 * 1000
   },
   mounted () {
+    console.log('Chat mounted')
     // 註冊文章事件
-    this.msg.newPush = data => {
+    this.msg.newComment = data => {
       this.$store.dispatch('updatePost', data)
       this.nextUpdateTime = Date.now() + Math.max(this.getCommentInterval, 2.5) * 1000
     }
@@ -181,7 +179,8 @@ export default {
     this.intervalChat = window.setInterval(() => {
       if (this.isStream && this.pttState > 0 && Date.now() > this.nextUpdateTime) {
         this.nextUpdateTime = Date.now() + 10 * 60 * 1000
-        this.msg.PostMessage('getCommentByAnySearch', { key: this.post.key, board: this.post.board, startline: this.post.lastendline })
+        console.log('定時抓新聊天', this.nextUpdateTime)
+        this.msg.PostMessage('getCommentByAnySearch', { key: this.post.key, board: this.post.board, startLine: this.post.lastEndLine })
       }
     }, 340)
     // 定時滾動
@@ -194,7 +193,7 @@ export default {
   components: {
     'chat-preview-image': ChatPreviewImage,
     'chat-scroll-btn': ChatScrollBtn,
-    'chat-set-new-push': ChatSetNewPush,
+    'chat-set-new-comment': ChatSetNewComment,
     'chat-element': ChatElement
     // 'dynamic-scroller': DynamicScroller,
     // 'dynamic-scroller-item': DynamicScrollerItem
@@ -212,7 +211,7 @@ export default {
       </dynamic-scroller-item>
     </template>
   </dynamic-scroller>
-  <chat-set-new-push></chat-set-new-push>
+  <chat-set-new-comment />
   <chat-preview-image></chat-preview-image>
   <chat-scroll-btn :is-auto-scroll="isAutoScroll" @autoscrollclick="EnableAutoScroll()"></chat-scroll-btn>
 </div>`

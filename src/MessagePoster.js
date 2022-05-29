@@ -14,8 +14,6 @@ export function MessagePoster () {
     // Check sender origin to be trusted
     if (event.origin !== this.targetorigin) return
     const data = event.data
-    console.log('typeof (this[data.m])', typeof this[data.m], data.m)
-    console.log('data.m', data.d)
     if (typeof this[data.m] === 'function') {
       this[data.m].call(null, data.d)
     }

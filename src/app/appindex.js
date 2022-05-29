@@ -89,6 +89,7 @@ export default function InitApp (
         ])
       },
       mounted () {
+        this.$store.dispatch('updateLog', { type: 'videoType', data: isStreaming ? '實況' : '影片' })
         this.customPluginSettingListenerId = GM_addValueChangeListener('menuCommand-customPluginSetting-' + siteName,
           (name, oldValue, newValue, remote) => this.$store.dispatch('setCustomPluginSetting', newValue)
         )

@@ -26,7 +26,7 @@ export function PttAutoCommand () {
         reg: /按任意鍵繼續/,
         input: '',
         callback: () => {
-          const reg = /(找不到這個文章代碼\(AID\)，可能是文章已消失，或是你找錯看板了|這一篇文章值|◆ 本文已過長, 禁止快速連續推文|◆ 對不起，您的文章或推文間隔太近囉！|《.+》看板設定)/
+          const reg = /(找不到這個文章代碼\(AID\)，可能是文章已消失，或是你找錯看板了|這一篇文章值|◆ 本文已過長, 禁止快速連續推文|◆ 對不起，您的文章或推文間隔太近囉！|《.+》看板設定|◆ 抱歉, 禁止推薦)/
           const result = this.match(reg)
           if (result) {
             return ThisFrame.notSkip

@@ -16,7 +16,6 @@ export default function GetRecentLine () {
       let targetline = +lineResult[1] - 100 - 1
       if (targetline < 3) targetline = 3
       this.postData.endLine = targetline
-      this.insertText('qr')
       res.pass = true
     }
   } else {

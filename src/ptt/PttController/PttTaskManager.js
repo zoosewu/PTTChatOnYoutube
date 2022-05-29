@@ -8,6 +8,7 @@ export function PttTaskManager () {
     nowTask: null,
     taskList: [],
     add: (newTask, ...args) => {
+      // console.trace('addtask', newTask, args)
       this.taskManager.taskList.push({ fn: newTask, args })
     },
     next: () => {
@@ -15,6 +16,7 @@ export function PttTaskManager () {
     },
     reset: () => {
       this.taskManager.taskList = []
+      this.taskManager.nowTask = null
     }
   }
 }

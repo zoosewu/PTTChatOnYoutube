@@ -53,8 +53,9 @@ export default {
         console.log(searchResultSearch)
         if (searchResultSearch) {
           let search = board + ',' + searchResultSearch[1]
-          search += searchResultSearch.length > 2 ? ',' + searchResultSearch[2] : ''
-          console.log('符合規則', search)
+          console.log(search)
+          search += searchResultSearch.length > 2 && searchResultSearch[2] ? ',' + searchResultSearch[2] : ''
+          console.log(search)
           this.$store.dispatch('addAnySearch', search)
           return
         }
@@ -63,7 +64,6 @@ export default {
       console.log(AidResult)
       if (AidResult) {
         const search = AidResult[2] + ',' + AidResult[1]
-        console.log('符合規則', search)
         this.$store.dispatch('addAnySearch', search)
       }
     }

@@ -16,6 +16,7 @@ export function Login (data) {
   } else {
     this.msg.PostMessage('alert', { type: 0, msg: '加密錯誤' })
   }
+  this.endTask()
 }
 /**
  * @typedef {import("../PttController/Ptt").Ptt} Ptt

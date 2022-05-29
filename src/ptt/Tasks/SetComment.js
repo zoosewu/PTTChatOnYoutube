@@ -1,27 +1,33 @@
-/* eslint-disable */
-import { RunTask } from '../RunTask.js'
-import { CheckIsInBoard } from './Handlers/CheckIsInBoard.js'
-import { CheckIsInPost } from './Handlers/CheckIsInPost.js'
-import { CheckIsInsideTitleInPost } from './Handlers/CheckIsInsideTitleInPost.js'
-import { SetNewComment } from './Handlers/SetNewComment.js'
-import { MessagePoster } from 'src/MessagePoster.js'
-import PostData from '../../PostData.js'
+import { RunHandler } from './HandlerRunner'
+import CheckIsLogined from './Handlers/CheckIsLogined'
+import CheckIsInBoard from './Handlers/CheckIsInBoard.js'
+import CheckIsCurrectPost from './Handlers/CheckIsCurrectPost'
+import CheckIsInsideTitleInPost from './Handlers/CheckIsInsideTitleInPost.js'
+import SetNewComment from './Handlers/SetNewComment.js'
 import RecieveData from '../MessagePosterData/RecieveData.js'
+import GetCommentByAnySearch from './GetCommentByAnySearch'
 
 const setCommentTaskList = [
+  () => { console.log('run setCommentTaskList'); return { pass: true } },
+  CheckIsLogined,
   CheckIsInBoard,
-  CheckIsInPost,
+  CheckIsCurrectPost,
   CheckIsInsideTitleInPost,
   SetNewComment
 ]
-const recieveNewPush = () => {
-  const receiveData = new RecieveData()
-  receiveData.pushedComment = PostData.pushComment
-  MessagePoster.PostMessage('pushedText', receiveData.pushedComment)
-  if (showAllLog) console.log(PostData)
-  GetPush(PostData.key, PTTPost.board, PTTPost.endLine, GetPushTask)
+/**
+ * @this {Ptt}
+ */
+function recieveNewComment () {
+  if (reportMode) console.log(this.postData)
+  this.msg.PostMessage('commentedText', this.recieveData)
+  GetCommentByAnySearch.apply(this, [{ board: this.postData.board, key: this.postData.key }])
 }
-export const SetComment = pushtext => {
+/**
+ * @typedef {import("../PttController/Ptt").Ptt} Ptt
+ * @this {Ptt}
+ */
+export default function SetComment (pushtext) {
   let allowedchar = 24
   let addedtext = ''
   let trytime = 7
@@ -34,27 +40,13 @@ export const SetComment = pushtext => {
     allowedchar = parseInt((48 - addedtext.length * 2 + halfcount) / 2)
     pushtext = result[2]
     if (reportMode) {
-      console.log(
-        'SetNewPushTask Text Reg==',
-        addedtext.length * 2,
-        '==',
-        halfcount,
-        '==',
-        halfchar
-      )
-      console.log(
-        'SetNewPushTask Text Reg==',
-        addedtext,
-        '==',
-        pushtext,
-        '==',
-        allowedchar,
-        '==',
-        result
-      )
+      console.log('SetNewPushTask Text Reg==', addedtext.length * 2, '==', halfcount, '==', halfchar)
+      console.log('SetNewPushTask Text Reg==', addedtext, '==', pushtext, '==', allowedchar, '==', result)
     }
     trytime--
   }
-  PTTPost.key = addedtext
-  RunTask.apply(this, [setCommentTaskList, recieveNewPush])
+  this.postData.commentText = addedtext
+  this.recieveData = new RecieveData()
+  this.addTask(RunHandler, setCommentTaskList, recieveNewComment)
+  this.endTask()
 }

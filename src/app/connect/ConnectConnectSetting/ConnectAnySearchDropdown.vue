@@ -157,19 +157,20 @@ export default {
         this.recentGroup.splice(index, 1)
       }
       this.recentGroup.splice(0, 0, item)
+      GM_setValue('AnySearchRecent', this.recentGroup)
     },
     $_connectAnySearchDropdown_onClickDropdownItemRecent (item, index) {
       const executeItem = this.$_connectAnySearchDropdown_onClickDropdownItem(item)
-      if (executeItem) { this.recentGroup.splice(0, 0, this.recentGroup.splice(index, 1)[0]) }
+      if (executeItem) {
+        this.recentGroup.splice(0, 0, this.recentGroup.splice(index, 1)[0])
+        GM_setValue('AnySearchRecent', this.recentGroup)
+      }
     },
     $_connectAnySearchDropdown_onClickDropdownItem (item) {
       let board = ''
       let key = ''
       if (this.pttState < 1) {
-        this.$store.dispatch('Alert', {
-          type: 0,
-          msg: 'PTT尚未登入，請先登入。'
-        })
+        this.$store.dispatch('Alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
         return false
       }
       const RuleResult = / *([a-zA-Z0-9_-]+) *, *(.+) */.exec(item)
@@ -186,27 +187,32 @@ export default {
       const data = { key: key, board: board }
       console.log('AnySearch', key, this.post.key, board, this.post.board, this.isStream)
       if (this.post.key === key && this.post.board === board) { // 相同文章取最新推文
-        data.startline = this.post.lastendline
+        data.startLine = this.post.lastEndLine
         if (reportMode) console.log('AnySearch same post', data)
       } else if (this.isStream) { // 實況取得最近的推文
         data.recent = 200
         if (reportMode) console.log('AnySearch recent', data)
       } else { // 實況紀錄取得所有推文
-        data.startline = 0
+        data.startLine = 0
         if (reportMode) console.log('AnySearch total', data)
       }
       this.msg.PostMessage('getCommentByAnySearch', data)
+      this.$store.dispatch('pageChange', true)
     },
     $_connectAnySearchDropdown_onClickRemoveOption (index) {
       this.optionGroup.splice(index, 1)
+      GM_setValue('AnySearchOption', this.optionGroup)
     },
     $_connectAnySearchDropdown_onClickRemoveRecent (index) {
       this.recentGroup.splice(index, 1)
+      GM_setValue('AnySearchRecent', this.recentGroup)
     },
     $_connectAnySearchDropdown_onClickLock (index) {
       const item = this.recentGroup[index]
       this.optionGroup.push(item)
       this.recentGroup.splice(index, 1)
+      GM_setValue('AnySearchOption', this.optionGroup)
+      GM_setValue('AnySearchRecent', this.recentGroup)
     }
   }
 }

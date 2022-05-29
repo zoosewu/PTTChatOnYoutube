@@ -8,7 +8,7 @@ export const FrameState = Object.freeze({
   board: 2,
   firstPageofPost: 3,
   otherPageofPost: 4,
-  boardInfo: 5
+  boardInfo: 6
 })
 /**
  * @typedef {Object} PttState
@@ -40,6 +40,7 @@ export function PttState () {
     screen: [], // 自動 畫面資料
     serverfull: false,
     reconnectTime: 10,
-    deleteOtherConnection: false
+    deleteOtherConnection: false,
+    isInsertedText: false
   }
 }
