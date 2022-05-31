@@ -157,7 +157,6 @@ export const actions = {
   setEnableSetNewComment: ({ commit }, value) => { commit(types.ENABLESETNEWCOMMENT, value) },
   setDisableCommentGray: ({ commit }, value) => { commit(types.DISABLECOMMENTGRAY, value) },
   setDeleteOtherConnect: ({ commit }, value) => { commit(types.DELETEOTHERCONNECT, value) },
-  setEnableBlacklist: ({ commit }, value) => { commit(types.ENABLEBLACKLIST, value) },
   setAnySearchHint: ({ commit }, value) => { commit(types.ANYSEARCHHINT, value) },
 
   // input value
@@ -167,7 +166,12 @@ export const actions = {
   setCommentInterval: ({ commit }, value) => { commit(types.COMMENTINTERVAL, value) },
   setPluginWidth: ({ commit }, value) => { commit(types.PLUGINWIDTH, value) },
   setPluginPortraitHeight: ({ commit }, value) => { commit(types.PLUGINPORTRAITHEIGHT, value) },
+
+  // inputfield value
+  setEnableBlacklist: ({ commit }, value) => { commit(types.ENABLEBLACKLIST, value) },
   setBlacklist: ({ commit }, value) => { commit(types.BLACKLIST, value) },
+  setEnableCommentBlacklist: ({ commit }, value) => { commit(types.ENABLECOMMENTBLACKLIST, value) },
+  setCommentBlacklist: ({ commit }, value) => { commit(types.COMMENTBLACKLIST, value) },
 
   // dropdown
   setTheme: ({ commit }, value) => { commit(types.THEME, value) },

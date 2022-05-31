@@ -18,20 +18,16 @@
         :description="'關閉灰色漸變以提升效能'"
         :default-value="false"
       />
-      <div class="form-group">
-        <connect-plugin-setting-checkbox-element
-          :setting-name="'EnableBlacklist'"
-          :description="'啟用黑名單功能'"
-          :default-value="false"
-        />
-        <div class="col px-0 ml-2 mt-2">
-          <plugin-setting-blacklist
-            :setting-name="'Blacklist'"
-            :description="'黑名單'"
-            text=""
-          />
-        </div>
-      </div>
+      <plugin-setting-blacklist
+        :setting-name="'Blacklist'"
+        :description="'ID黑名單'"
+        text=""
+      />
+      <plugin-setting-blacklist
+        :setting-name="'CommentBlacklist'"
+        :description="'推文關鍵字黑名單'"
+        text=""
+      />
     </div>
   </div>
 </template>

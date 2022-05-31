@@ -26,12 +26,13 @@ export const types = {
   REINSTANCEPTT: 'REINSTANCEPTT',
   CUSTOMPLUGINSETTING: 'menuCommand-customPluginSetting-',
   SITENAME: 'siteName',
+
   // checkbox
   ENABLESETNEWCOMMENT: 'EnableSetNewComment',
   DISABLECOMMENTGRAY: 'DisableCommentGray',
   DELETEOTHERCONNECT: 'DeleteOtherConnect',
-  ENABLEBLACKLIST: 'EnableBlacklist',
   ANYSEARCHHINT: 'ANYSEARCHHINT',
+
   // input value
   PLUGINHEIGHT: 'PluginHeight',
   CHATFONTSIZE: 'Fontsize',
@@ -39,7 +40,13 @@ export const types = {
   COMMENTINTERVAL: 'CommentInterval',
   PLUGINWIDTH: 'PluginWidth',
   PLUGINPORTRAITHEIGHT: 'PluginPortraitHeight',
+
+  // inputfield value
+  ENABLEBLACKLIST: 'EnableBlacklist',
   BLACKLIST: 'Blacklist',
+  ENABLECOMMENTBLACKLIST: 'EnableCommentBlacklist',
+  COMMENTBLACKLIST: 'CommentBlacklist',
+
   // dropdown
   THEME: 'Theme',
   THEMECOLORBG: 'ThemeColorBG',

@@ -8,6 +8,7 @@ const insertEvent = [
     fn: function () {
       let text = 'f'
       if (this.match(/(●|> )(F)avorite/))text = 'p'
+      console.log('this.match(/(●|> )(F)avorite/)',this.match(/(●|> )(F)avorite/))
       this.insertText(text)
     }
   },

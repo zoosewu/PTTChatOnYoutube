@@ -14,7 +14,7 @@
           v-model.lazy="search"
           class="form-control"
           type="text"
-          placeholder="C_Chat,/間直播單"
+          placeholder="C_Chat,/間直播單 或 #1VobIvqC (C_Chat)"
           autocomplete="off"
           @keyup.13="$_ConnectAnySearchAddNew_Add"
         >

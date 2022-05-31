@@ -18,8 +18,8 @@ export const getters = {
   getEnableSetNewComment: state => state.enablesetnewcomment,
   getDisableCommentGray: state => state.disablepushgray,
   getDeleteOtherConnect: state => state.deleteotherconnect,
-  getEnableBlacklist: state => state.enableblacklist,
   getAnySearchHint: state => state.anySearchHint,
+
   // input value
   getPluginHeight: state => state.pluginHeight,
   getFontsize: state => state.chatFontsize,
@@ -27,7 +27,13 @@ export const getters = {
   getCommentInterval: state => state.commentInterval,
   getPluginWidth: state => state.pluginWidth,
   getPluginPortraitHeight: state => state.pluginPortraitHeight,
+
+  // inputfield value
+  getEnableBlacklist: state => state.enableBlacklist,
   getBlacklist: state => state.blacklist,
+  getEnableCommentBlacklist: state => state.enableCommentBlacklist,
+  getCommentBlacklist: state => state.commentBlacklist,
+
   // dropdown
   getTheme: state => state.theme,
   getThemeColorBG: state => state.themeColorBG,

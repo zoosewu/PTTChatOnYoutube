@@ -46,7 +46,6 @@ export const state = {
   enablesetnewcomment: GM_getValue(types.ENABLESETNEWCOMMENT, false),
   disablecommentgray: GM_getValue(types.DISABLECOMMENTGRAY, false),
   deleteotherconnect: GM_getValue(types.DELETEOTHERCONNECT, false),
-  enableblacklist: GM_getValue(types.ENABLEBLACKLIST, false),
   anySearchHint: GM_getValue(types.ANYSEARCHHINT, false),
   // input value
   pluginHeight: GM_getValue(types.PLUGINHEIGHT, -1),
@@ -55,7 +54,13 @@ export const state = {
   chatSpace: GM_getValue(types.CHATSPACE, -1),
   pluginWidth: GM_getValue(types.PLUGINWIDTH, -1),
   pluginPortraitHeight: GM_getValue(types.PLUGINPORTRAITHEIGHT, -1),
+
+  // inputfield value
+  enableBlacklist: GM_getValue(types.ENABLEBLACKLIST, false),
   blacklist: GM_getValue(types.BLACKLIST, null),
+  enableCommentBlacklist: GM_getValue(types.ENABLECOMMENTBLACKLIST, false),
+  commentBlacklist: GM_getValue(types.COMMENTBLACKLIST, null),
+
   // dropdown
   theme: GM_getValue(types.THEME, -1),
   themeColorBG: GM_getValue(types.THEMECOLORBG, -1),
@@ -164,10 +169,6 @@ export const mutations = {
     GM_setValue(types.DISABLECOMMENTGRAY, disable)
     state.disablecommentgray = disable
   },
-  [types.ENABLEBLACKLIST] (state, enable) {
-    GM_setValue(types.ENABLEBLACKLIST, enable)
-    state.enableblacklist = enable
-  },
   [types.ANYSEARCHHINT] (state, search) {
     GM_setValue(types.ANYSEARCHHINT, search)
     state.anySearchHint = search
@@ -205,11 +206,27 @@ export const mutations = {
     GM_setValue(ValueName, portraitHeight)
     state.pluginPortraitHeight = portraitHeight
   },
+
+  // inputfield value
+  [types.ENABLEBLACKLIST] (state, isEnable) {
+    GM_setValue(types.ENABLEBLACKLIST, isEnable)
+    state.enableBlacklist = isEnable
+  },
   [types.BLACKLIST] (state, list) {
     const l = list.toLowerCase()
     GM_setValue(types.BLACKLIST, l)
     state.blacklist = l
   },
+  [types.ENABLECOMMENTBLACKLIST] (state, isEnable) {
+    GM_setValue(types.ENABLECOMMENTBLACKLIST, isEnable)
+    state.enableCommentBlacklist = isEnable
+  },
+  [types.COMMENTBLACKLIST] (state, list) {
+    const l = list.toLowerCase()
+    GM_setValue(types.COMMENTBLACKLIST, l)
+    state.commentBlacklist = l
+  },
+
   // dropdown
   [types.THEME] (state, theme) {
     const ValueName = types.PLUGINPORTRAITHEIGHT + (state.customPluginSetting ? '-' + state.siteName : '')

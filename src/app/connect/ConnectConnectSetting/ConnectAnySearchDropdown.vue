@@ -115,7 +115,6 @@ export default {
       ]),
       dropdownPreview: undefined,
       previewTitle: null,
-      showHint: false,
       lastAnySearch: ''
     }
   },
@@ -128,12 +127,8 @@ export default {
       $(this.$refs.previewArea).collapse('show')
       this.$store.dispatch('gotoChat', true)
     },
-    showHint (e) {
-      $(this.$refs.manualInputArea).collapse(e ? 'show' : 'hide')
-    },
     anySearch (e) {
       if (e !== '') {
-        console.log('anySearch', e)
         this.$_connectAnySearchDropdown_AddNew(e)
         this.$store.dispatch('addAnySearch', '')
       }
