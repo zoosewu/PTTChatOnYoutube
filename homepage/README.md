@@ -61,10 +61,19 @@ PTTChatOnYoutube - Youtube聊天室顯示PTT推文
    * 使用代碼：輸入包含看板名稱的完整文章代碼，範例：**#1V-m0SMK (C_Chat)**  
    (文章完整代碼獲得方法：在文章標題或文章內部鍵入大寫Q即可顯示複製)
    
-   * 使用標題：點擊下拉選單，選單內會顯示預設及常用選項  
-    若要手動添加選項可以點擊**新增其他選項**按鈕，輸入看板及欲搜尋的標題
+   * 關鍵字搜尋：輸入**看板名稱,搜尋類別+關鍵字**後搜尋  
+   最近的搜尋紀錄都會記錄在下拉式選單，點選鎖頭可以將蒐尋紀錄永久保存  
+     
+       最多可以搜尋兩次, 可以搜尋的種類有:  
+       #:AID搜尋　　/或?:標題搜尋　a:作者搜尋  
+       Z:推文數搜尋　G:標記搜尋　　A:稿酬搜尋  
+       !:排除關鍵字(僅限第二次搜尋時使用)
 
-    * **註：** 標題搜尋功能僅會進入到最新的文章，請確保使用的關鍵字可以找到正確的文章
+       範例:  
+       **C_Chat,/間直播,Z5** ->在C_Chat板搜尋標題含有"間直播"且推文數5以上最新的一篇文章  
+       **vtuber,/間直播,/0603** ->在vtuber板搜尋標題含有"間直播"以及"0603"最新的一篇文章  
+       **lol,azoosewu** ->在lol板搜尋作者ID含有"zoosewu"最新的一篇文章  
+    * **註：** 搜尋功能僅會進入到最新的文章，請確保使用的關鍵字可以找到正確的文章
 
 * 文章讀取完成後會自動轉跳到聊天室介面，享受你的聊天室: )
     * 實況：會自動每2.5秒重新載入一次推文，並且可以推文參與討論。
@@ -81,16 +90,8 @@ PTTChatOnYoutube - Youtube聊天室顯示PTT推文
 
 如果你沒有github帳號，也可以依照[問題回報範例](https://github.com/zoosewu/PTTChatOnYoutube/blob/master/.github/ISSUE_TEMPLATE/bug-report.md)及[建議範例](https://github.com/zoosewu/PTTChatOnYoutube/blob/master/.github/ISSUE_TEMPLATE/feature-request.md)在PTT內私信給我(Zoosewu)。
 
-## 贊助
-
-如果你覺得這個套件好用，歡迎[點我](https://qr.opay.tw/eZHf2)贊助或使用下方QR Code。
-
-[![](https://payment.opay.tw/Upload/Broadcaster/2303549/QRcode/QRCode_C65AA1C8A89CB53AF4D93286E44468BF.png "贊助連結")](https://qr.opay.tw/eZHf2)
-
 ## 腳本功能
-套件所有資料全部都在你的瀏覽器處理，
-用你的瀏覽器撈資料再顯示出來，
-沒有經過第三方的伺服器。
+套件所有資料全部都在你的瀏覽器處理，用你的瀏覽器撈資料再顯示出來。
 
 **紀錄重播功能**
 * 在Youtube實況紀錄顯示PTT推文。
@@ -100,6 +101,12 @@ PTTChatOnYoutube - Youtube聊天室顯示PTT推文
 * 在實況顯示PTT推文。
 * 定時更新文章最新推文。
 * 直接推文參與討論。
+
+## 贊助
+
+如果你覺得這個套件好用，歡迎[點我](https://qr.opay.tw/eZHf2)贊助或使用下方QR Code。
+
+[![](https://payment.opay.tw/Upload/Broadcaster/2303549/QRcode/QRCode_C65AA1C8A89CB53AF4D93286E44468BF.png "贊助連結")](https://qr.opay.tw/eZHf2)
 
 ## 其他注意事項
 
@@ -117,26 +124,6 @@ if (!isTopframe) throw "[Script Stopped: This script should run in top frame onl
 **有時候P的按鈕沒有冒出來給我用**
 
     請到github issue回報給我。
-
-**如果出現奇怪的現象或是你想了解腳本實際運作的情況**
-
-~~可以進入腳本說明欄並點開除錯模式，會顯示更完整的PTT畫面，更多套件資訊，以及測試用的假文章載入。~~
-
-    套件測試版，所有測試功能都啟用以方便回報。
-
-**我的瀏覽器說我的帳號被盜了**
-
-    因為腳本本身是把你的帳號密碼傳給背景執行的PTT去登入，讀取帳號密碼欄位傳出去的行為有時候會被判定為盜帳號，
-
-    剛開始開發的時候瀏覽器也一直說我被盜，但是開發到後面Google就沒有說了，**我完全不知道為什麼**，我當時害怕極了。
-
-    本套件並且沒有架設任何伺服器去撈取資料，僅是單純的在你的前端開一個PTT幫你登入。
-
-    並且帳號密碼的傳輸過程都有加密過，盡可能保護帳號的安全性。
-
-    所有程式碼都沒有做任何的壓縮或混淆，在greasyfork、github以及你的瀏覽器都可以查看完整的程式碼以供任何人檢視，
-
-    如果對此套件還有疑慮的話請勿使用。
 
 **影片沒有顯示聊天室 請問怎麼打開介面**
 
@@ -162,6 +149,11 @@ if (!isTopframe) throw "[Script Stopped: This script should run in top frame onl
 
     如果原本可以使用變成壞掉的話，可以試試看重開瀏覽器或重開機，
     如果還是一樣有問題請到github issue回報給我。
+
+**我在這個套件登入帳號會不會被盜?**
+
+    套件在傳輸帳號密碼時有經過加密
+    並且不會在任何地方記錄你的密碼
 
 **我有其他疑問想問但是這邊沒有寫**
 
@@ -189,7 +181,7 @@ if (!isTopframe) throw "[Script Stopped: This script should run in top frame onl
 
 ## 聲明
 
-本套件僅做PTT與Youtube的連線，除此之外並不會連到任何伺服器，所以不會蒐集任何關於你的資訊
+本套件僅做PTT與Google的連線，除此之外並不會連到任何伺服器
 
 所有程式碼都沒有做任何的壓縮或混淆，在greasyfork、github以及你的瀏覽器都有完整的程式碼以供任何人檢視。
 

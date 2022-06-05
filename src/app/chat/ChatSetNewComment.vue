@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import gaPush from 'src/ga/setvalue'
 export default {
   inject: ['msg', 'isStream'],
   data () {
@@ -62,7 +63,10 @@ export default {
       if (!result) this.$store.dispatch('Alert', { type: 0, msg: '請輸入文字。' })
       else if (this.pttState < 1) this.$store.dispatch('Alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
       else if (!this.post.gettedpost) this.$store.dispatch('Alert', { type: 0, msg: '尚未獲取文章，請先獲取文章。' })
-      else this.msg.PostMessage('setNewcomment', this.commenttext)
+      else {
+        gaPush({ event: 'setComment' })
+        this.msg.PostMessage('setNewcomment', this.commenttext)
+      }
     },
     $_ChatSetNewComment_removeCommentedText (text) {
       if (this.commenttext.indexOf(text) === 0) this.commenttext = this.commenttext.substring(text.length, this.commenttext.length)

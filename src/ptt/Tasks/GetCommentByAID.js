@@ -42,7 +42,7 @@ function recieveComments () {
  * @this {Ptt}
  */
 function GetCommentByLine () {
-  console.log('GetCommentByLine')
+  if (showAllLog)console.log('GetCommentByLine')
   if (this.state.frame === FrameState.firstPageofPost || this.state.frame === FrameState.otherPageofPost) {
     this.insertText('q')
   }

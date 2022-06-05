@@ -8,7 +8,7 @@ const insertEvent = [
     fn: function () {
       let text = 'f'
       if (this.match(/(●|> )(F)avorite/))text = 'p'
-      console.log('this.match(/(●|> )(F)avorite/)',this.match(/(●|> )(F)avorite/))
+      if (showAllLog)console.log('this.match(/(●|> )(F)avorite/)', this.match(/(●|> )(F)avorite/))
       this.insertText(text)
     }
   },
@@ -21,8 +21,8 @@ const insertEvent = [
  * @this {Ptt}
  */
 export function PttRandomInsert () {
-  console.log('PttRandomInsert', this.state.isInsertedText, !this.state.lock)
-  if (this.state.isInsertedText || !this.state.lock) return
+  if (reportMode) console.log('PttRandomInsert', this.state.isInsertedText, !this.state.lock)
+  if (this.state.isInsertedText.length > 0 || !this.state.lock) return
   for (let i = 0; i < insertEvent.length; i++) {
     const event = insertEvent[i]
     if (this.state.frame === event.frame) {

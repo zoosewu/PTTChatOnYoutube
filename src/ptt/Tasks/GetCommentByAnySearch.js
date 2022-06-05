@@ -12,7 +12,7 @@ import RecieveData from '../MessagePosterData/RecieveData'
 import GetRecentLine from './Handlers/GetRecentLine'
 
 const GetCommentByLineTaskList = [
-  () => { console.log('run GetCommentByLineTaskList'); return { pass: true } },
+  () => { if (reportMode) console.log('run GetCommentByLineTaskList'); return { pass: true } },
   CheckIsLogined,
   CheckIsInBoard,
   CheckIsCurrectPost,
@@ -23,7 +23,7 @@ const GetCommentByLineTaskList = [
 ]
 
 const GetRecentLineTaskList = [
-  () => { console.log('run GetRecentLineTaskList'); return { pass: true } },
+  () => { if (reportMode) console.log('run GetRecentLineTaskList'); return { pass: true } },
   CheckIsLogined,
   CheckIsInBoard,
   CheckIsCurrectPost,
@@ -45,8 +45,8 @@ function recieveComments () {
  * @this {Ptt}
  */
 function GetCommentByLine () {
-  console.log('GetCommentByLine')
-  if (this.state.frame === FrameState.firstPageofPost || this.state.frame === FrameState.otherPageofPost) {
+  if (showAllLog) console.log('GetCommentByLine')
+  if (this.state.frame === FrameState.otherPageofPost) {
     this.insertText('qr')
   }
   this.addTask(RunHandler, GetCommentByLineTaskList, recieveComments)
@@ -56,7 +56,7 @@ function GetCommentByLine () {
  * @this {Ptt}
  */
 export default function (data) {
-  console.log('GetCommentByAnySearch', data)
+  if (reportMode) console.log('GetCommentByAnySearch', data)
   const result = /^ *([#/?aZGA][^,]+?) *(?:, *([#/?aZGA!].+))? *$/.exec(data.key)
   if (!result) return
   let key = result[1]

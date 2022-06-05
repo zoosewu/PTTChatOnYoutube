@@ -6,7 +6,7 @@ PTTChatOnYoutube - Youtube聊天室顯示PTT推文
 
 ## 如何開始參與開發
 
-在專案底下輸入 ```npm install``` 安裝開發環境，VSCode設定請開啟 ```"javascript.format.insertSpaceBeforeFunctionParenthesis": true```
+在專案底下輸入 ```npm install``` 安裝開發環境
 
 推薦使用violentmonkey，並使用chrome開發，Firefox無法載入本地檔案
 
@@ -17,15 +17,6 @@ PTTChatOnYoutube - Youtube聊天室顯示PTT推文
 如果需要追蹤scss，可以使用 ```npm run watch-scss-map```就會生成帶map檔的css，但是限定http使用。
 
 腳本更新依照下面步驟操作之後存檔完在violentmonkey設定那邊按一下更新就能測試
-
-
-###### Chrome: 
-管理擴充功能/套件->允許存取檔案位置打勾
-
-在腳本更新網址輸入腳本路徑```file:///C:/.../publish/PTTChatOnYt.user.js```
-
-###### Firefox: 
-在專案底下輸入 ```npm run http```開啟本地伺服器
 
 在腳本更新網址輸入伺服器腳本位置```http://127.0.0.1:8889/publish/PTTChatOnYt.user.js```
 

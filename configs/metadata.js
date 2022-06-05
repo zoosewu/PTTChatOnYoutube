@@ -37,6 +37,8 @@ module.exports = {
   ],
   homepageURL:
     'https://github.com/zoosewu/PTTChatOnYoutube/tree/master/homepage',
-  '//downloadURL':
+  downloadURL:
+    'https://greasyfork.org/scripts/418469-pttchatonyt/code/PttChatOnYt.user.js',
+  updateURL:
     'https://greasyfork.org/scripts/418469-pttchatonyt/code/PttChatOnYt.user.js'
 }

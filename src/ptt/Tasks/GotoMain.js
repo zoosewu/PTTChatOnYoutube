@@ -2,7 +2,7 @@ import { RunHandler } from './HandlerRunner'
 import CheckIsInMain from './Handlers/CheckIsInMain'
 
 const GotoMainTaskList = [
-  () => { console.log('run GotoMainTaskList'); return { pass: true } },
+  () => { if (reportMode)console.log('run GotoMainTaskList'); return { pass: true } },
   CheckIsInMain
 ]
 

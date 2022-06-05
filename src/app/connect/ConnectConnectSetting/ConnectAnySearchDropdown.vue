@@ -10,7 +10,7 @@
             type="button"
             data-toggle="dropdown"
           >
-            {{ dropdownPreview ? dropdownPreview : '請選擇...' }}
+            {{ dropdownPreview ? dropdownPreview : '最近搜尋' }}
           </button>
           <ul
             class="dropdown-menu"
@@ -100,6 +100,7 @@
 </template>
 
 <script>
+import gaPush from 'src/ga/setvalue'
 export default {
   inject: ['msg', 'isStream'],
   data () {
@@ -107,12 +108,9 @@ export default {
       description: '',
       optionGroup: GM_getValue('AnySearchOption', [
         'C_Chat,/間直播單,Z20',
-        'vtuber,/彩虹直播,Z20'
-      ]),
-      recentGroup: GM_getValue('AnySearchRecent', [
-        'C_Chat,/間直播單',
         'vtuber,/彩虹直播'
       ]),
+      recentGroup: GM_getValue('AnySearchRecent', []),
       dropdownPreview: undefined,
       previewTitle: null,
       lastAnySearch: ''
@@ -142,7 +140,7 @@ export default {
   },
   methods: {
     $_connectAnySearchDropdown_AddNew (item) {
-      console.log('_connectAnySearchDropdown_AddNew', item)
+      if (showAllLog)console.log('_connectAnySearchDropdown_AddNew', item)
       const executeItem = this.$_connectAnySearchDropdown_onClickDropdownItem(item)
       if (!executeItem) return
       let index = this.optionGroup.indexOf(item)
@@ -180,7 +178,7 @@ export default {
     },
     $_connectAnySearchDropdown_PostMessage (board, key) {
       const data = { key: key, board: board }
-      console.log('AnySearch', key, this.post.key, board, this.post.board, this.isStream)
+      if (showAllLog)console.log('AnySearch', key, this.post.key, board, this.post.board, this.isStream)
       if (this.post.key === key && this.post.board === board) { // 相同文章取最新推文
         data.startLine = this.post.lastEndLine
         if (reportMode) console.log('AnySearch same post', data)
@@ -191,6 +189,7 @@ export default {
         data.startLine = 0
         if (reportMode) console.log('AnySearch total', data)
       }
+      gaPush({ event: 'search', search: board + ',' + key })
       this.msg.PostMessage('getCommentByAnySearch', data)
       this.$store.dispatch('pageChange', true)
     },

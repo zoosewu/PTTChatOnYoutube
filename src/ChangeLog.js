@@ -15,6 +15,15 @@ export default function ChangeLog () {
   function AddChangeLogInfo () {
     const changeLogInfo = {}
 
+    changeLogInfo.v_3_0 = new Info()
+    changeLogInfo.v_3_0.版本.push('使用新的搜尋功能，可以搜尋標題、AID、作者、推文數、稿酬、標記等。\n舊版的AID(#1WHqSb2l (C_Chat))依然可以使用。')
+    changeLogInfo.v_3_0.版本.push('修正版主ID+版標太常導致看板名稱消失後就會無法辨識看板的問題。')
+    changeLogInfo.v_3_0.版本.push('現在可以套件關閉對特定網站的支援了。')
+    changeLogInfo.v_3_0.版本.push('現在可以對每個網站做套件設定了。')
+    changeLogInfo.v_3_0.版本.push('修正firefox無法使用的問題。')
+    changeLogInfo.v_3_0.版本.push('現在可以針對推文的關鍵字做黑名單了，只要推文內容包含關鍵字就不會顯示。')
+    changeLogInfo.v_3_0.版本.push('修正log頁籤的內容，現在可以正確的顯示套件的各項資訊了。')
+
     changeLogInfo.v_2_9 = new Info()
     changeLogInfo.v_2_9.HoloDex.push('修正holodex改版造成套件失效的問題。')
 
@@ -46,7 +55,7 @@ export default function ChangeLog () {
     return changeLogInfo
   }
 
-  const previousVersion = GM_getValue('previousVersion', '2.5.0').split('.')
+  const previousVersion = GM_getValue('previousVersion', '2.9.0').split('.')
   const nowVerion = GM_info.script.version.split('.')
   GM_setValue('previousVersion', GM_info.script.version)
   if (nowVerion[0] <= previousVersion[0] && nowVerion[1] <= previousVersion[1]) return

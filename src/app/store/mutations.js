@@ -110,7 +110,7 @@ export const mutations = {
     state.post.commentCount = commentCount
   },
   [types.UPDATELOG] (state, log) {
-    console.log('UPDATELOG', log)
+    if (showAllLog) console.log('UPDATELOG', log)
     if (!Array.isArray(log)) state.log.push(log)
     else state.log = state.log.concat(log)
   },
@@ -178,7 +178,7 @@ export const mutations = {
   [types.PLUGINHEIGHT] (state, height) {
     const ValueName = types.PLUGINHEIGHT + (state.customPluginSetting ? '-' + state.siteName : '')
     GM_setValue(ValueName, height)
-    console.log('PLUGINHEIGHT', ValueName, state.customPluginSetting, state.siteName)
+    if (showAllLog)console.log('PLUGINHEIGHT', ValueName, state.customPluginSetting, state.siteName)
     state.pluginHeight = height
   },
   [types.COMMENTINTERVAL] (state, interval) {

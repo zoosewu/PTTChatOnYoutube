@@ -8,7 +8,6 @@ import nijimadofilter from './SupportWebsite/nijimado/nijimadofilter'
 // import { lineTVfilter } from './SupportWebsite/lineTV/lineTVfilter'
 import hdfilter from './SupportWebsite/holodex/hdfilter'
 import './scss/index.scss'
-
 /* 關閉vue-devtools */
 Vue.config.devtools = reportMode
 /* 關閉錯誤警告 */

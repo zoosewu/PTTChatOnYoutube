@@ -4,6 +4,7 @@ function getComment (content, commentResult) {
   commentData.id = commentResult[2]
   commentData.content = content
   commentData.date = new Date(this.postData.postTime.getFullYear(), commentResult[4] - 1, commentResult[5], commentResult[6], commentResult[7])
+  if (commentData.date.getTime() - this.postData.postTime.getTime() < -1000 * 60 * 60 * 24 * 360)commentData.date.setFullYear(commentData.date.getFullYear() + 1)
   return commentData
 }
 
@@ -18,7 +19,7 @@ export default function GetComment () {
   const endLine = +lineResult[2]
   let targetLine = this.postData.endLine - startLine + 1
   if (startLine < 5 && this.postData.haveNormalInsideTitle) targetLine += 1
-  console.log('GetComment at', startLine, 'to', endLine, 'endline:', this.postData.endLine, 'targetline:', targetLine)
+  if (showAllLog)console.log('GetComment at', startLine, 'to', endLine, 'endline:', this.postData.endLine, 'targetline:', targetLine)
   const checkedLine = []
   for (let i = targetLine; i < this.state.screen.length; i++) {
     const line = this.state.screen[i]

@@ -23,7 +23,7 @@ export function Login (data) {
  * @this {Ptt}
  */
 function login (id, pw, DeleteOtherConnect) {
-  console.log('login', Ptt, this, id, pw, DeleteOtherConnect)
+  if (showAllLog)console.log('login', Ptt, this, id, pw, DeleteOtherConnect)
   if (!this.state.login) {
     this.state.deleteOtherConnection = DeleteOtherConnect
     this.msg.PostMessage('alert', { type: 1, msg: '登入中' })

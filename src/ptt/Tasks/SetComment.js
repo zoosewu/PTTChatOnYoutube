@@ -8,7 +8,7 @@ import RecieveData from '../MessagePosterData/RecieveData.js'
 import GetCommentByAnySearch from './GetCommentByAnySearch'
 
 const setCommentTaskList = [
-  () => { console.log('run setCommentTaskList'); return { pass: true } },
+  () => { if (reportMode)console.log('run setCommentTaskList'); return { pass: true } },
   CheckIsLogined,
   CheckIsInBoard,
   CheckIsCurrectPost,
@@ -21,7 +21,7 @@ const setCommentTaskList = [
 function recieveNewComment () {
   if (reportMode) console.log(this.postData)
   this.msg.PostMessage('commentedText', this.recieveData)
-  GetCommentByAnySearch.apply(this, [{ board: this.postData.board, key: this.postData.key }])
+  this.addTask(GetCommentByAnySearch, { board: this.postData.board, key: this.postData.key })
 }
 /**
  * @typedef {import("../PttController/Ptt").Ptt} Ptt

@@ -112,7 +112,7 @@ export default {
       }
     },
     $_PluginSetting_ValueCheck: function () {
-      console.log('ValueCheck', this.settingName, this.customPluginSetting)
+      if (showAllLog)console.log('ValueCheck', this.settingName, this.customPluginSetting)
       if (this.SettingValue < 0) this.SettingValue = this.defaultValue
       this.$_PluginSetting_update()
     }

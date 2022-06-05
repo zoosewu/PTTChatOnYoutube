@@ -33,6 +33,7 @@ export default {
       }
       if (!this._allchats) this._allchats = []
       this._allchats = this._allchats.concat(this.newChatList)
+      if (reportMode)console.log('this._allchats', this._allchats)
       this.$store.dispatch('clearChat')
       return this._allchats
     },
@@ -70,6 +71,7 @@ export default {
         top: scroll,
         behavior: ((Math.abs(scroller.$el.scrollTop - scroll) > clientHeight * 2) ? 'auto' : 'smooth')
       })
+      this.$store.dispatch('updateLog', { type: 'targetScrollHeight', data: scroll })
       // scroller.scrollToPosition(scroll);
     },
     getCurrentChat: function () {
@@ -78,9 +80,9 @@ export default {
         // console.log("this.activeChat && chats && reportMode", this.activeChat, chats, reportMode);
         if (this.activeChat > -1 && chats && reportMode) {
           console.log('current time: ' + this.videoCurrentTime.toString(), ', activeChat', this.activeChat)
-          if (chats[this.activeChat - 1]) { console.log('activeChat-1', chats[this.activeChat - 1].time.toString()) }
-          if (chats[this.activeChat]) { console.log('activeChat+0', chats[this.activeChat].time.toString(), ', activeChat > CurrentTime', chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()) }
-          if (chats[this.activeChat + 1]) { console.log('activeChat+1', chats[this.activeChat + 1].time.toString(), ', activeChat < CurrentTime', chats[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf()) }
+          if (chats[this.activeChat - 1]) { console.log(chats[this.activeChat - 1].time.toLocaleTimeString(), ', activeChat-1 < CurrentTime', chats[this.activeChat - 1].time.valueOf() < this.videoCurrentTime.valueOf()) }
+          if (chats[this.activeChat + 0]) { console.log(chats[this.activeChat + 0].time.toLocaleTimeString(), ', activeChat   > CurrentTime', chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()) }
+          if (chats[this.activeChat + 1]) { console.log(chats[this.activeChat + 1].time.toLocaleTimeString(), ', activeChat+1 < CurrentTime', chats[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf()) }
         }
         let move = 128
         while (true) {
@@ -94,6 +96,8 @@ export default {
           move = move / 2
         }
       }
+      this.$store.dispatch('updateLog', { type: 'commentIndex', data: this.activeChat })
+
       if (reportMode && this.lastactiveChat !== this.activeChat && chats[this.activeChat]) console.log('CurrentChat, ', this.lastactiveChat, '->', this.activeChat, 'chats.length-1', chats.length - 1, ' isStream', this.isStream, 'chats[this.activeChat].msg', chats[this.activeChat].msg)
     },
     MouseWheelHandler: function (e) {
@@ -117,7 +121,7 @@ export default {
   },
   computed: {
     allchats: function () {
-      return this._allchats.length > 0 ? this.updateComment() : (this._allchats ? this._allchats : [])
+      return this.newChatList.length > 0 ? this.updateComment() : this._allchats
     },
     activeChat: {
       get () {
@@ -169,7 +173,7 @@ export default {
     this.nextUpdateTime = Date.now() + 5 * 365 * 24 * 60 * 60 * 1000
   },
   mounted () {
-    console.log('Chat mounted')
+    if (showAllLog)console.log('Chat mounted')
     // 註冊文章事件
     this.msg.newComment = data => {
       this.$store.dispatch('updatePost', data)
@@ -178,8 +182,8 @@ export default {
     // 定時抓新聊天
     this.intervalChat = window.setInterval(() => {
       if (this.isStream && this.pttState > 0 && Date.now() > this.nextUpdateTime) {
-        this.nextUpdateTime = Date.now() + 10 * 60 * 1000
-        console.log('定時抓新聊天', this.nextUpdateTime)
+        this.nextUpdateTime = Date.now() + 60 * 1000
+        if (showAllLog)console.log('定時抓新聊天', this.nextUpdateTime)
         this.msg.PostMessage('getCommentByAnySearch', { key: this.post.key, board: this.post.board, startLine: this.post.lastEndLine })
       }
     }, 340)
@@ -219,6 +223,7 @@ export default {
 const testchat = {
   l: [],
   get list () {
+    console.log('instance fake chat')
     for (let i = this.l.length; i < 12000; i++) {
       const el = {
         type: '推 ',

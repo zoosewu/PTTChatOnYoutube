@@ -15,10 +15,10 @@ import RecieveData from '../MessagePosterData/RecieveData.js'
  */
 export function Ptt (msg) {
   if (typeof Ptt.cache === 'object') {
-    console.log('return Ptt cache')
+    if (showAllLog)console.log('return Ptt cache')
     return Ptt.cache
   }
-  console.log('instance Ptt')
+  if (showAllLog)console.log('instance Ptt')
   this.msg = msg
   this.window = window // 自動
 
@@ -49,10 +49,9 @@ export function Ptt (msg) {
 
   /** @type {PttAddTask} */
   this.addTask = function (newTask, ...args) {
-    console.log('this.taskManager.nowTask', this.taskManager.nowTask)
+    if (reportMode)console.log('this.addTask, now:', this.taskManager.nowTask, 'list:', this.taskManager.taskList)
     this.taskManager.add(newTask, ...args)
     if (!this.taskManager.nowTask) {
-      this.state.isInsertedText = false
       this.runTask()
     }
   }
@@ -63,15 +62,16 @@ export function Ptt (msg) {
       this.unlock()
       return
     }
+    this.state.isInsertedText = ''
     if (!this.state.lock) this.lock()
-    console.log('runTask', task)
+    if (showAllLog)console.log('runTask', task)
     const NormalState = PttCheckState.apply(this)
     if (NormalState) {
       this.state.lastUpdateTime = Date.now()
-      console.log(task, task.fn, typeof task.fn)
+      if (showAllLog)console.log(task, task.fn, typeof task.fn)
       task.fn.apply(this, task.args)
       this.randomInsert()
-      console.log('this.PttAliveInterval', this.PttAliveInterval)
+      if (showAllLog)console.log('this.PttAliveInterval', this.PttAliveInterval)
       if (!this.PttAliveInterval) {
         this.PttAliveInterval = setInterval(checkPttAlive.bind(this), 3500)
       }
@@ -107,7 +107,7 @@ export function Ptt (msg) {
     if (reportMode) console.log(`insertText: "${str}"`)
     e.clipboardData = { getData: () => str }
     t.dispatchEvent(e)
-    this.state.isInsertedText = true
+    this.state.isInsertedText = str
   }
   Ptt.cache = this
 }

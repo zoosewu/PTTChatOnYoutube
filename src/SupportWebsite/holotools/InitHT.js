@@ -2,6 +2,7 @@
 import InitApp from 'src/app/appindex'
 import ChangeLog from 'src/ChangeLog'
 import { ThemeCheck } from 'src/library'
+import gaUseExtensionEvent from 'src/ga/useExtensionEvent'
 
 export default function InitHT (messageposter, siteName) {
   // Check Theme
@@ -43,7 +44,7 @@ export default function InitHT (messageposter, siteName) {
       const datahash = Object.keys(liveControls.data())[0]
       const iconParent = $(`<div data-${datahash} class="live-control live-control-double bg-300" type="button"></div>`)
       const iconFlex = $(`<div data-${datahash} class="live-control-button"><i data-${datahash} class="md-icon md-icon-font md-theme-${theme}" title="切換PTT顯示佈局">library_books</i></div>`)
-      const iconPTT = $(`<div data-${datahash} class="live-control-button"><i data-${datahash} class="md-icon md-icon-font md-theme-${theme}" title="PTT">local_parking</i></div>`)
+      const iconPTT = $(`<div data-${datahash} class="live-control-button"><i data-${datahash} class="md-icon md-icon-font md-theme-${theme} openpttchat" title="PTT">local_parking</i></div>`)
       iconParent.append(iconFlex, iconPTT)
       liveControls.prepend(iconParent)
       if (/https:\/\/hololive\.jetri\.co\/#\/watch/.exec(iswatch)) {
@@ -59,6 +60,7 @@ export default function InitHT (messageposter, siteName) {
       const containerHeight = defaultVideo.height()
 
       iconPTT.on('click', function () {
+        gaUseExtensionEvent()
         if (collapseEnd || !collapseStart) {
           if (now === '0') {
             $('#PTTMainBtn').css('display', 'block')

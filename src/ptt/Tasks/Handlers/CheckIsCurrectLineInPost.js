@@ -7,7 +7,7 @@ import { FrameState } from 'PttController/PttState.js'
  */
 
 function gotoline () {
-  console.log('gotoline', this, this.postData, this.postData.endLine)
+  if (showAllLog)console.log('gotoline', this, this.postData, this.postData.endLine)
   this.insertText(this.postData.endLine + '.\n')
 }
 
@@ -25,7 +25,7 @@ export default function CheckIsCurrectLineInPost () {
     if (startLine < 5 && this.postData.haveNormalInsideTitle) {
       targetLine += 1
     }
-    console.log('CheckIsCurrectLineInPost targetLine', targetLine)
+    if (showAllLog)console.log('CheckIsCurrectLineInPost targetLine', targetLine)
     if (targetLine < 1 || targetLine > 23) {
       res.pass = false
     }

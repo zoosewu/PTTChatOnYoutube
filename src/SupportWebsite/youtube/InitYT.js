@@ -38,11 +38,11 @@ export default function InitYT (messageposter, siteName) {
     const logstr = ['$(\'.ytp-live-badge\').css("display")', streambtncss]
     if (!simulateIsStreaming) {
       if (streambtncss === 'inline-block') {
-        console.log('This video is streaming.', logstr)
+        if (showAllLog)console.log('This video is streaming.', logstr)
         return true
         // $(`#PTTConnect-Time-Setting`).addClass('d-none');
       } else if (streambtncss === 'none') {
-        console.log('This video is not streaming.', logstr)
+        if (showAllLog)console.log('This video is not streaming.', logstr)
         return false
       }
     }

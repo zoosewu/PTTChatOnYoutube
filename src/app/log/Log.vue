@@ -10,7 +10,6 @@
           :item-title="'PTT狀態'"
           :item-type="'pttState'"
         />
-
         <log-title :title="'文章資訊'" />
         <log-item
           :item-title="'文章標題'"
@@ -18,10 +17,9 @@
           :item-col-span="3"
         />
         <log-item
-          :item-title="'文章看板'"
-          :item-type="'postBoard'"
-          :second-item-title="'文章代碼'"
-          :second-item-type="'postKey'"
+          :item-title="'搜尋代碼'"
+          :item-type="'postKey'"
+          :item-col-span="3"
         />
         <log-item
           :item-title="'已獲取推文數'"
@@ -40,22 +38,21 @@
           :item-col-span="3"
         />
 
-        <log-title :title="'詳細資訊'" />
+        <log-title :title="'影片資訊'" />
         <log-item
           :item-title="'影片類型'"
           :item-type="'videoType'"
-          :second-item-title="'自動獲得推文'"
-          :second-item-type="'isAutoGetComment'"
+          :second-item-title="''"
+          :second-item-type="''"
         />
         <log-item
-          :item-title="'主題顏色'"
-          :item-type="'themeColor'"
-          :second-item-title="' '"
-          :second-item-type="' '"
-        />
-        <log-item
-          :item-title="'預估開台時間'"
+          :item-title="'開台時間'"
           :item-type="'videoStartTime'"
+          :item-col-span="3"
+        />
+        <log-item
+          :item-title="'關台時間'"
+          :item-type="'videoEndTime'"
           :item-col-span="3"
         />
         <log-item
@@ -68,16 +65,21 @@
           :item-type="'videoCurrentTime'"
           :item-col-span="3"
         />
-
-        <log-title title="滾動狀態" />
+        <log-title title="套件狀態" />
+        <log-item
+          :item-title="'主題顏色'"
+          :item-type="'themeColor'"
+          :second-item-title="' '"
+          :second-item-type="' '"
+        />
         <log-item
           :item-title="'目標推文樓數'"
           :item-type="'commentIndex'"
           :second-item-title="'目標捲動高度'"
           :second-item-type="'targetScrollHeight'"
         />
-        <log-title :title="'近期訊息'" />
       </tbody>
+      <log-recent-alert />
     </table>
   </div>
 </template>
@@ -85,10 +87,12 @@
 <script>
 import LogItem from './LogItem.vue'
 import LogTitle from './LogTitle.vue'
+import LogRecentAlert from './LogRecentAlert'
 export default {
   components: {
     'log-item': LogItem,
-    'log-title': LogTitle
+    'log-title': LogTitle,
+    'log-recent-alert': LogRecentAlert
   },
   inject: ['msg'],
   mounted () {

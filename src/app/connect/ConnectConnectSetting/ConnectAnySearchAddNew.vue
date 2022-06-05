@@ -14,7 +14,7 @@
           v-model.lazy="search"
           class="form-control"
           type="text"
-          placeholder="C_Chat,/間直播單 或 #1VobIvqC (C_Chat)"
+          placeholder="C_Chat,/直播單或#1VobIvqC (C_Chat)"
           autocomplete="off"
           @keyup.13="$_ConnectAnySearchAddNew_Add"
         >
@@ -43,25 +43,19 @@ export default {
   },
   methods: {
     $_ConnectAnySearchAddNew_Add: function () {
-      console.log('_ConnectAnySearchAddNew_Add', this.search)
       const searchResultBoard = /^ *([a-zA-Z0-9_-]+) *, *(.+) *$/.exec(this.search)
-      console.log(searchResultBoard)
       if (searchResultBoard) {
         const board = searchResultBoard[1]
         const searches = searchResultBoard[2]
         const searchResultSearch = /^ *([#/?aZGA][^,]+?) *(?:, *([#/?aZGA!].+))? *$/.exec(searches)
-        console.log(searchResultSearch)
         if (searchResultSearch) {
           let search = board + ',' + searchResultSearch[1]
-          console.log(search)
           search += searchResultSearch.length > 2 && searchResultSearch[2] ? ',' + searchResultSearch[2] : ''
-          console.log(search)
           this.$store.dispatch('addAnySearch', search)
           return
         }
       }
       const AidResult = / *(#[a-zA-Z0-9_-]+) \(([a-zA-Z0-9_-]+)\) */.exec(this.search)
-      console.log(AidResult)
       if (AidResult) {
         const search = AidResult[2] + ',' + AidResult[1]
         this.$store.dispatch('addAnySearch', search)

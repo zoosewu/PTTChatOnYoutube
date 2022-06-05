@@ -1,5 +1,6 @@
 import { InitPTT } from '../ptt/pttindex'
-import menuCommand from '../menuCommand/menuCommand'
+import menuCommand from 'menuCommand/menuCommand'
+import insertGa from 'src/ga/index'
 /**
  * @param {MessagePoster} msg
  * @param {Filter} filter
@@ -35,8 +36,8 @@ function InitializeWebsite (msg, filter) {
   msg.ownerorigin = filter.ownerOrigin
   // init menu command
   menuCommand(filter.siteName)
+  insertGa()
   const isEnable = GM_getValue('menuCommand-enableExtention-' + filter.siteName, true)
-  console.log(typeof isEnable)
   if (!isEnable) {
     console.log('PTTChatOnYT Script disabled by user at ' + filter.siteName + ', href:', window.location.href)
     return

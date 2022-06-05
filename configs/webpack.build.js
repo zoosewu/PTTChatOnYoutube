@@ -14,13 +14,14 @@ module.exports = mergeConfig(commonConfig, {
     new webpack.DefinePlugin({
       reportMode: false,
       showAllLog: false,
-      showPttScreen: false || this.reportMode || this.showAllLog,
-      showCommand: false || this.reportMode || this.showAllLog,
-      showMessage: true || this.reportMode || this.showAllLog,
-      showAlertMsg: false || this.showAllLog,
+      get showPttScreen () { return (false || this.reportMode || this.showAllLog) },
+      get showCommand () { return (false || this.reportMode || this.showAllLog) },
+      get showMessage () { return (false || this.reportMode || this.showAllLog) },
+      get showAlertMsg () { return (false || this.showAllLog) },
       defaultOpen: false,
       disablePttFrame: false,
-      simulateIsStreaming: false
+      simulateIsStreaming: false,
+      showScrollLog: false
     })
   ]
 })

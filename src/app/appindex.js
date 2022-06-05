@@ -33,7 +33,7 @@ export default function InitApp (
     const themewhite = 'pttbgc-19 pttc-5'
     const themedark = 'pttbgc-2 pttc-2'
 
-    console.log('Instance PTTChatOnYT App, index', appinscount)
+    if (showAllLog)console.log('Instance PTTChatOnYT App, index', appinscount)
     const PTT = new Vue({
       el: '#PTTChat',
       store,
@@ -64,8 +64,11 @@ export default function InitApp (
           if (reportMode) console.log('Appindex set theme', this.getTheme)
           switch (+this.getTheme) {
             case 0:
-              if (isWhitetheme) classes.push(themewhite)
-              else classes.push(themedark)
+              if (isWhitetheme) {
+                classes.push(themewhite)
+              } else {
+                classes.push(themedark)
+              }
               break
             case 1:
               classes.push(themewhite)
@@ -95,7 +98,7 @@ export default function InitApp (
         )
         this.$store.dispatch('setSiteName', siteName)
         this.$store.dispatch('setCustomPluginSetting', GM_getValue('menuCommand-customPluginSetting-' + siteName, false))
-        console.log('dispatch setCustomPluginSetting', GM_getValue('menuCommand-customPluginSetting-' + siteName, false))
+        if (showAllLog)console.log('dispatch setCustomPluginSetting', GM_getValue('menuCommand-customPluginSetting-' + siteName, false))
         appinscount++
         this.playertime = window.setInterval(() => {
           if (this.player) {
@@ -105,7 +108,7 @@ export default function InitApp (
         this.exist = window.setInterval(() => {
           const self = document.querySelector('#PTTChat[ins="' + this.index + '"')
           if (!self) {
-            console.log('Instance ' + this.index + ' destroyed.')
+            if (showAllLog)console.log('Instance ' + this.index + ' destroyed.')
             PTT.$destroy()
           } else {
             // console.log("Instance " + this.index + " alive.");
@@ -115,10 +118,13 @@ export default function InitApp (
         if (!isStreaming) {
           try {
             const videoinfo = JSON.parse(document.getElementById('scriptTag').innerHTML)
-            if (reportMode) console.log('videoinfo', videoinfo)
+            // if (reportMode) console.log('videoinfo', videoinfo)
             const startDate = new Date(videoinfo.publication[0].startDate)
             if (reportMode) console.log('startDate', startDate)
             this.$store.dispatch('updateVideoStartDate', startDate)
+            const endDate = new Date(videoinfo.publication[0].endDate)
+            if (reportMode) console.log('endDate', endDate)
+            this.$store.dispatch('updateLog', { type: 'videoEndTime', data: endDate.toLocaleDateString() + ' ' + endDate.toLocaleTimeString() })
           } catch (e) {
             console.log(e)
           }

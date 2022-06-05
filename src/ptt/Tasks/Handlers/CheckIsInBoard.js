@@ -32,13 +32,13 @@ export default function CheckIsInBoard () {
     if (this.postData.isCurrectboard) return result
     const isBoardkeyExist = this.match(/【(?:板主:.+|徵求中)】.+(?:看板|系列)《.+》/)
     if (isBoardkeyExist) {
-      console.log('isBoardkeyExist', this.postData.isCurrectboard, isBoardkeyExist)
+      if (showAllLog)console.log('isBoardkeyExist', this.postData.isCurrectboard, isBoardkeyExist)
       const reg = '【(?:板主:.+|徵求中)】.+(?:看板|系列)《' + this.postData.board + '》'
       const isCurrectBoard = this.match(reg, 'i')
       if (isCurrectBoard) this.postData.isCurrectboard = true
       else result.pass = false
     } else {
-      console.log('!isBoardkeyExist', this.postData.isCurrectboard)
+      if (showAllLog)console.log('!isBoardkeyExist', this.postData.isCurrectboard)
       result.pass = false
       result.callback = chechBoardInfo
     }

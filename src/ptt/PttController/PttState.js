@@ -41,6 +41,6 @@ export function PttState () {
     serverfull: false,
     reconnectTime: 10,
     deleteOtherConnection: false,
-    isInsertedText: false
+    isInsertedText: ''
   }
 }

@@ -3,7 +3,10 @@ import { types } from './mutations_type'
 export const actions = {
   actionIncrease: ({ commit }) => { console.log('actionIncrease'); commit(types.INCREASE) },
   actionDecrease: ({ commit }) => { console.log('actionDecrease'); commit(types.DECREASE) },
-  Alert: (context, alertobject) => { context.commit(types.ALERT, alertobject) },
+  Alert: ({ dispatch, commit }, alertobject) => {
+    commit(types.ALERT, alertobject)
+    dispatch('updateLog', { type: 'Alert', data: alertobject })
+  },
   ClearAlert: (context) => { context.commit(types.CLEARALERT) },
   addAnySearch: ({ commit }, search) => { commit(types.ADDANYSEARCH, search) },
   updateLog: (context, log) => { context.commit(types.UPDATELOG, log) },
@@ -49,13 +52,38 @@ export const actions = {
     }
   },
   updateChat: ({ commit, state }, comments) => {
-    console.log('state.post.commentCount', state.post.commentCount, comments.length)
+    if (showAllLog)console.log('state.post.commentCount', state.post.commentCount, comments.length)
     const existcomment = state.post.commentCount - comments.length
     const chatlist = []
     let sametimecount = 0
     let sametimeIndex = 0
     for (let index = 0; index < comments.length; index++) {
-      const currcomment = comments[index]// 抓出來的推文
+      const currcomment = comments[index]
+      let isBlakcList = false
+      if (state.enableBlacklist) {
+        const list = state.blacklist.split('\n')
+        const id = currcomment.id.toLowerCase()
+        for (let i = 0; i < list.length; i++) {
+          if (id === list[i]) {
+            if (reportMode) console.log('blacklist', id, list[i], id === list[i])
+            isBlakcList = true
+            break
+          }
+        }
+      }
+      if (state.enableCommentBlacklist && !isBlakcList) {
+        const list = state.commentBlacklist.split('\n')
+        const msg = currcomment.content.toLowerCase()
+        for (let i = 0; i < list.length; i++) {
+          if (list[i] || list[i].length === 0) continue
+          if (msg.indexOf(list[i]) > -1) {
+            console.log('commentBlacklist', msg, list[i], msg.indexOf(list[i]))
+            isBlakcList = true
+            break
+          }
+        }
+      }
+      if (isBlakcList) continue
       const chat = {}
       if (!state.isStream) {
         if (index >= sametimeIndex) { // 獲得同時間點的推文數量
@@ -103,20 +131,7 @@ export const actions = {
       chat.id = existcomment + index
       chat.uid = state.post.key + '_' + chat.id
       chat.gray = !state.disablecommentgray
-      let isMatch = false
-      if (state.enableblacklist) {
-        const list = state.blacklist.split('\n')
-        const id = chat.pttid.toLowerCase()
-        for (let i = 0; i < list.length; i++) {
-          if (id === list[i]) {
-            isMatch = true
-            break
-          }
-        }
-      }
-      if (!isMatch) {
-        chatlist.push(chat)
-      }
+      chatlist.push(chat)
       if (reportMode) console.log('new Chat', chat, currcomment)
     }
     // console.log("chatlist actions", chatlist);
@@ -174,7 +189,25 @@ export const actions = {
   setCommentBlacklist: ({ commit }, value) => { commit(types.COMMENTBLACKLIST, value) },
 
   // dropdown
-  setTheme: ({ commit }, value) => { commit(types.THEME, value) },
+  setTheme: ({ dispatch, commit }, value) => {
+    switch (value) {
+      case 0:
+        dispatch('updateLog', { type: 'themeColor', data: '自動' })
+        break
+      case 1:
+        dispatch('updateLog', { type: 'themeColor', data: '白色' })
+        break
+      case 2:
+        dispatch('updateLog', { type: 'themeColor', data: '黑色' })
+        break
+      case 3:
+        dispatch('updateLog', { type: 'themeColor', data: '自訂' })
+        break
+      default:
+        break
+    }
+    commit(types.THEME, value)
+  },
   setThemeColorBG: ({ commit }, value) => { commit(types.THEMECOLORBG, value) },
   setThemeColorBorder: ({ commit }, value) => { commit(types.THEMECOLORBORDER, value) },
   setTitleList: ({ commit }, list) => { commit(types.TITLELIST, list) }
