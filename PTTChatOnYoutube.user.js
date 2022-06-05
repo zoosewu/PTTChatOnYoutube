@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name              pttchatonyoutube
-// @version           3.0.1
+// @version           3.0.2
 // @author            Zoosewu, crimsonmoon9
 // @description       Connect ptt pushes to youtube chatroom
 // @match             https://www.youtube.com/*
@@ -8637,7 +8637,7 @@
       siteName: '',
       // checkbox
       enablesetnewcomment: GM_getValue(types.ENABLESETNEWCOMMENT, false),
-      disablecommentgray: GM_getValue(types.DISABLECOMMENTGRAY, false),
+      disableCommentGray: GM_getValue(types.DISABLECOMMENTGRAY, false),
       deleteotherconnect: GM_getValue(types.DELETEOTHERCONNECT, false),
       anySearchHint: GM_getValue(types.ANYSEARCHHINT, false),
       // input value
@@ -8779,7 +8779,7 @@
 
       [types.DISABLECOMMENTGRAY] (state, disable) {
         GM_setValue(types.DISABLECOMMENTGRAY, disable)
-        state.disablecommentgray = disable
+        state.disableCommentGray = disable
       },
 
       [types.ANYSEARCHHINT] (state, search) {
@@ -8891,7 +8891,7 @@
       siteName: state => state.siteName,
       // checkbox
       getEnableSetNewComment: state => state.enablesetnewcomment,
-      getDisableCommentGray: state => state.disablepushgray,
+      getDisableCommentGray: state => state.disableCommentGray,
       getDeleteOtherConnect: state => state.deleteotherconnect,
       getAnySearchHint: state => state.anySearchHint,
       // input value
@@ -9117,7 +9117,7 @@
           chat.msg = msg
           chat.id = existcomment + index
           chat.uid = state.post.key + '_' + chat.id
-          chat.gray = !state.disablecommentgray
+          chat.gray = !state.disableCommentGray
           chatlist.push(chat)
           if (false) {}
         } // console.log("chatlist actions", chatlist);
@@ -9516,7 +9516,7 @@
      * @returns {string} newest post in ptt
      */
       function GetPTTChangeLogURL () {
-        return 'https://www.ptt.cc/bbs/C_Chat/M.1630322443.A.2E2.html'
+        return 'https://www.ptt.cc/bbs/C_Chat/M.1654439165.A.725.html'
       }
       /**
      * @returns {object} object of change log

@@ -130,7 +130,7 @@ export const actions = {
       chat.msg = msg
       chat.id = existcomment + index
       chat.uid = state.post.key + '_' + chat.id
-      chat.gray = !state.disablecommentgray
+      chat.gray = !state.disableCommentGray
       chatlist.push(chat)
       if (reportMode) console.log('new Chat', chat, currcomment)
     }

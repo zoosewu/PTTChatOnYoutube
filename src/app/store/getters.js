@@ -16,7 +16,7 @@ export const getters = {
 
   // checkbox
   getEnableSetNewComment: state => state.enablesetnewcomment,
-  getDisableCommentGray: state => state.disablepushgray,
+  getDisableCommentGray: state => state.disableCommentGray,
   getDeleteOtherConnect: state => state.deleteotherconnect,
   getAnySearchHint: state => state.anySearchHint,
 

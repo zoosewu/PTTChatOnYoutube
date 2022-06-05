@@ -44,7 +44,7 @@ export const state = {
   siteName: '',
   // checkbox
   enablesetnewcomment: GM_getValue(types.ENABLESETNEWCOMMENT, false),
-  disablecommentgray: GM_getValue(types.DISABLECOMMENTGRAY, false),
+  disableCommentGray: GM_getValue(types.DISABLECOMMENTGRAY, false),
   deleteotherconnect: GM_getValue(types.DELETEOTHERCONNECT, false),
   anySearchHint: GM_getValue(types.ANYSEARCHHINT, false),
   // input value
@@ -167,7 +167,7 @@ export const mutations = {
   },
   [types.DISABLECOMMENTGRAY] (state, disable) {
     GM_setValue(types.DISABLECOMMENTGRAY, disable)
-    state.disablecommentgray = disable
+    state.disableCommentGray = disable
   },
   [types.ANYSEARCHHINT] (state, search) {
     GM_setValue(types.ANYSEARCHHINT, search)
