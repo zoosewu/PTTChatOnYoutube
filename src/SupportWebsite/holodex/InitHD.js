@@ -115,8 +115,9 @@ export default function InitHD (messageposter, siteName) {
       const btnParent = btnParentSet.eq(index)
       if (btnParent.find($('[name="ptt-boot-btn"]')).length !== 0) return
       const btn = btnParent.children().eq(0).clone()
+      console.log(btn, [btn])
       btn.attr({ name: 'ptt-boot-btn', style: 'background-color:rgb(130, 30, 150)!important;margin-top:8px;width:190px;' }).appendTo(btnParent)
-      btn.classList.add('openpttchat')
+      btn[0].classList.add('openpttchat')
       btn.id = 'HDNewMode'
       btn.find($('.v-btn__content')).eq(0).text('P').css('font-size', '20px')
       btn.on('click', () => {

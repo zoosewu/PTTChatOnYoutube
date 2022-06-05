@@ -15,7 +15,7 @@
         :column="6"
       />
       <connect-plugin-setting-input-element
-        :setting-name="'PushInterval'"
+        :setting-name="'CommentInterval'"
         :description="'推文更新(s)'"
         :default-value="2.5"
         :max="360"

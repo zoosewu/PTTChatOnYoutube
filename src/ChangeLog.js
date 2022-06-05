@@ -6,7 +6,7 @@ export default function ChangeLog () {
    * @returns {string} newest post in ptt
    */
   function GetPTTChangeLogURL () {
-    return 'https://www.ptt.cc/bbs/C_Chat/M.1630322443.A.2E2.html'
+    return 'https://www.ptt.cc/bbs/C_Chat/M.1654439165.A.725.html'
   }
 
   /**

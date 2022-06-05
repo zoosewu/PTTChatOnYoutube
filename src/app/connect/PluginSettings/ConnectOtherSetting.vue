@@ -14,7 +14,7 @@
         :default-value="false"
       />
       <connect-plugin-setting-checkbox-element
-        :setting-name="'DisablePushGray'"
+        :setting-name="'DisableCommentGray'"
         :description="'關閉灰色漸變以提升效能'"
         :default-value="false"
       />
