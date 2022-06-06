@@ -21,6 +21,6 @@ export default {
 
 <style lang="scss" scoped>
 div {
-  z-index: 301;
+  z-index: 301 !important;
 }
 </style>

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name              pttchatonyoutube
-// @version           3.0.2
+// @version           3.0.3
 // @author            Zoosewu, crimsonmoon9
 // @description       Connect ptt pushes to youtube chatroom
 // @match             https://www.youtube.com/*
@@ -862,7 +862,7 @@
 
     const ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function (i) { return i[1] })
     // Module
-    ___CSS_LOADER_EXPORT___.push([module.i, 'div[data-v-3692ac10]{z-index:301}\n', ''])
+    ___CSS_LOADER_EXPORT___.push([module.i, 'div[data-v-3692ac10]{z-index:301 !important}\n', ''])
     // Exports
     /* harmony default export */ __webpack_exports__.default = (___CSS_LOADER_EXPORT___)
   /***/ },
@@ -9373,7 +9373,7 @@
       // init property
         const ele = document.createElement('div')
         ele.id = 'PTTChat'
-        ele.setAttribute('style', 'z-index: 301;')
+        ele.setAttribute('style', 'z-index: 301 !important;')
         if (cn) cn[0].appendChild(ele)
         const bootsrtapicon = document.createElement('link')
         bootsrtapicon.setAttribute('rel', 'stylesheet')
