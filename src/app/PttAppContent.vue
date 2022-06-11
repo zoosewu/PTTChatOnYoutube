@@ -1,8 +1,7 @@
 <template>
   <div
     id="PTTChat-contents"
-    class="tab-content ptt-text"
-    :style="updateheight"
+    class="tab-content ptt-text h-100"
   >
     <!-------- 聊天室 -------->
     <div
@@ -70,16 +69,12 @@ export default {
     'PTTApp-Other': Other,
     'PTTApp-PTT': PTTScreen,
     'PTTApp-Log': Log
-  },
-  computed: {
-    updateheight () {
-      return {
-        height: this.$store.getters.getPluginHeight + 'px',
-        overflow: 'hidden overlay'
-      }
-    }
   }
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+#PTTChat-contents{
+  overflow:hidden auto;
+}
+</style>

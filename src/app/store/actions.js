@@ -64,6 +64,7 @@ export const actions = {
         const list = state.blacklist.split('\n')
         const id = currcomment.id.toLowerCase()
         for (let i = 0; i < list.length; i++) {
+          if (list[i] && list[i].length === 0) continue
           if (id === list[i]) {
             if (reportMode) console.log('blacklist', id, list[i], id === list[i])
             isBlakcList = true
@@ -75,7 +76,7 @@ export const actions = {
         const list = state.commentBlacklist.split('\n')
         const msg = currcomment.content.toLowerCase()
         for (let i = 0; i < list.length; i++) {
-          if (list[i] || list[i].length === 0) continue
+          if (list[i] && list[i].length === 0) continue
           if (msg.indexOf(list[i]) > -1) {
             console.log('commentBlacklist', msg, list[i], msg.indexOf(list[i]))
             isBlakcList = true

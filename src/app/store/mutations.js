@@ -57,9 +57,9 @@ export const state = {
 
   // inputfield value
   enableBlacklist: GM_getValue(types.ENABLEBLACKLIST, false),
-  blacklist: GM_getValue(types.BLACKLIST, null),
+  blacklist: GM_getValue(types.BLACKLIST, ''),
   enableCommentBlacklist: GM_getValue(types.ENABLECOMMENTBLACKLIST, false),
-  commentBlacklist: GM_getValue(types.COMMENTBLACKLIST, null),
+  commentBlacklist: GM_getValue(types.COMMENTBLACKLIST, ''),
 
   // dropdown
   theme: GM_getValue(types.THEME, -1),

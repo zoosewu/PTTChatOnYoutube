@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name              pttchatonyoutube
-// @version           3.0.3
+// @version           3.0.4
 // @author            Zoosewu, crimsonmoon9
 // @description       Connect ptt pushes to youtube chatroom
 // @match             https://www.youtube.com/*
@@ -122,7 +122,7 @@
   /******/
   /******/
   /******/ 	// Load entry module and return exports
-  /******/ 	return __webpack_require__(__webpack_require__.s = 25)
+  /******/ 	return __webpack_require__(__webpack_require__.s = 28)
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -620,7 +620,7 @@
   // style-loader: Adds some css to the DOM by adding a <style> tag
 
     // load the styles
-    let content = __webpack_require__(14)
+    let content = __webpack_require__(15)
     if (content.__esModule) content = content.default
     if (typeof content === 'string') content = [[module.i, content, '']]
     if (content.locals) module.exports = content.locals
@@ -635,7 +635,7 @@
   // style-loader: Adds some css to the DOM by adding a <style> tag
 
     // load the styles
-    let content = __webpack_require__(16)
+    let content = __webpack_require__(17)
     if (content.__esModule) content = content.default
     if (typeof content === 'string') content = [[module.i, content, '']]
     if (content.locals) module.exports = content.locals
@@ -650,7 +650,7 @@
   // style-loader: Adds some css to the DOM by adding a <style> tag
 
     // load the styles
-    let content = __webpack_require__(18)
+    let content = __webpack_require__(19)
     if (content.__esModule) content = content.default
     if (typeof content === 'string') content = [[module.i, content, '']]
     if (content.locals) module.exports = content.locals
@@ -665,7 +665,22 @@
   // style-loader: Adds some css to the DOM by adding a <style> tag
 
     // load the styles
-    let content = __webpack_require__(20)
+    let content = __webpack_require__(21)
+    if (content.__esModule) content = content.default
+    if (typeof content === 'string') content = [[module.i, content, '']]
+    if (content.locals) module.exports = content.locals
+    // add the styles to the DOM
+    const add = __webpack_require__(2).default
+    const update = add('193dec5a', content, false, {})
+    // Hot Module Replacement
+    if (false) {}
+  /***/ },
+  /* 10 */
+  /***/ function (module, exports, __webpack_require__) {
+  // style-loader: Adds some css to the DOM by adding a <style> tag
+
+    // load the styles
+    let content = __webpack_require__(23)
     if (content.__esModule) content = content.default
     if (typeof content === 'string') content = [[module.i, content, '']]
     if (content.locals) module.exports = content.locals
@@ -675,12 +690,12 @@
     // Hot Module Replacement
     if (false) {}
   /***/ },
-  /* 10 */
+  /* 11 */
   /***/ function (module, exports, __webpack_require__) {
   // style-loader: Adds some css to the DOM by adding a <style> tag
 
     // load the styles
-    let content = __webpack_require__(22)
+    let content = __webpack_require__(25)
     if (content.__esModule) content = content.default
     if (typeof content === 'string') content = [[module.i, content, '']]
     if (content.locals) module.exports = content.locals
@@ -690,7 +705,7 @@
     // Hot Module Replacement
     if (false) {}
   /***/ },
-  /* 11 */
+  /* 12 */
   /***/ function (module, __webpack_exports__, __webpack_require__) {
     'use strict'
     /* harmony import */ const _ConnectNewVersion_vue_vue_type_template_id_12f89555___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5)
@@ -715,7 +730,7 @@
     component.options.__file = 'src/app/connect/PluginSettings/ConnectNewVersion.vue'
     /* harmony default export */ __webpack_exports__.default = (component.exports)
   /***/ },
-  /* 12 */
+  /* 13 */
   /***/ function (module, exports) {
     Vue.component('ChatItemMsg', {
       props: {
@@ -782,14 +797,14 @@
       }
     })
   /***/ },
-  /* 13 */
+  /* 14 */
   /***/ function (module, __webpack_exports__, __webpack_require__) {
     'use strict'
     /* harmony import */ const _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_ConnectAlertItem_vue_vue_type_style_index_0_id_e3224c1e_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6)
     /* harmony import */ const _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_ConnectAlertItem_vue_vue_type_style_index_0_id_e3224c1e_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /* #__PURE__ */__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_ConnectAlertItem_vue_vue_type_style_index_0_id_e3224c1e_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__)
     /* unused harmony reexport * */
   /***/ },
-  /* 14 */
+  /* 15 */
   /***/ function (module, __webpack_exports__, __webpack_require__) {
     'use strict'
     __webpack_require__.r(__webpack_exports__)
@@ -803,14 +818,14 @@
     // Exports
     /* harmony default export */ __webpack_exports__.default = (___CSS_LOADER_EXPORT___)
   /***/ },
-  /* 15 */
+  /* 16 */
   /***/ function (module, __webpack_exports__, __webpack_require__) {
     'use strict'
     /* harmony import */ const _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_ConnectAlert_vue_vue_type_style_index_0_id_0caf7f3e_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7)
     /* harmony import */ const _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_ConnectAlert_vue_vue_type_style_index_0_id_0caf7f3e_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /* #__PURE__ */__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_ConnectAlert_vue_vue_type_style_index_0_id_0caf7f3e_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__)
     /* unused harmony reexport * */
   /***/ },
-  /* 16 */
+  /* 17 */
   /***/ function (module, __webpack_exports__, __webpack_require__) {
     'use strict'
     __webpack_require__.r(__webpack_exports__)
@@ -824,14 +839,14 @@
     // Exports
     /* harmony default export */ __webpack_exports__.default = (___CSS_LOADER_EXPORT___)
   /***/ },
-  /* 17 */
+  /* 18 */
   /***/ function (module, __webpack_exports__, __webpack_require__) {
     'use strict'
     /* harmony import */ const _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PttScreenIframe_vue_vue_type_style_index_0_id_6ae2e06c_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8)
     /* harmony import */ const _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PttScreenIframe_vue_vue_type_style_index_0_id_6ae2e06c_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /* #__PURE__ */__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PttScreenIframe_vue_vue_type_style_index_0_id_6ae2e06c_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__)
     /* unused harmony reexport * */
   /***/ },
-  /* 18 */
+  /* 19 */
   /***/ function (module, __webpack_exports__, __webpack_require__) {
     'use strict'
     __webpack_require__.r(__webpack_exports__)
@@ -845,14 +860,35 @@
     // Exports
     /* harmony default export */ __webpack_exports__.default = (___CSS_LOADER_EXPORT___)
   /***/ },
-  /* 19 */
+  /* 20 */
   /***/ function (module, __webpack_exports__, __webpack_require__) {
     'use strict'
-    /* harmony import */ const _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PttApp_vue_vue_type_style_index_0_id_3692ac10_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9)
+    /* harmony import */ const _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PttAppContent_vue_vue_type_style_index_0_id_0538b1de_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9)
+    /* harmony import */ const _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PttAppContent_vue_vue_type_style_index_0_id_0538b1de_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /* #__PURE__ */__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PttAppContent_vue_vue_type_style_index_0_id_0538b1de_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__)
+    /* unused harmony reexport * */
+  /***/ },
+  /* 21 */
+  /***/ function (module, __webpack_exports__, __webpack_require__) {
+    'use strict'
+    __webpack_require__.r(__webpack_exports__)
+    /* harmony import */ const _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1)
+    /* harmony import */ const _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /* #__PURE__ */__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__)
+    // Imports
+
+    const ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function (i) { return i[1] })
+    // Module
+    ___CSS_LOADER_EXPORT___.push([module.i, '#PTTChat-contents[data-v-0538b1de]{overflow:hidden auto}\n', ''])
+    // Exports
+    /* harmony default export */ __webpack_exports__.default = (___CSS_LOADER_EXPORT___)
+  /***/ },
+  /* 22 */
+  /***/ function (module, __webpack_exports__, __webpack_require__) {
+    'use strict'
+    /* harmony import */ const _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PttApp_vue_vue_type_style_index_0_id_3692ac10_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10)
     /* harmony import */ const _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PttApp_vue_vue_type_style_index_0_id_3692ac10_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /* #__PURE__ */__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PttApp_vue_vue_type_style_index_0_id_3692ac10_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__)
     /* unused harmony reexport * */
   /***/ },
-  /* 20 */
+  /* 23 */
   /***/ function (module, __webpack_exports__, __webpack_require__) {
     'use strict'
     __webpack_require__.r(__webpack_exports__)
@@ -866,14 +902,14 @@
     // Exports
     /* harmony default export */ __webpack_exports__.default = (___CSS_LOADER_EXPORT___)
   /***/ },
-  /* 21 */
+  /* 24 */
   /***/ function (module, __webpack_exports__, __webpack_require__) {
     'use strict'
-    /* harmony import */ const _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PttAppButton_vue_vue_type_style_index_0_id_3700bc4a_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10)
+    /* harmony import */ const _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PttAppButton_vue_vue_type_style_index_0_id_3700bc4a_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11)
     /* harmony import */ const _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PttAppButton_vue_vue_type_style_index_0_id_3700bc4a_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /* #__PURE__ */__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PttAppButton_vue_vue_type_style_index_0_id_3700bc4a_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__)
     /* unused harmony reexport * */
   /***/ },
-  /* 22 */
+  /* 25 */
   /***/ function (module, __webpack_exports__, __webpack_require__) {
     'use strict'
     __webpack_require__.r(__webpack_exports__)
@@ -887,12 +923,12 @@
     // Exports
     /* harmony default export */ __webpack_exports__.default = (___CSS_LOADER_EXPORT___)
   /***/ },
-  /* 23 */
+  /* 26 */
   /***/ function (module, exports, __webpack_require__) {
   // style-loader: Adds some css to the DOM by adding a <style> tag
 
     // load the styles
-    let content = __webpack_require__(24)
+    let content = __webpack_require__(27)
     if (content.__esModule) content = content.default
     if (typeof content === 'string') content = [[module.i, content, '']]
     if (content.locals) module.exports = content.locals
@@ -902,7 +938,7 @@
     // Hot Module Replacement
     if (false) {}
   /***/ },
-  /* 24 */
+  /* 27 */
   /***/ function (module, __webpack_exports__, __webpack_require__) {
     'use strict'
     __webpack_require__.r(__webpack_exports__)
@@ -916,7 +952,7 @@
     // Exports
     /* harmony default export */ __webpack_exports__.default = (___CSS_LOADER_EXPORT___)
   /***/ },
-  /* 25 */
+  /* 28 */
   /***/ function (module, __webpack_exports__, __webpack_require__) {
     'use strict'
     // ESM COMPAT FLAG
@@ -2799,7 +2835,7 @@
           'pttchat rounded-right position-absolute rounded-bottom w-100 collapse',
           attrs: { id: 'PTTMain' }
         },
-        [_c('PTTAppMain')],
+        [_c('PTTAppMain', { style: _vm.updateheight })],
         1
       )
     }
@@ -3110,16 +3146,15 @@
     if (false) { let api }
     component.options.__file = 'src/app/PttAppNav.vue'
     /* harmony default export */ const PttAppNav = (component.exports)
-    // CONCATENATED MODULE: ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/app/PttAppContent.vue?vue&type=template&id=0538b1de&
-    const PttAppContentvue_type_template_id_0538b1de_render = function () {
+    // CONCATENATED MODULE: ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/app/PttAppContent.vue?vue&type=template&id=0538b1de&scoped=true&
+    const PttAppContentvue_type_template_id_0538b1de_scoped_true_render = function () {
       const _vm = this
       const _h = _vm.$createElement
       const _c = _vm._self._c || _h
       return _c(
         'div',
         {
-          staticClass: 'tab-content ptt-text',
-          style: _vm.updateheight,
+          staticClass: 'tab-content ptt-text h-100',
           attrs: { id: 'PTTChat-contents' }
         },
         [
@@ -3197,10 +3232,10 @@
         ]
       )
     }
-    const PttAppContentvue_type_template_id_0538b1de_staticRenderFns = []
-    PttAppContentvue_type_template_id_0538b1de_render._withStripped = true
+    const PttAppContentvue_type_template_id_0538b1de_scoped_true_staticRenderFns = []
+    PttAppContentvue_type_template_id_0538b1de_scoped_true_render._withStripped = true
 
-    // CONCATENATED MODULE: ./src/app/PttAppContent.vue?vue&type=template&id=0538b1de&
+    // CONCATENATED MODULE: ./src/app/PttAppContent.vue?vue&type=template&id=0538b1de&scoped=true&
 
     // CONCATENATED MODULE: ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/app/chat/ChatPreviewImage.vue?vue&type=template&id=0f3cc22a&
     const ChatPreviewImagevue_type_template_id_0f3cc22a_render = function () {
@@ -3549,7 +3584,7 @@
     // CONCATENATED MODULE: ./src/app/chat/ChatElement.vue?vue&type=template&id=ef6a2798&
 
     // EXTERNAL MODULE: ./src/app/chat/ChatElementMessage.js
-    const ChatElementMessage = __webpack_require__(12)
+    const ChatElementMessage = __webpack_require__(13)
 
     // CONCATENATED MODULE: ./src/library.js
     // cryptkey
@@ -6767,7 +6802,7 @@
     ConnectOtherSetting_component.options.__file = 'src/app/connect/PluginSettings/ConnectOtherSetting.vue'
     /* harmony default export */ const ConnectOtherSetting = (ConnectOtherSetting_component.exports)
     // EXTERNAL MODULE: ./src/app/connect/PluginSettings/ConnectNewVersion.vue
-    const ConnectNewVersion = __webpack_require__(11)
+    const ConnectNewVersion = __webpack_require__(12)
 
     // CONCATENATED MODULE: ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib??vue-loader-options!./src/app/connect/ConnectPluginSetting.vue?vue&type=script&lang=js&
     //
@@ -7045,7 +7080,7 @@
     // CONCATENATED MODULE: ./src/app/connect/ConnectAlertItem.vue?vue&type=script&lang=js&
     /* harmony default export */ const connect_ConnectAlertItemvue_type_script_lang_js_ = (ConnectAlertItemvue_type_script_lang_js_)
     // EXTERNAL MODULE: ./src/app/connect/ConnectAlertItem.vue?vue&type=style&index=0&id=e3224c1e&lang=scss&scoped=true&
-    const ConnectAlertItemvue_type_style_index_0_id_e3224c1e_lang_scss_scoped_true_ = __webpack_require__(13)
+    const ConnectAlertItemvue_type_style_index_0_id_e3224c1e_lang_scss_scoped_true_ = __webpack_require__(14)
 
     // CONCATENATED MODULE: ./src/app/connect/ConnectAlertItem.vue
 
@@ -7143,7 +7178,7 @@
     // CONCATENATED MODULE: ./src/app/connect/ConnectAlert.vue?vue&type=script&lang=js&
     /* harmony default export */ const connect_ConnectAlertvue_type_script_lang_js_ = (ConnectAlertvue_type_script_lang_js_)
     // EXTERNAL MODULE: ./src/app/connect/ConnectAlert.vue?vue&type=style&index=0&id=0caf7f3e&lang=scss&scoped=true&
-    const ConnectAlertvue_type_style_index_0_id_0caf7f3e_lang_scss_scoped_true_ = __webpack_require__(15)
+    const ConnectAlertvue_type_style_index_0_id_0caf7f3e_lang_scss_scoped_true_ = __webpack_require__(16)
 
     // CONCATENATED MODULE: ./src/app/connect/ConnectAlert.vue
 
@@ -7591,7 +7626,7 @@
     // CONCATENATED MODULE: ./src/app/ptt/PttScreenIframe.vue?vue&type=script&lang=js&
     /* harmony default export */ const ptt_PttScreenIframevue_type_script_lang_js_ = (PttScreenIframevue_type_script_lang_js_)
     // EXTERNAL MODULE: ./src/app/ptt/PttScreenIframe.vue?vue&type=style&index=0&id=6ae2e06c&lang=scss&scoped=true&
-    const PttScreenIframevue_type_style_index_0_id_6ae2e06c_lang_scss_scoped_true_ = __webpack_require__(17)
+    const PttScreenIframevue_type_style_index_0_id_6ae2e06c_lang_scss_scoped_true_ = __webpack_require__(18)
 
     // CONCATENATED MODULE: ./src/app/ptt/PttScreenIframe.vue
 
@@ -8319,7 +8354,6 @@
     //
     //
     //
-    //
 
     /* harmony default export */ const PttAppContentvue_type_script_lang_js_ = ({
       components: {
@@ -8329,30 +8363,24 @@
         'PTTApp-Other': Other,
         'PTTApp-PTT': PttScreen,
         'PTTApp-Log': Log
-      },
-      computed: {
-        updateheight () {
-          return {
-            height: this.$store.getters.getPluginHeight + 'px',
-            overflow: 'hidden overlay'
-          }
-        }
-
       }
     })
     // CONCATENATED MODULE: ./src/app/PttAppContent.vue?vue&type=script&lang=js&
     /* harmony default export */ const app_PttAppContentvue_type_script_lang_js_ = (PttAppContentvue_type_script_lang_js_)
+    // EXTERNAL MODULE: ./src/app/PttAppContent.vue?vue&type=style&index=0&id=0538b1de&lang=scss&scoped=true&
+    const PttAppContentvue_type_style_index_0_id_0538b1de_lang_scss_scoped_true_ = __webpack_require__(20)
+
     // CONCATENATED MODULE: ./src/app/PttAppContent.vue
 
     /* normalize component */
 
     const PttAppContent_component = Object(componentNormalizer['a' /* default */])(
       app_PttAppContentvue_type_script_lang_js_,
-      PttAppContentvue_type_template_id_0538b1de_render,
-      PttAppContentvue_type_template_id_0538b1de_staticRenderFns,
+      PttAppContentvue_type_template_id_0538b1de_scoped_true_render,
+      PttAppContentvue_type_template_id_0538b1de_scoped_true_staticRenderFns,
       false,
       null,
-      null,
+      '0538b1de',
       null
 
     )
@@ -8415,16 +8443,31 @@
       components: {
         PTTAppMain: PttAppMain
       },
+      computed: {
+        updateheight () {
+          return {
+            height: this.$store.getters.getPluginHeight + 'px'
+          }
+        }
+
+      },
 
       mouted () {
         GM_deleteValue('PostAID')
+        GM_deleteValue('A-custom-PushIntervalMax')
+        GM_deleteValue('A-custom-PushIntervalMin')
+        GM_deleteValue('DisablePushGray')
+        GM_deleteValue('PushInterval')
+        GM_deleteValue('TitleList')
+        GM_deleteValue('lastupdateframe')
+        GM_deleteValue('lastupdatetop')
       }
 
     })
     // CONCATENATED MODULE: ./src/app/PttApp.vue?vue&type=script&lang=js&
     /* harmony default export */ const app_PttAppvue_type_script_lang_js_ = (PttAppvue_type_script_lang_js_)
     // EXTERNAL MODULE: ./src/app/PttApp.vue?vue&type=style&index=0&id=3692ac10&lang=scss&scoped=true&
-    const PttAppvue_type_style_index_0_id_3692ac10_lang_scss_scoped_true_ = __webpack_require__(19)
+    const PttAppvue_type_style_index_0_id_3692ac10_lang_scss_scoped_true_ = __webpack_require__(22)
 
     // CONCATENATED MODULE: ./src/app/PttApp.vue
 
@@ -8518,7 +8561,7 @@
     // CONCATENATED MODULE: ./src/app/PttAppButton.vue?vue&type=script&lang=js&
     /* harmony default export */ const app_PttAppButtonvue_type_script_lang_js_ = (PttAppButtonvue_type_script_lang_js_)
     // EXTERNAL MODULE: ./src/app/PttAppButton.vue?vue&type=style&index=0&id=3700bc4a&lang=scss&scoped=true&
-    const PttAppButtonvue_type_style_index_0_id_3700bc4a_lang_scss_scoped_true_ = __webpack_require__(21)
+    const PttAppButtonvue_type_style_index_0_id_3700bc4a_lang_scss_scoped_true_ = __webpack_require__(24)
 
     // CONCATENATED MODULE: ./src/app/PttAppButton.vue
 
@@ -8649,9 +8692,9 @@
       pluginPortraitHeight: GM_getValue(types.PLUGINPORTRAITHEIGHT, -1),
       // inputfield value
       enableBlacklist: GM_getValue(types.ENABLEBLACKLIST, false),
-      blacklist: GM_getValue(types.BLACKLIST, null),
+      blacklist: GM_getValue(types.BLACKLIST, ''),
       enableCommentBlacklist: GM_getValue(types.ENABLECOMMENTBLACKLIST, false),
-      commentBlacklist: GM_getValue(types.COMMENTBLACKLIST, null),
+      commentBlacklist: GM_getValue(types.COMMENTBLACKLIST, ''),
       // dropdown
       theme: GM_getValue(types.THEME, -1),
       themeColorBG: GM_getValue(types.THEMECOLORBG, -1),
@@ -9039,6 +9082,8 @@
             const id = currcomment.id.toLowerCase()
 
             for (let i = 0; i < list.length; i++) {
+              if (list[i] && list[i].length === 0) continue
+
               if (id === list[i]) {
                 if (false) {}
                 isBlakcList = true
@@ -9052,7 +9097,7 @@
             const msg = currcomment.content.toLowerCase()
 
             for (let i = 0; i < list.length; i++) {
-              if (list[i] || list[i].length === 0) continue
+              if (list[i] && list[i].length === 0) continue
 
               if (msg.indexOf(list[i]) > -1) {
                 console.log('commentBlacklist', msg, list[i], msg.indexOf(list[i]))
@@ -10207,7 +10252,7 @@
     const hdfilter = InsFilter('Holodex', /holodex\.net/, 'https://holodex.net', InitHD)
     /* harmony default export */ const holodex_hdfilter = (hdfilter)
     // EXTERNAL MODULE: ./src/scss/index.scss
-    const scss = __webpack_require__(23)
+    const scss = __webpack_require__(26)
 
     // CONCATENATED MODULE: ./src/main.js
 
