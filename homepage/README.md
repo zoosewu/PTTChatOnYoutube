@@ -26,7 +26,7 @@ PTTChatOnYoutube - Youtube聊天室顯示PTT推文
 
 **新使用者：**
 
-1. 安裝[暴力猴](https://violentmonkey.github.io/)
+1. 安裝[Tampermonkey](https://www.tampermonkey.net/)
 2. 安裝[本套件](https://greasyfork.org/zh-TW/scripts/418469-pttchatonyt)
 
 **舊使用者：**
