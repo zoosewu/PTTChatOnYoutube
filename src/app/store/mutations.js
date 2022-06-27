@@ -1,13 +1,11 @@
 import { types } from './mutations_type'
-import { reportmode } from '../../logsetting'
 
-// state
 export const state = {
   count: 0,
-  alert: { type: 0, msg: '' },
-  aid: '',
+  alert: [],
+  anySearch: '',
   post: {
-    AID: '',
+    key: '',
     board: '',
     title: '',
     date: (() => {
@@ -17,14 +15,14 @@ export const state = {
       t.setSeconds(0)
       return t
     })(),
-    lastendline: 0,
-    lastpushtime: new Date(),
-    pushcount: 0,
-    nowpush: 0,
+    lastEndLine: 0,
+    lastcommenttime: new Date(),
+    commentcount: 0,
+    nowcomment: 0,
     gettedpost: false
   },
   chatlist: [],
-  log: {},
+  log: [],
   firstChatTime: {},
   lastChatTime: {},
   VStartDate: (() => {
@@ -38,23 +36,31 @@ export const state = {
   VCurrentTime: new Date(),
   pageChange: false,
   gotoChat: false,
-  PTTState: 0,
+  pttState: 0,
   isStream: true,
   previewImg: '',
   InstancePTTID: 1,
+  customPluginSetting: false,
+  siteName: '',
   // checkbox
-  enablesetnewpush: GM_getValue(types.ENABLESETNEWPUSH, false),
-  disablepushgray: GM_getValue(types.DISABLEPUSHGRAY, false),
+  enablesetnewcomment: GM_getValue(types.ENABLESETNEWCOMMENT, false),
+  disableCommentGray: GM_getValue(types.DISABLECOMMENTGRAY, false),
   deleteotherconnect: GM_getValue(types.DELETEOTHERCONNECT, false),
-  enableblacklist: GM_getValue(types.ENABLEBLACKLIST, false),
+  anySearchHint: GM_getValue(types.ANYSEARCHHINT, false),
   // input value
   pluginHeight: GM_getValue(types.PLUGINHEIGHT, -1),
-  pushInterval: GM_getValue(types.PUSHINTERVAL, -1),
+  commentInterval: GM_getValue(types.COMMENTINTERVAL, -1),
   chatFontsize: GM_getValue(types.CHATFONTSIZE, -1),
   chatSpace: GM_getValue(types.CHATSPACE, -1),
   pluginWidth: GM_getValue(types.PLUGINWIDTH, -1),
   pluginPortraitHeight: GM_getValue(types.PLUGINPORTRAITHEIGHT, -1),
-  blacklist: GM_getValue(types.BLACKLIST, null),
+
+  // inputfield value
+  enableBlacklist: GM_getValue(types.ENABLEBLACKLIST, false),
+  blacklist: GM_getValue(types.BLACKLIST, ''),
+  enableCommentBlacklist: GM_getValue(types.ENABLECOMMENTBLACKLIST, false),
+  commentBlacklist: GM_getValue(types.COMMENTBLACKLIST, ''),
+
   // dropdown
   theme: GM_getValue(types.THEME, -1),
   themeColorBG: GM_getValue(types.THEMECOLORBG, -1),
@@ -75,28 +81,48 @@ export const mutations = {
     state.count -= 1
   },
   [types.ALERT] (state, alert) {
-    state.alert = alert
+    state.alert.push(alert)
   },
-  [types.GOTOPOST] (state, aid) {
-    state.aid = aid
+  [types.CLEARALERT] (state) {
+    state.alert = []
+  },
+  [types.ADDANYSEARCH] (state, search) {
+    state.anySearch = search
   },
   [types.UPDATEBOARD] (state, board) {
     state.post.board = board
   },
   [types.UPDATEPOST] (state, post) {
-    if (reportmode) console.log('UPDATEPOST', post)
+    if (reportMode) console.log('UPDATEPOST', post)
     state.post = post
   },
   [types.UPDATECHAT] (state, chatlist) {
-    if (reportmode) console.log('UPDATECHAT', chatlist)
+    if (reportMode) console.log('UPDATECHAT', chatlist)
     state.chatlist = chatlist
   },
+  [types.CLEARCHAT] (state) {
+    state.chatlist = []
+  },
+  [types.SETPOSTLASTENDLINE] (state, lastEndLine) {
+    state.post.lastEndLine = lastEndLine
+  },
+  [types.SETPOSTCOMMENTCOUNT] (state, commentCount) {
+    state.post.commentCount = commentCount
+  },
   [types.UPDATELOG] (state, log) {
-    if (reportmode) console.log('UPDATELOG', log)
-    state.log = log
+    if (showAllLog) console.log('UPDATELOG', log)
+    if (!Array.isArray(log)) state.log.push(log)
+    else state.log = state.log.concat(log)
+  },
+  [types.REMOVELOG] (state, type) {
+    for (let i = 0; i < state.log.length; i++) {
+      if (state.log[i].type === type) {
+        state.log.splice(i, 1)
+        return
+      }
+    }
   },
   [types.VIDEOSTARTDATE] (state, videostartdate) {
-    console.trace('VIDEOSTARTDATE mutations', videostartdate)
     state.VStartDate = videostartdate
   },
   [types.VIDEOPLAYEDTIME] (state, videoplayedtime) {
@@ -112,7 +138,7 @@ export const mutations = {
     state.gotoChat = gotoChat
   },
   [types.PTTSTATE] (state, pttstate) {
-    state.PTTState = pttstate
+    state.pttState = pttstate
   },
   [types.ISSTREAM] (state, isStream) {
     state.isStream = isStream
@@ -123,66 +149,98 @@ export const mutations = {
   [types.REINSTANCEPTT] (state) {
     state.InstancePTTID++
   },
+  [types.CUSTOMPLUGINSETTING] (state, value) {
+    state.customPluginSetting = value
+  },
+  [types.SITENAME] (state, value) {
+    state.siteName = value
+  },
 
   // checkbox
   [types.DELETEOTHERCONNECT] (state, deleteotherconnect) {
     GM_setValue(types.DELETEOTHERCONNECT, deleteotherconnect)
     state.deleteotherconnect = deleteotherconnect
   },
-  [types.ENABLESETNEWPUSH] (state, value) {
-    GM_setValue(types.ENABLESETNEWPUSH, value)
-    state.enablesetnewpush = value
+  [types.ENABLESETNEWCOMMENT] (state, value) {
+    GM_setValue(types.ENABLESETNEWCOMMENT, value)
+    state.enablesetnewcomment = value
   },
-  [types.DISABLEPUSHGRAY] (state, disable) {
-    GM_setValue(types.DISABLEPUSHGRAY, disable)
-    state.disablepushgray = disable
+  [types.DISABLECOMMENTGRAY] (state, disable) {
+    GM_setValue(types.DISABLECOMMENTGRAY, disable)
+    state.disableCommentGray = disable
   },
-  [types.ENABLEBLACKLIST] (state, enable) {
-    GM_setValue(types.ENABLEBLACKLIST, enable)
-    state.enableblacklist = enable
+  [types.ANYSEARCHHINT] (state, search) {
+    GM_setValue(types.ANYSEARCHHINT, search)
+    state.anySearchHint = search
   },
+
   // input value
   [types.PLUGINHEIGHT] (state, height) {
-    console.log('types.PLUGINHEIGHT: ', height)
-    GM_setValue(types.PLUGINHEIGHT, height)
+    const ValueName = types.PLUGINHEIGHT + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, height)
+    if (showAllLog)console.log('PLUGINHEIGHT', ValueName, state.customPluginSetting, state.siteName)
     state.pluginHeight = height
   },
-  [types.PUSHINTERVAL] (state, interval) {
-    GM_setValue(types.PUSHINTERVAL, interval)
-    state.pushInterval = interval
+  [types.COMMENTINTERVAL] (state, interval) {
+    const ValueName = types.COMMENTINTERVAL + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, interval)
+    state.commentInterval = interval
   },
   [types.CHATFONTSIZE] (state, size) {
-    GM_setValue(types.CHATFONTSIZE, size)
+    const ValueName = types.CHATFONTSIZE + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, size)
     state.chatFontsize = size
   },
   [types.CHATSPACE] (state, space) {
-    GM_setValue(types.CHATSPACE, space)
+    const ValueName = types.CHATSPACE + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, space)
     state.chatSpace = space
   },
   [types.PLUGINWIDTH] (state, width) {
-    GM_setValue(types.PLUGINWIDTH, width)
+    const ValueName = types.PLUGINWIDTH + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, width)
     state.pluginWidth = width
   },
   [types.PLUGINPORTRAITHEIGHT] (state, portraitHeight) {
-    GM_setValue(types.PLUGINPORTRAITHEIGHT, portraitHeight)
+    const ValueName = types.PLUGINPORTRAITHEIGHT + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, portraitHeight)
     state.pluginPortraitHeight = portraitHeight
+  },
+
+  // inputfield value
+  [types.ENABLEBLACKLIST] (state, isEnable) {
+    GM_setValue(types.ENABLEBLACKLIST, isEnable)
+    state.enableBlacklist = isEnable
   },
   [types.BLACKLIST] (state, list) {
     const l = list.toLowerCase()
     GM_setValue(types.BLACKLIST, l)
     state.blacklist = l
   },
+  [types.ENABLECOMMENTBLACKLIST] (state, isEnable) {
+    GM_setValue(types.ENABLECOMMENTBLACKLIST, isEnable)
+    state.enableCommentBlacklist = isEnable
+  },
+  [types.COMMENTBLACKLIST] (state, list) {
+    const l = list.toLowerCase()
+    GM_setValue(types.COMMENTBLACKLIST, l)
+    state.commentBlacklist = l
+  },
+
   // dropdown
   [types.THEME] (state, theme) {
-    GM_setValue(types.THEME, theme)
+    const ValueName = types.PLUGINPORTRAITHEIGHT + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, theme)
     state.theme = theme
   },
   [types.THEMECOLORBG] (state, themecolorbg) {
-    GM_setValue(types.THEMECOLORBG, themecolorbg)
+    const ValueName = types.THEMECOLORBG + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, themecolorbg)
     state.themeColorBG = themecolorbg
   },
   [types.THEMECOLORBORDER] (state, themecolorborder) {
-    GM_setValue(types.THEMECOLORBORDER, themecolorborder)
+    const ValueName = types.THEMECOLORBORDER + (state.customPluginSetting ? '-' + state.siteName : '')
+    GM_setValue(ValueName, themecolorborder)
     state.themeColorBorder = themecolorborder
   },
   [types.TITLELIST] (state, list) {

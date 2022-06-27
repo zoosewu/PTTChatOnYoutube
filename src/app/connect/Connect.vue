@@ -9,19 +9,16 @@
     <hr class="my-1">
     <connect-plugin-setting />
     <hr class="my-1">
-    <connect-new-version-info />
   </div>
 </template>
 
 <script>
 import ConnectConnectSetting from './ConnectConnectSetting.vue'
 import ConnectPluginSetting from './ConnectPluginSetting.vue'
-import ConnectNewVersionInfo from './ConnectNewVersionInfo.vue'
 export default {
   components: {
     'connect-connect-setting': ConnectConnectSetting,
-    'connect-plugin-setting': ConnectPluginSetting,
-    'connect-new-version-info': ConnectNewVersionInfo
+    'connect-plugin-setting': ConnectPluginSetting
   }
 }
 </script>

@@ -1,8 +1,7 @@
 import ChatPreviewImage from './ChatPreviewImage.vue'
 import ChatScrollBtn from './ChatScrollButton.vue'
 import ChatElement from './ChatElement.vue'
-import ChatSetNewPush from './ChatSetNewComment.vue'
-import { reportmode } from '../../logsetting'
+import ChatSetNewComment from './ChatSetNewComment.vue'
 
 Vue.component('DynamicScroller', VueVirtualScroller.DynamicScroller)
 Vue.component('DynamicScrollerItem', VueVirtualScroller.DynamicScrollerItem)
@@ -14,7 +13,7 @@ export default {
       _allchats: [],
       lastChat: [],
       acChat: 0,
-      lastpostaid: '',
+      postKey: '',
       lastactiveChat: -1,
       intervalChat: null,
       intervalScroll: null,
@@ -26,8 +25,21 @@ export default {
     }
   },
   methods: {
+    updateComment: function () {
+      if (this.postKey !== this.post.key) {
+        if (reportMode) console.log('new post, reset chat')
+        this.postKey = this.post.key
+        this._allchats = []
+      }
+      if (!this._allchats) this._allchats = []
+      this._allchats = this._allchats.concat(this.newChatList)
+      if (reportMode)console.log('this._allchats', this._allchats)
+      this.$store.dispatch('clearChat')
+      return this._allchats
+    },
     updateGray: function (index, isgray) {
-      if (reportmode) {
+      if (!this.allchats[index]) return
+      if (reportMode) {
         console.log('update gray', index, this.allchats[index])
         console.log('update gray', this.allchats[index].gray, '->', isgray, this.allchats[index].msg)
       }
@@ -39,13 +51,9 @@ export default {
       setTimeout(() => this.autoScrollCheck(), 10)
     },
     autoScrollCheck: function () {
-      if (reportmode) {
-        console.log('scrollToChat',
-          this.lastactiveChat,
-          this.activeChat,
-          this.lastactiveChat !== this.activeChat,
-          'this.isAutoScroll', this.isAutoScroll,
-          this.lastautoscrolltime + 50 < Date.now())
+      if (showScrollLog) {
+        console.log('scrollToChat', this.lastactiveChat, this.activeChat, this.lastactiveChat !== this.activeChat,
+          'this.isAutoScroll', this.isAutoScroll, this.lastautoscrolltime + 50 < Date.now())
       }
       if (this.lastactiveChat !== this.activeChat) { this.lastactiveChat = this.activeChat }
       if (this.isAutoScroll && this.lastautoscrolltime + 50 < Date.now()) {
@@ -63,17 +71,18 @@ export default {
         top: scroll,
         behavior: ((Math.abs(scroller.$el.scrollTop - scroll) > clientHeight * 2) ? 'auto' : 'smooth')
       })
+      this.$store.dispatch('updateLog', { type: 'targetScrollHeight', data: scroll })
       // scroller.scrollToPosition(scroll);
     },
     getCurrentChat: function () {
       const chats = this.allchats
       if (this.isStream) { this.activeChat = chats.length - 1 } else {
-        // console.log("this.activeChat && chats && reportmode", this.activeChat, chats, reportmode);
-        if (this.activeChat > -1 && chats && reportmode) {
+        // console.log("this.activeChat && chats && reportMode", this.activeChat, chats, reportMode);
+        if (this.activeChat > -1 && chats && reportMode) {
           console.log('current time: ' + this.videoCurrentTime.toString(), ', activeChat', this.activeChat)
-          if (chats[this.activeChat - 1]) { console.log('activeChat-1', chats[this.activeChat - 1].time.toString()) }
-          if (chats[this.activeChat]) { console.log('activeChat+0', chats[this.activeChat].time.toString(), ', activeChat > CurrentTime', chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()) }
-          if (chats[this.activeChat + 1]) { console.log('activeChat+1', chats[this.activeChat + 1].time.toString(), ', activeChat < CurrentTime', chats[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf()) }
+          if (chats[this.activeChat - 1]) { console.log(chats[this.activeChat - 1].time.toLocaleTimeString(), ', activeChat-1 < CurrentTime', chats[this.activeChat - 1].time.valueOf() < this.videoCurrentTime.valueOf()) }
+          if (chats[this.activeChat + 0]) { console.log(chats[this.activeChat + 0].time.toLocaleTimeString(), ', activeChat   > CurrentTime', chats[this.activeChat].time.valueOf() > this.videoCurrentTime.valueOf()) }
+          if (chats[this.activeChat + 1]) { console.log(chats[this.activeChat + 1].time.toLocaleTimeString(), ', activeChat+1 < CurrentTime', chats[this.activeChat + 1].time.valueOf() < this.videoCurrentTime.valueOf()) }
         }
         let move = 128
         while (true) {
@@ -87,7 +96,9 @@ export default {
           move = move / 2
         }
       }
-      if (reportmode && this.lastactiveChat !== this.activeChat && chats[this.activeChat]) console.log('CurrentChat, ', this.lastactiveChat, '->', this.activeChat, 'chats.length-1', chats.length - 1, ' isStream', this.isStream, 'chats[this.activeChat].msg', chats[this.activeChat].msg)
+      this.$store.dispatch('updateLog', { type: 'commentIndex', data: this.activeChat })
+
+      if (reportMode && this.lastactiveChat !== this.activeChat && chats[this.activeChat]) console.log('CurrentChat, ', this.lastactiveChat, '->', this.activeChat, 'chats.length-1', chats.length - 1, ' isStream', this.isStream, 'chats[this.activeChat].msg', chats[this.activeChat].msg)
     },
     MouseWheelHandler: function (e) {
       this.isAutoScroll = false
@@ -110,16 +121,7 @@ export default {
   },
   computed: {
     allchats: function () {
-      // console.log("allchats");
-      if (this.newChatList !== this.lastChat) {
-        if (this.lastpostaid !== this.post.AID) { this.lastpostaid = this.post.AID; this._allchats = []; console.log('allchats new post') }
-        if (!this._allchats) this._allchats = []
-        const newAllChats = this._allchats.concat(this.newChatList)
-        // console.log("old _allchats", this._allchats, "newChatList", this.newChatList, "new_allchats", new_allchats);
-        this._allchats = newAllChats
-        this.lastChat = this.newChatList
-      }
-      return this._allchats ? this._allchats : []
+      return this.newChatList.length > 0 ? this.updateComment() : this._allchats
     },
     activeChat: {
       get () {
@@ -154,39 +156,40 @@ export default {
       'newChatList',
       'post',
       'videoCurrentTime',
-      'PTTState',
-      'getDisablePushGray',
-      'getPushInterval',
+      'pttState',
+      'getDisableCommentGray',
+      'getCommentInterval',
       'getFontsize',
       'getChatSpace'
     ])
   },
   created () {
-    if (reportmode) this._allchats = testchat.list// test
+    if (reportMode) this._allchats = testchat.list// test
     else this._allchats = []
     this.lastChat = []
-    this.lastpostaid = this.post.AID
+    this.postKey = this.post.key
 
     this.activeChat = 0
     this.nextUpdateTime = Date.now() + 5 * 365 * 24 * 60 * 60 * 1000
   },
   mounted () {
+    if (showAllLog)console.log('Chat mounted')
     // 註冊文章事件
-    this.msg.newPush = data => {
+    this.msg.newComment = data => {
       this.$store.dispatch('updatePost', data)
-      this.nextUpdateTime = Date.now() + Math.max(this.getPushInterval, 2.5) * 1000
+      this.nextUpdateTime = Date.now() + Math.max(this.getCommentInterval, 2.5) * 1000
     }
     // 定時抓新聊天
     this.intervalChat = window.setInterval(() => {
-      if (this.isStream && this.PTTState > 0 && Date.now() > this.nextUpdateTime) {
-        this.nextUpdateTime = Date.now() + 10 * 60 * 1000
-        this.msg.PostMessage('getPushByLine', { AID: this.post.AID, board: this.post.board, title: this.post.title, startline: this.post.lastendline })
+      if (this.isStream && this.pttState > 0 && Date.now() > this.nextUpdateTime) {
+        this.nextUpdateTime = Date.now() + 60 * 1000
+        if (showAllLog)console.log('定時抓新聊天', this.nextUpdateTime)
+        this.msg.PostMessage('getCommentByAnySearch', { key: this.post.key, board: this.post.board, startLine: this.post.lastEndLine })
       }
     }, 340)
     // 定時滾動
     this.intervalScroll = window.setInterval(() => { this.updateChat() }, 500)
   },
-  // updated: function () { console.log("updateChat", this.allchats); },
   beforeDestroy () {
     clearInterval(this.intervalChat)
     clearInterval(this.intervalScroll)
@@ -194,7 +197,7 @@ export default {
   components: {
     'chat-preview-image': ChatPreviewImage,
     'chat-scroll-btn': ChatScrollBtn,
-    'chat-set-new-push': ChatSetNewPush,
+    'chat-set-new-comment': ChatSetNewComment,
     'chat-element': ChatElement
     // 'dynamic-scroller': DynamicScroller,
     // 'dynamic-scroller-item': DynamicScrollerItem
@@ -212,7 +215,7 @@ export default {
       </dynamic-scroller-item>
     </template>
   </dynamic-scroller>
-  <chat-set-new-push></chat-set-new-push>
+  <chat-set-new-comment />
   <chat-preview-image></chat-preview-image>
   <chat-scroll-btn :is-auto-scroll="isAutoScroll" @autoscrollclick="EnableAutoScroll()"></chat-scroll-btn>
 </div>`
@@ -220,6 +223,7 @@ export default {
 const testchat = {
   l: [],
   get list () {
+    console.log('instance fake chat')
     for (let i = this.l.length; i < 12000; i++) {
       const el = {
         type: '推 ',
@@ -244,20 +248,27 @@ const testchat = {
         default:
           break
       }
-      const haveAID = /(.*)(#.{8} \(.+\))(.*)/.exec(m)
-      if (haveAID && haveAID.length > 3) {
-        m = haveAID[1] + '<u onclick="this.parentNode.gotoPost(`' + haveAID[2] + '`)" style="cursor: pointer;">' + haveAID[2] + '</u>' + haveAID[3]
+
+      const AidResult = /(.*)(#[a-zA-Z0-9-_^'"`]{8} \([^'"`)]+\))(.*)/.exec(m)
+      if (AidResult && AidResult.length > 3) {
+        const precontent = AidResult[1]
+        const aid = AidResult[2]
+        const postcontent = AidResult[3]
+        const aidResult = /(#[a-zA-Z0-9_-]+) \(([a-zA-Z0-9_-]+)\)/.exec(aid)
+        const search = aidResult[2] + ',' + aidResult[1]
+        m = precontent + '<u onclick="this.parentNode.AddAnySrarch(`' + search + '`)" style="cursor: pointer;">' + aid + '</u>' + postcontent
+        if (reportMode) console.log(precontent + '<u onclick="this.parentNode.AddAnySrarch(' + search + ')">' + aid + '</u>' + postcontent)
       }
       let result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])(.*)/ig.exec(m)
-      let parsetime = 5
-      while (result && m !== '' && parsetime > 0) {
+      let ParseTimeLimit = 5
+      while (result && m !== '' && ParseTimeLimit > 0) {
         const prestring = result[1]
         const linkstring = result[2]
         if (prestring !== '') msg = msg + prestring
-        msg = msg + '<a href="' + linkstring + '" target="_blank" rel="noopener noreferrer" class="ptt-chat-msg" ref="link' + (5 - parsetime) + '" onmouseover="this.parentNode.mouseEnter(this.href)" onmouseleave="this.parentNode.mouseLeave(this.href)">' + linkstring + '</a>'
+        msg = msg + '<a href="' + linkstring + '" target="_blank" rel="noopener noreferrer" class="ptt-chat-msg" ref="link' + (5 - ParseTimeLimit) + '" onmouseover="this.parentNode.mouseEnter(this.href)" onmouseleave="this.parentNode.mouseLeave(this.href)">' + linkstring + '</a>'
         m = result[3]
         result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])(.*)/ig.exec(m)
-        parsetime--
+        ParseTimeLimit--
       }
       if (m !== '') msg = msg + m
       el.msg = msg

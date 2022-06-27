@@ -1,9 +1,9 @@
-import { InitApp } from '../../app/appindex'
-import { ChangeLog } from '../../ChangeLog'
-import { ThemeCheck } from '../../library'
-import { reportmode } from '../../logsetting'
+import InitApp from 'src/app/appindex'
+import ChangeLog from 'src/ChangeLog'
+import { ThemeCheck } from 'src/library'
+import gaUseExtensionEvent from 'src/ga/useExtensionEvent'
 
-export function InitHD (messageposter) {
+export default function InitHD (messageposter, siteName) {
   // Check Theme
   const WhiteTheme = ThemeCheck('html', '250, 250, 250')
 
@@ -28,7 +28,7 @@ export function InitHD (messageposter) {
     const parent = defaultVideo.parent()
     const holodexStyle = $('body').children().eq(1).hasClass('theme--light') ? '#757575' : '#F2F2F2'
     const iconSwitch = $(`<button type="button" id="ptt-switch-btn" title="切換PTT顯示模式" style="width: 36px; margin: 4px; padding-top: 6px"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="${holodexStyle}"><path d="M0 0h24v24H0z" fill="none"/><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg></button>`)
-    const iconPTT = $('<button type="button" id="ptt-collapse-btn" title="展開/隱藏PTT聊天室" style="height: 36px; width: 36px; margin: 3px; font-size: 21px;">P</button>')
+    const iconPTT = $('<button type="button" id="HDClassicMode" class="openpttchat" title="展開/隱藏PTT聊天室" style="height: 36px; width: 36px; margin: 3px; font-size: 21px;">P</button>')
     liveControls.prepend(iconPTT, iconSwitch)
     parent.append(fakeparent)
     fakeparent.append(defaultVideoHandler)
@@ -41,6 +41,7 @@ export function InitHD (messageposter) {
     let collapseStart = false
     let collapseEnd = true
     iconPTT.on('click', () => {
+      gaUseExtensionEvent()
       if (GM_getValue('PluginTypeHolodex', '1') === '1') {
         if (collapseEnd || !collapseStart) {
           if (nowWidth === 0) {
@@ -53,7 +54,7 @@ export function InitHD (messageposter) {
           $('#pttchatparent').css('flex', `0 0 ${nowWidth}px`)
         }
       }
-      if (reportmode) console.log('hide PTT')
+      if (reportMode) console.log('hide PTT')
     })
     $(document).on('show.bs.collapse hide.bs.collapse', '#PTTMain', () => { collapseStart = true; collapseEnd = false })
     $(document).on('shown.bs.collapse hidden.bs.collapse', '#PTTMain', () => { collapseStart = false; collapseEnd = true })
@@ -73,7 +74,7 @@ export function InitHD (messageposter) {
           mainTimer = setInterval(appendPttEmbedBtn, 1000)
         }
         initPttChatStyle()
-        if (reportmode) console.log('display mode changed')
+        if (reportMode) console.log('display mode changed')
       }
     })
 
@@ -93,19 +94,19 @@ export function InitHD (messageposter) {
     }
 
     if ($('#PTTChat').length === 0) {
-      InitApp($('#pttchatparent'), WhiteTheme, true, messageposter, true)
+      InitApp($('#pttchatparent'), WhiteTheme, true, messageposter, siteName, true)
       ChangeLog()
       const pttFrame = $('<div id="ptt-frame-parent" style="position: absolute; z-index: 6;"><iframe id="PTTframe" src="//term.ptt.cc/?url=https://holodex.net" style="display:none;">你的瀏覽器不支援iframe</iframe></div>')
       $('.vue-grid-layout').append(pttFrame)
       listenPttFrameBtn()
-      if (reportmode) console.log('create PTTChat instance in holodex')
+      if (reportMode) console.log('create PTTChat instance in holodex')
     }
 
     let mainTimer = GM_getValue('PluginTypeHolodex', '1') === '0'
       ? setInterval(appendPttEmbedBtn, 1000)
       : undefined
     recentWatch = true
-    if (reportmode) console.log('main initialize done')
+    if (reportMode) console.log('main initialize done')
   }
 
   function appendPttEmbedBtn () {
@@ -114,13 +115,17 @@ export function InitHD (messageposter) {
       const btnParent = btnParentSet.eq(index)
       if (btnParent.find($('[name="ptt-boot-btn"]')).length !== 0) return
       const btn = btnParent.children().eq(0).clone()
+      console.log(btn, [btn])
       btn.attr({ name: 'ptt-boot-btn', style: 'background-color:rgb(130, 30, 150)!important;margin-top:8px;width:190px;' }).appendTo(btnParent)
+      btn[0].classList.add('openpttchat')
+      btn.id = 'HDNewMode'
       btn.find($('.v-btn__content')).eq(0).text('P').css('font-size', '20px')
       btn.on('click', () => {
+        gaUseExtensionEvent()
         const gridIndex = btn.parents().eq(3).index()
         btnParent.children().eq(1).children().eq(1).trigger('click')
         appendPtt2Cell(gridIndex)
-        if (reportmode) console.log(`grid-#${gridIndex}-boot-button clicked`)
+        if (reportMode) console.log(`grid-#${gridIndex}-boot-button clicked`)
       })
     })
   }
@@ -189,13 +194,13 @@ export function InitHD (messageposter) {
       $('#PTTMain').collapse('hide')
     }
     if (observer) observer.disconnect()
-    if (reportmode) console.log('hide PTTChat')
+    if (reportMode) console.log('hide PTTChat')
   }
 
   function checkFilledWithVideo (cell) {
     if (cell.find($('.mv-frame.ma-auto')).length === 0) setTimeout(checkFilledWithVideo, 1000, cell)
     else {
-      if (reportmode) console.log('cell fill with video, remove PTTChat')
+      if (reportMode) console.log('cell fill with video, remove PTTChat')
       hidePttChatInGrid()
     }
   }

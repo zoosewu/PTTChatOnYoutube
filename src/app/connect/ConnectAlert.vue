@@ -10,7 +10,7 @@
     >
       <connect-alert-item
         v-for="(item) in alertlist"
-        :key="item"
+        :key="item.no"
         :alert="item"
         @destroyalert="removeAlert(item)"
       />
@@ -19,7 +19,6 @@
 </template>
 
 <script>
-import { showalertmsg } from '../../logsetting'
 import ConnectAlertItem from './ConnectAlertItem.vue'
 
 export default {
@@ -29,37 +28,36 @@ export default {
   inject: ['msg'],
   data () {
     return {
-      al: [],
-      lastAlert: null
+      serialNumber: 0,
+      alert: []
     }
   },
   computed: {
     alertlist: function () {
-      if (this.lastAlert !== this.newAlert) {
-      /* eslint-disable vue/no-side-effects-in-computed-properties */
-        this.lastAlert = this.newAlert
-        this.al.push(this.newAlert)
-      /* eslint-enable vue/no-side-effects-in-computed-properties */
-      }
-      return this.al
+      return this.Alert.length > 0 ? this.addAlert(this.Alert) : this.alert
     },
-    ...Vuex.mapGetters([
-      'newAlert'
-    ])
+    ...Vuex.mapGetters(['Alert'])
   },
   mounted () {
-    this.msg.alert = data => {
+    this.msg.alert = (data) => {
       this.$store.dispatch('Alert', { type: data.type, msg: data.msg })
-      if (showalertmsg) console.log('Alert,type: ' + data.type + ', msg: ' + data.msg)
+      if (showAlertMsg) { console.log('Alert,type: ' + data.type + ', msg: ' + data.msg) }
     }
-    this.lastAlert = this.newAlert
-    this.al = []
+    this.alert = []
   },
   methods: {
     removeAlert (item) {
-      const index = this.al.indexOf(item)
-      // console.log("removeAlert: this.al,item.msg,index", this.al, item.msg, index);
-      this.al.splice(index, 1)
+      const index = this.alert.indexOf(item)
+      this.alert.splice(index, 1)
+    },
+    addAlert (items) {
+      for (let i = 0; i < items.length; i++) {
+        items[i].no = this.serialNumber
+        this.serialNumber++
+      }
+      this.alert = this.alert.concat(items)
+      this.$store.dispatch('ClearAlert')
+      return this.alert
     }
   }
 }

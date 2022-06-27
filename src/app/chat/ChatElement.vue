@@ -32,11 +32,9 @@
 </template>
 
 <script>
-/* eslint-disable no-unused-vars */
+/* eslint-disable-next-line no-unused-vars */
 import ChatElementMessage from './ChatElementMessage'
-/* eslint-enable no-unused-vars */
-import { paddingLeft } from '../../library'
-import { reportmode } from '../../logsetting'
+import { paddingLeft } from 'src/library'
 
 export default {
   props: {
@@ -55,29 +53,28 @@ export default {
       return typecolor + ' mr-2 mb-0'
     },
     bgc: function () {
-      if (this.getDisablePushGray) return ''
+      if (this.getDisableCommentGray) return ''
       const isUnchat = this.item.gray ? '0.25' : '0'
       const color = 'rgba(128, 128, 128, ' + isUnchat + ')'
       return { backgroundColor: color, transition: '2s' }
     },
-    ...Vuex.mapGetters(['getDisablePushGray'])
+    ...Vuex.mapGetters(['getDisableCommentGray'])
   },
   watch: {
     activeChat: function () { this.$_ChatElementMessage_GrayCheck() }
   },
   mounted () {
-    if (!this.getDisablePushGray) this.$_ChatElementMessage_GrayCheck()
+    if (!this.getDisableCommentGray) this.$_ChatElementMessage_GrayCheck()
     this.$nextTick(function () {
       this.$refs.p.mouseEnter = this.$_ChatElementMessage_MoueseEnter
       this.$refs.p.mouseLeave = this.$_ChatElementMessage_MoueseLeave
-      this.$refs.p.gotoPost = this.$_ChatElementMessage_GotoPost
-      if (reportmode) console.log('mounted', this, this.$refs)
+      this.$refs.p.AddAnySrarch = this.$_ChatElementMessage_AddAnySrarch
     })
   },
-  updated () { if (reportmode) console.log('updated, listIndex, chatIndex, msg', this.item.id, this.item.msg) },
+  updated () { if (showScrollLog) console.log('updated, listIndex, chatIndex, msg', this.item.id, this.item.msg) },
   methods: {
     $_ChatElementMessage_GrayCheck () {
-      if (reportmode) console.log('GrayCheck', this.item, 'id', this.item.id, 'index', this.index, 'activeChat', this.activeChat, this.item, 'id>activeChat', this.item.id > this.activeChat, '->', this.item.gray, 'getDisablePushGray', this.getDisablePushGray)
+      if (reportMode) console.log('GrayCheck', this.item, 'id', this.item.id, 'index', this.index, 'activeChat', this.activeChat, this.item, 'id>activeChat', this.item.id > this.activeChat, '->', this.item.gray, 'getDisableCommentGray', this.getDisableCommentGray)
       if (this.index > this.activeChat && !this.item.gray) this.$emit('updategray', this.index, true)
       else if (this.index <= this.activeChat && this.item.gray) this.$emit('updategray', this.index, false)
     },
@@ -87,9 +84,9 @@ export default {
     $_ChatElementMessage_MoueseLeave (url) {
       this.$store.dispatch('previewImage', '')
     },
-    $_ChatElementMessage_GotoPost (aid) {
-      console.log('GotoPost')
-      this.$store.dispatch('gotoPost', aid)
+    $_ChatElementMessage_AddAnySrarch (search) {
+      if (reportMode) console.log('click addAnySearch')
+      this.$store.dispatch('addAnySearch', search)
     }
   }
 }

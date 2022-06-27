@@ -1,99 +1,120 @@
 import { types } from './mutations_type'
-import { reportmode } from '../../logsetting'
 
 export const actions = {
   actionIncrease: ({ commit }) => { console.log('actionIncrease'); commit(types.INCREASE) },
   actionDecrease: ({ commit }) => { console.log('actionDecrease'); commit(types.DECREASE) },
-  Alert: (context, alertobject) => { context.commit(types.ALERT, alertobject) },
-  gotoPost: ({ dispatch, commit, state }, aid) => {
-    const result = /#(.+) \((.+)\)/.exec(aid)
-    if (!result || result.length <= 2) {
-      dispatch('Alert', { type: 0, msg: '文章AID格式錯誤，請重新輸入。' })
-    } else if (state.PTTState < 1) {
-      dispatch('Alert', { type: 0, msg: 'PTT尚未登入，請先登入。' })
-    } else {
-      GM_setValue('PostAID', aid)
-      dispatch('pageChange', true)
-      commit(types.GOTOPOST, aid)
-    }
+  Alert: ({ dispatch, commit }, alertobject) => {
+    commit(types.ALERT, alertobject)
+    dispatch('updateLog', { type: 'Alert', data: alertobject })
   },
-  updateLog: (context, log) => {
-    if (!Array.isArray(log)) context.commit(types.UPDATELOG, log)
-    else for (let i = 0; i < log.length; i++) context.commit(types.UPDATELOG, log[i])
-  },
-  updatePost: ({ dispatch, commit, state }, postdata) => {
+  ClearAlert: (context) => { context.commit(types.CLEARALERT) },
+  addAnySearch: ({ commit }, search) => { commit(types.ADDANYSEARCH, search) },
+  updateLog: (context, log) => { context.commit(types.UPDATELOG, log) },
+  removeLog: (context, log) => { context.commit(types.REMOVELOG, log) },
+  updatePost: ({ dispatch, commit, state }, RecievedData) => {
     let newpost
-    if (postdata.AID === state.post.AID && postdata.board === state.post.board) {
+    if (RecievedData.key === state.post.key && RecievedData.board === state.post.board) {
       newpost = state.post
-      newpost.lastendline = postdata.endline
+      commit(types.SETPOSTLASTENDLINE, RecievedData.endLine)
+      const commentCount = state.post.commentCount + RecievedData.comments.length
+      commit(types.SETPOSTCOMMENTCOUNT, commentCount)
+      dispatch('updateLog', [{ type: 'postEndLine', data: RecievedData.endLine },
+        { type: 'postCommentCount', data: commentCount }])
     } else {
       newpost = {
-        AID: postdata.AID,
-        board: postdata.board,
-        title: postdata.title,
-        date: postdata.posttime,
-        lastendline: postdata.endline,
-        lastpushtime: new Date(),
-        pushcount: 0,
-        nowpush: 0,
+        key: RecievedData.key,
+        board: RecievedData.board,
+        title: RecievedData.title,
+        date: RecievedData.date,
+        lastEndLine: RecievedData.endLine,
+        lastCommentTime: new Date(),
+        commentCount: RecievedData.comments.length,
+        nowComment: 0,
         gettedpost: true
       }
       const t = newpost.date
-      dispatch('updateLog', { type: 'postAID', data: newpost.AID })
-      dispatch('updateLog', [{ type: 'postBoard', data: newpost.board },
+      dispatch('updateLog', [{ type: 'postKey', data: newpost.key },
+        { type: 'postBoard', data: newpost.board },
         { type: 'postTitle', data: newpost.title },
         { type: 'postDate', data: t.toLocaleDateString() + ' ' + t.toLocaleTimeString() },
-        { type: 'postEndline', data: newpost.lastendline }])
-    }
-    if (postdata.pushes.length > 0) {
-      newpost.pushcount += postdata.pushes.length
+        { type: 'postEndLine', data: newpost.lastEndLine },
+        { type: 'postCommentCount', data: newpost.commentCount }])
     }
     commit(types.UPDATEPOST, newpost)
-    dispatch('updateChat', postdata.pushes)
-    // console.log("state.pageChange", state.pageChange);
+    dispatch('updateChat', RecievedData.comments)
+    if (RecievedData.comments.length > 0) {
+      const lastcommentDate = RecievedData.comments[RecievedData.comments.length - 1].date
+      dispatch('updateLog', { type: 'postLastCommentTime', data: lastcommentDate.toLocaleDateString() + ' ' + lastcommentDate.toLocaleTimeString() })
+    }
     if (state.pageChange) {
       dispatch('gotoChat', true)
       dispatch('pageChange', false)
     }
   },
-  updateChat: ({ commit, state }, pushes) => {
-    const existpush = state.post.pushcount - pushes.length
+  updateChat: ({ commit, state }, comments) => {
+    if (showAllLog)console.log('state.post.commentCount', state.post.commentCount, comments.length)
+    const existcomment = state.post.commentCount - comments.length
     const chatlist = []
     let sametimecount = 0
     let sametimeIndex = 0
-    for (let index = 0; index < pushes.length; index++) {
-      const currpush = pushes[index]// 抓出來的推文
+    for (let index = 0; index < comments.length; index++) {
+      const currcomment = comments[index]
+      let isBlakcList = false
+      if (state.enableBlacklist) {
+        const list = state.blacklist.split('\n')
+        const id = currcomment.id.toLowerCase()
+        for (let i = 0; i < list.length; i++) {
+          if (list[i] && list[i].length === 0) continue
+          if (id === list[i]) {
+            if (reportMode) console.log('blacklist', id, list[i], id === list[i])
+            isBlakcList = true
+            break
+          }
+        }
+      }
+      if (state.enableCommentBlacklist && !isBlakcList) {
+        const list = state.commentBlacklist.split('\n')
+        const msg = currcomment.content.toLowerCase()
+        for (let i = 0; i < list.length; i++) {
+          if (list[i] && list[i].length === 0) continue
+          if (msg.indexOf(list[i]) > -1) {
+            console.log('commentBlacklist', msg, list[i], msg.indexOf(list[i]))
+            isBlakcList = true
+            break
+          }
+        }
+      }
+      if (isBlakcList) continue
       const chat = {}
       if (!state.isStream) {
         if (index >= sametimeIndex) { // 獲得同時間點的推文數量
-          for (let nextpointer = index + 1; nextpointer < pushes.length; nextpointer++) {
-            const element = pushes[nextpointer]
-            // console.log("currpush.date.getTime(), element.date.getTime()", currpush.date.getTime(), element.date.getTime());
-            if ((currpush.date.getTime() < element.date.getTime()) || (nextpointer >= pushes.length - 1)) {
+          for (let nextpointer = index + 1; nextpointer < comments.length; nextpointer++) {
+            const element = comments[nextpointer]
+            if ((currcomment.date.getTime() < element.date.getTime()) || (nextpointer >= comments.length - 1)) {
               sametimeIndex = nextpointer
               sametimecount = nextpointer - index
-              // console.log("sametimeIndex, sametimecount", sametimeIndex, sametimecount);
               break
             }
           }
         }
       }
-      chat.time = new Date(currpush.date.getTime())
+      chat.time = new Date(currcomment.date.getTime())
       // console.log("sametimeIndex, index, sametimecount", sametimeIndex, index, sametimecount);
       if (!state.isStream && sametimecount > 0) chat.time.setSeconds((sametimecount + index - sametimeIndex) * 60 / sametimecount)
-      chat.pttid = currpush.id
-      chat.type = currpush.type
+      chat.pttid = currcomment.id
+      chat.type = currcomment.type
       // chat.msg = currpush.content;
       let msg = ''
-      let m = filterXSS(currpush.content)
-      const AidResult = /(.*)(#[a-zA-Z0-9-_^'^"^`]{8} \([^'^"^`)]+\))(.*)/.exec(m)
+      let m = filterXSS(currcomment.content)
+      const AidResult = /(.*)(#[a-zA-Z0-9-_^'"`]{8} \([^'"`)]+\))(.*)/.exec(m)
       if (AidResult && AidResult.length > 3) {
-        const precontent = AidResult[1];
-        const aid = AidResult[2];
-        const postcontent = AidResult[3];
-
-        m = precontent + '<u onclick="this.parentNode.gotoPost(`' + aid + '`)" style="cursor: pointer;">' + aid + '</u>' + postcontent
-        if(reportmode) console.log(precontent + '<u onclick="this.parentNode.gotoPost(' + aid + ')">' + aid + '</u>' + postcontent)
+        const precontent = AidResult[1]
+        const aid = AidResult[2]
+        const postcontent = AidResult[3]
+        const aidResult = /(#[a-zA-Z0-9_-]+) \(([a-zA-Z0-9_-]+)\)/.exec(aid)
+        const search = aidResult[2] + ',' + aidResult[1]
+        m = precontent + '<u onclick="this.parentNode.AddAnySrarch(`' + search + '`)" style="cursor: pointer;">' + aid + '</u>' + postcontent
+        if (reportMode) console.log(precontent + '<u onclick="this.parentNode.AddAnySrarch(' + search + ')">' + aid + '</u>' + postcontent)
       }
       let result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])(.*)/ig.exec(m)
       let parsetime = 5
@@ -108,29 +129,17 @@ export const actions = {
       }
       if (m !== '') msg = msg + m
       chat.msg = msg
-      chat.id = existpush + index
-      chat.uid = state.post.AID + '_' + chat.id
-      chat.gray = !state.disablepushgray
-      let isMatch = false
-      if (state.enableblacklist) {
-        const list = state.blacklist.split('\n')
-        const id = chat.pttid.toLowerCase()
-        for (let index = 0; index < list.length; index++) {
-          if (id === list[index]) {
-            isMatch = true
-          }
-        }
-      }
-      if (!isMatch) {
-        chatlist.push(chat)
-      }
-      if (reportmode) console.log('new Chat', chat, currpush)
+      chat.id = existcomment + index
+      chat.uid = state.post.key + '_' + chat.id
+      chat.gray = !state.disableCommentGray
+      chatlist.push(chat)
+      if (reportMode) console.log('new Chat', chat, currcomment)
     }
     // console.log("chatlist actions", chatlist);
     commit(types.UPDATECHAT, chatlist)
   },
+  clearChat: ({ commit }) => { commit(types.CLEARCHAT) },
   updateVideoStartDate: ({ dispatch, commit, state }, d) => {
-    console.trace('updateVideoStartDate', d)
     dispatch('updateLog', { type: 'videoStartTime', data: d.toLocaleDateString() + ' ' + d.toLocaleTimeString() })
     commit(types.VIDEOSTARTDATE, d)
     dispatch('updateVideoCurrentTime')
@@ -146,33 +155,60 @@ export const actions = {
     const time = state.VPlayedTime// [H,m,s,isVideoVeforePost]
     const currtime = new Date(vstart.valueOf())
     currtime.setSeconds(vstart.getSeconds() + time)
-    if (reportmode) console.log('updateVideoCurrentTime check, currtime.valueOf() < state.post.date.valueOf()', currtime.valueOf() < state.post.date.valueOf(), currtime.valueOf(), state.post.date.valueOf())
+    if (reportMode) console.log('updateVideoCurrentTime check, currtime.valueOf() < state.post.date.valueOf()', currtime.valueOf() < state.post.date.valueOf(), currtime.valueOf(), state.post.date.valueOf())
     // console.log("updateVideoCurrentTime vstart, time, currtime", vstart, time, currtime);
     dispatch('updateLog', { type: 'videoCurrentTime', data: currtime.toLocaleDateString() + ' ' + currtime.toLocaleTimeString() })
     commit(types.VIDEOCURRENTRIME, currtime)
   },
   pageChange: ({ commit }, Change) => { commit(types.PAGECHANGE, Change) },
   gotoChat: ({ commit }, gtChat) => { commit(types.GOTOCHAT, gtChat) },
-  PTTState: ({ commit }, pttstate) => { commit(types.PTTSTATE, pttstate) },
+  pttState: ({ dispatch, commit }, pttstate) => { dispatch('updateLog', { type: 'pttState', data: pttstate }); commit(types.PTTSTATE, pttstate) },
   isStream: ({ commit }, isStream) => { commit(types.ISSTREAM, isStream) },
   previewImage: ({ commit }, src) => { commit(types.PREVIEWIMG, src) },
   reInstancePTT: ({ commit }) => commit(types.REINSTANCEPTT),
+  setCustomPluginSetting: ({ commit }, value) => { commit(types.CUSTOMPLUGINSETTING, value) },
+  setSiteName: ({ commit }, value) => { commit(types.SITENAME, value) },
 
   // checkbox
-  setEnableSetNewPush: ({ commit }, value) => { /* console.log("EnableSetNewPush action",value); */commit(types.ENABLESETNEWPUSH, value) },
-  setDisablePushGray: ({ commit }, value) => { commit(types.DISABLEPUSHGRAY, value) },
+  setEnableSetNewComment: ({ commit }, value) => { commit(types.ENABLESETNEWCOMMENT, value) },
+  setDisableCommentGray: ({ commit }, value) => { commit(types.DISABLECOMMENTGRAY, value) },
   setDeleteOtherConnect: ({ commit }, value) => { commit(types.DELETEOTHERCONNECT, value) },
-  setEnableBlacklist: ({ commit }, value) => { commit(types.ENABLEBLACKLIST, value) },
+  setAnySearchHint: ({ commit }, value) => { commit(types.ANYSEARCHHINT, value) },
+
   // input value
   setPluginHeight: (context, value) => { context.commit(types.PLUGINHEIGHT, value) },
   setFontsize: ({ commit }, value) => { commit(types.CHATFONTSIZE, value) },
   setChatSpace: ({ commit }, value) => { commit(types.CHATSPACE, value) },
-  setPushInterval: ({ commit }, value) => { commit(types.PUSHINTERVAL, value) },
+  setCommentInterval: ({ commit }, value) => { commit(types.COMMENTINTERVAL, value) },
   setPluginWidth: ({ commit }, value) => { commit(types.PLUGINWIDTH, value) },
   setPluginPortraitHeight: ({ commit }, value) => { commit(types.PLUGINPORTRAITHEIGHT, value) },
+
+  // inputfield value
+  setEnableBlacklist: ({ commit }, value) => { commit(types.ENABLEBLACKLIST, value) },
   setBlacklist: ({ commit }, value) => { commit(types.BLACKLIST, value) },
+  setEnableCommentBlacklist: ({ commit }, value) => { commit(types.ENABLECOMMENTBLACKLIST, value) },
+  setCommentBlacklist: ({ commit }, value) => { commit(types.COMMENTBLACKLIST, value) },
+
   // dropdown
-  setTheme: ({ commit }, value) => { commit(types.THEME, value) },
+  setTheme: ({ dispatch, commit }, value) => {
+    switch (value) {
+      case 0:
+        dispatch('updateLog', { type: 'themeColor', data: '自動' })
+        break
+      case 1:
+        dispatch('updateLog', { type: 'themeColor', data: '白色' })
+        break
+      case 2:
+        dispatch('updateLog', { type: 'themeColor', data: '黑色' })
+        break
+      case 3:
+        dispatch('updateLog', { type: 'themeColor', data: '自訂' })
+        break
+      default:
+        break
+    }
+    commit(types.THEME, value)
+  },
   setThemeColorBG: ({ commit }, value) => { commit(types.THEMECOLORBG, value) },
   setThemeColorBorder: ({ commit }, value) => { commit(types.THEMECOLORBORDER, value) },
   setTitleList: ({ commit }, list) => { commit(types.TITLELIST, list) }

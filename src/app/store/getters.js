@@ -1,32 +1,42 @@
+
 export const getters = {
-  getCount: state => { return state.count },
-  newAlert: state => { return state.alert },
-  gotoAID: state => { return state.aid },
-  log: state => { return state.log },
-  post: state => { return state.post },
-  newChatList: state => { return state.chatlist },
-  videoCurrentTime: state => { return state.VCurrentTime },
-  gotoChat: state => { return state.gotoChat },
-  PTTState: state => { return state.PTTState }, // PTT頁面狀態 0未登入畫面 1主畫面 2看板畫面 3文章畫面第一頁 4文章畫面其他頁
-  previewImage: state => { return state.previewImg },
-  getInstancePTTID: state => { return state.InstancePTTID },
+  getCount: state => state.count,
+  Alert: state => state.alert,
+  anySearch: state => state.anySearch,
+  newLog: state => state.log,
+  post: state => state.post,
+  newChatList: state => state.chatlist,
+  videoCurrentTime: state => state.VCurrentTime,
+  gotoChat: state => state.gotoChat,
+  pttState: state => state.pttState, // PTT頁面狀態 0未登入畫面 1主畫面 2看板畫面 3文章畫面第一頁 4文章畫面其他頁
+  previewImage: state => state.previewImg,
+  getInstancePTTID: state => state.InstancePTTID,
+  customPluginSetting: state => state.customPluginSetting,
+  siteName: state => state.siteName,
 
   // checkbox
-  getEnableSetNewPush: state => { /* console.log("EnableSetNewPush getter",state.enablesetnewpush); */ return state.enablesetnewpush },
-  getDisablePushGray: state => { return state.disablepushgray },
-  getDeleteOtherConnect: state => { return state.deleteotherconnect },
-  getEnableBlacklist: state => { return state.enableblacklist },
+  getEnableSetNewComment: state => state.enablesetnewcomment,
+  getDisableCommentGray: state => state.disableCommentGray,
+  getDeleteOtherConnect: state => state.deleteotherconnect,
+  getAnySearchHint: state => state.anySearchHint,
+
   // input value
-  getPluginHeight: state => { return state.pluginHeight },
-  getFontsize: state => { return state.chatFontsize },
-  getChatSpace: state => { return state.chatSpace },
-  getPushInterval: state => { return state.pushInterval },
-  getPluginWidth: state => { return state.pluginWidth },
-  getPluginPortraitHeight: state => { return state.pluginPortraitHeight },
-  getBlacklist: state => { return state.blacklist },
+  getPluginHeight: state => state.pluginHeight,
+  getFontsize: state => state.chatFontsize,
+  getChatSpace: state => state.chatSpace,
+  getCommentInterval: state => state.commentInterval,
+  getPluginWidth: state => state.pluginWidth,
+  getPluginPortraitHeight: state => state.pluginPortraitHeight,
+
+  // inputfield value
+  getEnableBlacklist: state => state.enableBlacklist,
+  getBlacklist: state => state.blacklist,
+  getEnableCommentBlacklist: state => state.enableCommentBlacklist,
+  getCommentBlacklist: state => state.commentBlacklist,
+
   // dropdown
-  getTheme: state => { return state.theme },
-  getThemeColorBG: state => { return state.themeColorBG },
-  getThemeColorBorder: state => { return state.themeColorBorder },
-  getTitleList: state => { return state.titleList }
+  getTheme: state => state.theme,
+  getThemeColorBG: state => state.themeColorBG,
+  getThemeColorBorder: state => state.themeColorBorder,
+  getTitleList: state => state.titleList
 }

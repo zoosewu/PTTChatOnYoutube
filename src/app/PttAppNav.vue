@@ -80,17 +80,15 @@
 </template>
 
 <script>
-import { reportmode } from '../logsetting'
-
 export default {
   computed: {
     isGotoChat: function () {
       const go = this.gotoChat
-      if (reportmode) console.log('isGotoChat', go)
+      if (reportMode) console.log('isGotoChat', go)
       if (go) {
         this.$store.dispatch('gotoChat', false)
         this.$refs.chatbtn.click()
-        if (reportmode) console.log('gotoChat')
+        if (reportMode) console.log('gotoChat')
       }
       return go
     },

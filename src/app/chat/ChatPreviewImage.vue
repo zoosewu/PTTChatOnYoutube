@@ -11,8 +11,6 @@
 </template>
 
 <script>
-import { reportmode } from '../../logsetting'
-
 export default {
   data () {
     return {
@@ -41,7 +39,7 @@ export default {
         top: t + 'px'
       }
       if (this.preview) {
-        if (reportmode) console.log('W,H,', this.mousex, this.getWidth(), l, this.mousey, this.getHeight(), t)
+        if (reportMode) console.log('W,H,', this.mousex, this.getWidth(), l, this.mousey, this.getHeight(), t)
         styles = {
           maxHeight: '400px',
           maxWidth: '400px',

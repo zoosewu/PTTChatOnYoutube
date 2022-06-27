@@ -44,7 +44,7 @@
     "standard": "standard"
   },
   "name": "pttchatonyoutube",
-  "version": "2.8.51",
+  "version": "3.0.4",
   "description": "Connect ptt pushes to youtube chatroom",
   "author": "Zoosewu, crimsonmoon9",
   "license": "MIT",
@@ -61,11 +61,25 @@
       "GM_info",
       "GM_setValue",
       "GM_getValue",
+      "GM_deleteValue",
+      "GM_addValueChangeListener",
+      "GM_removeValueChangeListener",
+      "GM_registerMenuCommand",
+      "GM_unregisterMenuCommand",
       "CustomEvent",
-      "getComputedStyle"
+      "getComputedStyle",
+      "reportMode",
+      "showAllLog",
+      "showPttScreen",
+      "showCommand",
+      "showMessage",
+      "showAlertMsg",
+      "defaultOpen",
+      "disablePttFrame",
+      "simulateIsStreaming",
+      "showScrollLog"
     ],
     "ignore": [
-      "src/logsetting.js",
       "src/SupportWebsite/lineTV/InitlineTV.js"
     ]
   }

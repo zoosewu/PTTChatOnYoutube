@@ -1,9 +1,8 @@
-import { InitApp } from '../../app/appindex'
-import { ChangeLog } from '../../ChangeLog'
-import { ThemeCheck } from '../../library'
-import { reportmode } from '../../logsetting'
+import InitApp from 'src/app/appindex'
+import ChangeLog from 'src/ChangeLog'
+import { ThemeCheck } from 'src/library'
 
-export function InitNijimado (messageposter) {
+export default function InitNijimado (messageposter, siteName) {
   // Check Theme
   const WhiteTheme = ThemeCheck('mat-drawer-container', 'rgb(250, 250, 250)')
 
@@ -16,7 +15,7 @@ export function InitNijimado (messageposter) {
   })()
   function TryInsChat () {
     const parent = $('app-home.ng-star-inserted')
-    if (reportmode) console.log('parent', parent)
+    if (reportMode) console.log('parent', parent)
     if (parent.length > 0) {
       const pluginwidth = GM_getValue('PluginWidth', 400)
       const fakeparent = $('<div id="fakeparent" class="d-flex flex-row"></div>')
@@ -28,7 +27,7 @@ export function InitNijimado (messageposter) {
       defaultVideoHandler.append(defaultVideo)
       fakeparent.append(PTTChatHandler)
       $('.reopen-toolbar').css({ 'z-index': '302' })
-      InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true)
+      InitApp(PTTChatHandler, WhiteTheme, true, messageposter, siteName, true)
       ChangeLog()
       tryinsholotools = -10
     } else {

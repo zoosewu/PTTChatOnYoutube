@@ -6,7 +6,7 @@
     "editor.defaultFormatter": "vscode.html-language-features"
   },
   "[javascript]": {
-    "editor.defaultFormatter": "numso.prettier-standard-vscode"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   "[vue]": {
     "editor.defaultFormatter": "octref.vetur"
@@ -17,5 +17,11 @@
     "vetur": " "
   },
   "vetur.format.defaultFormatter.js": "prettier-eslint",
-  "vetur.format.defaultFormatter.html": "none"
+  "vetur.format.defaultFormatter.html": "none",
+  "commentTranslate.hover.enabled": true,
+  "path-autocomplete.pathMappings": {
+    "command": "${folder}/src/menuCommand/",
+    "src": "${folder}/src",
+    "PttController": "${folder}/src/ptt/PttController"
+  }
 }

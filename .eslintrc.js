@@ -21,7 +21,23 @@ module.exports = {
     GM_info: 'readonly',
     GM_setValue: 'readonly',
     GM_getValue: 'readonly',
+    GM_deleteValue: 'readonly',
+    GM_addValueChangeListener: 'readonly',
+    GM_removeValueChangeListener: 'readonly',
+    GM_registerMenuCommand: 'readonly',
+    GM_unregisterMenuCommand: 'readonly',
     CustomEvent: 'readonly',
-    getComputedStyle: 'readonly'
+    getComputedStyle: 'readonly',
+    reportMode: 'readonly',
+    showAllLog: 'readonly',
+    showPttScreen: 'readonly',
+    showCommand: 'readonly',
+    showMessage: 'readonly',
+    showAlertMsg: 'readonly',
+    defaultOpen: 'readonly',
+    disablePttFrame: 'readonly',
+    simulateIsStreaming: 'readonly',
+    showScrollLog: 'readonly'
+
   }
 }

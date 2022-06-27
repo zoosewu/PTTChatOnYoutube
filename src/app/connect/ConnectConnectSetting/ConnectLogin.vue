@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { GenerateCryptKey } from '../../../library'
+import { GenerateCryptKey } from 'src/library'
 
 export default {
   inject: ['msg'],
@@ -62,14 +62,14 @@ export default {
       if (this.id === '' || this.pw === '') {
         this.$store.dispatch('Alert', { type: 0, msg: '帳號或密碼不得為空。' })
         return
-      } else if (this.PTTState > 0) {
+      } else if (this.pttState > 0) {
         this.$store.dispatch('Alert', { type: 0, msg: '已經登入，請勿重複登入。' })
         return
       }
       GM_setValue('PTTID', this.id)
       const i = CryptoJS.AES.encrypt(this.id, this.cryptkey).toString()
       const p = CryptoJS.AES.encrypt(this.pw, this.cryptkey).toString()
-      console.log(`this.cryptkey ${this.cryptkey}`)
+      if (showAllLog)console.log(`this.cryptkey ${this.cryptkey}`)
       this.msg.PostMessage('login', { id: i, pw: p, DeleteOtherConnect: this.getDeleteOtherConnect })
     }
   }

@@ -1,10 +1,10 @@
 
-import { InitApp } from '../../app/appindex'
-import { ChangeLog } from '../../ChangeLog'
-import { ThemeCheck } from '../../library'
-import { reportmode } from '../../logsetting'
+import InitApp from 'src/app/appindex'
+import ChangeLog from 'src/ChangeLog'
+import { ThemeCheck } from 'src/library'
+import gaUseExtensionEvent from 'src/ga/useExtensionEvent'
 
-export function InitHT (messageposter) {
+export default function InitHT (messageposter, siteName) {
   // Check Theme
   const WhiteTheme = ThemeCheck('html', '250, 250, 250')
 
@@ -33,7 +33,7 @@ export function InitHT (messageposter) {
     const defaultVideoHandler = $('<div id="holotoolsvideohandler" style="flex:1 1 auto;"></div>')
     const defaultVideo = $('.player-container.hasControls')
     const PTTChatHandler = $('<div id="pttchatparent" class="p-0 d-flex" style="flex:0 0 0px;position:relative;"></div>')
-    if (reportmode) console.log('parent', parent)
+    if (reportMode) console.log('parent', parent)
     if (parent.length > 0 && iswatch) {
       const pluginwidth = GM_getValue('PluginWidth', 400)
       const pluginheight = GM_getValue('PluginHeight', 400)
@@ -44,7 +44,7 @@ export function InitHT (messageposter) {
       const datahash = Object.keys(liveControls.data())[0]
       const iconParent = $(`<div data-${datahash} class="live-control live-control-double bg-300" type="button"></div>`)
       const iconFlex = $(`<div data-${datahash} class="live-control-button"><i data-${datahash} class="md-icon md-icon-font md-theme-${theme}" title="切換PTT顯示佈局">library_books</i></div>`)
-      const iconPTT = $(`<div data-${datahash} class="live-control-button"><i data-${datahash} class="md-icon md-icon-font md-theme-${theme}" title="PTT">local_parking</i></div>`)
+      const iconPTT = $(`<div data-${datahash} class="live-control-button"><i data-${datahash} class="md-icon md-icon-font md-theme-${theme} openpttchat" title="PTT">local_parking</i></div>`)
       iconParent.append(iconFlex, iconPTT)
       liveControls.prepend(iconParent)
       if (/https:\/\/hololive\.jetri\.co\/#\/watch/.exec(iswatch)) {
@@ -60,6 +60,7 @@ export function InitHT (messageposter) {
       const containerHeight = defaultVideo.height()
 
       iconPTT.on('click', function () {
+        gaUseExtensionEvent()
         if (collapseEnd || !collapseStart) {
           if (now === '0') {
             $('#PTTMainBtn').css('display', 'block')
@@ -102,7 +103,7 @@ export function InitHT (messageposter) {
       defaultVideoHandler.append(defaultVideo)
       fakeparent.append(PTTChatHandler)
       $('.reopen-toolbar').css({ 'z-index': '302' })
-      InitApp(PTTChatHandler, WhiteTheme, true, messageposter, true)
+      InitApp(PTTChatHandler, WhiteTheme, true, messageposter, siteName, true)
       ChangeLog()
       tryinsholotools = -10
     } else {
