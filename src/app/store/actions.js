@@ -9,6 +9,7 @@ export const actions = {
   },
   ClearAlert: (context) => { context.commit(types.CLEARALERT) },
   addAnySearch: ({ commit }, search) => { commit(types.ADDANYSEARCH, search) },
+  setNewcomment: ({ commit }, text) => { commit(types.SETNEWCOMMENT, text) },
   updateLog: (context, log) => { context.commit(types.UPDATELOG, log) },
   removeLog: (context, log) => { context.commit(types.REMOVELOG, log) },
   updatePost: ({ dispatch, commit, state }, RecievedData) => {
@@ -52,7 +53,7 @@ export const actions = {
     }
   },
   updateChat: ({ commit, state }, comments) => {
-    if (showAllLog)console.log('state.post.commentCount', state.post.commentCount, comments.length)
+    if (showAllLog) console.log('state.post.commentCount', state.post.commentCount, comments.length)
     const existcomment = state.post.commentCount - comments.length
     const chatlist = []
     let sametimecount = 0
@@ -64,7 +65,7 @@ export const actions = {
         const list = state.blacklist.split('\n')
         const id = currcomment.id.toLowerCase()
         for (let i = 0; i < list.length; i++) {
-          if (list[i] && list[i].length === 0) continue
+          if (!list[i] || list[i].length === 0) continue
           if (id === list[i]) {
             if (reportMode) console.log('blacklist', id, list[i], id === list[i])
             isBlakcList = true
@@ -76,9 +77,9 @@ export const actions = {
         const list = state.commentBlacklist.split('\n')
         const msg = currcomment.content.toLowerCase()
         for (let i = 0; i < list.length; i++) {
-          if (list[i] && list[i].length === 0) continue
+          if (!list[i] || list[i].length === 0) continue
           if (msg.indexOf(list[i]) > -1) {
-            console.log('commentBlacklist', msg, list[i], msg.indexOf(list[i]))
+            if (reportMode) console.log('commentBlacklist', msg, list[i], msg.indexOf(list[i]))
             isBlakcList = true
             break
           }

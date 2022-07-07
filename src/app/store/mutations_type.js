@@ -5,6 +5,7 @@ export const types = {
   ALERT: 'Alert',
   CLEARALERT: 'CLEARALERT',
   ADDANYSEARCH: 'ADDANYSEARCH',
+  SETNEWCOMMENT: 'SETNEWCOMMENT',
   GOTOPOST: 'GOTOPOST',
   COMMENTDATA: 'CommentData',
   UPDATEBOARD: 'updateBoard',

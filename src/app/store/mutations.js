@@ -4,6 +4,7 @@ export const state = {
   count: 0,
   alert: [],
   anySearch: '',
+  setNewComment: '',
   post: {
     key: '',
     board: '',
@@ -88,6 +89,9 @@ export const mutations = {
   },
   [types.ADDANYSEARCH] (state, search) {
     state.anySearch = search
+  },
+  [types.SETNEWCOMMENT] (state, text) {
+    state.setNewComment = text
   },
   [types.UPDATEBOARD] (state, board) {
     state.post.board = board

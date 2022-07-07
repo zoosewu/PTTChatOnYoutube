@@ -20,9 +20,14 @@
           id="setnewcommentbtn"
           class="btn ptt-btnoutline w-100 px-2"
           type="button"
-          @click.self="$_ChatSetNewComment_setComment()"
+          @click="$_ChatSetNewComment_setComment()"
         >
-          推文
+          <div v-if="setNewComment !== ''">
+            推文中...
+          </div>
+          <div v-if="setNewComment === ''">
+            推文
+          </div>
         </button>
       </div>
     </div>
@@ -51,7 +56,8 @@ export default {
     ...Vuex.mapGetters([
       'post',
       'pttState',
-      'getEnableSetNewComment'
+      'getEnableSetNewComment',
+      'setNewComment'
     ])
   },
   mounted () {
@@ -65,7 +71,8 @@ export default {
       else if (!this.post.gettedpost) this.$store.dispatch('Alert', { type: 0, msg: '尚未獲取文章，請先獲取文章。' })
       else {
         gaPush({ event: 'setComment' })
-        this.msg.PostMessage('setNewcomment', this.commenttext)
+        this.$store.dispatch('setNewcomment', this.commenttext)
+        // this.msg.PostMessage('setNewcomment', this.commenttext)
       }
     },
     $_ChatSetNewComment_removeCommentedText (text) {
