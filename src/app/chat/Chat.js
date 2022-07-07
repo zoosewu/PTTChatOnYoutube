@@ -33,7 +33,7 @@ export default {
       }
       if (!this._allchats) this._allchats = []
       this._allchats = this._allchats.concat(this.newChatList)
-      if (reportMode)console.log('this._allchats', this._allchats)
+      if (reportMode) console.log('this._allchats', this._allchats)
       this.$store.dispatch('clearChat')
       return this._allchats
     },
@@ -160,7 +160,8 @@ export default {
       'getDisableCommentGray',
       'getCommentInterval',
       'getFontsize',
-      'getChatSpace'
+      'getChatSpace',
+      'setNewComment'
     ])
   },
   created () {
@@ -173,7 +174,7 @@ export default {
     this.nextUpdateTime = Date.now() + 5 * 365 * 24 * 60 * 60 * 1000
   },
   mounted () {
-    if (showAllLog)console.log('Chat mounted')
+    if (showAllLog) console.log('Chat mounted')
     // 註冊文章事件
     this.msg.newComment = data => {
       this.$store.dispatch('updatePost', data)
@@ -183,8 +184,11 @@ export default {
     this.intervalChat = window.setInterval(() => {
       if (this.isStream && this.pttState > 0 && Date.now() > this.nextUpdateTime) {
         this.nextUpdateTime = Date.now() + 60 * 1000
-        if (showAllLog)console.log('定時抓新聊天', this.nextUpdateTime)
-        this.msg.PostMessage('getCommentByAnySearch', { key: this.post.key, board: this.post.board, startLine: this.post.lastEndLine })
+        if (showAllLog) console.log('定時抓新聊天', this.nextUpdateTime)
+        if (this.setNewComment !== '') {
+          this.msg.PostMessage('setNewcomment', this.setNewComment)
+          this.$store.dispatch('setNewcomment', '')
+        } else this.msg.PostMessage('getCommentByAnySearch', { key: this.post.key, board: this.post.board, startLine: this.post.lastEndLine })
       }
     }, 340)
     // 定時滾動
@@ -257,7 +261,7 @@ const testchat = {
         const aidResult = /(#[a-zA-Z0-9_-]+) \(([a-zA-Z0-9_-]+)\)/.exec(aid)
         const search = aidResult[2] + ',' + aidResult[1]
         m = precontent + '<u onclick="this.parentNode.AddAnySrarch(`' + search + '`)" style="cursor: pointer;">' + aid + '</u>' + postcontent
-        if (reportMode) console.log(precontent + '<u onclick="this.parentNode.AddAnySrarch(' + search + ')">' + aid + '</u>' + postcontent)
+        if (showAllLog) console.log(precontent + '<u onclick="this.parentNode.AddAnySrarch(' + search + ')">' + aid + '</u>' + postcontent)
       }
       let result = /(.*?)(\bhttps?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])(.*)/ig.exec(m)
       let ParseTimeLimit = 5

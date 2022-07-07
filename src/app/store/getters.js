@@ -3,6 +3,7 @@ export const getters = {
   getCount: state => state.count,
   Alert: state => state.alert,
   anySearch: state => state.anySearch,
+  setNewComment: state => state.setNewComment,
   newLog: state => state.log,
   post: state => state.post,
   newChatList: state => state.chatlist,
