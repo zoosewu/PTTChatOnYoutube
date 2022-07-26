@@ -23,6 +23,7 @@ module.exports = {
     'GM_setValue',
     'GM_deleteValue',
     'GM_addValueChangeListener',
+    'GM_removeValueChangeListener',
     'GM_registerMenuCommand',
     'GM_unregisterMenuCommand'
   ],
