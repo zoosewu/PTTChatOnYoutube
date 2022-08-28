@@ -5,7 +5,7 @@ import { FrameState } from 'PttController/PttState.js'
  * @this {Ptt}
  */
 function gotoPost () {
-  this.insertText('NPP' + this.postData.key + '\nr')
+  this.insertText('NPP' + this.postData.key + '\nSqr')
 }
 
 /**
