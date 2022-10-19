@@ -34,17 +34,31 @@ export default function InitYT (messageposter, siteName) {
     }
   })()
   function checkvideotype () {
-    const streambtncss = $('.ytp-live-badge').css('display')
-    const logstr = ['$(\'.ytp-live-badge\').css("display")', streambtncss]
-    if (!simulateIsStreaming) {
-      if (streambtncss === 'inline-block') {
-        if (showAllLog)console.log('This video is streaming.', logstr)
+    const scriptTag = JSON.parse(document.getElementById('scriptTag').innerHTML)
+    if (scriptTag.publication === undefined) {
+      if (reportMode)console.log('scriptTag have no publication [is video]')
+      return false
+    } else {
+      if (scriptTag.publication[0].endDate === undefined) {
+        if (reportMode)console.log('scriptTag have no endDate [is streaming]')
         return true
-        // $(`#PTTConnect-Time-Setting`).addClass('d-none');
-      } else if (streambtncss === 'none') {
-        if (showAllLog)console.log('This video is not streaming.', logstr)
+      } else {
+        if (reportMode)console.log('scriptTag have endDate [is end stream]')
         return false
       }
     }
+    // const streambtncss = $('.ytp-live-badge').css('display')
+    // console.log('streambtncss', streambtncss)
+    // const logstr = ['$(\'.ytp-live-badge\').css("display")', streambtncss]
+    // if (!simulateIsStreaming) {
+    //   if (streambtncss === 'inline-block') {
+    //     if (showAllLog)console.log('This video is streaming.', logstr)
+    //     return true
+    //     // $(`#PTTConnect-Time-Setting`).addClass('d-none');
+    //   } else if (streambtncss === 'none') {
+    //     if (showAllLog)console.log('This video is not streaming.', logstr)
+    //     return false
+    //   }
+    // }
   }
 }

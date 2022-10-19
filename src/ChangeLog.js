@@ -15,6 +15,15 @@ export default function ChangeLog () {
   function AddChangeLogInfo () {
     const changeLogInfo = {}
 
+    changeLogInfo.v_3_1 = new Info()
+    changeLogInfo.v_3_1.Youtube.push('修正Youtube實況尚未開始時如果有預告影片會導致套件判斷錯誤的問題(Koyori及Roboko)。')
+    changeLogInfo.v_3_1.版本.push('修正推文有時候沒有反應的問題，增加推文時的回饋。')
+    changeLogInfo.v_3_1.版本.push('修正黑名單沒有輸入任何內容會無法顯示聊天室的錯誤。')
+    changeLogInfo.v_3_1.版本.push('修正Firefox新模式的推文會超出介面的問題。')
+    changeLogInfo.v_3_1.版本.push('修正關閉灰色漸變功能沒有產生效果的問題。')
+    changeLogInfo.v_3_1.Twitch.push('修正套件會被原生介面擋住的問題。')
+    changeLogInfo.v_3_1.HoloDex.push('修正新模式沒辦法使用的問題。')
+
     changeLogInfo.v_3_0 = new Info()
     changeLogInfo.v_3_0.版本.push('使用新的搜尋功能，可以搜尋標題、AID、作者、推文數、稿酬、標記等。\n舊版的AID(#1WHqSb2l (C_Chat))依然可以使用。')
     changeLogInfo.v_3_0.版本.push('修正版主ID+版標太常導致看板名稱消失後就會無法辨識看板的問題。')
