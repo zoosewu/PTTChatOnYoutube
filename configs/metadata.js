@@ -13,7 +13,8 @@ module.exports = {
     'https://niji-mado.web.app/home',
     'https://lin.ee/*',
     'https://blank.org/*',
-    'https://holodex.net/*'
+    'https://holodex.net/*',
+    'https://lolesports.com/*'
   ],
   grant: [
     'GM_xmlhttpRequest',

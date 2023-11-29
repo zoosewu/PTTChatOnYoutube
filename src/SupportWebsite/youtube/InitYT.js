@@ -2,8 +2,8 @@ import InitApp from 'src/app/appindex'
 import ChangeLog from 'src/ChangeLog'
 import { ThemeCheck } from 'src/library'
 
-export default function InitYT (messageposter, siteName) {
-  const msg = messageposter
+export default function InitYT (messagePoster, siteName) {
+  const msg = messagePoster
   // Check Theme
   const WhiteTheme = ThemeCheck('html', 'rgb(249, 249, 249)');
 
@@ -13,7 +13,8 @@ export default function InitYT (messageposter, siteName) {
       setTimeout(CheckChatInstanced, 2000)
       return
     }
-    const ChatContainer = $('ytd-live-chat-frame')
+    // const ChatContainer = $('ytd-live-chat-frame')
+    const ChatContainer = $('#chat-container')
     const defaultChat = $('iframe', ChatContainer)
     const PTTApp = $('#PTTChat', ChatContainer)
     if (PTTApp.length > 0) {
@@ -24,8 +25,8 @@ export default function InitYT (messageposter, siteName) {
       ChatContainer.css({ position: 'relative' })
 
       // 生出套件
-      const isstream = checkvideotype()
-      InitApp(ChatContainer, WhiteTheme, isstream, msg, siteName)
+      const isStream = checkVideoType()
+      InitApp(ChatContainer, WhiteTheme, isStream, msg, siteName)
       ChangeLog()
       setTimeout(CheckChatInstanced, 5000)
     } else {
@@ -33,7 +34,7 @@ export default function InitYT (messageposter, siteName) {
       setTimeout(CheckChatInstanced, 5000)
     }
   })()
-  function checkvideotype () {
+  function checkVideoType () {
     const scriptTag = JSON.parse(document.getElementById('scriptTag').innerHTML)
     if (scriptTag.publication === undefined) {
       if (reportMode)console.log('scriptTag have no publication [is video]')
@@ -47,18 +48,5 @@ export default function InitYT (messageposter, siteName) {
         return false
       }
     }
-    // const streambtncss = $('.ytp-live-badge').css('display')
-    // console.log('streambtncss', streambtncss)
-    // const logstr = ['$(\'.ytp-live-badge\').css("display")', streambtncss]
-    // if (!simulateIsStreaming) {
-    //   if (streambtncss === 'inline-block') {
-    //     if (showAllLog)console.log('This video is streaming.', logstr)
-    //     return true
-    //     // $(`#PTTConnect-Time-Setting`).addClass('d-none');
-    //   } else if (streambtncss === 'none') {
-    //     if (showAllLog)console.log('This video is not streaming.', logstr)
-    //     return false
-    //   }
-    // }
   }
 }
