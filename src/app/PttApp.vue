@@ -35,6 +35,6 @@ export default {
 
 <style lang="scss" scoped>
 div {
-  z-index: 301 !important;
+  z-index: 3010 !important;
 }
 </style>

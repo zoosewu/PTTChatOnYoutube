@@ -34,17 +34,23 @@ export default function InitYT (messagePoster, siteName) {
       setTimeout(CheckChatInstanced, 5000)
     }
   })()
+  function getScriptTag () {
+    const scriptTagElement = document.getElementById('scriptTag')
+    if (scriptTagElement == null) return
+    const scriptTag = JSON.parse(scriptTagElement.innerHTML)
+    return scriptTag
+  }
   function checkVideoType () {
-    const scriptTag = JSON.parse(document.getElementById('scriptTag').innerHTML)
-    if (scriptTag.publication === undefined) {
-      if (reportMode)console.log('scriptTag have no publication [is video]')
+    const scriptTag = getScriptTag()
+    if (scriptTag === undefined || scriptTag.publication === undefined) {
+      if (reportMode) console.log('scriptTag have no publication [is video]')
       return false
     } else {
       if (scriptTag.publication[0].endDate === undefined) {
-        if (reportMode)console.log('scriptTag have no endDate [is streaming]')
+        if (reportMode) console.log('scriptTag have no endDate [is streaming]')
         return true
       } else {
-        if (reportMode)console.log('scriptTag have endDate [is end stream]')
+        if (reportMode) console.log('scriptTag have endDate [is end stream]')
         return false
       }
     }

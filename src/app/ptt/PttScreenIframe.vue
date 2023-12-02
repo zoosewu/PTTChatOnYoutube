@@ -51,7 +51,7 @@ export default {
 <style lang="scss" scoped>
 iframe {
   zoom: 1.65;
-  z-index: 351;
+  z-index: 3510;
   -moz-transform: scale(1);
 }
 </style>
