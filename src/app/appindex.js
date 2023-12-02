@@ -32,7 +32,7 @@ export default function InitApp (
     const themewhite = 'pttbgc-19 pttc-5'
     const themedark = 'pttbgc-2 pttc-2'
 
-    if (showAllLog)console.log('Instance PTTChatOnYT App, index', appinscount)
+    if (showAllLog) console.log('Instance PTTChatOnYT App, index', appinscount)
     const PTT = new Vue({
       el: '#PTTChat',
       store,
@@ -97,7 +97,7 @@ export default function InitApp (
         )
         this.$store.dispatch('setSiteName', siteName)
         this.$store.dispatch('setCustomPluginSetting', GM_getValue('menuCommand-customPluginSetting-' + siteName, false))
-        if (showAllLog)console.log('dispatch setCustomPluginSetting', GM_getValue('menuCommand-customPluginSetting-' + siteName, false))
+        if (showAllLog) console.log('dispatch setCustomPluginSetting', GM_getValue('menuCommand-customPluginSetting-' + siteName, false))
         appinscount++
         this.playertime = window.setInterval(() => {
           if (this.player) {
@@ -107,7 +107,7 @@ export default function InitApp (
         this.exist = window.setInterval(() => {
           const self = document.querySelector('#PTTChat[ins="' + this.index + '"')
           if (!self) {
-            if (showAllLog)console.log('Instance ' + this.index + ' destroyed.')
+            if (showAllLog) console.log('Instance ' + this.index + ' destroyed.')
             PTT.$destroy()
           } else {
             // console.log("Instance " + this.index + " alive.");
@@ -116,12 +116,12 @@ export default function InitApp (
         this.$store.dispatch('isStream', isStreaming)
         if (!isStreaming) {
           try {
-            const videoinfo = JSON.parse(document.getElementById('scriptTag').innerHTML)
+            const videoInfo = JSON.parse($('player-microformat-renderer')[0].children[0].innerHTML)
             // if (reportMode) console.log('videoinfo', videoinfo)
-            const startDate = new Date(videoinfo.publication[0].startDate)
+            const startDate = new Date(videoInfo.publication[0].startDate)
             if (reportMode) console.log('startDate', startDate)
             this.$store.dispatch('updateVideoStartDate', startDate)
-            const endDate = new Date(videoinfo.publication[0].endDate)
+            const endDate = new Date(videoInfo.publication[0].endDate)
             if (reportMode) console.log('endDate', endDate)
             this.$store.dispatch('updateLog', { type: 'videoEndTime', data: endDate.toLocaleDateString() + ' ' + endDate.toLocaleTimeString() })
           } catch (e) {

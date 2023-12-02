@@ -35,10 +35,9 @@ export default function InitYT (messagePoster, siteName) {
     }
   })()
   function getScriptTag () {
-    const scriptTagElement = document.getElementById('scriptTag')
-    if (scriptTagElement == null) return
-    const scriptTag = JSON.parse(scriptTagElement.innerHTML)
-    return scriptTag
+    try {
+      return JSON.parse($('player-microformat-renderer')[0].children[0].innerHTML)
+    } catch (error) { }
   }
   function checkVideoType () {
     const scriptTag = getScriptTag()
