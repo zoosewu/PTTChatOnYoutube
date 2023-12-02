@@ -24,6 +24,6 @@ export default {
 
 <style lang="scss" scoped>
 a {
-  z-index: 400 !important;
+  z-index: 4000 !important;
 }
 </style>

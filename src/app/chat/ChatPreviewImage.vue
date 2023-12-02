@@ -1,6 +1,6 @@
 
 <template>
-  <div style="z-index:460;">
+  <div style="z-index:4600;">
     <img
       ref="imgel"
       :class="className"

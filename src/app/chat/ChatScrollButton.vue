@@ -3,7 +3,7 @@
   <div
     id="PTTChat-contents-Chat-btn"
     :class="className"
-    style="z-index:400; bottom:5%; left: 50%; -ms-transform: translateX(-50%); transform: translateX(-50%);"
+    style="z-index:4000; bottom:5%; left: 50%; -ms-transform: translateX(-50%); transform: translateX(-50%);"
   >
     <button
       id="AutoScroll"

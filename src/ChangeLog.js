@@ -17,6 +17,7 @@ export default function ChangeLog () {
 
     changeLogInfo.v_3_1 = new Info()
     changeLogInfo.v_3_1.Youtube.push('修正Youtube實況尚未開始時如果有預告影片會導致套件判斷錯誤的問題(Koyori及Roboko)。')
+    changeLogInfo.v_3_1.Youtube.push('修正按鈕會消失的情況。')
     changeLogInfo.v_3_1.版本.push('修正推文有時候沒有反應的問題，增加推文時的回饋。')
     changeLogInfo.v_3_1.版本.push('修正黑名單沒有輸入任何內容會無法顯示聊天室的錯誤。')
     changeLogInfo.v_3_1.版本.push('修正Firefox新模式的推文會超出介面的問題。')

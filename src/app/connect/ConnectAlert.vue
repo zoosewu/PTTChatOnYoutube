@@ -66,7 +66,7 @@ export default {
 <style lang="scss" scoped>
 #PTTChat-contents-Connect-alert {
   top: -100%;
-  z-index: 400;
+  z-index: 4000;
   pointer-events: none;
 }
 </style>

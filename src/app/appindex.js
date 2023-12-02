@@ -23,7 +23,6 @@ export default function InitApp (
     // init property
     const ele = document.createElement('div')
     ele.id = 'PTTChat'
-    ele.setAttribute('style', 'z-index: 301 !important;')
     if (cn) cn[0].appendChild(ele)
     const bootsrtapicon = document.createElement('link')
     bootsrtapicon.setAttribute('rel', 'stylesheet')
@@ -137,7 +136,7 @@ export default function InitApp (
         clearInterval(this.exist)
       },
 
-      template: `<div id="PTTChat" :class="classes" :ins="index">
+      template: `<div id="PTTChat" :class="classes" :ins="index" style="top: 0px;">
       <PTTAppBtn></PTTAppBtn>
       <PTTApp></PTTApp>
     </div>`
