@@ -14,6 +14,26 @@ export default function ChangeLog () {
    */
   function AddChangeLogInfo () {
     const changeLogInfo = {}
+    changeLogInfo.v_3_2 = new Info()
+    changeLogInfo.v_3_2.版本.push(`
+大家好，好久不見：
+
+套件已經許久沒更新，其中一個很大的原因就是現在功能改動跟修復太過困難。
+從最初僅有雛形的1.0版，後來使用Vue框架全部重寫，然後也將爬蟲部分重寫以方便新增推文功能，
+現在已經到了3.0版。
+
+老實說這個套件我自己的使用量已經不多，因為自己看實況的習慣有一些改變。
+但是我還是很喜歡這個套件，也了解這個套件有很多人需要，我也希望這個套件能讓更多人受惠。
+
+所以我會再進行一次前端架構重寫並推出4.0版，讓未來錯誤修復及新功能的擴充上能更加方便。
+重寫的這段時間我也會先針對過去遺留下來的問題進行修正。如果有長期以來的bug一直都存在，
+請再麻煩到github回應一下issue或是站內信給我，讓我了解問題還持續存在。
+
+非常感謝大家能支持這個套件。
+
+Zoo`)
+
+    changeLogInfo.v_3_2.版本.push('修正作業系統不是使用台灣時區，觀看紀錄檔時間會對不上的問題。')
 
     changeLogInfo.v_3_1 = new Info()
     changeLogInfo.v_3_1.Youtube.push('修正Youtube實況尚未開始時如果有預告影片會導致套件判斷錯誤的問題(Koyori及Roboko)。')

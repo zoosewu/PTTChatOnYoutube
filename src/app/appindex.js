@@ -119,10 +119,10 @@ export default function InitApp (
             const videoInfo = JSON.parse($('player-microformat-renderer')[0].children[0].innerHTML)
             // if (reportMode) console.log('videoinfo', videoinfo)
             const startDate = new Date(videoInfo.publication[0].startDate)
-            if (reportMode) console.log('startDate', startDate)
+            if (reportMode)console.log('startDate', startDate)
             this.$store.dispatch('updateVideoStartDate', startDate)
             const endDate = new Date(videoInfo.publication[0].endDate)
-            if (reportMode) console.log('endDate', endDate)
+            if (reportMode)console.log('endDate', endDate)
             this.$store.dispatch('updateLog', { type: 'videoEndTime', data: endDate.toLocaleDateString() + ' ' + endDate.toLocaleTimeString() })
           } catch (e) {
             console.log(e)

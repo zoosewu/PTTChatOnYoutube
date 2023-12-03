@@ -35,8 +35,8 @@ export default function CheckIsInsideTitleInPost () {
       this.postData.insideTitle = insideTitle
       this.postData.haveNormalInsideTitle = isPostHaveNormalInsideTitle !== null
       const result = this.match(/時間 {2}(\S{3} \S{3} ...\d{2}:\d{2}:\d{2} \d{4})/)
-      if (showAllLog)console.log('this.postData.postTime', result)
-      this.postData.postTime = result ? new Date(result[1]) : new Date(Date.now())
+      if (showAllLog) console.log('this.postData.postTime', result)
+      this.postData.postTime = result ? new Date(result[1] + '+0800') : new Date(Date.now())
     }
     this.recieveData.title = this.postData.insideTitle
     this.recieveData.date = this.postData.postTime
@@ -48,6 +48,6 @@ export default function CheckIsInsideTitleInPost () {
     }
     res.pass = false
   }
-  if (showAllLog)console.log('this.state.frame', this.state.frame, 'this.postData.insideTitle', this.postData.insideTitle)
+  if (showAllLog) console.log('this.state.frame', this.state.frame, 'this.postData.insideTitle', this.postData.insideTitle)
   return res
 }
